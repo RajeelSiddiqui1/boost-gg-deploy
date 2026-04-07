@@ -1,0 +1,65 @@
+version: "3.8"
+
+services:
+  nginx:
+    build: ./nginx
+    container_name: boost_gg_nginx_cont
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+      - frontend
+    networks:
+      - boost-gg
+
+  mongo:
+    image: mongo:6
+    container_name: boost_gg_mongo
+    environment:
+      MONGO_INITDB_DATABASE: boost_gg_db
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: 123456
+    networks:
+      - boost-gg
+    volumes:
+      - mongo-data:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "-u", "admin", "-p", "123456", "--authenticationDatabase", "admin", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build: ./server
+    container_name: boost_gg_backend
+    ports:
+      - "5006:5006"
+    env_file: ./server/.env
+    networks:
+      - boost-gg
+    volumes:
+      - uploads_data:/app/uploads
+    depends_on:
+      mongo:
+        condition: service_healthy
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./client
+    container_name: boost_gg_frontend
+    ports:
+      - "5179:5179"
+    networks:
+      - boost-gg
+    env_file: ./client/.env
+    depends_on:
+      - backend
+
+networks:
+  boost-gg:
+    driver: bridge
+
+volumes:
+  mongo-data:
+  uploads_data:

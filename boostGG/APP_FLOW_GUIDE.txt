@@ -1,0 +1,91 @@
+================================================================================
+BOOSTGG - COMPLETE APPLICATION FLOW GUIDE
+================================================================================
+
+This guide explains the workflow for all three user roles: Customers, Boosters, and Admins.
+
+--------------------------------------------------------------------------------
+1. CUSTOMER FLOW (The Buyer)
+--------------------------------------------------------------------------------
+Step 1: Homepage & Game Selection
+   - Customer enters the site, sees featured games (Valorant, LoL, etc.).
+   - Clicks on a Game Tile to see available services.
+
+Step 2: Service Discovery
+   - Inside a game page (e.g., /games/valorant), customer sees Categories (Rank Boosting, Coaching, Account leveling).
+   - Selects a specific Service (e.g., "Competitive Rank Boost").
+
+Step 3: Customization (Product Page)
+   - Product Hero: Selects starting rank and desired rank.
+   - Options Panel: Selects "Flash Sale" or "Priority Delivery".
+   - Dynamic Sections: Fills out "Rank Selection" forms or reads FAQs added by Admin.
+   - Live Pricing: Price updates instantly based on selections.
+
+Step 4: Checkout & Authentication
+   - Clicks "Buy Now" -> Redirected to Login/Register if not logged in.
+   - Enters Payment details via Stripe/PayPal/Crypto.
+
+Step 5: Order Management
+   - Post-payment, order appears in "My Orders" dashboard.
+   - Direct Chat: Opens with the assigned Booster to share credentials/details.
+   - Status Tracking: Monitors progress (Active -> Completed).
+
+--------------------------------------------------------------------------------
+2. BOOSTER FLOW (The Pro Player)
+--------------------------------------------------------------------------------
+Step 1: Application
+   - Pro player goes to "Become a Booster".
+   - Fills application with Game IDs, Rank verification, and Experience.
+
+Step 2: Admin Approval
+   - Admin reviews application and upgrades account to "Booster" status.
+
+Step 3: Job Marketplace
+   - Booster enters the "Marketplace" tab.
+   - Sees available orders matching their game expertise.
+   - Clicks "Claim Order" to start working.
+
+Step 4: Fulfillment
+   - Moves order to "In Progress".
+   - Chats with customer for login details.
+   - Once boost is done, uploads "Proof of Work" (screenshots/rank proof).
+
+Step 5: Earnings & Payout
+   - Order is marked "Completed" (manually or by Admin/Customer).
+   - Earnings are credited to their site wallet.
+   - Booster uses "Withdraw" tab to request money to their real Bank/Crypto.
+
+--------------------------------------------------------------------------------
+3. ADMIN FLOW (The Manager)
+--------------------------------------------------------------------------------
+Step 1: System Hierarchy (Setup)
+   - "Games": Add New Games (Icon, Banner, Name).
+   - "Categories": Group services (e.g., "Boosting", "Accounts").
+   - "Services": Create the actual products with base prices.
+
+Step 2: Advanced Content (Sections)
+   - "Sections": Create reusable FAQ blocks or custom input forms.
+   - "Linking": Link a section to a Game or Service so it shows up on the frontend.
+
+Step 3: User & Permission Management
+   - "Users": Manage Customers and search for specific Booster level profiles.
+   - "Verification": Review "Join as Booster" requests.
+
+Step 4: Order Control Room
+   - "All Orders": Seeing the master list.
+   - "Marketplace": Monitor which orders are unclaimed.
+   - "Disputes": Read chats to resolve issues between Booster and Customer.
+
+Step 5: Financial Operations
+   - "Payment Methods": Setup Stripe/PayPal keys.
+   - "Withdrawals": Approve/Process booster cash-out requests.
+
+Step 6: Engagement & Social
+   - "Blogs": Write SEO articles to attract traffic.
+   - "Reviews": Manage and approve user feedback for the homepage.
+   - "Coupons": Create discount codes for marketing campaigns.
+
+================================================================================
+Generated for: boostGG Admin & Dev Team
+Date: 2026-03-10
+================================================================================
