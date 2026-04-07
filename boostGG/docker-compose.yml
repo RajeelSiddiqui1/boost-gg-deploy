@@ -5,18 +5,16 @@ services:
     build: ./nginx
     container_name: boost_gg_nginx_cont
     ports:
-      - "80:80"
+      - "8080:80"
     depends_on:
       - backend
-      - frontend
     networks:
       - boost-gg
-
   mongo:
     image: mongo:6
-    container_name: boost_gg_mongo
+    container_name: boost-gg-mongo
     environment:
-      MONGO_INITDB_DATABASE: boost_gg_db
+      MONGO_INITDB_DATABASE: boost-gg-mongo
       MONGO_INITDB_ROOT_USERNAME: admin
       MONGO_INITDB_ROOT_PASSWORD: 123456
     networks:
@@ -28,21 +26,23 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+      start_period: 60s
+
 
   backend:
     build: ./server
     container_name: boost_gg_backend
     ports:
-      - "5006:5006"
+      - "5009:5009"
     env_file: ./server/.env
     networks:
       - boost-gg
     volumes:
       - uploads_data:/app/uploads
     depends_on:
-      mongo:
-        condition: service_healthy
-    restart: unless-stopped
+        mongo:
+         condition: service_healthy
+    restart: always
 
   frontend:
     build:
@@ -61,5 +61,5 @@ networks:
     driver: bridge
 
 volumes:
-  mongo-data:
   uploads_data:
+  mongo-data:

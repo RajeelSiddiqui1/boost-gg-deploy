@@ -41,13 +41,17 @@ securityConfig(app);
 
 const corsOptions = {
     origin: (origin, callback) => {
+       
         if (!origin) return callback(null, true);
 
-        if (process.env.NODE_ENV !== 'production' && origin.startsWith('http://localhost:')) {
-            return callback(null, true);
-        }
+   
+        const allowedOrigins = [
+            process.env.CORS_ORIGIN,
+            'http://153.92.209.177:8080', 
+            'http://localhost:5173',      
+        ];
 
-        if (origin === process.env.CORS_ORIGIN) {
+        if (allowedOrigins.includes(origin) || (process.env.NODE_ENV !== 'production' && origin.startsWith('http://localhost:'))) {
             return callback(null, true);
         }
 
@@ -56,6 +60,7 @@ const corsOptions = {
     credentials: true,
     optionsSuccessStatus: 200
 };
+
 app.use(cors(corsOptions));
 
 app.use(express.json({ limit: '10mb' }));
