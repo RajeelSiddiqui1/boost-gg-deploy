@@ -31,8 +31,8 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           port: 22
           script: |
-            git config --global --add safe.directory /home/clinet-projects/boost-gg-deploy/boostGG
-            cd /home/clinet-projects/boost-gg-deploy/boostGG
+            git config --global --add safe.directory /home/clinet-projects/boost-gg-deploy
+            cd /home/clinet-projects/boost-gg-deploy
             git reset --hard
             git pull origin main
             docker-compose up -d --build
