@@ -75,5 +75,5 @@ Thumbs.db
 # ========================
 database.sqlite
 *.sqlite
-uploads/
+# uploads/
 temp/
