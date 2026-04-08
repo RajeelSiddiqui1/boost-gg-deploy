@@ -20,7 +20,7 @@ services:
     networks:
       - boost-gg
     volumes:
-      - mongo-data:/data/db
+      -  boostgg_mongo-data:/data/db
     healthcheck:
       test: ["CMD", "mongosh", "-u", "admin", "-p", "123456", "--authenticationDatabase", "admin", "--eval", "db.adminCommand('ping')"]
       interval: 10s
@@ -62,4 +62,4 @@ networks:
 
 volumes:
   uploads_data:
-  mongo-data:
+   boostgg_mongo-data:
