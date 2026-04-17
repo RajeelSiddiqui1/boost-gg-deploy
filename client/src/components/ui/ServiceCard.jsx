@@ -21,11 +21,28 @@ const ServiceCard = ({ service, style }) => {
         >
             {/* Top Image Section */}
             <div className="relative h-48 overflow-hidden">
-                <img
-                    src={getImageUrl(service.icon)}
-                    className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
-                    alt={service.title}
-                />
+                {/* Background Image */}
+                {(service.backgroundImage || service.image) ? (
+                    <img
+                        src={getImageUrl(service.backgroundImage || service.image)}
+                        className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
+                        alt={service.title}
+                    />
+                ) : (
+                    <div className="absolute inset-0 bg-gradient-to-br from-gray-900 to-gray-800" />
+                )}
+                
+                {/* Service Icon overlay on top of background - centered */}
+                {service.icon && (
+                    <img
+                        src={getImageUrl(service.icon)}
+                        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-28 object-contain z-10 transition-transform duration-500 group-hover:scale-110"
+                        alt={service.title}
+                    />
+                )}
+                
+                {/* Dark overlay gradient */}
+                <div className="absolute inset-0 bg-gradient-to-t from-[#1A1A1A] via-transparent to-transparent"></div>
 
                 {/* Dynamic Badges */}
                 <div className="absolute top-4 left-4 flex flex-col gap-2">

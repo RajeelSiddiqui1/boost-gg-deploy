@@ -70,6 +70,47 @@ export default function ServiceCreatorPage() {
     const [isExporting, setIsExporting] = useState(false);
     const [copied, setCopied] = useState(false);
 
+    // Image Upload State
+    const [imageFile, setImageFile] = useState<File | null>(null);
+    const [imagePreview, setImagePreview] = useState<string>("");
+    const [iconFile, setIconFile] = useState<File | null>(null);
+    const [iconPreview, setIconPreview] = useState<string>("");
+
+    // Games and Categories
+    const [games, setGames] = useState<any[]>([]);
+    const [categories, setCategories] = useState<any[]>([]);
+
+    // Fetch games and categories
+    useEffect(() => {
+        const fetchOptions = async () => {
+            try {
+                const gamesRes = await axios.get(`${API_URL}/api/v1/games`);
+                setGames(gamesRes.data.data || []);
+            } catch (err) {
+                console.error("Failed to fetch games:", err);
+            }
+        };
+        fetchOptions();
+    }, []);
+
+    // Fetch categories when gameId changes
+    useEffect(() => {
+        if (state.gameId && isValidObjectId(state.gameId)) {
+            const fetchCategories = async () => {
+                try {
+                    const catsRes = await axios.get(`${API_URL}/api/v1/categories/game/${state.gameId}`);
+                    setCategories(catsRes.data.data || []);
+                } catch (err) {
+                    console.error("Failed to fetch categories:", err);
+                    setCategories([]);
+                }
+            };
+            fetchCategories();
+        } else {
+            setCategories([]);
+        }
+    }, [state.gameId]);
+
     // Fetch existing data
     useEffect(() => {
         if (id) {
@@ -82,20 +123,32 @@ export default function ServiceCreatorPage() {
                     });
                     const data = res.data.data;
                     // Map backend data to creator state
+                    const fetchedGameId = data.gameId?._id || data.gameId || "";
+                    const fetchedCategoryId = data.categoryId?._id || data.categoryId || data.category?._id || "";
                     setState({
                         ...data,
                         serviceId: data._id,
-                        gameId: data.gameId?._id || data.gameId || "",
-                        category: typeof data.category === 'object' ? data.category?.name || "" : (data.category || ""),
+                        gameId: fetchedGameId,
+                        category: fetchedCategoryId,
                         sidebarSections: data.sidebarSections || [],
-                        featureTags: data.featureTags || [],
+                        featureTags: data.features || data.featureTags || [],
                         requirements: data.requirements || [],
                         speedOptions: data.speedOptions || {
                             express: { enabled: true, label: "Express", priceModifier: 0, tooltip: "" },
                             superExpress: { enabled: true, label: "Super Express", priceModifier: 0, tooltip: "" }
                         },
-                        reviews: data.sampleReviews || []
+                        reviews: data.sampleReviews || data.reviews || []
                     });
+
+                    // Set Previews
+                    if (data.image) {
+                        const imgUrl = data.image.startsWith('http') ? data.image : `${API_URL}/${data.image.replace(/^\//, '')}`;
+                        setImagePreview(imgUrl);
+                    }
+                    if (data.icon) {
+                        const iconUrl = data.icon.startsWith('http') ? data.icon : `${API_URL}/${data.icon.replace(/^\//, '')}`;
+                        setIconPreview(iconUrl);
+                    }
                 } catch (err) {
                     toast.error("Failed to fetch service data");
                 } finally {
@@ -137,7 +190,7 @@ export default function ServiceCreatorPage() {
     };
 
     const deleteSection = (id: string) => {
-        setState(p => ({ ...p, sidebarSections: p.sidebarSections.filter(s => s.id !== id) }));
+        setState(p => ({ ...p, sidebarSections: (p.sidebarSections || []).filter(s => s.id !== id) }));
     };
 
     const addOption = (sectionId: string) => {
@@ -183,7 +236,7 @@ export default function ServiceCreatorPage() {
     const deleteOption = (sectionId: string, optionId: string) => {
         setState(p => ({
             ...p,
-            sidebarSections: p.sidebarSections.map(s => s.id === sectionId ? { ...s, options: s.options?.filter(o => o.id !== optionId) } : s)
+            sidebarSections: (p.sidebarSections || []).map(s => s.id === sectionId ? { ...s, options: (s.options || []).filter(o => o.id !== optionId) } : s)
         }));
     };
 
@@ -220,41 +273,119 @@ export default function ServiceCreatorPage() {
         useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
     );
 
+    const handleIconChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (file) {
+            setIconFile(file);
+            const reader = new FileReader();
+            reader.onloadend = () => setIconPreview(reader.result as string);
+            reader.readAsDataURL(file);
+        }
+    };
+
+    const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (file) {
+            setImageFile(file);
+            const reader = new FileReader();
+            reader.onloadend = () => setImagePreview(reader.result as string);
+            reader.readAsDataURL(file);
+        }
+    };
+
     const handleCopyJson = () => {
         navigator.clipboard.writeText(JSON.stringify(state, null, 2));
         setCopied(true);
         setTimeout(() => setCopied(false), 2000);
     };
 
+    const isValidObjectId = (str: string) => /^[0-9a-fA-F]{24}$/.test(str);
+
     const handleSave = async () => {
         setLoading(true);
         try {
             const token = localStorage.getItem("token");
             const method = id ? "put" : "post";
-            const url = id ? `${API_URL}/api/v1/services/admin/${id}` : `${API_URL}/api/v1/services/admin`;
+            const url = id ? `${API_URL}/api/v1/admin/services/${id}` : `${API_URL}/api/v1/admin/services`;
 
-            const payload = {
-                ...state,
-                sampleReviews: state.reviews,
+            if (!state.gameId || !isValidObjectId(state.gameId)) {
+                throw new Error("Please select a valid game");
+            }
+            if (!state.category || !isValidObjectId(state.category)) {
+                throw new Error("Please select a valid category");
+            }
+
+            const formData = new FormData();
+
+            // Only include valid fields for new service creation
+            const payload: any = {
+                title: state.title,
+                description: state.description,
+                gameId: state.gameId,
+                categoryId: state.category,
+                shortDescription: state.shortDescription || "",
+                estimatedStartTime: state.estimatedStartTime || "15 min",
+                estimatedCompletionTime: state.estimatedCompletionTime || "Flexible",
+                showVAT: state.showVAT !== false,
+                cashbackPercent: Number(state.cashbackPercent) || 5,
+                isActive: state.isActive !== false,
+                deliveryTime: Number(state.deliveryTime) || 24,
                 pricing: {
                     type: 'fixed',
                     basePrice: Number(state.basePrice) || 0
                 }
             };
 
+            // Only add sampleReviews if it has content
+            if (state.reviews && state.reviews.length > 0) {
+                payload.sampleReviews = state.reviews;
+            }
+
+            // Map frontend state to backend model expectation
+            Object.keys(payload).forEach(key => {
+                if (['sidebarSections', 'speedOptions', 'requirements', 'featureTags', 'reviews', 'pricing'].includes(key)) {
+                    const backendKey = key === 'featureTags' ? 'features' : key;
+                    if (payload[key] && payload[key].length > 0) {
+                        formData.append(backendKey, JSON.stringify(payload[key]));
+                    }
+                } else if (key !== 'image' && key !== 'icon' && key !== 'heroImage' && key !== 'serviceId') {
+                    let backendKey = key;
+                    if (key === 'category') backendKey = 'categoryId';
+                    if (payload[key] !== undefined && payload[key] !== null && payload[key] !== "") {
+                        formData.append(backendKey, payload[key]);
+                    }
+                }
+            });
+
+            // Handle Files
+            if (imageFile) {
+                formData.append('backgroundImage', imageFile);
+            } else if (state.image) {
+                formData.append('backgroundImage', state.image);
+            }
+
+            if (iconFile) {
+                formData.append('icon', iconFile);
+            } else if (state.icon) {
+                formData.append('icon', state.icon);
+            }
 
             await axios({
                 method,
                 url,
-                data: payload,
-                headers: { Authorization: `Bearer ${token}` }
+                data: formData,
+                headers: { 
+                    Authorization: `Bearer ${token}`,
+                    'Content-Type': 'multipart/form-data'
+                }
             });
 
             toast.success(`Service ${id ? "updated" : "created"} successfully`);
             setLastSaved(new Date().toLocaleTimeString());
         } catch (err: any) {
             console.error("Save error:", err.response?.data || err.message);
-            toast.error(err.response?.data?.error || "Failed to save service");
+            const errorMsg = err.response?.data?.message || err.message || "Failed to save service";
+            toast.error(String(errorMsg));
         } finally {
             setLoading(false);
         }
@@ -358,8 +489,50 @@ export default function ServiceCreatorPage() {
                         {/* Basic Info */}
                         <section className="bg-[#141414] border border-[#222] rounded-2xl p-6 shadow-lg">
                             <h2 className="text-xs uppercase font-black tracking-[0.2em] text-gray-500 mb-6 flex items-center gap-2">
-                                <span className="w-1.5 h-1.5 bg-purple-500 rounded-full" /> Part 1: Basic Info
+                                <span className="w-1.5 h-1.5 bg-purple-500 rounded-full" /> Part 1: Service Identity
                             </h2>
+
+                            <div className="grid grid-cols-2 gap-8 mb-8 border-b border-white/5 pb-8">
+                                {/* Hero Image Upload */}
+                                <div>
+                                    <label className="block text-[10px] uppercase font-black text-gray-500 tracking-widest mb-3 px-1">Hero Background (JPG/JPEG)</label>
+                                    <div className="flex flex-col gap-4">
+                                        <div className="w-full h-32 rounded-2xl overflow-hidden bg-[#0d0d0d] border border-[#2a2a2a] relative group">
+                                            {imagePreview ? (
+                                                <img src={imagePreview} className="w-full h-full object-cover opacity-60 group-hover:opacity-100 transition-opacity" alt="Preview" />
+                                            ) : (
+                                                <div className="w-full h-full flex flex-col items-center justify-center text-gray-700">
+                                                    <Plus size={32} />
+                                                </div>
+                                            )}
+                                            <label className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 group-hover:opacity-100 transition-all cursor-pointer">
+                                                <input type="file" className="hidden" accept="image/jpeg,image/jpg" onChange={handleImageChange} />
+                                                <span className="px-4 py-2 bg-white text-black text-[10px] font-black uppercase tracking-widest rounded-lg">Change Image</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Icon Upload */}
+                                <div>
+                                    <label className="block text-[10px] uppercase font-black text-gray-500 tracking-widest mb-3 px-1">Service Icon (PNG)</label>
+                                    <div className="flex flex-col gap-4">
+                                        <div className="w-full h-32 rounded-2xl overflow-hidden bg-[#0d0d0d] border border-[#2a2a2a] relative group flex items-center justify-center">
+                                            {iconPreview ? (
+                                                <img src={iconPreview} className="h-20 w-20 object-contain group-hover:scale-110 transition-transform" alt="Preview" />
+                                            ) : (
+                                                <div className="w-full h-full flex flex-col items-center justify-center text-gray-700">
+                                                    <Plus size={32} />
+                                                </div>
+                                            )}
+                                            <label className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 group-hover:opacity-100 transition-all cursor-pointer">
+                                                <input type="file" className="hidden" accept="image/png" onChange={handleIconChange} />
+                                                <span className="px-4 py-2 bg-white text-black text-[10px] font-black uppercase tracking-widest rounded-lg">Change Icon</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
 
                             <div className="grid grid-cols-2 gap-6">
                                 <div className="col-span-2">
@@ -371,6 +544,35 @@ export default function ServiceCreatorPage() {
                                         className="w-full bg-[#0d0d0d] border border-[#2a2a2a] rounded-xl px-4 py-3 text-white focus:border-purple-500 outline-none transition-all text-lg font-bold"
                                         placeholder="e.g. Equilibrium Dungeon Boost"
                                     />
+                                </div>
+
+                                <div>
+                                    <label className="block text-sm font-bold text-gray-400 mb-2">Game *</label>
+                                    <select
+                                        value={state.gameId}
+                                        onChange={(e) => setState(p => ({ ...p, gameId: e.target.value, category: "" }))}
+                                        className="w-full bg-[#0d0d0d] border border-[#2a2a2a] rounded-xl px-4 py-3 text-white focus:border-purple-500 outline-none transition-all"
+                                    >
+                                        <option value="" style={{ background: "#0d0d0d" }}>Select a game</option>
+                                        {games.map(game => (
+                                            <option key={game._id} value={game._id} style={{ background: "#0d0d0d" }}>{game.name}</option>
+                                        ))}
+                                    </select>
+                                </div>
+
+                                <div>
+                                    <label className="block text-sm font-bold text-gray-400 mb-2">Category *</label>
+                                    <select
+                                        value={state.category}
+                                        onChange={(e) => setState(p => ({ ...p, category: e.target.value }))}
+                                        disabled={!state.gameId}
+                                        className="w-full bg-[#0d0d0d] border border-[#2a2a2a] rounded-xl px-4 py-3 text-white focus:border-purple-500 outline-none transition-all disabled:opacity-50"
+                                    >
+                                        <option value="" style={{ background: "#0d0d0d" }}>{state.gameId ? "Select a category" : "Select a game first"}</option>
+                                        {categories.map(cat => (
+                                            <option key={cat._id} value={cat._id} style={{ background: "#0d0d0d" }}>{cat.name}</option>
+                                        ))}
+                                    </select>
                                 </div>
 
                                 <div>
@@ -454,7 +656,7 @@ export default function ServiceCreatorPage() {
                                         {state.featureTags?.map((tag, i) => (
                                             <div key={i} className="bg-purple-900/40 text-purple-400 border border-purple-800/40 px-3 py-1 rounded-lg text-xs font-bold flex items-center gap-2 transition-all hover:scale-105">
                                                 {tag}
-                                                <button onClick={() => setState(p => ({ ...p, featureTags: p.featureTags.filter((_, idx) => idx !== i) }))}>
+                                                <button onClick={() => setState(p => ({ ...p, featureTags: (p.featureTags || []).filter((_, idx) => idx !== i) }))}>
                                                     <X size={12} />
                                                 </button>
                                             </div>
@@ -704,7 +906,7 @@ export default function ServiceCreatorPage() {
                                             placeholder={`Requirement ${i + 1}`}
                                         />
                                         <button
-                                            onClick={() => setState(p => ({ ...p, requirements: p.requirements.filter((_, idx) => idx !== i) }))}
+                                            onClick={() => setState(p => ({ ...p, requirements: (p.requirements || []).filter((_, idx) => idx !== i) }))}
                                             className="p-2 text-red-500 hover:bg-red-500/10 rounded-lg transition-colors"
                                         >
                                             <Trash2 size={18} />

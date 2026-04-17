@@ -310,6 +310,10 @@ const serviceSchemas = {
             .trim()
             .allow(''),
 
+        image: Joi.string()
+            .trim()
+            .allow(''),
+
         pricing: Joi.object({
             type: Joi.string()
                 .valid(...PRICING_TYPES)
@@ -514,6 +518,10 @@ const serviceSchemas = {
             .valid(...SERVICE_TYPES),
 
         icon: Joi.string()
+            .trim()
+            .allow(''),
+
+        image: Joi.string()
             .trim()
             .allow(''),
 

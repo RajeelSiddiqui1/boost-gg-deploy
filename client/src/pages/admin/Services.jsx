@@ -46,7 +46,9 @@ const AdminServices = () => {
 
     // Show notification
     const notify = (type, message) => {
-        const msg = typeof message === 'object' ? (message.message || JSON.stringify(message)) : message;
+        const msg = typeof message === 'object' 
+            ? (message.message || (typeof message.toString === 'function' && message.toString() !== '[object Object]' ? message.toString() : JSON.stringify(message))) 
+            : message;
         setNotification({ type, message: msg });
         setTimeout(() => setNotification(null), 3000);
     };
@@ -54,10 +56,7 @@ const AdminServices = () => {
     // Fetch games for selection
     const fetchGames = async () => {
         try {
-            const token = localStorage.getItem('token');
-            const res = await axios.get(`${API_URL}/api/v1/games/admin/all`, {
-                headers: { Authorization: `Bearer ${token}` }
-            });
+            const res = await axios.get(`${API_URL}/api/v1/games`);
             setGames(res.data.data);
         } catch (error) {
             console.error('Error fetching games:', error);
@@ -77,8 +76,8 @@ const AdminServices = () => {
 
             const queryString = params.toString();
             const url = queryString
-                ? `${API_URL}/api/v1/services/admin/all?${queryString}`
-                : `${API_URL}/api/v1/services/admin/all`;
+                ? `${API_URL}/api/v1/admin/services?${queryString}`
+                : `${API_URL}/api/v1/admin/services`;
 
             const res = await axios.get(url, {
                 headers: { Authorization: `Bearer ${token}` }
@@ -128,7 +127,7 @@ const AdminServices = () => {
     const handleDelete = async (id) => {
         try {
             const token = localStorage.getItem('token');
-            await axios.delete(`${API_URL}/api/v1/services/admin/${id}`, {
+            await axios.delete(`${API_URL}/api/v1/admin/services/${id}`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             notify('success', 'Service deleted successfully');
@@ -165,7 +164,7 @@ const AdminServices = () => {
     const handleToggleStatus = async (id) => {
         try {
             const token = localStorage.getItem('token');
-            await axios.patch(`${API_URL}/api/v1/services/admin/${id}/status`, {}, {
+            await axios.patch(`${API_URL}/api/v1/admin/services/${id}/status`, {}, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             notify('success', 'Status updated');
@@ -345,19 +344,34 @@ const AdminServices = () => {
                                             </td>
                                             <td className="px-4 py-4 min-w-[200px]">
                                                 <div className="flex items-center gap-3">
-                                                    {service.icon ? (
-                                                        <div className="w-10 h-10 rounded-lg overflow-hidden bg-white/5 border border-white/5 shrink-0">
-                                                            <img
-                                                                src={getImageUrl(service.icon)}
-                                                                alt={service.title}
-                                                                className="w-full h-full object-cover"
-                                                            />
-                                                        </div>
-                                                    ) : (
-                                                        <div className="w-10 h-10 rounded-lg bg-white/5 border border-white/5 flex items-center justify-center shrink-0">
-                                                            <Wrench className="w-4 h-4 text-white/20" />
-                                                        </div>
-                                                    )}
+                                                     {(service.backgroundImage || service.image) ? (
+                                                         <div className="w-10 h-10 rounded-lg overflow-hidden bg-white/5 border border-white/5 shrink-0 relative">
+                                                             <img
+                                                                 src={getImageUrl(service.backgroundImage || service.image)}
+                                                                 alt={service.title}
+                                                                 className="w-full h-full object-cover"
+                                                             />
+                                                             {service.icon && (
+                                                                 <img
+                                                                     src={getImageUrl(service.icon)}
+                                                                     alt=""
+                                                                     className="absolute bottom-0 right-0 h-8 object-contain"
+                                                                 />
+                                                             )}
+                                                         </div>
+                                                     ) : service.icon ? (
+                                                         <div className="w-10 h-10 rounded-lg overflow-hidden bg-white/5 border border-white/5 shrink-0">
+                                                             <img
+                                                                 src={getImageUrl(service.icon)}
+                                                                 alt={service.title}
+                                                                 className="w-full h-full object-cover"
+                                                             />
+                                                         </div>
+                                                     ) : (
+                                                         <div className="w-10 h-10 rounded-lg bg-white/5 border border-white/5 flex items-center justify-center shrink-0">
+                                                             <Wrench className="w-4 h-4 text-white/20" />
+                                                         </div>
+                                                     )}
                                                     <div className="min-w-0">
                                                         <div className="text-[13px] font-black italic uppercase text-white group-hover:text-primary transition-colors truncate">{service.title}</div>
                                                         <div className="text-[9px] font-bold text-white/20 uppercase tracking-widest truncate">{service.slug}</div>

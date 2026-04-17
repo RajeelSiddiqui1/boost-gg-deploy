@@ -56,6 +56,7 @@ export interface ServiceData {
     title: string;
     slug: string;
     gameId: string;
+    categoryId: string;
     category: string;
     description: string;
     heroImage: string;

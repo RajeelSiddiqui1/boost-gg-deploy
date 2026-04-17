@@ -69,13 +69,17 @@ const ServiceForm = ({ service, games, onClose, onSuccess }) => {
 
     const [showCategoryForm, setShowCategoryForm] = useState(false);
     const [categories, setCategories] = useState([]);
-    const [iconFile, setIconFile] = useState(null);
-    const [iconPreview, setIconPreview] = useState('');
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const [newFeature, setNewFeature] = useState('');
     const [newRequirement, setNewRequirement] = useState('');
     const [newTag, setNewTag] = useState('');
+
+    // Image states
+    const [iconFile, setIconFile] = useState(null);
+    const [iconPreview, setIconPreview] = useState('');
+    const [backgroundFile, setBackgroundFile] = useState(null);
+    const [backgroundPreview, setBackgroundPreview] = useState('');
 
     const fetchCategories = async () => {
         if (!formData.gameId) {
@@ -138,9 +142,46 @@ const ServiceForm = ({ service, games, onClose, onSuccess }) => {
                 boostCategory: service.boostCategory || 'rank-boost',
                 faqs: service.faqs || []
             });
-            setIconPreview(getImageUrl(service.icon || ''));
+            
+            // Set previews from service data
+            if (service.icon) {
+                setIconPreview(getImageUrl(service.icon));
+            }
+            if (service.backgroundImage || service.image) {
+                setBackgroundPreview(getImageUrl(service.backgroundImage || service.image));
+            }
         }
     }, [service]);
+
+    const handleIconChange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            if (file.size > 5 * 1024 * 1024) {
+                setError('Icon must be less than 5MB');
+                return;
+            }
+            setIconFile(file);
+            const reader = new FileReader();
+            reader.onloadend = () => setIconPreview(reader.result);
+            reader.readAsDataURL(file);
+            setError('');
+        }
+    };
+
+    const handleBackgroundChange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            if (file.size > 10 * 1024 * 1024) {
+                setError('Background image must be less than 10MB');
+                return;
+            }
+            setBackgroundFile(file);
+            const reader = new FileReader();
+            reader.onloadend = () => setBackgroundPreview(reader.result);
+            reader.readAsDataURL(file);
+            setError('');
+        }
+    };
 
     const handleChange = (e) => {
         const { name, value, type, checked } = e.target;
@@ -158,19 +199,6 @@ const ServiceForm = ({ service, games, onClose, onSuccess }) => {
                 ...prev,
                 [name]: type === 'checkbox' ? checked : value
             }));
-        }
-    };
-
-    const handleIconChange = (e) => {
-        const file = e.target.files[0];
-        if (file) {
-            if (file.size > 5 * 1024 * 1024) {
-                setError('Icon must be less than 5MB');
-                return;
-            }
-            setIconFile(file);
-            setIconPreview(URL.createObjectURL(file));
-            setError('');
         }
     };
 
@@ -213,33 +241,40 @@ const ServiceForm = ({ service, games, onClose, onSuccess }) => {
     const removeServiceOption = (index) => {
         setFormData(prev => ({
             ...prev,
-            serviceOptions: prev.serviceOptions.filter((_, i) => i !== index)
+            serviceOptions: (prev.serviceOptions || []).filter((_, i) => i !== index)
         }));
     };
 
     const addOptionChoice = (optionIndex) => {
         setFormData(prev => {
-            const newOptions = [...prev.serviceOptions];
-            newOptions[optionIndex].choices.push({ label: 'New Choice', addPrice: 0, multiplier: 1 });
+            const newOptions = [...(prev.serviceOptions || [])];
+            if (newOptions[optionIndex]) {
+                if (!newOptions[optionIndex].choices) newOptions[optionIndex].choices = [];
+                newOptions[optionIndex].choices.push({ label: 'New Choice', addPrice: 0, multiplier: 1 });
+            }
             return { ...prev, serviceOptions: newOptions };
         });
     };
 
     const updateOptionChoice = (optionIndex, choiceIndex, field, value) => {
         setFormData(prev => {
-            const newOptions = [...prev.serviceOptions];
-            newOptions[optionIndex].choices[choiceIndex] = {
-                ...newOptions[optionIndex].choices[choiceIndex],
-                [field]: (field === 'addPrice' || field === 'multiplier') ? parseFloat(value) || 0 : value
-            };
+            const newOptions = [...(prev.serviceOptions || [])];
+            if (newOptions[optionIndex] && newOptions[optionIndex].choices) {
+                newOptions[optionIndex].choices[choiceIndex] = {
+                    ...newOptions[optionIndex].choices[choiceIndex],
+                    [field]: (field === 'addPrice' || field === 'multiplier') ? parseFloat(value) || 0 : value
+                };
+            }
             return { ...prev, serviceOptions: newOptions };
         });
     };
 
     const removeOptionChoice = (optionIndex, choiceIndex) => {
         setFormData(prev => {
-            const newOptions = [...prev.serviceOptions];
-            newOptions[optionIndex].choices = newOptions[optionIndex].choices.filter((_, i) => i !== choiceIndex);
+            const newOptions = [...(prev.serviceOptions || [])];
+            if (newOptions[optionIndex] && newOptions[optionIndex].choices) {
+                newOptions[optionIndex].choices = newOptions[optionIndex].choices.filter((_, i) => i !== choiceIndex);
+            }
             return { ...prev, serviceOptions: newOptions };
         });
     };
@@ -257,7 +292,7 @@ const ServiceForm = ({ service, games, onClose, onSuccess }) => {
     const removeFeature = (index) => {
         setFormData(prev => ({
             ...prev,
-            features: prev.features.filter((_, i) => i !== index)
+            features: (prev.features || []).filter((_, i) => i !== index)
         }));
     };
 
@@ -274,7 +309,7 @@ const ServiceForm = ({ service, games, onClose, onSuccess }) => {
     const removeRequirement = (index) => {
         setFormData(prev => ({
             ...prev,
-            requirements: prev.requirements.filter((_, i) => i !== index)
+            requirements: (prev.requirements || []).filter((_, i) => i !== index)
         }));
     };
 
@@ -351,7 +386,7 @@ const ServiceForm = ({ service, games, onClose, onSuccess }) => {
     const removeTag = (index) => {
         setFormData(prev => ({
             ...prev,
-            tags: prev.tags.filter((_, i) => i !== index)
+            tags: (prev.tags || []).filter((_, i) => i !== index)
         }));
     };
 
@@ -361,7 +396,7 @@ const ServiceForm = ({ service, games, onClose, onSuccess }) => {
             pricing: {
                 ...prev.pricing,
                 tiers: [
-                    ...prev.pricing.tiers,
+                    ...(prev.pricing?.tiers || []),
                     { name: '', description: '', price: 0, multiplier: 1 }
                 ]
             }
@@ -385,7 +420,7 @@ const ServiceForm = ({ service, games, onClose, onSuccess }) => {
             ...prev,
             pricing: {
                 ...prev.pricing,
-                tiers: prev.pricing.tiers.filter((_, i) => i !== index)
+                tiers: (prev.pricing?.tiers || []).filter((_, i) => i !== index)
             }
         }));
     };
@@ -419,16 +454,29 @@ const ServiceForm = ({ service, games, onClose, onSuccess }) => {
         try {
             const token = localStorage.getItem('token');
             const formDataToSend = new FormData();
+            
+            // Handle regular fields
             Object.keys(formData).forEach(key => {
                 if (['pricing', 'features', 'requirements', 'tags', 'platforms', 'regions', 'serviceOptions', 'faqs', 'dynamicFields', 'meta'].includes(key)) {
                     formDataToSend.append(key, JSON.stringify(formData[key]));
-                } else if (key !== 'icon') {
+                } else if (!['icon', 'backgroundImage', 'image'].includes(key)) {
                     formDataToSend.append(key, formData[key]);
                 }
             });
+
+            // Handle Files
             if (iconFile) {
                 formDataToSend.append('icon', iconFile);
+            } else if (service?.icon) {
+                formDataToSend.append('icon', service.icon);
             }
+
+            if (backgroundFile) {
+                formDataToSend.append('backgroundImage', backgroundFile);
+            } else if (service?.backgroundImage || service?.image) {
+                formDataToSend.append('backgroundImage', service.backgroundImage || service.image);
+            }
+
             const config = {
                 headers: {
                     Authorization: `Bearer ${token}`,
@@ -985,6 +1033,82 @@ const ServiceForm = ({ service, games, onClose, onSuccess }) => {
                             </div>
                         </div>
                     </div>
+                        {/* Visual Assets Section */}
+                        <div className="md:col-span-2 border-t border-white/5 pt-10 mt-6 relative">
+                            <h3 className="text-xl font-black italic text-white uppercase mb-6 flex items-center gap-3">
+                                <div className="p-2 bg-primary/10 rounded-lg">
+                                    <Upload className="w-5 h-5 text-primary" />
+                                </div>
+                                Visual Identity
+                            </h3>
+                            
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                {/* Background Image */}
+                                <div>
+                                    <label className="block text-white/40 text-[10px] font-black uppercase tracking-widest mb-3 px-1">Background Image (JPG/JPEG)</label>
+                                    <div 
+                                        className="relative group w-full h-48 bg-white/[0.02] border border-white/5 rounded-3xl overflow-hidden cursor-pointer hover:border-primary/50 transition-all shadow-lg"
+                                        onClick={() => document.getElementById('bg-input').click()}
+                                    >
+                                        {backgroundPreview ? (
+                                            <img src={backgroundPreview} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-60 group-hover:opacity-100" alt="Preview" />
+                                        ) : (
+                                            <div className="w-full h-full flex flex-col items-center justify-center gap-3">
+                                                <div className="p-3 bg-white/5 rounded-full">
+                                                    <Upload className="w-6 h-6 text-white/20" />
+                                                </div>
+                                                <span className="text-[10px] font-black text-white/20 uppercase tracking-widest">Select Background</span>
+                                            </div>
+                                        )}
+                                        <div className="absolute inset-0 bg-primary/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                            <span className="px-6 py-3 bg-white text-black text-[10px] font-black uppercase tracking-widest rounded-xl shadow-2xl scale-90 group-hover:scale-100 transition-transform">
+                                                Change Image
+                                            </span>
+                                        </div>
+                                        <input 
+                                            id="bg-input"
+                                            type="file" 
+                                            className="hidden" 
+                                            accept="image/jpeg,image/jpg"
+                                            onChange={handleBackgroundChange}
+                                        />
+                                    </div>
+                                </div>
+
+                                {/* Icon Image */}
+                                <div>
+                                    <label className="block text-white/40 text-[10px] font-black uppercase tracking-widest mb-3 px-1">Service Icon (PNG Only)</label>
+                                    <div 
+                                        className="relative group w-full h-48 bg-white/[0.02] border border-white/5 rounded-3xl overflow-hidden cursor-pointer hover:border-primary/50 transition-all shadow-lg flex items-center justify-center"
+                                        onClick={() => document.getElementById('icon-input').click()}
+                                    >
+                                        {iconPreview ? (
+                                            <img src={iconPreview} className="h-24 w-24 object-contain group-hover:scale-110 transition-transform duration-500" alt="Icon Preview" />
+                                        ) : (
+                                            <div className="w-full h-full flex flex-col items-center justify-center gap-3">
+                                                <div className="p-3 bg-white/5 rounded-full">
+                                                    <ImageIcon className="w-6 h-6 text-white/20" />
+                                                </div>
+                                                <span className="text-[10px] font-black text-white/20 uppercase tracking-widest">Select Icon</span>
+                                            </div>
+                                        )}
+                                        <div className="absolute inset-0 bg-primary/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                            <span className="px-6 py-3 bg-white text-black text-[10px] font-black uppercase tracking-widest rounded-xl shadow-2xl scale-90 group-hover:scale-100 transition-transform">
+                                                Change Icon
+                                            </span>
+                                        </div>
+                                        <input 
+                                            id="icon-input"
+                                            type="file" 
+                                            className="hidden" 
+                                            accept="image/png"
+                                            onChange={handleIconChange}
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                     <div className="flex flex-col md:flex-row gap-4 pt-10 border-t border-white/5 mt-10">
                         <button
                             type="button"

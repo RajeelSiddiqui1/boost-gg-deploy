@@ -34,18 +34,26 @@ router.get('/admin/all', [protect, authorize('admin')], getAdminServices);
 router.post(
     '/admin',
     [protect, authorize('admin')],
-    serviceUpload.single('icon'),
+    serviceUpload.fields([
+        { name: 'icon', maxCount: 1 },
+        { name: 'image', maxCount: 1 },
+        { name: 'backgroundImage', maxCount: 1 }
+    ]),
     createService
 );
 
 router.put(
     '/admin/:id',
     [protect, authorize('admin')],
-    serviceUpload.single('icon'),
+    serviceUpload.fields([
+        { name: 'icon', maxCount: 1 },
+        { name: 'image', maxCount: 1 },
+        { name: 'backgroundImage', maxCount: 1 }
+    ]),
     updateService
 );
 
-router.delete('/admin/bulk', [protect, authorize('admin')], bulkUpdateServices);
+router.patch('/admin/bulk', [protect, authorize('admin')], bulkUpdateServices);
 router.delete('/admin/:id', [protect, authorize('admin')], deleteService);
 
 router.patch('/admin/:id/status', [protect, authorize('admin')], toggleServiceStatus);
@@ -58,7 +66,10 @@ router.post('/admin/validate-pricing', [protect, authorize('admin')], validatePr
 router.post(
     '/pro',
     [protect, isPro],
-    serviceUpload.single('icon'),
+    serviceUpload.fields([
+        { name: 'icon', maxCount: 1 },
+        { name: 'image', maxCount: 1 }
+    ]),
     createService
 );
 
@@ -66,7 +77,10 @@ router.post(
 router.put(
     '/pro/:id',
     [protect, isPro],
-    serviceUpload.single('icon'),
+    serviceUpload.fields([
+        { name: 'icon', maxCount: 1 },
+        { name: 'image', maxCount: 1 }
+    ]),
     updateService
 );
 

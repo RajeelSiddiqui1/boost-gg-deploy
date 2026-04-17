@@ -6,6 +6,7 @@ import StatsGrid from '../sections/StatsGrid';
 import TestimonialsSection from '../sections/TestimonialsSection';
 import GuidesSection from '../sections/GuidesSection';
 import DiscoverGames from '../sections/DiscoverGames';
+import PaymentMethods from '../sections/PaymentMethods';
 import CommunityEarnings from '../sections/CommunityEarnings';
 import GameGrid from '../sections/GameGrid';
 import CategoryFilter from './CategoryFilter';
@@ -84,8 +85,10 @@ const BoostingMode = () => {
             <GuidesSection />
             <CommunityEarnings />
             <DiscoverGames />
+            <PaymentMethods />
         </div>
     );
 };
+
 
 export default BoostingMode;

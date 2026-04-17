@@ -12,11 +12,23 @@ const WowOfferCard = ({ service }) => {
         price,
         deliveryTimeText,
         icon,
+        backgroundImage,
+        image,
         isFeatured,
         ordersCount,
         category
     } = service;
     const { formatPrice } = useCurrency();
+
+    // Use absolute URL for images
+    const getImageUrl = (path) => {
+        if (!path) return null;
+        if (path.startsWith('http')) return path;
+        const cleanPath = path.startsWith('/') ? path.slice(1) : path;
+        return `${API_URL}/${cleanPath}`;
+    };
+
+    const mainImage = getImageUrl(backgroundImage || image || icon) || 'https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&q=80&w=2070';
 
     return (
         <Link
@@ -26,7 +38,7 @@ const WowOfferCard = ({ service }) => {
             {/* Image / Header */}
             <div className="relative aspect-[16/10] overflow-hidden">
                 <img
-                    src={icon || 'https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&q=80&w=2070'}
+                    src={mainImage}
                     alt={name}
                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                 />

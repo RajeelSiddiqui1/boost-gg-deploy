@@ -1,4 +1,5 @@
 const Service = require('../models/Service');
+const path = require('path');
 const Game = require('../models/Game');
 const logger = require('../config/logger');
 const { calculateServicePrice } = require('../utils/priceCalculator');
@@ -19,9 +20,33 @@ const deleteFile = (filePath) => {
 };
 
 // Helper function to get file URL
-const getFileUrl = (filename) => {
+const getFileUrl = (filename, subfolder = 'icon') => {
     if (!filename) return '';
-    return `/uploads/services/${filename}`;
+    return `/uploads/services/${subfolder}/${filename}`;
+};
+
+// Helper function to validate pricing configuration
+const validatePricingConfig = (pricing) => {
+    const errors = [];
+
+    if (!pricing || !pricing.type) {
+        errors.push('Pricing type is required');
+    } else if (!['fixed', 'per_level', 'per_win', 'hourly', 'tiered', 'dynamic', 'quantity'].includes(pricing.type)) {
+        errors.push('Invalid pricing type');
+    }
+
+    if (pricing && pricing.type === 'fixed' && (pricing.basePrice === undefined || pricing.basePrice < 0)) {
+        errors.push('Base price is required and must be non-negative for fixed pricing');
+    }
+
+    if (pricing && ['per_level', 'per_win', 'hourly'].includes(pricing.type) && (pricing.pricePerUnit === undefined || pricing.pricePerUnit < 0)) {
+        errors.push('Price per unit is required and must be non-negative');
+    }
+
+    return {
+        isValid: errors.length === 0,
+        errors
+    };
 };
 
 // @desc    Get all services (public)
@@ -536,9 +561,17 @@ exports.createService = async (req, res, next) => {
             });
         }
 
-        // Handle icon upload if present
-        if (req.file) {
-            value.icon = getFileUrl(req.file.filename);
+        // Handle file uploads if present
+        if (req.files) {
+            if (req.files.icon && req.files.icon[0]) {
+                value.icon = getFileUrl(req.files.icon[0].filename, 'icon');
+            }
+            if (req.files.image && req.files.image[0]) {
+                value.image = getFileUrl(req.files.image[0].filename, 'background');
+            }
+            if (req.files.backgroundImage && req.files.backgroundImage[0]) {
+                value.backgroundImage = getFileUrl(req.files.backgroundImage[0].filename, 'background');
+            }
         }
 
         const service = await Service.create(value);
@@ -553,7 +586,7 @@ exports.createService = async (req, res, next) => {
         // Populate game info
         await service.populate('gameId', 'name title slug icon bgImage characterImage banner image');
 
-        logger.info(`Service created: ${service.name} by user ${req.user?.id || 'admin'}`);
+        logger.info(`Service created: ${service.title} by user ${req.user?.id || 'admin'}`);
 
         res.status(201).json({
             success: true,
@@ -660,15 +693,35 @@ exports.updateService = async (req, res, next) => {
             });
         }
 
-        // Handle icon upload if present
-        if (req.file) {
-            // Delete old icon
-            if (service.icon) {
-                const oldFilename = require('path').basename(service.icon);
-                const oldFilePath = require('path').join(__dirname, '../uploads/services', oldFilename);
-                deleteFile(oldFilePath);
+        // Handle file uploads if present
+        if (req.files) {
+            if (req.files.icon && req.files.icon[0]) {
+                // Delete old icon
+                if (service.icon) {
+                    const oldFilename = require('path').basename(service.icon);
+                    const oldFilePath = require('path').join(__dirname, '../uploads/services/icon', oldFilename);
+                    deleteFile(oldFilePath);
+                }
+                value.icon = getFileUrl(req.files.icon[0].filename, 'icon');
             }
-            value.icon = getFileUrl(req.file.filename);
+            if (req.files.image && req.files.image[0]) {
+                // Delete old image
+                if (service.image) {
+                    const oldFilename = require('path').basename(service.image);
+                    const oldFilePath = require('path').join(__dirname, '../uploads/services/background', oldFilename);
+                    deleteFile(oldFilePath);
+                }
+                value.image = getFileUrl(req.files.image[0].filename, 'background');
+            }
+            if (req.files.backgroundImage && req.files.backgroundImage[0]) {
+                // Delete old background image
+                if (service.backgroundImage) {
+                    const oldFilename = require('path').basename(service.backgroundImage);
+                    const oldFilePath = require('path').join(__dirname, '../uploads/services/background', oldFilename);
+                    deleteFile(oldFilePath);
+                }
+                value.backgroundImage = getFileUrl(req.files.backgroundImage[0].filename, 'background');
+            }
         }
 
         // Track game change for updating counts
@@ -693,7 +746,7 @@ exports.updateService = async (req, res, next) => {
             });
         }
 
-        logger.info(`Service updated: ${service.name} by user ${req.user?.id || 'admin'}`);
+        logger.info(`Service updated: ${service.title} by user ${req.user?.id || 'admin'}`);
 
         res.status(200).json({
             success: true,
@@ -720,12 +773,27 @@ exports.deleteService = async (req, res, next) => {
 
         const gameId = service.gameId;
 
-        // Delete icon file if exists
-        if (service.icon) {
-            const filename = require('path').basename(service.icon);
-            const filePath = require('path').join(__dirname, '../uploads/services', filename);
-            deleteFile(filePath);
-        }
+        // Delete files with subfolder awareness
+        const deleteServiceFile = (filename, defaultSubfolder) => {
+            if (!filename) return;
+            const pureName = path.basename(filename);
+            
+            // Try subfolder first
+            const subfolderPath = path.join(__dirname, '../uploads/services', defaultSubfolder, pureName);
+            if (require('fs').existsSync(subfolderPath)) {
+                deleteFile(subfolderPath);
+            } else {
+                // Try root folder
+                const rootPath = path.join(__dirname, '../uploads/services', pureName);
+                if (require('fs').existsSync(rootPath)) {
+                    deleteFile(rootPath);
+                }
+            }
+        };
+
+        deleteServiceFile(service.icon, 'icon');
+        deleteServiceFile(service.image, 'background');
+        deleteServiceFile(service.backgroundImage, 'background');
 
         await service.deleteOne();
 
@@ -809,11 +877,21 @@ exports.bulkUpdateServices = async (req, res, next) => {
 
                 // Delete files
                 for (const service of servicesToDelete) {
-                    if (service.icon) {
-                        const filename = require('path').basename(service.icon);
-                        const filePath = require('path').join(__dirname, '../uploads/services', filename);
-                        deleteFile(filePath);
-                    }
+                    const filesToCleanup = [
+                        service.icon,
+                        service.image,
+                        service.backgroundImage,
+                        service.characterImage
+                    ];
+
+                    filesToCleanup.forEach(filePath => {
+                        if (filePath && !filePath.startsWith('http')) {
+                            // Extract path relative to uploads root, e.g. /uploads/services/icon/file.png -> services/icon/file.png
+                            const relativePath = filePath.replace(/^\/uploads\//, '');
+                            const absolutePath = path.join(__dirname, '../uploads', relativePath);
+                            deleteFile(absolutePath);
+                        }
+                    });
                 }
 
                 // Update game counts
@@ -917,28 +995,4 @@ exports.validatePricing = async (req, res, next) => {
         logger.error(`Error validating pricing: ${error.message}`);
         res.status(500).json({ success: false, error: 'Server error' });
     }
-};
-
-// Helper function to validate pricing configuration
-const validatePricingConfig = (pricing) => {
-    const errors = [];
-
-    if (!pricing.type) {
-        errors.push('Pricing type is required');
-    } else if (!['fixed', 'per_level', 'per_win', 'hourly', 'tiered', 'dynamic', 'quantity'].includes(pricing.type)) {
-        errors.push('Invalid pricing type');
-    }
-
-    if (pricing.type === 'fixed' && (pricing.basePrice === undefined || pricing.basePrice < 0)) {
-        errors.push('Base price is required and must be non-negative for fixed pricing');
-    }
-
-    if (['per_level', 'per_win', 'hourly'].includes(pricing.type) && (pricing.pricePerUnit === undefined || pricing.pricePerUnit < 0)) {
-        errors.push('Price per unit is required and must be non-negative');
-    }
-
-    return {
-        isValid: errors.length === 0,
-        errors
-    };
 };

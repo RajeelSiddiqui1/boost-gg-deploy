@@ -3,6 +3,7 @@ const Order = require('../models/Order');
 const Payout = require('../models/Payout');
 const Service = require('../models/Service');
 const Game = require('../models/Game');
+const Category = require('../models/Category');
 
 // @desc    Get admin analytics
 // @route   GET /api/v1/admin/analytics
@@ -13,6 +14,8 @@ exports.getAnalytics = async (req, res) => {
         const totalProPlayers = await User.countDocuments({ role: 'pro' });
         const totalOrders = await Order.countDocuments();
         const completedOrders = await Order.countDocuments({ status: 'completed' });
+        const totalGames = await Game.countDocuments({});
+        const totalCategories = await Category.countDocuments({});
 
         // Calculate total revenue (all completed orders)
         const revenueData = await Order.aggregate([
@@ -61,7 +64,9 @@ exports.getAnalytics = async (req, res) => {
                     totalProPlayers,
                     totalOrders,
                     completedOrders,
-                    totalRevenue
+                    totalRevenue,
+                    totalGames,
+                    totalCategories
                 },
                 monthlyRevenue,
                 recentOrders,
@@ -298,6 +303,178 @@ exports.updateSettings = async (req, res) => {
         }
 
         res.status(200).json({ success: true, data: results });
+    } catch (err) {
+        res.status(400).json({ success: false, message: err.message });
+    }
+};
+
+// @desc    Create new service (Admin)
+// @route   POST /api/v1/admin/services
+// @access  Private (Admin only)
+exports.createService = async (req, res) => {
+    try {
+        const serviceData = {};
+        
+        // Parse form data fields
+        Object.keys(req.body).forEach(key => {
+            try {
+                // Parse JSON fields
+                serviceData[key] = JSON.parse(req.body[key]);
+            } catch (e) {
+                // Regular string fields
+                serviceData[key] = req.body[key];
+            }
+        });
+        
+        // If images are uploaded
+        if (req.files) {
+            if (req.files.icon) {
+                serviceData.icon = `/uploads/services/icon/${req.files.icon[0].filename}`;
+            }
+            if (req.files.backgroundImage) {
+                serviceData.backgroundImage = `/uploads/services/background/${req.files.backgroundImage[0].filename}`;
+            }
+        }
+
+        const service = await Service.create(serviceData);
+        
+        res.status(201).json({
+            success: true,
+            data: service
+        });
+    } catch (err) {
+        console.error('Create service error:', err);
+        res.status(400).json({ success: false, message: err.message });
+    }
+};
+
+// @desc    Update service (Admin)
+// @route   PUT /api/v1/admin/services/:id
+// @access  Private (Admin only)
+exports.updateService = async (req, res) => {
+    try {
+        let service = await Service.findById(req.params.id);
+        
+        if (!service) {
+            return res.status(404).json({ success: false, message: 'Service not found' });
+        }
+
+        const updateData = {};
+        
+        // Parse form data fields
+        Object.keys(req.body).forEach(key => {
+            try {
+                // Parse JSON fields
+                updateData[key] = JSON.parse(req.body[key]);
+            } catch (e) {
+                // Regular string fields
+                updateData[key] = req.body[key];
+            }
+        });
+        
+        // If images are uploaded
+        if (req.files) {
+            if (req.files.icon) {
+                updateData.icon = `/uploads/services/icon/${req.files.icon[0].filename}`;
+            }
+            if (req.files.backgroundImage) {
+                updateData.backgroundImage = `/uploads/services/background/${req.files.backgroundImage[0].filename}`;
+            }
+        }
+
+        service = await Service.findByIdAndUpdate(req.params.id, updateData, {
+            new: true,
+            runValidators: true
+        });
+        
+        res.status(200).json({
+            success: true,
+            data: service
+        });
+    } catch (err) {
+        console.error('Update service error:', err);
+        res.status(400).json({ success: false, message: err.message });
+    }
+};
+
+// @desc    Delete service (Admin)
+// @route   DELETE /api/v1/admin/services/:id
+// @access  Private (Admin only)
+exports.deleteService = async (req, res) => {
+    try {
+        const service = await Service.findById(req.params.id);
+        
+        if (!service) {
+            return res.status(404).json({ success: false, message: 'Service not found' });
+        }
+
+        await service.deleteOne();
+        
+        res.status(200).json({
+            success: true,
+            data: {}
+        });
+    } catch (err) {
+        res.status(400).json({ success: false, message: err.message });
+    }
+};
+
+// @desc    Get all services (Admin)
+// @route   GET /api/v1/admin/services
+// @access  Private (Admin only)
+exports.getAllServices = async (req, res) => {
+    try {
+        const services = await Service.find().populate('gameId', 'name slug').sort({ createdAt: -1 });
+        
+        res.status(200).json({
+            success: true,
+            count: services.length,
+            data: services
+        });
+    } catch (err) {
+        res.status(400).json({ success: false, message: err.message });
+    }
+};
+
+// @desc    Get single service (Admin)
+// @route   GET /api/v1/admin/services/:id
+// @access  Private (Admin only)
+exports.getService = async (req, res) => {
+    try {
+        const service = await Service.findById(req.params.id);
+        
+        if (!service) {
+            return res.status(404).json({ success: false, message: 'Service not found' });
+        }
+        
+        res.status(200).json({
+            success: true,
+            data: service
+        });
+    } catch (err) {
+        res.status(400).json({ success: false, message: err.message });
+    }
+};
+
+// @desc    Toggle service status (Admin)
+// @route   PATCH /api/v1/admin/services/:id/status
+// @access  Private (Admin only)
+exports.toggleServiceStatus = async (req, res) => {
+    try {
+        let service = await Service.findById(req.params.id);
+        
+        if (!service) {
+            return res.status(404).json({ success: false, message: 'Service not found' });
+        }
+
+        service.status = service.status === 'active' ? 'inactive' : 'active';
+        service.isActive = service.status === 'active';
+        await service.save();
+        
+        res.status(200).json({
+            success: true,
+            data: service
+        });
     } catch (err) {
         res.status(400).json({ success: false, message: err.message });
     }

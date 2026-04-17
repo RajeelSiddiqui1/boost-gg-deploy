@@ -193,6 +193,21 @@ const serviceSchema = new mongoose.Schema({
         type: String,
         default: ''
     },
+    // Main background image for the service (displayed on cards)
+    image: {
+        type: String,
+        default: ''
+    },
+    // Background image for service card (JPG/JPEG)
+    backgroundImage: {
+        type: String,
+        default: ''
+    },
+    // Character/foreground image for service card (PNG transparent)
+    characterImage: {
+        type: String,
+        default: ''
+    },
     // List for cards/lists
     shortDescription: {
         type: String,

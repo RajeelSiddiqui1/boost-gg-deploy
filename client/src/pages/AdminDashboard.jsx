@@ -12,8 +12,21 @@ import {
     ArrowRight,
     TrendingUp,
     Clock,
-    Star
+    Star,
+    LayoutGrid,
+    Target
 } from 'lucide-react';
+import {
+    BarChart,
+    Bar,
+    XAxis,
+    YAxis,
+    CartesianGrid,
+    Tooltip,
+    ResponsiveContainer,
+    AreaChart,
+    Area
+} from 'recharts';
 import AdminLayout from '../components/admin/AdminLayout';
 
 const AdminDashboard = () => {
@@ -37,11 +50,29 @@ const AdminDashboard = () => {
     }, []);
 
     const stats = [
-        { label: 'Total Users', value: analytics?.totalUsers || 0, icon: Users, color: 'text-blue-500', trend: '+12%' },
-        { label: 'Total Revenue', value: formatPrice(analytics?.totalRevenue || 0), icon: TrendingUp, color: 'text-primary', trend: '+18%' },
-        { label: 'Total Orders', value: analytics?.totalOrders || 0, icon: ShoppingCart, color: 'text-green-500', trend: '+8%' },
-        { label: 'Total Pro Players', value: analytics?.totalBoosters || 0, icon: Gamepad2, color: 'text-purple-500', trend: '+15%' },
+        { label: 'Total Users', value: analytics?.stats?.totalUsers || 0, icon: Users, color: 'text-blue-500', trend: '+12%' },
+        { label: 'Total Revenue', value: formatPrice(analytics?.stats?.totalRevenue || 0), icon: TrendingUp, color: 'text-primary', trend: '+18%' },
+        { label: 'Total Orders', value: analytics?.stats?.totalOrders || 0, icon: ShoppingCart, color: 'text-green-500', trend: '+8%' },
+        { label: 'Total Pro Players', value: analytics?.stats?.totalProPlayers || 0, icon: Gamepad2, color: 'text-purple-500', trend: '+15%' },
+        { label: 'Total Games', value: analytics?.stats?.totalGames || 0, icon: LayoutGrid, color: 'text-orange-500', trend: '+5%' },
+        { label: 'Total Categories', value: analytics?.stats?.totalCategories || 0, icon: Target, color: 'text-pink-500', trend: '+2%' },
     ];
+
+    const platformChartData = [
+        { name: 'Users', count: analytics?.stats?.totalUsers || 0 },
+        { name: 'Orders', count: analytics?.stats?.totalOrders || 0 },
+        { name: 'Completed', count: analytics?.stats?.completedOrders || 0 },
+        { name: 'Games', count: analytics?.stats?.totalGames || 0 },
+        { name: 'Categories', count: analytics?.stats?.totalCategories || 0 },
+        { name: 'Pro Players', count: analytics?.stats?.totalProPlayers || 0 },
+    ];
+
+    const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    const revenueData = analytics?.monthlyRevenue?.map(m => ({
+        name: monthNames[m._id - 1] || m._id,
+        Revenue: m.revenue,
+        Orders: m.count
+    })) || [];
 
     if (loading) return (
         <AdminLayout>
@@ -53,7 +84,7 @@ const AdminDashboard = () => {
         <AdminLayout>
             <div className="space-y-10">
                 {/* Stats Grid */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {stats.map((stat, i) => (
                         <div key={i} className="bg-[#0A0A0A] border border-white/5 p-6 rounded-[32px] group hover:border-primary/20 transition-all">
                             <div className="flex items-center justify-between mb-4">
@@ -70,12 +101,79 @@ const AdminDashboard = () => {
                     ))}
                 </div>
 
-                {/* Charts Placeholder */}
-                <div className="bg-[#0A0A0A] border border-white/5 p-8 rounded-[48px] h-64 flex items-center justify-center relative overflow-hidden">
-                    <div className="absolute inset-0 bg-gradient-to-t from-primary/5 to-transparent"></div>
-                    <div className="text-center z-10">
-                        <TrendingUp className="w-12 h-12 text-primary/20 mx-auto mb-4" />
-                        <p className="text-xs font-black uppercase tracking-[0.2em] text-white/20 text-center">Growth Matrix Engaged</p>
+                {/* Charts Area */}
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    {/* Platform Overview Chart */}
+                    <div className="bg-[#0A0A0A] border border-white/5 p-8 rounded-[48px] h-96 relative flex flex-col">
+                        <div className="flex items-center justify-between mb-6">
+                            <h2 className="text-xl font-black italic uppercase tracking-tighter">Platform Overview</h2>
+                        </div>
+                        <div className="flex-1 w-full relative">
+                            <ResponsiveContainer width="100%" height="100%">
+                                <BarChart data={platformChartData}>
+                                    <CartesianGrid strokeDasharray="3 3" stroke="#ffffff10" vertical={false} />
+                                    <XAxis 
+                                        dataKey="name" 
+                                        stroke="#ffffff40" 
+                                        fontSize={12} 
+                                        tickLine={false} 
+                                        axisLine={false}
+                                    />
+                                    <YAxis 
+                                        stroke="#ffffff40" 
+                                        fontSize={12} 
+                                        tickLine={false} 
+                                        axisLine={false} 
+                                        allowDecimals={false}
+                                    />
+                                    <Tooltip 
+                                        cursor={{fill: '#ffffff05'}}
+                                        contentStyle={{ backgroundColor: '#111', borderColor: '#ffffff10', borderRadius: '16px' }}
+                                        itemStyle={{ color: '#fff', fontSize: '14px', fontWeight: 'bold' }}
+                                    />
+                                    <Bar dataKey="count" fill="#ff4d00" radius={[4, 4, 0, 0]} />
+                                </BarChart>
+                            </ResponsiveContainer>
+                        </div>
+                    </div>
+
+                    {/* Revenue Growth Chart */}
+                    <div className="bg-[#0A0A0A] border border-white/5 p-8 rounded-[48px] h-96 relative flex flex-col">
+                        <div className="flex items-center justify-between mb-6">
+                            <h2 className="text-xl font-black italic uppercase tracking-tighter">Revenue Growth</h2>
+                        </div>
+                        <div className="flex-1 w-full relative">
+                            <ResponsiveContainer width="100%" height="100%">
+                                <AreaChart data={revenueData}>
+                                    <defs>
+                                        <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
+                                            <stop offset="5%" stopColor="#ff4d00" stopOpacity={0.3}/>
+                                            <stop offset="95%" stopColor="#ff4d00" stopOpacity={0}/>
+                                        </linearGradient>
+                                    </defs>
+                                    <CartesianGrid strokeDasharray="3 3" stroke="#ffffff10" vertical={false} />
+                                    <XAxis 
+                                        dataKey="name" 
+                                        stroke="#ffffff40" 
+                                        fontSize={12} 
+                                        tickLine={false} 
+                                        axisLine={false}
+                                    />
+                                    <YAxis 
+                                        stroke="#ffffff40" 
+                                        fontSize={12} 
+                                        tickLine={false} 
+                                        axisLine={false}
+                                        tickFormatter={(value) => `$${value}`}
+                                    />
+                                    <Tooltip 
+                                        contentStyle={{ backgroundColor: '#111', borderColor: '#ffffff10', borderRadius: '16px' }}
+                                        itemStyle={{ color: '#fff', fontSize: '14px', fontWeight: 'bold' }}
+                                    />
+                                    <Area type="monotone" dataKey="Revenue" stroke="#ff4d00" strokeWidth={3} fillOpacity={1} fill="url(#colorRevenue)" />
+                                </AreaChart>
+                            </ResponsiveContainer>
+                        </div>
                     </div>
                 </div>
 

@@ -1,16 +1,24 @@
 const mongoose = require('mongoose');
 
 const reviewSchema = new mongoose.Schema({
+    userId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        index: true
+    },
     gameId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Game',
-        required: [true, 'Please link this review to a game'],
         index: true
     },
     serviceId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Service',
         index: true
+    },
+    title: {
+        type: String,
+        trim: true
     },
     reviewerName: {
         type: String,
@@ -29,11 +37,17 @@ const reviewSchema = new mongoose.Schema({
     },
     isVerified: {
         type: Boolean,
-        default: true
+        default: false
     },
     isActive: {
         type: Boolean,
-        default: true
+        default: false
+    },
+    status: {
+        type: String,
+        enum: ['pending', 'approved', 'rejected'],
+        default: 'pending',
+        index: true
     }
 }, {
     timestamps: true
