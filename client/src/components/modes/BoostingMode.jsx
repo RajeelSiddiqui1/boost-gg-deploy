@@ -5,8 +5,8 @@ import BrandBanner from '../sections/BrandBanner';
 import StatsGrid from '../sections/StatsGrid';
 import TestimonialsSection from '../sections/TestimonialsSection';
 import GuidesSection from '../sections/GuidesSection';
+import StepProcess from '../sections/StepProcess';
 import DiscoverGames from '../sections/DiscoverGames';
-import PaymentMethods from '../sections/PaymentMethods';
 import CommunityEarnings from '../sections/CommunityEarnings';
 import GameGrid from '../sections/GameGrid';
 import CategoryFilter from './CategoryFilter';
@@ -80,15 +80,13 @@ const BoostingMode = () => {
             )}
             <HotOffers />
             <BrandBanner />
-            <StatsGrid />
+             <StepProcess />
             <TestimonialsSection />
             <GuidesSection />
             <CommunityEarnings />
             <DiscoverGames />
-            <PaymentMethods />
         </div>
     );
 };
-
 
 export default BoostingMode;

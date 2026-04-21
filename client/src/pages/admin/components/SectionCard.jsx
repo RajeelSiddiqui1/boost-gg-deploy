@@ -16,18 +16,11 @@ import {
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { Plus, GripVertical, Trash2, ChevronDown, ChevronUp, Info, X } from "lucide-react";
-import { SidebarSection, Option, FieldType } from "../types/ServiceCreator";
+// Removed type imports
 
 /* ═══════════════════════════════ SORTABLE OPTION ROW ────────────────────────────────────────────────── */
 
-interface SortableOptionRowProps {
-    option: Option;
-    fieldType: FieldType;
-    onUpdate: (id: string, updates: Partial<Option>) => void;
-    onDelete: (id: string) => void;
-}
-
-function SortableOptionRow({ option, fieldType, onUpdate, onDelete }: SortableOptionRowProps) {
+function SortableOptionRow({ option, fieldType, onUpdate, onDelete }) {
     const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: option.id });
 
     const style = {
@@ -127,21 +120,11 @@ function SortableOptionRow({ option, fieldType, onUpdate, onDelete }: SortableOp
     );
 }
 
-const Check = ({ size, className, strokeWidth }: { size: number, className: string, strokeWidth: number }) => (
+const Check = ({ size, className, strokeWidth }) => (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M20 6 9 17l-5-5" /></svg>
 );
 
 /* ═══════════════════════════════ SECTION CARD ──────────────────────────────────────────────── */
-
-interface SectionCardProps {
-    section: SidebarSection;
-    onUpdate: (id: string, updates: Partial<SidebarSection>) => void;
-    onDelete: (id: string) => void;
-    onUpdateOption: (sectionId: string, optionId: string, updates: Partial<Option>) => void;
-    onAddOption: (sectionId: string) => void;
-    onDeleteOption: (sectionId: string, optionId: string) => void;
-    onReorderOptions: (sectionId: string, oldIndex: number, newIndex: number) => void;
-}
 
 export function SectionCard({
     section,
@@ -151,7 +134,7 @@ export function SectionCard({
     onAddOption,
     onDeleteOption,
     onReorderOptions
-}: SectionCardProps) {
+}) {
     const [isExpanded, setIsExpanded] = useState(true);
     const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: section.id });
 
@@ -168,7 +151,7 @@ export function SectionCard({
         })
     );
 
-    const handleDragEnd = (event: DragEndEvent) => {
+    const handleDragEnd = (event) => {
         const { active, over } = event;
         if (over && active.id !== over.id) {
             const oldIndex = section.options?.findIndex(o => o.id === active.id) ?? -1;
@@ -236,7 +219,7 @@ export function SectionCard({
                     <div>
                         <label className="block text-[10px] uppercase font-black text-gray-500 tracking-[0.2em] mb-3 ml-1 opacity-50">Component Type</label>
                         <div className="flex flex-wrap gap-2">
-                            {(["radio", "checkbox", "dropdown", "stepper", "text_input"] as FieldType[]).map((type) => (
+                            {["radio", "checkbox", "dropdown", "stepper", "text_input"].map((type) => (
                                 <button
                                     key={type}
                                     onClick={() => onUpdate(section.id, { fieldType: type })}
@@ -300,7 +283,7 @@ export function SectionCard({
                                         type="text"
                                         value={section.stepperConfig?.unitLabel || ""}
                                         onChange={(e) => onUpdate(section.id, {
-                                            stepperConfig: { ...section.stepperConfig!, unitLabel: e.target.value }
+                                            stepperConfig: { ...section.stepperConfig, unitLabel: e.target.value }
                                         })}
                                         className="w-full bg-[#161616] border border-[#2a2a2a] rounded-xl px-4 py-2.5 text-sm text-white focus:border-purple-500 outline-none transition-all"
                                         placeholder="Quantity"
@@ -314,7 +297,7 @@ export function SectionCard({
                                             type="number"
                                             value={section.stepperConfig?.pricePerUnit || 0}
                                             onChange={(e) => onUpdate(section.id, {
-                                                stepperConfig: { ...section.stepperConfig!, pricePerUnit: parseFloat(e.target.value) || 0 }
+                                                stepperConfig: { ...section.stepperConfig, pricePerUnit: parseFloat(e.target.value) || 0 }
                                             })}
                                             className="w-full bg-[#161616] border border-[#2a2a2a] rounded-xl pl-8 pr-4 py-2.5 text-sm font-black text-white focus:border-purple-500 outline-none transition-all"
                                         />
@@ -329,7 +312,7 @@ export function SectionCard({
                                             type="number"
                                             value={section.stepperConfig?.min || 1}
                                             onChange={(e) => onUpdate(section.id, {
-                                                stepperConfig: { ...section.stepperConfig!, min: parseInt(e.target.value) || 1 }
+                                                stepperConfig: { ...section.stepperConfig, min: parseInt(e.target.value) || 1 }
                                             })}
                                             className="w-full bg-[#161616] border border-[#2a2a2a] rounded-xl px-4 py-2.5 text-sm text-white focus:border-purple-500 outline-none transition-all"
                                         />
@@ -340,7 +323,7 @@ export function SectionCard({
                                             type="number"
                                             value={section.stepperConfig?.default || 1}
                                             onChange={(e) => onUpdate(section.id, {
-                                                stepperConfig: { ...section.stepperConfig!, default: parseInt(e.target.value) || 1 }
+                                                stepperConfig: { ...section.stepperConfig, default: parseInt(e.target.value) || 1 }
                                             })}
                                             className="w-full bg-[#161616] border border-[#2a2a2a] rounded-xl px-4 py-2.5 text-sm text-white focus:border-purple-500 outline-none transition-all"
                                         />
@@ -353,7 +336,7 @@ export function SectionCard({
                                         placeholder="Unlimited"
                                         value={section.stepperConfig?.max || ""}
                                         onChange={(e) => onUpdate(section.id, {
-                                            stepperConfig: { ...section.stepperConfig!, max: parseInt(e.target.value) || null }
+                                            stepperConfig: { ...section.stepperConfig, max: parseInt(e.target.value) || null }
                                         })}
                                         className="w-full bg-[#161616] border border-[#2a2a2a] rounded-xl px-4 py-2.5 text-sm text-white focus:border-purple-500 outline-none transition-all"
                                     />

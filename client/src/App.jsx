@@ -58,6 +58,7 @@ const PromoCodes = lazy(() => import('./pages/admin/PromoCodes'));
 const GameHub = lazy(() => import('./pages/GameHub'));
 const WowBoost = lazy(() => import('./pages/WowBoost'));
 const ProductDetail = lazy(() => import('./pages/ProductDetail'));
+const AccountDetail = lazy(() => import('./pages/AccountDetail'));
 const AdminServiceCreator = lazy(() => import('./pages/admin/ServiceCreatorPage'));
 const AdminProApplications = lazy(() => import('./pages/admin/ProApplications'));
 const ProSettings = lazy(() => import('./pages/ProSettings'));
@@ -149,6 +150,7 @@ const AppContent = () => {
             <Route path="/blog" element={<ProtectedRoute isPublic><Blog /></ProtectedRoute>} />
             <Route path="/blog/:slug" element={<ProtectedRoute isPublic><BlogPost /></ProtectedRoute>} />
             <Route path="/game/:slug" element={<ProtectedRoute isPublic><GameHub /></ProtectedRoute>} />
+            <Route path="/accounts/:id" element={<ProtectedRoute isPublic><AccountDetail /></ProtectedRoute>} />
             <Route path="/wow-boost" element={<ProtectedRoute isPublic><WowBoost /></ProtectedRoute>} />
 
             <Route path="/login" element={<ProtectedRoute guestOnly><Login /></ProtectedRoute>} />

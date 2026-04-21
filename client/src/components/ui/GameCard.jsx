@@ -1,29 +1,35 @@
 import { useNavigate } from "react-router-dom";
 import { getImageUrl } from "../../utils/api";
 import { Flame, Play, Coins, UserCircle2, ChevronRight } from "lucide-react";
-import { useUI } from "../../context/UIContext";
+import { useMode } from "../../context/ModeContext";
 
 const GameCard = ({ game, className = "h-[200px]" }) => {
   const navigate = useNavigate();
-  const { experienceToggle } = useUI();
+  const { activeMode, MODES } = useMode();
 
   const handleClick = () => {
+    let path = `/game/${game.slug || game._id}`;
     if (game.slug === 'world-of-warcraft' || game.slug === 'wow') {
-      navigate('/wow-boost');
-    } else {
-      navigate(`/game/${game.slug || game._id}`);
+      path = '/wow-boost';
     }
+    
+    // Append mode if not default
+    if (activeMode && activeMode !== MODES.BOOSTING) {
+      path += `?mode=${activeMode}`;
+    }
+    
+    navigate(path);
   };
 
   let titleSuffix = "";
   let buttonText = "Explore";
   let ButtonIcon = ChevronRight;
 
-  if (experienceToggle === 'gold') {
+  if (activeMode === MODES.CURRENCY) {
     titleSuffix = " Gold & Currency";
     buttonText = "Buy Gold";
     ButtonIcon = Coins;
-  } else if (experienceToggle === 'accounts') {
+  } else if (activeMode === MODES.ACCOUNTS) {
     titleSuffix = " Accounts";
     buttonText = "Get Account";
     ButtonIcon = UserCircle2;

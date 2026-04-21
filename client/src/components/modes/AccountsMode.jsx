@@ -1,31 +1,20 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 import { API_URL, getImageUrl } from '../../utils/api';
-import { useCurrency } from '../../context/CurrencyContext';
-import { useToast } from '../../context/ToastContext';
-import { useCart } from '../../context/CartContext';
-import {
-    UserCircle, ShieldCheck, Zap, Search,
-    Filter, LayoutGrid, ArrowRight, Star,
-    CheckCircle2, Gauge, Award, Layers
+import { 
+    Users, ShieldCheck, Zap, Search, 
+    ArrowRight, Star, CheckCircle2, 
+    Gamepad2, Award, Sparkles, TrendingUp
 } from 'lucide-react';
+import StepProcess from '../sections/StepProcess';
 
 const AccountsMode = () => {
     const [accounts, setAccounts] = useState([]);
+    const [games, setGames] = useState([]);
     const [loading, setLoading] = useState(true);
     const [searchQuery, setSearchQuery] = useState('');
-    const [selectedGame, setSelectedGame] = useState('all');
-    const [games, setGames] = useState([]);
-
-    // Advanced Filters
-    const [priceRange, setPriceRange] = useState({ min: 0, max: 10000 });
-    const [selectedRank, setSelectedRank] = useState('all');
-    const [hasSkinsOnly, setHasSkinsOnly] = useState(false);
-    const [selectedRegion, setSelectedRegion] = useState('all');
-
-    const { formatPrice } = useCurrency();
-    const toast = useToast();
-    const { addToCart } = useCart();
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchData = async () => {
@@ -34,8 +23,8 @@ const AccountsMode = () => {
                     axios.get(`${API_URL}/api/v1/games?isActive=true`),
                     axios.get(`${API_URL}/api/v1/accounts`)
                 ]);
-                setGames(gamesRes.data.data);
-                setAccounts(accountsRes.data.data);
+                setGames(gamesRes.data.data || []);
+                setAccounts(accountsRes.data.data || []);
             } catch (err) {
                 console.error("Error fetching data:", err);
             } finally {
@@ -45,34 +34,23 @@ const AccountsMode = () => {
         fetchData();
     }, []);
 
-    const filteredAccounts = accounts.filter(acc => {
-        const matchesSearch = acc.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            acc.rank?.toLowerCase().includes(searchQuery.toLowerCase());
-        const matchesGame = selectedGame === 'all' || acc.gameId?._id === selectedGame || acc.gameSlug === selectedGame;
-        const matchesPrice = acc.price >= priceRange.min && acc.price <= priceRange.max;
-        const matchesRank = selectedRank === 'all' || acc.rank === selectedRank;
-        const matchesSkins = !hasSkinsOnly || (acc.specifications?.skinsCount > 0);
-        const matchesRegion = selectedRegion === 'all' || acc.region === selectedRegion;
+    // Identify games that actually have accounts
+    const activeGames = useMemo(() => {
+        return games.filter(game => {
+            const hasAccounts = accounts.some(acc => 
+                (acc.gameId?._id === game._id) || 
+                (acc.gameId === game._id) ||
+                (acc.gameSlug === game.slug)
+            );
+            const matchesSearch = game.name.toLowerCase().includes(searchQuery.toLowerCase());
+            return hasAccounts && matchesSearch;
+        });
+    }, [games, accounts, searchQuery]);
 
-        return matchesSearch && matchesGame && matchesPrice && matchesRank && matchesSkins && matchesRegion;
-    });
-
-    const handleAddToCart = (account) => {
-        const cartItem = {
-            id: account._id,
-            title: account.title,
-            price: account.price,
-            quantity: 1,
-            image: account.thumbnail || account.gameId?.icon,
-            mode: 'accounts',
-            selectedOptions: {
-                rank: account.rank,
-                region: account.region,
-                server: account.server
-            }
-        };
-        addToCart(cartItem);
-        toast.success(`Account added to cart`);
+    const getAccountCount = (gameId) => {
+        return accounts.filter(acc => 
+            (acc.gameId?._id === gameId) || (acc.gameId === gameId)
+        ).length;
     };
 
     if (loading) {
@@ -84,216 +62,154 @@ const AccountsMode = () => {
     }
 
     return (
-        <div className="max-w-[1400px] mx-auto px-6 py-12 animate-fade-in">
-            {/* Header & Search */}
-            <div className="flex flex-col md:flex-row justify-between items-end mb-12 gap-8">
-                <div className="space-y-2">
-                    <div className="flex items-center gap-3 text-[10px] font-black uppercase tracking-[0.3em] text-primary">
-                        <div className="w-8 h-px bg-primary/30"></div>
-                        Premium Inventory
+        <div className="max-w-[1400px] mx-auto px-6 py-12 animate-fade-in font-['Outfit']">
+            {/* Hero Branding Section */}
+            <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-8">
+                <div className="space-y-4">
+                    <div className="flex items-center gap-3 text-[10px] font-black uppercase tracking-[0.4em] text-primary">
+                        <div className="w-10 h-[2px] bg-primary shadow-[0_0_10px_rgba(162,230,62,0.5)]"></div>
+                        Marketplace Hub
                     </div>
-                    <h1 className="text-4xl md:text-6xl font-black text-white uppercase tracking-tighter italic">Verified Accounts</h1>
-                    <p className="text-white/40 font-medium tracking-wide">Secure, instant-delivery accounts with guaranteed safety.</p>
+                    <h1 className="text-5xl md:text-7xl font-black text-white uppercase tracking-tighter italic leading-none">
+                        Premium <span className="text-primary">Accounts</span>
+                    </h1>
+                    <p className="text-white/40 font-bold uppercase tracking-widest text-[11px] flex items-center gap-2">
+                        <ShieldCheck className="w-4 h-4 text-primary" />
+                        Secure transfer & lifetime warranty included
+                    </p>
                 </div>
 
-                <div className="w-full md:w-96 relative group">
-                    <Search className="absolute left-5 top-1/2 -translate-y-1/2 w-4 h-4 text-white/20 group-focus-within:text-primary transition-colors" />
+                <div className="w-full md:w-[400px] relative group">
+                    <div className="absolute inset-0 bg-primary/5 blur-2xl rounded-full opacity-0 group-focus-within:opacity-100 transition-opacity"></div>
+                    <Search className="absolute left-6 top-1/2 -translate-y-1/2 w-4 h-4 text-white/20 group-focus-within:text-primary transition-colors" />
                     <input
                         type="text"
-                        placeholder="Search by rank, skins, or items..."
+                        placeholder="Search for a game universe..."
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
-                        className="w-full bg-[#0A0A0A] border border-white/5 rounded-2xl py-5 pl-12 pr-6 text-sm font-medium text-white placeholder:text-white/20 outline-none focus:border-primary/30 focus:bg-primary/5 transition-all shadow-xl"
+                        className="w-full bg-[#0A0A0A] border border-white/5 rounded-[2rem] py-6 pl-14 pr-8 text-xs font-black uppercase tracking-widest text-white placeholder:text-white/10 outline-none focus:border-primary/30 transition-all shadow-2xl relative z-10"
                     />
                 </div>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
-                {/* Sidebar Filters */}
-                <aside className="lg:col-span-3 space-y-10">
-                    <div className="space-y-6">
-                        <h3 className="text-xs font-black uppercase tracking-widest text-white/30 flex items-center gap-2">
-                            <Filter className="w-3.5 h-3.5" /> Filter by Game
-                        </h3>
-                        <div className="space-y-2">
-                            <button
-                                onClick={() => setSelectedGame('all')}
-                                className={`w-full text-left px-5 py-3.5 rounded-2xl text-[12px] font-black uppercase tracking-widest transition-all ${selectedGame === 'all' ? 'bg-primary text-black' : 'bg-white/5 text-white/40 hover:bg-white/10'
-                                    }`}
-                            >
-                                All Universes
-                            </button>
-                            {games.map(game => (
-                                <button
-                                    key={game._id}
-                                    onClick={() => setSelectedGame(game._id)}
-                                    className={`w-full text-left px-5 py-3.5 rounded-2xl text-[12px] font-black uppercase tracking-widest transition-all flex items-center justify-between group ${selectedGame === game._id ? 'bg-white text-black' : 'bg-white/5 text-white/40 hover:bg-white/10'
-                                        }`}
-                                >
-                                    {game.name}
-                                    <div className={`w-1.5 h-1.5 rounded-full transition-all ${selectedGame === game._id ? 'bg-black' : 'bg-white/10 group-hover:bg-primary'}`}></div>
-                                </button>
-                            ))}
-                        </div>
+            {/* Quick Stats Grid */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-16">
+                {[
+                    { label: 'Total Inventory', value: accounts.length, icon: Users, color: 'text-blue-400' },
+                    { label: 'Active Universes', value: new Set(accounts.map(a => a.gameId?._id || a.gameId)).size, icon: Gamepad2, color: 'text-purple-400' },
+                    { label: 'Instant Delivery', value: '100%', icon: Zap, color: 'text-primary' },
+                    { label: 'Trust Rating', value: '4.9/5', icon: Star, color: 'text-orange-400' }
+                ].map((stat, i) => (
+                    <div key={i} className="bg-white/[0.02] border border-white/5 rounded-[2rem] p-6 flex flex-col items-center justify-center text-center group hover:bg-white/[0.04] transition-all">
+                        <stat.icon className={`w-5 h-5 mb-3 ${stat.color} group-hover:scale-110 transition-transform`} />
+                        <div className="text-xl font-black text-white tracking-tighter mb-1">{stat.value}</div>
+                        <div className="text-[8px] font-black uppercase tracking-widest text-white/20">{stat.label}</div>
                     </div>
+                ))}
+            </div>
 
-                    {/* Rank Filter */}
-                    <div className="space-y-6">
-                        <h3 className="text-xs font-black uppercase tracking-widest text-white/30">Tier / Rank</h3>
-                        <select
-                            value={selectedRank}
-                            onChange={(e) => setSelectedRank(e.target.value)}
-                            className="w-full bg-white/5 border border-white/5 rounded-xl p-4 text-white text-xs font-bold focus:border-primary/30 outline-none"
+            {/* Games Grid */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                {activeGames.length > 0 ? (
+                    activeGames.map((game) => (
+                        <div
+                            key={game._id}
+                            onClick={() => navigate(`/game/${game.slug || game._id}?mode=accounts`)}
+                            className="group relative h-[380px] rounded-[3rem] overflow-hidden bg-[#0d0d0d] border border-white/[0.05] cursor-pointer transition-all duration-500 hover:border-primary/40 hover:shadow-[0_30px_60px_rgba(0,0,0,0.8)]"
                         >
-                            <option value="all">Any Rank</option>
-                            <option value="Iron">Iron</option>
-                            <option value="Bronze">Bronze</option>
-                            <option value="Silver">Silver</option>
-                            <option value="Gold">Gold</option>
-                            <option value="Platinum">Platinum</option>
-                            <option value="Diamond">Diamond</option>
-                            <option value="Master">Master</option>
-                            <option value="Grandmaster">Grandmaster</option>
-                            <option value="Challenger">Challenger</option>
-                            <option value="Gladiator">Gladiator</option>
-                        </select>
-                    </div>
-
-                    {/* Price Range */}
-                    <div className="space-y-6">
-                        <h3 className="text-xs font-black uppercase tracking-widest text-white/30 font-bold">Price Range</h3>
-                        <div className="space-y-4">
-                            <div className="grid grid-cols-2 gap-3">
-                                <div className="space-y-2">
-                                    <label className="text-[9px] font-black text-white/20 uppercase pl-1">Min</label>
-                                    <input
-                                        type="number"
-                                        value={priceRange.min}
-                                        onChange={(e) => setPriceRange({ ...priceRange, min: parseInt(e.target.value) || 0 })}
-                                        className="w-full bg-white/5 border border-white/10 rounded-xl p-3 text-xs font-bold text-white outline-none focus:border-primary/30"
-                                    />
-                                </div>
-                                <div className="space-y-2">
-                                    <label className="text-[9px] font-black text-white/20 uppercase pl-1">Max</label>
-                                    <input
-                                        type="number"
-                                        value={priceRange.max}
-                                        onChange={(e) => setPriceRange({ ...priceRange, max: parseInt(e.target.value) || 10000 })}
-                                        className="w-full bg-white/5 border border-white/10 rounded-xl p-3 text-xs font-bold text-white outline-none focus:border-primary/30"
-                                    />
-                                </div>
+                            {/* Background Image */}
+                            <div className="absolute inset-0">
+                                <img
+                                    src={getImageUrl(game.bgImage || game.image)}
+                                    alt={game.name}
+                                    className="w-full h-full object-cover opacity-40 group-hover:opacity-70 group-hover:scale-110 transition-all duration-[1.5s]"
+                                />
+                                <div className="absolute inset-0 bg-gradient-to-t from-[#0d0d0d] via-[#0d0d0d]/40 to-transparent"></div>
+                                <div className="absolute inset-0 bg-gradient-to-b from-[#0d0d0d]/40 via-transparent to-transparent"></div>
                             </div>
-                        </div>
-                    </div>
 
-                    {/* Quick Filters */}
-                    <div className="space-y-4">
-                        <label className="flex items-center gap-3 cursor-pointer group">
-                            <div
-                                onClick={() => setHasSkinsOnly(!hasSkinsOnly)}
-                                className={`w-10 h-6 rounded-full relative transition-colors duration-300 flex items-center px-1 ${hasSkinsOnly ? 'bg-primary' : 'bg-white/10'}`}
-                            >
-                                <div className={`w-4 h-4 rounded-full bg-white transition-all transform ${hasSkinsOnly ? 'translate-x-4' : 'translate-x-0'}`}></div>
-                            </div>
-                            <span className="text-[10px] font-black uppercase tracking-widest text-white/40 group-hover:text-white transition-colors">Has Skins Only</span>
-                        </label>
-                    </div>
-
-                    {/* Trust Banner */}
-                    <div className="p-8 rounded-[32px] bg-gradient-to-br from-primary/10 to-transparent border border-primary/20 space-y-6">
-                        <div className="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center border border-white/10">
-                            <ShieldCheck className="w-6 h-6 text-primary" />
-                        </div>
-                        <h4 className="text-lg font-black text-white uppercase tracking-tight leading-tight">Ironclad Account Safety</h4>
-                        <p className="text-xs text-white/40 font-medium leading-relaxed">Every account is strictly audited for secure origin. 100% lifetime recovery protection included.</p>
-                        <ul className="space-y-2">
-                            {['Instant Delivery', 'Email Changeable', 'Lifetime Warranty'].map(item => (
-                                <li key={item} className="flex items-center gap-2 text-[9px] font-black uppercase tracking-widest text-white/60">
-                                    <CheckCircle2 className="w-3 h-3 text-primary" /> {item}
-                                </li>
-                            ))}
-                        </ul>
-                    </div>
-                </aside>
-
-                {/* Main Grid */}
-                <div className="lg:col-span-9">
-                    {filteredAccounts.length > 0 ? (
-                        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-                            {filteredAccounts.map(account => (
-                                <div key={account._id} className="group bg-[#0A0A0A] border border-white/5 rounded-[40px] overflow-hidden hover:border-primary/30 transition-all flex flex-col h-full shadow-2xl">
-                                    {/* Image Section */}
-                                    <div className="relative h-56 overflow-hidden">
-                                        <img
-                                            src={account.thumbnail || getImageUrl(account.gameId?.icon)}
-                                            alt={account.title}
-                                            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 opacity-60 group-hover:opacity-100"
-                                        />
-                                        <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0A] to-transparent"></div>
-
-                                        {/* Badges */}
-                                        <div className="absolute top-5 left-5 flex flex-col gap-2">
-                                            <div className="px-3 py-1 bg-primary text-black text-[9px] font-black uppercase tracking-widest rounded-full shadow-lg">Instant Delivery</div>
-                                            {account.isFeatured && <div className="px-3 py-1 bg-orange-500 text-white text-[9px] font-black uppercase tracking-widest rounded-full shadow-lg">Featured</div>}
-                                        </div>
-
-                                        <div className="absolute bottom-5 left-5 right-5">
-                                            <div className="flex items-center gap-2 mb-1">
-                                                <span className="text-[10px] font-black uppercase tracking-widest text-primary">{account.gameId?.name}</span>
-                                            </div>
-                                            <h3 className="text-xl font-black text-white uppercase tracking-tight truncate">{account.title}</h3>
-                                        </div>
+                            {/* Content */}
+                            <div className="relative h-full flex flex-col p-8 z-10">
+                                {/* Top Badge */}
+                                <div className="flex justify-between items-start">
+                                    <div className="w-16 h-16 rounded-[1.5rem] bg-black/60 backdrop-blur-xl border border-white/10 p-2 group-hover:border-primary/40 transition-colors shadow-2xl">
+                                        <img src={getImageUrl(game.icon)} className="w-full h-full object-contain" alt={game.name} />
                                     </div>
+                                    <div className="px-4 py-2 bg-primary/10 backdrop-blur-md border border-primary/20 rounded-full flex items-center gap-2 group-hover:bg-primary transition-all">
+                                        <TrendingUp className="w-3 h-3 text-primary group-hover:text-black" />
+                                        <span className="text-[10px] font-black text-primary group-hover:text-black uppercase tracking-widest">{getAccountCount(game._id)} Listings</span>
+                                    </div>
+                                </div>
 
-                                    {/* Info Section */}
-                                    <div className="p-6 space-y-6 flex-1 flex flex-col">
-                                        <div className="grid grid-cols-2 gap-3">
-                                            <div className="p-3 bg-white/[0.03] rounded-2xl border border-white/5 flex items-center gap-2">
-                                                <Award className="w-4 h-4 text-white/20" />
-                                                <div>
-                                                    <p className="text-[8px] font-black uppercase tracking-widest text-white/20">Rank</p>
-                                                    <p className="text-[10px] font-black text-white uppercase">{account.rank}</p>
-                                                </div>
-                                            </div>
-                                            <div className="p-3 bg-white/[0.03] rounded-2xl border border-white/5 flex items-center gap-2">
-                                                <Layers className="w-4 h-4 text-white/20" />
-                                                <div>
-                                                    <p className="text-[8px] font-black uppercase tracking-widest text-white/20">Skins</p>
-                                                    <p className="text-[10px] font-black text-white uppercase">{account.specifications?.skinsCount || 0}</p>
-                                                </div>
-                                            </div>
+                                {/* Center Branding */}
+                                <div className="mt-auto">
+                                    <div className="flex items-center gap-2 mb-2">
+                                        <span className="w-2 h-[1px] bg-primary"></span>
+                                        <span className="text-[9px] font-black text-primary uppercase tracking-[0.2em]">{game.category || 'Universal'}</span>
+                                    </div>
+                                    <h3 className="text-3xl font-black text-white uppercase tracking-tighter leading-none mb-6 italic group-hover:text-primary transition-colors">
+                                        {game.name}
+                                    </h3>
+
+                                    {/* Action Button */}
+                                    <div className="flex items-center justify-between pt-6 border-t border-white/10 group-hover:border-primary/20 transition-colors">
+                                        <div className="flex flex-col">
+                                            <span className="text-[8px] font-black text-white/20 uppercase tracking-widest leading-none mb-1">Starting from</span>
+                                            <span className="text-lg font-black text-white tracking-tighter italic">$24.99</span>
                                         </div>
-
-                                        <div className="flex flex-wrap gap-2">
-                                            {account.highlights?.slice(0, 3).map((tag, i) => (
-                                                <span key={i} className="px-3 py-1.5 bg-white/5 hover:bg-white/10 rounded-lg text-[9px] font-bold text-white/40 uppercase tracking-widest transition-colors">{tag}</span>
-                                            ))}
-                                        </div>
-
-                                        <div className="mt-auto pt-6 border-t border-white/5 flex items-center justify-between">
-                                            <div>
-                                                <p className="text-[9px] font-black text-white/20 uppercase tracking-widest mb-1">Owner Transfer included</p>
-                                                <p className="text-2xl font-black text-white tracking-tighter">{formatPrice(account.price)}</p>
-                                            </div>
-                                            <button
-                                                onClick={() => handleAddToCart(account)}
-                                                className="w-12 h-12 rounded-2xl bg-primary text-black flex items-center justify-center hover:scale-110 active:scale-95 transition-all shadow-[0_10px_20px_rgba(162,230,62,0.1)]"
-                                            >
-                                                <Zap className="w-5 h-5 fill-current" />
-                                            </button>
+                                        <div className="w-12 h-12 bg-white/5 group-hover:bg-primary rounded-2xl flex items-center justify-center transition-all duration-300">
+                                            <ArrowRight className="w-5 h-5 text-white group-hover:text-black transition-transform group-hover:translate-x-1" />
                                         </div>
                                     </div>
                                 </div>
-                            ))}
+                            </div>
+
+                            {/* Hover Overlay Accent */}
+                            <div className="absolute top-0 right-0 p-8 opacity-0 group-hover:opacity-10 transition-opacity">
+                                <Sparkles className="w-24 h-24 text-primary" />
+                            </div>
                         </div>
-                    ) : (
-                        <div className="py-24 text-center bg-white/[0.02] border border-white/5 rounded-[40px]">
-                            <LayoutGrid className="w-12 h-12 text-white/10 mx-auto mb-6" />
-                            <h3 className="text-2xl font-black text-white uppercase italic">Zero matches found</h3>
-                            <p className="text-white/40 font-medium">Clear your filters or search for another term.</p>
-                            <button onClick={() => { setSelectedGame('all'); setSearchQuery(''); }} className="mt-8 px-8 py-3 bg-white/10 hover:bg-white/20 text-white text-xs font-black uppercase rounded-full transition-all">Clear Filters</button>
+                    ))
+                ) : (
+                    <div className="col-span-full py-32 text-center bg-white/[0.02] border border-dashed border-white/10 rounded-[3rem]">
+                        <div className="w-20 h-20 bg-white/5 rounded-full flex items-center justify-center mx-auto mb-6">
+                            <Gamepad2 className="w-10 h-10 text-white/10" />
                         </div>
-                    )}
+                        <h3 className="text-2xl font-black text-white uppercase tracking-tighter mb-2">No Universes Found</h3>
+                        <p className="text-white/40 text-sm font-bold uppercase tracking-widest">Try searching for a different game or check back later.</p>
+                        <button onClick={() => setSearchQuery('')} className="mt-8 px-10 py-4 bg-primary text-black text-[11px] font-black uppercase tracking-widest rounded-2xl hover:scale-105 transition-all shadow-xl shadow-primary/20">Clear Search</button>
+                    </div>
+                )}
+            </div>
+
+            {/* Step Process */}
+            <StepProcess />
+
+            {/* Info Footer */}
+            <div className="mt-24 p-12 rounded-[3rem] bg-gradient-to-br from-[#111] to-[#0a0a0a] border border-white/5 relative overflow-hidden">
+                <div className="absolute top-0 right-0 p-12 opacity-5">
+                    <ShieldCheck className="w-64 h-64 text-white" />
+                </div>
+                <div className="relative z-10 max-w-2xl">
+                    <h2 className="text-4xl font-black text-white uppercase tracking-tighter italic mb-6">Unmatched Account <span className="text-primary">Integrity</span></h2>
+                    <p className="text-white/40 font-bold leading-relaxed mb-10 uppercase tracking-tight text-sm">
+                        Every account listed in our marketplace undergoes a rigorous 24-point security audit. We guarantee the origin of every asset and provide full ownership documentation with every purchase.
+                    </p>
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-8">
+                        {[
+                            { title: 'Verified Origin', desc: 'No cracked or stolen accounts' },
+                            { title: 'Full Access', desc: 'Email & Password changeable' },
+                            { title: 'Buyer Protection', desc: 'Lifetime recovery warranty' }
+                        ].map((item, i) => (
+                            <div key={i} className="space-y-2">
+                                <div className="flex items-center gap-2">
+                                    <CheckCircle2 className="w-4 h-4 text-primary" />
+                                    <span className="text-[11px] font-black text-white uppercase tracking-widest">{item.title}</span>
+                                </div>
+                                <p className="text-[10px] text-white/30 font-bold uppercase leading-tight">{item.desc}</p>
+                            </div>
+                        ))}
+                    </div>
                 </div>
             </div>
         </div>

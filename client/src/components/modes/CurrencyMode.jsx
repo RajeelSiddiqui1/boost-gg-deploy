@@ -9,6 +9,8 @@ import {
     ArrowRight, Info, ShieldCheck, Clock
 } from 'lucide-react';
 
+import StepProcess from '../sections/StepProcess';
+
 const CurrencyMode = () => {
     const [games, setGames] = useState([]);
     const [selectedGame, setSelectedGame] = useState(null);
@@ -279,6 +281,9 @@ const CurrencyMode = () => {
                     </div>
                 </div>
             </div>
+
+            {/* Step Process */}
+            <StepProcess />
         </div>
     );
 };

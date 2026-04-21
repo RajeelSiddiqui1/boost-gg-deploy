@@ -1,15 +1,15 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { Info, Check, Zap, Shield, Clock } from "lucide-react";
-import { ServiceData } from "../types/ServiceCreator";
+// Removed type import
 
-export function SidebarPreview({ state }: { state: ServiceData }) {
-    const [selected, setSelected] = useState<Record<string, any>>({});
+export function SidebarPreview({ state }) {
+    const [selected, setSelected] = useState({});
     const [quantity, setQuantity] = useState(1);
-    const [activeSpeed, setActiveSpeed] = useState<"express" | "super" | null>("super");
+    const [activeSpeed, setActiveSpeed] = useState("super");
 
     // Initialize defaults
     useEffect(() => {
-        const initial: Record<string, any> = {};
+        const initial = {};
         state.sidebarSections.forEach(s => {
             if (s.fieldType === 'radio' || s.fieldType === 'dropdown') {
                 initial[s.id] = s.options?.find(o => o.isDefault)?.label || s.options?.[0]?.label;
@@ -33,7 +33,7 @@ export function SidebarPreview({ state }: { state: ServiceData }) {
                 const opt = s.options?.find(o => o.label === val);
                 if (opt) price += opt.priceModifier;
             } else if (s.fieldType === 'checkbox' && Array.isArray(val)) {
-                val.forEach((label: string) => {
+                val.forEach((label) => {
                     const opt = s.options?.find(o => o.label === label);
                     if (opt) price += opt.priceModifier;
                 });
@@ -95,7 +95,7 @@ export function SidebarPreview({ state }: { state: ServiceData }) {
                                             key={opt.id}
                                             onClick={() => {
                                                 const current = selected[s.id] || [];
-                                                const updated = current.includes(opt.label) ? current.filter((l: any) => l !== opt.label) : [...current, opt.label];
+                                                const updated = current.includes(opt.label) ? current.filter((l) => l !== opt.label) : [...current, opt.label];
                                                 setSelected(p => ({ ...p, [s.id]: updated }));
                                             }}
                                             className={`w-full flex items-center justify-between text-left group p-2.5 rounded-xl border transition-all ${isActive ? 'bg-purple-600/5 border-purple-500/30' : 'bg-[#1a1a1a] border-transparent hover:border-[#333]'}`}

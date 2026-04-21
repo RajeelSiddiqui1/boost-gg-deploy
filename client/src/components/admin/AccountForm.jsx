@@ -70,17 +70,17 @@ const AccountForm = ({ account, games, onClose, onSuccess }) => {
         setUploading(true);
         const token = localStorage.getItem('token');
         const uploadFormData = new FormData();
-        files.forEach(file => uploadFormData.append('screenshots', file));
+        files.forEach(file => uploadFormData.append('files', file));
 
         try {
-            const res = await axios.post(`${API_URL}/api/v1/upload/multiple`, uploadFormData, {
+            const res = await axios.post(`${API_URL}/api/v1/uploads/multiple?folder=accounts`, uploadFormData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                     Authorization: `Bearer ${token}`
                 }
             });
 
-            const newScreenshots = res.data.files; // Assuming backend returns array of filenames
+            const newScreenshots = res.data.data; // Backend returns array of URLs in .data
             setFormData(prev => ({
                 ...prev,
                 screenshots: [...prev.screenshots, ...newScreenshots]

@@ -3,12 +3,14 @@ import { ChevronDown, ChevronUp, Loader2, Gamepad2 } from 'lucide-react';
 import axios from 'axios';
 import { API_URL, getImageUrl } from '../../utils/api';
 import { useNavigate } from 'react-router-dom';
+import { useMode } from '../../context/ModeContext';
 
 const DiscoverGames = () => {
     const [games, setGames] = useState([]);
     const [loading, setLoading] = useState(true);
     const [expanded, setExpanded] = useState(false);
     const navigate = useNavigate();
+    const { activeMode, MODES } = useMode();
 
     useEffect(() => {
         axios.get(`${API_URL}/api/v1/games`)
@@ -21,6 +23,14 @@ const DiscoverGames = () => {
                 setLoading(false);
             });
     }, []);
+
+    const handleGameClick = (game) => {
+        let path = `/game/${game.slug || game._id}`;
+        if (activeMode && activeMode !== MODES.BOOSTING) {
+            path += `?mode=${activeMode}`;
+        }
+        navigate(path);
+    };
 
     const displayedGames = expanded ? games : games.slice(0, 30);
 
@@ -42,7 +52,7 @@ const DiscoverGames = () => {
                                 {displayedGames.map((game, i) => (
                                     <button 
                                         key={game._id || i} 
-                                        onClick={() => navigate(`/game/${game.slug || game._id}`)}
+                                        onClick={() => handleGameClick(game)}
                                         className="inline-flex items-center gap-2.5 px-4 py-2.5 bg-[#1A1A1A] border border-white/[0.08] rounded-xl text-white/50 text-[13px] font-bold hover:bg-[#222] hover:text-white hover:border-white/15 transition-all active:scale-95"
                                     >
                                         <div className="w-5 h-5 flex-shrink-0">

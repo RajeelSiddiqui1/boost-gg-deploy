@@ -72,6 +72,8 @@ export interface ServiceData {
         express: SpeedOption;
         superExpress: SpeedOption;
     };
+    shortDescription?: string;
+    deliveryTime?: number;
     sidebarSections: SidebarSection[];
     requirements: string[];
     reviews: Review[];
