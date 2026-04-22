@@ -249,6 +249,8 @@ const GameHub = () => {
         region: 'all',
         priceRange: 'all'
     });
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 12;
 
     const isAccountMode = searchParams.get('mode') === 'accounts';
 
@@ -346,6 +348,18 @@ const GameHub = () => {
         });
     }, [accounts, searchQuery, accountFilters]);
 
+    // Reset pagination on filter change
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [searchQuery, accountFilters]);
+
+    const paginatedAccounts = useMemo(() => {
+        const startIndex = (currentPage - 1) * itemsPerPage;
+        return filteredAccounts.slice(startIndex, startIndex + itemsPerPage);
+    }, [filteredAccounts, currentPage]);
+
+    const totalPages = Math.ceil(filteredAccounts.length / itemsPerPage);
+
     // Dynamic Filter Options based on available accounts
     const filterOptions = useMemo(() => {
         const ranks = [...new Set(accounts.map(a => a.rank).filter(Boolean))];
@@ -437,7 +451,7 @@ const GameHub = () => {
                             {/* Title */}
                             <h1 className="text-3xl md:text-4xl lg:text-5xl font-black text-white tracking-tighter leading-[0.9] mb-3 uppercase italic">
                                 {game.name}&nbsp;
-                                <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-[#5eead4]">
+                                <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary p-3 to-[#5eead4]">
                                     {isAccountMode ? 'ACCOUNTS' : 'BOOSTING'}
                                 </span>
                             </h1>
@@ -480,7 +494,7 @@ const GameHub = () => {
                         <div className="lg:sticky lg:top-[88px] space-y-2.5">
 
                             {/* Game pill */}
-                            <div className="flex items-center gap-2.5 px-3.5 py-2.5 rounded-2xl bg-white/[0.03] border border-white/[0.06]">
+                            <div className="flex items-center gap-2.5 p-3 rounded-2xl bg-white/[0.03] border border-white/[0.06]">
                                 {(game.icon || game.image) ? (
                                     <img src={getImageUrl(game.icon || game.image)} className="w-7 h-7 rounded-lg object-cover" alt={game.name} />
                                 ) : (
@@ -488,7 +502,7 @@ const GameHub = () => {
                                         <Gamepad2 className="w-3.5 h-3.5 text-primary" />
                                     </div>
                                 )}
-                                <span className="text-[11px] font-black uppercase tracking-wide text-white/70 truncate">{game.name}</span>
+                                <span className="text-[11px] font-black uppercase tracking-wide text-white/70">{game.name}</span>
                             </div>
 
                             {/* Search */}
@@ -506,10 +520,10 @@ const GameHub = () => {
                             {/* Category List or Account Filters */}
                             {!isAccountMode ? (
                                 <div className="rounded-2xl bg-[#0A0A0A] border border-white/[0.06] overflow-hidden">
-                                    <div className="px-3.5 pt-3.5 pb-2">
+                                    <div className="p-3">
                                         <p className="text-[9px] font-black uppercase text-white/25 tracking-[0.18em]">Categories</p>
                                     </div>
-                                    <div className="px-1.5 pb-1.5 space-y-0.5">
+                                    <div className="p-3 space-y-0.5">
                                         {/* All */}
                                         <button
                                             onClick={() => handleCategoryChange('all')}
@@ -642,16 +656,51 @@ const GameHub = () => {
                         {/* Cards grid */}
                         {isAccountMode ? (
                             filteredAccounts.length > 0 ? (
-                                <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
-                                    {filteredAccounts.map((account, idx) => (
-                                        <div
-                                            key={account._id}
-                                            className="animate-fade-in-up"
-                                            style={{ animationDelay: `${(idx % 9) * 40}ms` }}
-                                        >
-                                            <CompactAccountCard account={account} />
+                                <div className="space-y-12">
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
+                                        {paginatedAccounts.map((account, idx) => (
+                                            <div
+                                                key={account._id}
+                                                className="animate-fade-in-up"
+                                                style={{ animationDelay: `${(idx % 9) * 40}ms` }}
+                                            >
+                                                <CompactAccountCard account={account} />
+                                            </div>
+                                        ))}
+                                    </div>
+
+                                    {/* Pagination UI */}
+                                    {totalPages > 1 && (
+                                        <div className="flex items-center justify-center gap-3 pt-8">
+                                            <button
+                                                onClick={() => { setCurrentPage(p => Math.max(1, p - 1)); window.scrollTo({ top: 400, behavior: 'smooth' }); }}
+                                                disabled={currentPage === 1}
+                                                className={`w-12 h-12 rounded-2xl flex items-center justify-center border transition-all ${currentPage === 1 ? 'border-white/5 text-white/10' : 'border-white/10 text-white hover:bg-white/5 hover:border-primary/40'}`}
+                                            >
+                                                <ArrowRight className="w-5 h-5 rotate-180" />
+                                            </button>
+                                            
+                                            <div className="flex items-center gap-2">
+                                                {[...Array(totalPages)].map((_, i) => (
+                                                    <button
+                                                        key={i}
+                                                        onClick={() => { setCurrentPage(i + 1); window.scrollTo({ top: 400, behavior: 'smooth' }); }}
+                                                        className={`w-12 h-12 rounded-2xl flex items-center justify-center text-xs font-black transition-all ${currentPage === i + 1 ? 'bg-primary text-black' : 'bg-white/5 text-white/40 hover:bg-white/10'}`}
+                                                    >
+                                                        {i + 1}
+                                                    </button>
+                                                ))}
+                                            </div>
+
+                                            <button
+                                                onClick={() => { setCurrentPage(p => Math.min(totalPages, p + 1)); window.scrollTo({ top: 400, behavior: 'smooth' }); }}
+                                                disabled={currentPage === totalPages}
+                                                className={`w-12 h-12 rounded-2xl flex items-center justify-center border transition-all ${currentPage === totalPages ? 'border-white/5 text-white/10' : 'border-white/10 text-white hover:bg-white/5 hover:border-primary/40'}`}
+                                            >
+                                                <ArrowRight className="w-5 h-5" />
+                                            </button>
                                         </div>
-                                    ))}
+                                    )}
                                 </div>
                             ) : (
                                 <div className="py-24 flex flex-col items-center justify-center bg-white/[0.01] border border-dashed border-white/10 rounded-[3rem]">

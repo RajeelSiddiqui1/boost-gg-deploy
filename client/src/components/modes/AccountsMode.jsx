@@ -63,111 +63,72 @@ const AccountsMode = () => {
 
     return (
         <div className="max-w-[1400px] mx-auto px-6 py-12 animate-fade-in font-['Outfit']">
-            {/* Hero Branding Section */}
-            <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-8">
-                <div className="space-y-4">
-                    <div className="flex items-center gap-3 text-[10px] font-black uppercase tracking-[0.4em] text-primary">
-                        <div className="w-10 h-[2px] bg-primary shadow-[0_0_10px_rgba(162,230,62,0.5)]"></div>
-                        Marketplace Hub
-                    </div>
-                    <h1 className="text-5xl md:text-7xl font-black text-white uppercase tracking-tighter italic leading-none">
-                        Premium <span className="text-primary">Accounts</span>
-                    </h1>
-                    <p className="text-white/40 font-bold uppercase tracking-widest text-[11px] flex items-center gap-2">
-                        <ShieldCheck className="w-4 h-4 text-primary" />
-                        Secure transfer & lifetime warranty included
-                    </p>
-                </div>
-
+            {/* Search Section - Compact */}
+            <div className="flex justify-end mb-8">
                 <div className="w-full md:w-[400px] relative group">
                     <div className="absolute inset-0 bg-primary/5 blur-2xl rounded-full opacity-0 group-focus-within:opacity-100 transition-opacity"></div>
                     <Search className="absolute left-6 top-1/2 -translate-y-1/2 w-4 h-4 text-white/20 group-focus-within:text-primary transition-colors" />
                     <input
                         type="text"
-                        placeholder="Search for a game universe..."
+                        placeholder="SEARCH FOR A GAME UNIVERSE..."
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
-                        className="w-full bg-[#0A0A0A] border border-white/5 rounded-[2rem] py-6 pl-14 pr-8 text-xs font-black uppercase tracking-widest text-white placeholder:text-white/10 outline-none focus:border-primary/30 transition-all shadow-2xl relative z-10"
+                        className="w-full bg-[#0A0A0A] border border-white/5 rounded-[2rem] py-5 pl-14 pr-8 text-[10px] font-black uppercase tracking-widest text-white placeholder:text-white/10 outline-none focus:border-primary/30 transition-all shadow-2xl relative z-10"
                     />
                 </div>
             </div>
 
-            {/* Quick Stats Grid */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-16">
-                {[
-                    { label: 'Total Inventory', value: accounts.length, icon: Users, color: 'text-blue-400' },
-                    { label: 'Active Universes', value: new Set(accounts.map(a => a.gameId?._id || a.gameId)).size, icon: Gamepad2, color: 'text-purple-400' },
-                    { label: 'Instant Delivery', value: '100%', icon: Zap, color: 'text-primary' },
-                    { label: 'Trust Rating', value: '4.9/5', icon: Star, color: 'text-orange-400' }
-                ].map((stat, i) => (
-                    <div key={i} className="bg-white/[0.02] border border-white/5 rounded-[2rem] p-6 flex flex-col items-center justify-center text-center group hover:bg-white/[0.04] transition-all">
-                        <stat.icon className={`w-5 h-5 mb-3 ${stat.color} group-hover:scale-110 transition-transform`} />
-                        <div className="text-xl font-black text-white tracking-tighter mb-1">{stat.value}</div>
-                        <div className="text-[8px] font-black uppercase tracking-widest text-white/20">{stat.label}</div>
-                    </div>
-                ))}
-            </div>
-
             {/* Games Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 {activeGames.length > 0 ? (
                     activeGames.map((game) => (
                         <div
                             key={game._id}
                             onClick={() => navigate(`/game/${game.slug || game._id}?mode=accounts`)}
-                            className="group relative h-[380px] rounded-[3rem] overflow-hidden bg-[#0d0d0d] border border-white/[0.05] cursor-pointer transition-all duration-500 hover:border-primary/40 hover:shadow-[0_30px_60px_rgba(0,0,0,0.8)]"
+                            className="group relative h-52 rounded-[2.5rem] overflow-hidden bg-[#0d0d0d] border border-white/[0.05] cursor-pointer transition-all duration-500 hover:border-primary/40 hover:shadow-[0_20px_40px_rgba(0,0,0,0.6)]"
                         >
                             {/* Background Image */}
                             <div className="absolute inset-0">
                                 <img
                                     src={getImageUrl(game.bgImage || game.image)}
                                     alt={game.name}
-                                    className="w-full h-full object-cover opacity-40 group-hover:opacity-70 group-hover:scale-110 transition-all duration-[1.5s]"
+                                    className="w-full h-full object-cover opacity-60 group-hover:opacity-100 group-hover:scale-105 transition-all duration-[1.5s]"
                                 />
-                                <div className="absolute inset-0 bg-gradient-to-t from-[#0d0d0d] via-[#0d0d0d]/40 to-transparent"></div>
-                                <div className="absolute inset-0 bg-gradient-to-b from-[#0d0d0d]/40 via-transparent to-transparent"></div>
+                                {/* Overlay Gradient for readability */}
+                                <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/20 to-transparent"></div>
+                                <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent"></div>
                             </div>
 
                             {/* Content */}
-                            <div className="relative h-full flex flex-col p-8 z-10">
-                                {/* Top Badge */}
-                                <div className="flex justify-between items-start">
-                                    <div className="w-16 h-16 rounded-[1.5rem] bg-black/60 backdrop-blur-xl border border-white/10 p-2 group-hover:border-primary/40 transition-colors shadow-2xl">
-                                        <img src={getImageUrl(game.icon)} className="w-full h-full object-contain" alt={game.name} />
-                                    </div>
-                                    <div className="px-4 py-2 bg-primary/10 backdrop-blur-md border border-primary/20 rounded-full flex items-center gap-2 group-hover:bg-primary transition-all">
-                                        <TrendingUp className="w-3 h-3 text-primary group-hover:text-black" />
-                                        <span className="text-[10px] font-black text-primary group-hover:text-black uppercase tracking-widest">{getAccountCount(game._id)} Listings</span>
-                                    </div>
-                                </div>
-
-                                {/* Center Branding */}
-                                <div className="mt-auto">
-                                    <div className="flex items-center gap-2 mb-2">
-                                        <span className="w-2 h-[1px] bg-primary"></span>
-                                        <span className="text-[9px] font-black text-primary uppercase tracking-[0.2em]">{game.category || 'Universal'}</span>
-                                    </div>
-                                    <h3 className="text-3xl font-black text-white uppercase tracking-tighter leading-none mb-6 italic group-hover:text-primary transition-colors">
+                            <div className="relative h-full flex flex-col p-6 z-10 justify-between">
+                                {/* Top Left: Game Name and Badge */}
+                                <div>
+                                    <h3 className="text-2xl font-black text-white tracking-tight leading-none mb-3">
                                         {game.name}
                                     </h3>
+                                    
+                                    <div className="flex items-center gap-2 px-3 py-1.5 bg-white/5 backdrop-blur-md border border-white/10 rounded-full w-fit group-hover:bg-primary/20 transition-all">
+                                        {game.name === 'Fortnite' ? <Sparkles className="w-3 h-3 text-primary" /> : <ShieldCheck className="w-3 h-3 text-primary" />}
+                                        <span className="text-[10px] font-black text-white/80 uppercase tracking-widest whitespace-nowrap">
+                                            {game.name === 'Fortnite' ? 'Rarest Skins' : 
+                                             game.name === 'Clash of Clans' ? 'Premium Accounts' :
+                                             game.name === 'Valorant' ? 'High Rank' : 'Active Offers'}
+                                        </span>
+                                    </div>
+                                </div>
 
-                                    {/* Action Button */}
-                                    <div className="flex items-center justify-between pt-6 border-t border-white/10 group-hover:border-primary/20 transition-colors">
-                                        <div className="flex flex-col">
-                                            <span className="text-[8px] font-black text-white/20 uppercase tracking-widest leading-none mb-1">Starting from</span>
-                                            <span className="text-lg font-black text-white tracking-tighter italic">$24.99</span>
-                                        </div>
-                                        <div className="w-12 h-12 bg-white/5 group-hover:bg-primary rounded-2xl flex items-center justify-center transition-all duration-300">
-                                            <ArrowRight className="w-5 h-5 text-white group-hover:text-black transition-transform group-hover:translate-x-1" />
-                                        </div>
+                                {/* Bottom Right: Offers Count */}
+                                <div className="self-end">
+                                    <div className="px-4 py-1.5 bg-black/80 backdrop-blur-md border border-white/10 rounded-xl flex items-center gap-2 group-hover:border-primary/40 transition-all">
+                                        <span className="text-xs font-black text-white tracking-tight">
+                                            {getAccountCount(game._id)} <span className="text-[10px] text-white/40 uppercase tracking-widest ml-1">offers</span>
+                                        </span>
                                     </div>
                                 </div>
                             </div>
 
-                            {/* Hover Overlay Accent */}
-                            <div className="absolute top-0 right-0 p-8 opacity-0 group-hover:opacity-10 transition-opacity">
-                                <Sparkles className="w-24 h-24 text-primary" />
-                            </div>
+                            {/* Hover Subtle Shine */}
+                            <div className="absolute inset-0 bg-gradient-to-tr from-primary/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
                         </div>
                     ))
                 ) : (

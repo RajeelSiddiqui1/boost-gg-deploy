@@ -140,7 +140,10 @@ currencyListingSchema.virtual('game', {
 
 // Static: calculate price for a given quantity
 currencyListingSchema.statics.calculatePrice = function (listing, quantity) {
-    let price = listing.pricePerUnit * quantity;
+    // Treat pricePerUnit as the price for the base 'minQuantity' package
+    const minQty = Math.max(1, listing.minQuantity || 1);
+    let price = listing.pricePerUnit * (quantity / minQty);
+
     if (listing.discountPercent > 0) {
         price = price * (1 - listing.discountPercent / 100);
     }

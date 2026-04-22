@@ -229,6 +229,42 @@ gameSchema.statics.getGamesWithCounts = function (options = {}) {
                 as: 'servicesData'
             }
         },
+        // Lookup active currency listings for each game
+        {
+            $lookup: {
+                from: 'currencylistings',
+                let: { gameId: '$_id' },
+                pipeline: [
+                    {
+                        $match: {
+                            $expr: { $eq: ['$gameId', '$$gameId'] },
+                            isActive: true,
+                            status: 'active'
+                        }
+                    },
+                    { $count: 'count' }
+                ],
+                as: 'currencyData'
+            }
+        },
+        // Lookup active account listings for each game
+        {
+            $lookup: {
+                from: 'accountlistings',
+                let: { gameId: '$_id' },
+                pipeline: [
+                    {
+                        $match: {
+                            $expr: { $eq: ['$gameId', '$$gameId'] },
+                            isActive: true,
+                            status: 'active'
+                        }
+                    },
+                    { $count: 'count' }
+                ],
+                as: 'accountsData'
+            }
+        },
         // Lookup orders through services for each game
         {
             $lookup: {
@@ -267,6 +303,12 @@ gameSchema.statics.getGamesWithCounts = function (options = {}) {
                 servicesCount: {
                     $ifNull: [{ $arrayElemAt: ['$servicesData.count', 0] }, 0]
                 },
+                currencyCount: {
+                    $ifNull: [{ $arrayElemAt: ['$currencyData.count', 0] }, 0]
+                },
+                accountsCount: {
+                    $ifNull: [{ $arrayElemAt: ['$accountsData.count', 0] }, 0]
+                },
                 ordersCount: {
                     $ifNull: [{ $arrayElemAt: ['$ordersData.count', 0] }, 0]
                 }
@@ -276,6 +318,8 @@ gameSchema.statics.getGamesWithCounts = function (options = {}) {
         {
             $project: {
                 servicesData: 0,
+                currencyData: 0,
+                accountsData: 0,
                 gameServices: 0,
                 ordersData: 0
             }
@@ -310,6 +354,42 @@ gameSchema.statics.getGameWithCounts = function (gameId) {
                     { $count: 'count' }
                 ],
                 as: 'servicesData'
+            }
+        },
+        // Lookup active currency listings for each game
+        {
+            $lookup: {
+                from: 'currencylistings',
+                let: { gameId: '$_id' },
+                pipeline: [
+                    {
+                        $match: {
+                            $expr: { $eq: ['$gameId', '$$gameId'] },
+                            isActive: true,
+                            status: 'active'
+                        }
+                    },
+                    { $count: 'count' }
+                ],
+                as: 'currencyData'
+            }
+        },
+        // Lookup active account listings for each game
+        {
+            $lookup: {
+                from: 'accountlistings',
+                let: { gameId: '$_id' },
+                pipeline: [
+                    {
+                        $match: {
+                            $expr: { $eq: ['$gameId', '$$gameId'] },
+                            isActive: true,
+                            status: 'active'
+                        }
+                    },
+                    { $count: 'count' }
+                ],
+                as: 'accountsData'
             }
         },
         // Lookup services for orders
@@ -350,6 +430,12 @@ gameSchema.statics.getGameWithCounts = function (gameId) {
                 servicesCount: {
                     $ifNull: [{ $arrayElemAt: ['$servicesData.count', 0] }, 0]
                 },
+                currencyCount: {
+                    $ifNull: [{ $arrayElemAt: ['$currencyData.count', 0] }, 0]
+                },
+                accountsCount: {
+                    $ifNull: [{ $arrayElemAt: ['$accountsData.count', 0] }, 0]
+                },
                 ordersCount: {
                     $ifNull: [{ $arrayElemAt: ['$ordersData.count', 0] }, 0]
                 }
@@ -359,6 +445,8 @@ gameSchema.statics.getGameWithCounts = function (gameId) {
         {
             $project: {
                 servicesData: 0,
+                currencyData: 0,
+                accountsData: 0,
                 gameServices: 0,
                 ordersData: 0
             }

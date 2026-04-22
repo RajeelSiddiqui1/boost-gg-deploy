@@ -12,6 +12,9 @@ const AdminAccounts = () => {
     const [showForm, setShowForm] = useState(false);
     const [editingListing, setEditingListing] = useState(null);
     const [notification, setNotification] = useState(null);
+    const [searchQuery, setSearchQuery] = useState('');
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 12;
 
     const [formData, setFormData] = useState({}); // Not directly used for the new form
 
@@ -93,6 +96,22 @@ const AdminAccounts = () => {
         setShowForm(true);
     };
 
+    const filteredListings = listings.filter(item => 
+        item.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        item.gameId?.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        item.rank?.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+
+    const totalPages = Math.ceil(filteredListings.length / itemsPerPage);
+    const paginatedListings = filteredListings.slice(
+        (currentPage - 1) * itemsPerPage,
+        currentPage * itemsPerPage
+    );
+
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [searchQuery]);
+
     return (
         <AdminLayout>
             <div className="space-y-8 relative">
@@ -109,13 +128,25 @@ const AdminAccounts = () => {
                         <h1 className="text-2xl font-black italic text-white uppercase tracking-tighter text-sky-primary">Accounts Management</h1>
                         <p className="text-white/40 text-xs font-bold uppercase tracking-widest leading-relaxed">Manage game account listings</p>
                     </div>
-                    <button
-                        onClick={() => { setEditingListing(null); setShowForm(true); }}
-                        className="flex items-center gap-2 px-6 py-3 bg-primary hover:bg-[#722AEE] text-white rounded-xl font-black italic uppercase tracking-tighter text-xs transition-all shadow-lg shadow-primary/20"
-                    >
-                        <Plus className="w-4 h-4" />
-                        Add New Account
-                    </button>
+                    <div className="flex items-center gap-4 w-full md:w-auto">
+                        <div className="relative flex-1 md:w-64">
+                            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/20" />
+                            <input 
+                                type="text"
+                                placeholder="Search accounts..."
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
+                                className="w-full bg-[#0A0A0A] border border-white/10 rounded-xl py-3 pl-10 pr-4 text-xs font-bold text-white outline-none focus:border-primary/40 transition-all"
+                            />
+                        </div>
+                        <button
+                            onClick={() => { setEditingListing(null); setShowForm(true); }}
+                            className="flex items-center gap-2 px-6 py-3 bg-primary hover:bg-[#722AEE] text-white rounded-xl font-black italic uppercase tracking-tighter text-xs transition-all shadow-lg shadow-primary/20 flex-shrink-0"
+                        >
+                            <Plus className="w-4 h-4" />
+                            Add New
+                        </button>
+                    </div>
                 </div>
 
                 {showForm && (
@@ -127,40 +158,72 @@ const AdminAccounts = () => {
                     />
                 )}
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {listings.map(item => (
-                        <div key={item._id} className="bg-[#0A0A0A] border border-white/5 rounded-[32px] overflow-hidden group hover:border-primary/30 transition-all">
-                            <div className="aspect-video bg-white/5 relative overflow-hidden">
-                                {item.screenshots?.[0] ? (
-                                    <img src={getImageUrl(item.screenshots[0])} alt="" className="w-full h-full object-cover opacity-60 group-hover:scale-105 transition-transform duration-500" />
-                                ) : (
-                                    <div className="w-full h-full flex items-center justify-center">
-                                        <Camera className="w-10 h-10 text-white/10" />
-                                    </div>
-                                )}
-                                <div className="absolute top-4 left-4 px-3 py-1 bg-black/60 backdrop-blur-md rounded-lg text-[9px] font-black text-white uppercase tracking-widest border border-white/10">
-                                    {item.gameId?.title || 'Game'}
-                                </div>
-                            </div>
-                            <div className="p-6 space-y-4">
-                                <div className="space-y-1">
-                                    <h3 className="text-sm font-black text-white italic uppercase tracking-tight line-clamp-1">{item.title}</h3>
-                                    <p className="text-[10px] text-white/30 uppercase font-bold tracking-widest">{item.rank} • {item.region}</p>
-                                </div>
-                                <div className="flex items-center justify-between">
-                                    <div className="text-xl font-black italic text-primary">${item.price}</div>
-                                    <div className="flex gap-1">
-                                        <button onClick={() => handleEdit(item)} className="p-2 bg-white/5 hover:bg-white/10 rounded-xl text-white/30 hover:text-white transition-all"><Edit2 className="w-4 h-4" /></button>
-                                        <button onClick={() => handleDelete(item._id)} className="p-2 bg-white/5 hover:bg-red-500/10 rounded-xl text-white/30 hover:text-red-500 transition-all"><Trash2 className="w-4 h-4" /></button>
+                <div className="space-y-8">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        {paginatedListings.map(item => (
+                            <div key={item._id} className="bg-[#0A0A0A] border border-white/5 rounded-[32px] overflow-hidden group hover:border-primary/30 transition-all">
+                                <div className="aspect-video bg-white/5 relative overflow-hidden">
+                                    {item.screenshots?.[0] ? (
+                                        <img src={getImageUrl(item.screenshots[0])} alt="" className="w-full h-full object-cover opacity-60 group-hover:scale-105 transition-transform duration-500" />
+                                    ) : (
+                                        <div className="w-full h-full flex items-center justify-center">
+                                            <Camera className="w-10 h-10 text-white/10" />
+                                        </div>
+                                    )}
+                                    <div className="absolute top-4 left-4 px-3 py-1 bg-black/60 backdrop-blur-md rounded-lg text-[9px] font-black text-white uppercase tracking-widest border border-white/10">
+                                        {item.gameId?.title || 'Game'}
                                     </div>
                                 </div>
-                                <div className="flex gap-2 pt-2">
-                                    {item.instantDelivery && <span className="p-1.5 bg-green-500/10 rounded-lg text-green-500" title="Instant Delivery"><Zap className="w-3.5 h-3.5" /></span>}
-                                    {item.secureTransfer && <span className="p-1.5 bg-blue-500/10 rounded-lg text-blue-500" title="Secure Transfer"><Shield className="w-3.5 h-3.5" /></span>}
+                                <div className="p-6 space-y-4">
+                                    <div className="space-y-1">
+                                        <h3 className="text-sm font-black text-white italic uppercase tracking-tight line-clamp-1">{item.title}</h3>
+                                        <p className="text-[10px] text-white/30 uppercase font-bold tracking-widest">{item.rank} • {item.region}</p>
+                                    </div>
+                                    <div className="flex items-center justify-between">
+                                        <div className="text-xl font-black italic text-primary">${item.price}</div>
+                                        <div className="flex gap-1">
+                                            <button onClick={() => handleEdit(item)} className="p-2 bg-white/5 hover:bg-white/10 rounded-xl text-white/30 hover:text-white transition-all"><Edit2 className="w-4 h-4" /></button>
+                                            <button onClick={() => handleDelete(item._id)} className="p-2 bg-white/5 hover:bg-red-500/10 rounded-xl text-white/30 hover:text-red-500 transition-all"><Trash2 className="w-4 h-4" /></button>
+                                        </div>
+                                    </div>
+                                    <div className="flex gap-2 pt-2">
+                                        {item.instantDelivery && <span className="p-1.5 bg-green-500/10 rounded-lg text-green-500" title="Instant Delivery"><Zap className="w-3.5 h-3.5" /></span>}
+                                        {item.secureTransfer && <span className="p-1.5 bg-blue-500/10 rounded-lg text-blue-500" title="Secure Transfer"><Shield className="w-3.5 h-3.5" /></span>}
+                                    </div>
                                 </div>
                             </div>
+                        ))}
+                    </div>
+
+                    {totalPages > 1 && (
+                        <div className="flex items-center justify-center gap-2 pt-4">
+                            <button
+                                onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                                disabled={currentPage === 1}
+                                className={`px-4 py-2 rounded-xl text-xs font-black uppercase transition-all ${currentPage === 1 ? 'bg-white/5 text-white/10' : 'bg-white/5 text-white hover:bg-primary hover:text-black'}`}
+                            >
+                                Prev
+                            </button>
+                            <div className="flex items-center gap-1">
+                                {[...Array(totalPages)].map((_, i) => (
+                                    <button
+                                        key={i}
+                                        onClick={() => setCurrentPage(i + 1)}
+                                        className={`w-10 h-10 rounded-xl text-xs font-black transition-all ${currentPage === i + 1 ? 'bg-primary text-black' : 'bg-white/5 text-white/40 hover:bg-white/10'}`}
+                                    >
+                                        {i + 1}
+                                    </button>
+                                ))}
+                            </div>
+                            <button
+                                onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                                disabled={currentPage === totalPages}
+                                className={`px-4 py-2 rounded-xl text-xs font-black uppercase transition-all ${currentPage === totalPages ? 'bg-white/5 text-white/10' : 'bg-white/5 text-white hover:bg-primary hover:text-black'}`}
+                            >
+                                Next
+                            </button>
                         </div>
-                    ))}
+                    )}
                 </div>
             </div>
         </AdminLayout>

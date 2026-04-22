@@ -14,7 +14,7 @@ const SubNavbar = () => {
     const items = [
         { key: MODES.BOOSTING, label: 'BOOSTGG SELECTION', icon: Sparkles },
         { key: MODES.CURRENCY, label: 'GOLD / CURRENCY', icon: Coins },
-        { key: MODES.ACCOUNTS, label: 'PREMIUM ACCOUNTS', icon: UserCircle2 },
+        { key: MODES.ACCOUNTS, label: 'ACCOUNTS', icon: UserCircle2 },
     ];
 
     return (
