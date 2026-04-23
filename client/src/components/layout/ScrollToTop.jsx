@@ -6,21 +6,21 @@ import { useLocation } from 'react-router-dom';
  * This component doesn't render anything, it just handles the scroll behavior
  */
 const ScrollToTop = () => {
-    const { pathname } = useLocation();
+ const { pathname } = useLocation();
 
-    useEffect(() => {
-        // Reset window scroll immediately
-        window.scrollTo(0, 0);
+ useEffect(() => {
+ // Reset window scroll immediately
+ window.scrollTo(0, 0);
 
-        // Also handle cases where the browser restores scroll position after rendering
-        const timer = setTimeout(() => {
-            window.scrollTo(0, 0);
-        }, 100);
+ // Also handle cases where the browser restores scroll position after rendering
+ const timer = setTimeout(() => {
+ window.scrollTo(0, 0);
+ }, 100);
 
-        return () => clearTimeout(timer);
-    }, [pathname]);
+ return () => clearTimeout(timer);
+ }, [pathname]);
 
-    return null;
+ return null;
 };
 
 export default ScrollToTop;

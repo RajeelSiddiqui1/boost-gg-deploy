@@ -1,11 +1,6 @@
 const mongoose = require('mongoose');
 
 const reviewSchema = new mongoose.Schema({
-    userId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
-        index: true
-    },
     gameId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Game',
@@ -25,29 +20,32 @@ const reviewSchema = new mongoose.Schema({
         required: [true, 'Please add a reviewer name'],
         trim: true
     },
-    rating: {
+    stars: {
         type: Number,
         required: [true, 'Please add a rating between 1 and 5'],
         min: 1,
-        max: 5
+        max: 5,
+        default: 5
     },
-    text: {
+    description: {
         type: String,
-        required: [true, 'Please add review text']
+        required: [true, 'Please add review description']
     },
-    isVerified: {
-        type: Boolean,
-        default: false
-    },
-    isActive: {
-        type: Boolean,
-        default: false
-    },
-    status: {
+    countryName: {
         type: String,
-        enum: ['pending', 'approved', 'rejected'],
-        default: 'pending',
-        index: true
+        trim: true
+    },
+    countryImage: {
+        type: String, // URL to country flag/image
+        trim: true
+    },
+    reviewImage: {
+        type: String, // URL to PNG review image
+        trim: true
+    },
+    isPublished: {
+        type: Boolean,
+        default: true
     }
 }, {
     timestamps: true

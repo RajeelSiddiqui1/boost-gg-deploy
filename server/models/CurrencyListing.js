@@ -147,7 +147,7 @@ currencyListingSchema.statics.calculatePrice = function (listing, quantity) {
     if (listing.discountPercent > 0) {
         price = price * (1 - listing.discountPercent / 100);
     }
-    return Math.round(price * 100) / 100;
+    return price;
 };
 
 // Indexes

@@ -10,24 +10,24 @@ const BuyerDashboard = CustomerDashboard;
 const ProDashboard = BoosterDashboard;
 
 const Dashboard = () => {
-    const { user, loading } = useAuth();
+ const { user, loading } = useAuth();
 
-    if (loading) return (
-        <div className="min-h-screen bg-black flex items-center justify-center">
-            <Loader2 className="w-12 h-12 text-primary animate-spin" />
-        </div>
-    );
+ if (loading) return (
+ <div className="min-h-screen bg-black flex items-center justify-center">
+ <Loader2 className="w-12 h-12 text-primary animate-spin" />
+ </div>
+ );
 
-    if (!user) return null; // Should be handled by protected route
+ if (!user) return null; // Should be handled by protected route
 
-    switch (user.role) {
-        case 'admin':
-            return <AdminDashboard />;
-        case 'pro':
-            return <ProDashboard />;
-        default:
-            return <BuyerDashboard />;
-    }
+ switch (user.role) {
+ case 'admin':
+ return <AdminDashboard />;
+ case 'pro':
+ return <ProDashboard />;
+ default:
+ return <BuyerDashboard />;
+ }
 };
 
 export default Dashboard;
