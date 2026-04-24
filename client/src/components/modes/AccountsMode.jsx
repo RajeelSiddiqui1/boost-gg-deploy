@@ -62,7 +62,11 @@ const AccountsMode = () => {
  }
 
  return (
- <div className="max-w-[1400px] mx-auto px-6 py-12 animate-fade-in font-['Outfit']">
+ <div className="relative max-w-[1400px] mx-auto px-6 py-12 animate-fade-in font-['Outfit'] overflow-hidden">
+ {/* Atmospheric Glows */}
+ <div className="absolute -top-[10%] -left-[10%] w-[50%] h-[500px] bg-primary/20 blur-[150px] pointer-events-none -z-10 rounded-full"></div>
+ <div className="absolute top-0 left-0 w-[40%] h-[400px] bg-gradient-to-br from-primary/10 via-transparent to-transparent pointer-events-none -z-10"></div>
+
  {/* Search Section - Compact */}
  <div className="flex justify-end mb-8">
  <div className="w-full md:w-[400px] relative group">

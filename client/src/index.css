@@ -506,7 +506,8 @@ input:focus-visible {
    GLOBAL PRIMARY BUTTON GRADIENT
    ======================================== */
 button.bg-primary,
-a.bg-primary {
+a.bg-primary,
+.bg-primary-premium {
   background: linear-gradient(to right, var(--color-sky-green), var(--color-sky-green-light), var(--color-sky-green)) !important;
   background-size: 200% auto !important;
   color: #ffffff !important;
@@ -515,13 +516,15 @@ a.bg-primary {
 }
 
 button.bg-primary:hover,
-a.bg-primary:hover {
+a.bg-primary:hover,
+.bg-primary-premium:hover {
   background-position: right center !important;
   box-shadow: 0 10px 30px rgba(19, 193, 0, 0.4) !important;
 }
 
 /* Ensure icons and inner text inside the primary buttons turn white to match the image */
 button.bg-primary *,
-a.bg-primary * {
+a.bg-primary *,
+.bg-primary-premium * {
   color: #ffffff !important;
 }

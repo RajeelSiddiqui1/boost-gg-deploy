@@ -3,8 +3,7 @@ import Hero from '../sections/Hero';
 import HotOffers from '../sections/HotOffers';
 import BrandBanner from '../sections/BrandBanner';
 import StatsGrid from '../sections/StatsGrid';
-import TestimonialsSection from '../sections/TestimonialsSection';
-import GuidesSection from '../sections/GuidesSection';
+
 import StepProcess from '../sections/StepProcess';
 import DiscoverGames from '../sections/DiscoverGames';
 import CommunityEarnings from '../sections/CommunityEarnings';
@@ -86,7 +85,7 @@ const BoostingMode = () => {
  {/* <TestimonialsSection /> */}
  <ReviewsSection/>
  <BlogSection/>
- <GuidesSection />
+
  
  <CommunityEarnings />
  <DiscoverGames />

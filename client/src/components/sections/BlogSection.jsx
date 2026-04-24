@@ -117,18 +117,18 @@ const BlogSection = () => {
                         {/* Visit our blog card */}
                         <div 
                             onClick={() => navigate('/blog')}
-                            className="flex-1 bg-[#5A30FF] rounded-[40px] p-10 flex flex-col justify-end group cursor-pointer relative overflow-hidden min-h-[244px] shadow-[0_20px_50px_rgba(90,48,255,0.3)] hover:shadow-[0_20px_70px_rgba(90,48,255,0.5)] transition-all"
+                            className="flex-1 bg-primary-premium rounded-[40px] p-10 flex flex-col justify-end group cursor-pointer relative overflow-hidden min-h-[244px] shadow-[0_20px_50px_rgba(19,193,0,0.2)] hover:shadow-[0_20px_70px_rgba(19,193,0,0.4)] transition-all"
                         >
                             <div className="absolute top-0 right-0 w-full h-full bg-[radial-gradient(circle_at_top_right,_rgba(255,255,255,0.25)_0%,_transparent_70%)]"></div>
                             <div className="absolute -top-24 -right-24 w-48 h-48 bg-white/10 blur-[60px] rounded-full group-hover:bg-white/20 transition-colors"></div>
                             
                             <div className="relative z-10 flex items-end justify-between">
                                 <div className="space-y-2">
-                                    <span className="text-[10px] font-black text-white/60 uppercase tracking-[0.4em]">View more articles</span>
+                                    <span className="text-[10px] font-black text-white/80 uppercase tracking-[0.4em]">View more articles</span>
                                     <h3 className="text-4xl font-black text-white uppercase tracking-tighter leading-none">Visit our<br/>blog</h3>
                                 </div>
                                 <div className="w-14 h-14 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center group-hover:bg-white group-hover:scale-110 transition-all shadow-2xl">
-                                    <ArrowRight className="w-7 h-7 text-white group-hover:text-[#5A30FF] transition-colors" />
+                                    <ArrowRight className="w-7 h-7 text-white group-hover:text-primary transition-colors" />
                                 </div>
                             </div>
                         </div>
