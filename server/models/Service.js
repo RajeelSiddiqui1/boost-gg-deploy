@@ -359,7 +359,7 @@ const serviceSchema = new mongoose.Schema({
         heading: String,
         fieldType: {
             type: String,
-            enum: ['radio', 'checkbox', 'dropdown', 'stepper', 'text_input'],
+            enum: ['radio', 'checkbox', 'dropdown', 'stepper', 'text_input', 'range', 'slider'],
             default: 'radio'
         },
         required: { type: Boolean, default: false },

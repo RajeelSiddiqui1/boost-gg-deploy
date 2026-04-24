@@ -528,3 +528,54 @@ a.bg-primary *,
 .bg-primary-premium * {
   color: #ffffff !important;
 }
+
+/* ========================================
+   PREMIUM RANGE SLIDER
+   ======================================== */
+.premium-range-slider {
+  -webkit-appearance: none;
+  width: 100%;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 20px;
+  outline: none;
+  position: relative;
+  overflow: visible;
+  cursor: pointer;
+  background-image: linear-gradient(to right, var(--color-sky-green) 0%, var(--color-sky-green) var(--range-progress), rgba(255,255,255,0.05) var(--range-progress));
+  box-shadow: inset 0 1px 3px rgba(0,0,0,0.4);
+}
+
+.premium-range-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 28px;
+  height: 28px;
+  background: #ffffff;
+  border: 5px solid var(--color-sky-green);
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: 0 0 25px rgba(19, 193, 0, 0.8), 0 0 50px rgba(19, 193, 0, 0.3), inset 0 0 5px rgba(0,0,0,0.2);
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  margin-top: -10px; /* Center thumb on track */
+}
+
+.premium-range-slider::-webkit-slider-thumb:hover {
+  transform: scale(1.15) rotate(10deg);
+  box-shadow: 0 0 40px rgba(19, 193, 0, 1);
+}
+
+.premium-range-slider::-moz-range-thumb {
+  width: 28px;
+  height: 28px;
+  background: #ffffff;
+  border: 5px solid var(--color-sky-green);
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: 0 0 25px rgba(19, 193, 0, 0.6);
+  transition: all 0.3s ease;
+}
+
+.premium-range-slider::-moz-range-thumb:hover {
+  transform: scale(1.2);
+}
