@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, useLocation } from 'react-router-dom';
 
 const ModeContext = createContext();
 
@@ -19,18 +19,21 @@ export const MODES = {
 
 export const ModeProvider = ({ children }) => {
  const [searchParams, setSearchParams] = useSearchParams();
+ const location = useLocation();
  const [activeMode, setActiveMode] = useState(MODES.BOOSTING);
 
- // Sync mode with URL search param '?mode='
+ // Sync mode with URL search param '?mode=' or pathname
  useEffect(() => {
  const modeParam = searchParams.get('mode');
- if (modeParam && Object.values(MODES).includes(modeParam)) {
+ if (location.pathname.startsWith('/currency')) {
+ setActiveMode(MODES.CURRENCY);
+ } else if (modeParam && Object.values(MODES).includes(modeParam)) {
  setActiveMode(modeParam);
- } else if (!modeParam) {
- // Default to boosting if no param
+ } else if (!modeParam && location.pathname === '/') {
+ // Default to boosting if no param on home
  setActiveMode(MODES.BOOSTING);
  }
- }, [searchParams]);
+ }, [searchParams, location.pathname]);
 
  const changeMode = (newMode) => {
  if (Object.values(MODES).includes(newMode)) {

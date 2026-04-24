@@ -15,6 +15,8 @@ import ServiceCard from '../ui/ServiceCard';
 import axios from 'axios';
 import { API_URL } from '../../utils/api';
 import { useState, useEffect } from 'react';
+import ReviewsSection from '../sections/ReviewsSection';
+import BlogSection from '../sections/BlogSection';
 
 const BoostingMode = () => {
  const { setIsMegaMenuOpen } = useUI();
@@ -81,8 +83,11 @@ const BoostingMode = () => {
  <HotOffers />
  <BrandBanner />
  <StepProcess />
- <TestimonialsSection />
+ {/* <TestimonialsSection /> */}
+ <ReviewsSection/>
+ <BlogSection/>
  <GuidesSection />
+ 
  <CommunityEarnings />
  <DiscoverGames />
  </div>

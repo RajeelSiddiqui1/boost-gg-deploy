@@ -24,6 +24,7 @@ const Offers = lazy(() => import('./pages/Offers'));
 const About = lazy(() => import('./pages/About'));
 const Contact = lazy(() => import('./pages/Contact'));
 const NotFound = lazy(() => import('./pages/NotFound'));
+const Reviews = lazy(() => import('./pages/Reviews'));
 const AdminDashboard = lazy(() => import('./pages/AdminDashboard'));
 const AdminGames = lazy(() => import('./pages/admin/Games'));
 const AdminCategories = lazy(() => import('./pages/admin/Categories'));
@@ -150,8 +151,10 @@ const AppContent = () => {
  <Route path="/blog" element={<ProtectedRoute isPublic><Blog /></ProtectedRoute>} />
  <Route path="/blog/:slug" element={<ProtectedRoute isPublic><BlogPost /></ProtectedRoute>} />
  <Route path="/game/:slug" element={<ProtectedRoute isPublic><GameHub /></ProtectedRoute>} />
+ <Route path="/currency/:gameSlug" element={<ProtectedRoute isPublic><Home /></ProtectedRoute>} />
  <Route path="/accounts/:id" element={<ProtectedRoute isPublic><AccountDetail /></ProtectedRoute>} />
- <Route path="/wow-boost" element={<ProtectedRoute isPublic><WowBoost /></ProtectedRoute>} />
+  <Route path="/wow-boost" element={<ProtectedRoute isPublic><WowBoost /></ProtectedRoute>} />
+  <Route path="/reviews" element={<ProtectedRoute isPublic><Reviews /></ProtectedRoute>} />
 
  <Route path="/login" element={<ProtectedRoute guestOnly><Login /></ProtectedRoute>} />
  <Route path="/signup" element={<ProtectedRoute guestOnly><Signup /></ProtectedRoute>} />

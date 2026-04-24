@@ -15,7 +15,7 @@ import {
  EyeOff,
  ChevronDown
 } from 'lucide-react';
-import { API_URL } from '../../utils/api';
+import { API_URL, getImageUrl } from '../../utils/api';
 import AdminLayout from '../../components/admin/AdminLayout';
 
 // Country list for flag API
@@ -81,6 +81,7 @@ const Reviews = () => {
  const [showModal, setShowModal] = useState(false);
  const [editingReview, setEditingReview] = useState(null);
  const [isSubmitting, setIsSubmitting] = useState(false);
+ const [selectedFiles, setSelectedFiles] = useState({});
 
  // Searchable dropdown state
  const [countrySearch, setCountrySearch] = useState('');
@@ -126,30 +127,12 @@ const Reviews = () => {
  return () => document.removeEventListener('mousedown', handleClickOutside);
  }, []);
 
- const handleFileUpload = async (e, field) => {
+ const handleFileUpload = (e, field) => {
  const file = e.target.files[0];
  if (!file) return;
 
- const uploadFormData = new FormData();
- uploadFormData.append('files', file);
-
- try {
- const token = localStorage.getItem('token');
- const res = await axios.post(`${API_URL}/api/v1/uploads/multiple?folder=reviews`, uploadFormData, {
- headers: { 
- Authorization: `Bearer ${token}`,
- 'Content-Type': 'multipart/form-data'
- }
- });
- 
- // Controller returns array of strings, not objects with url property
- const imageUrl = res.data.data[0];
- setFormData(prev => ({ ...prev, [field]: imageUrl }));
- } catch (error) {
- console.error('Upload failed:', error);
- setNotification({ type: 'error', message: 'Image upload failed' });
- setTimeout(() => setNotification(null), 3000);
- }
+ // Store file locally for preview; don't upload immediately
+ setSelectedFiles(prev => ({ ...prev, [field]: file }));
  };
 
  const handleSubmit = async (e) => {
@@ -157,13 +140,30 @@ const Reviews = () => {
  setIsSubmitting(true);
  try {
  const token = localStorage.getItem('token');
+ let finalFormData = { ...formData };
+
+ // Upload any selected files first
+ for (const [field, file] of Object.entries(selectedFiles)) {
+ if (file) {
+ const uploadFormData = new FormData();
+ uploadFormData.append('files', file);
+ const res = await axios.post(`${API_URL}/api/v1/uploads/multiple?folder=reviews`, uploadFormData, {
+ headers: { 
+ Authorization: `Bearer ${token}`,
+ 'Content-Type': 'multipart/form-data'
+ }
+ });
+ finalFormData[field] = res.data.data[0];
+ }
+ }
+
  if (editingReview) {
- await axios.put(`${API_URL}/api/v1/reviews/${editingReview._id}`, formData, {
+ await axios.put(`${API_URL}/api/v1/reviews/${editingReview._id}`, finalFormData, {
  headers: { Authorization: `Bearer ${token}` }
  });
  setNotification({ type: 'success', message: 'Review updated successfully' });
  } else {
- await axios.post(`${API_URL}/api/v1/reviews`, formData, {
+ await axios.post(`${API_URL}/api/v1/reviews`, finalFormData, {
  headers: { Authorization: `Bearer ${token}` }
  });
  setNotification({ type: 'success', message: 'Review created successfully' });
@@ -192,6 +192,7 @@ const Reviews = () => {
  reviewImage: '',
  isPublished: true
  });
+ setSelectedFiles({});
  setCountrySearch('');
  };
 
@@ -236,6 +237,7 @@ const Reviews = () => {
  reviewImage: review.reviewImage || '',
  isPublished: review.isPublished
  });
+ setSelectedFiles({});
  setCountrySearch(review.countryName || '');
  setShowModal(true);
  };
@@ -575,7 +577,14 @@ const Reviews = () => {
  className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
  />
  <div className="w-full h-40 bg-white/5 border-2 border-dashed border-white/10 rounded-2xl flex flex-col items-center justify-center gap-2 group-hover:border-primary/30 transition-all overflow-hidden relative">
- {formData.reviewImage ? (
+ {selectedFiles.reviewImage ? (
+ <>
+ <img src={URL.createObjectURL(selectedFiles.reviewImage)} alt="Preview" className="w-full h-full object-contain p-4" />
+ <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
+ <span className="text-[10px] font-black text-white uppercase tracking-widest">Click to Change</span>
+ </div>
+ </>
+ ) : formData.reviewImage ? (
  <>
  <img src={getImageUrl(formData.reviewImage)} alt="Preview" className="w-full h-full object-contain p-4" />
  <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">

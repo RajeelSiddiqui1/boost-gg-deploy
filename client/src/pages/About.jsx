@@ -9,6 +9,7 @@ import {
  ChevronRight,
  Quote
 } from "lucide-react";
+import ReviewsSection from "../components/sections/ReviewsSection";
 const About = () => {
  return (
  <div className="min-h-screen bg-black text-white font-['Outfit'] selection:bg-primary/30">
@@ -25,7 +26,7 @@ const About = () => {
  {/* Video/Image Player Section - 100% Width */}
  <div className="w-full mt-16 aspect-video bg-[#111] relative overflow-hidden group shadow-2xl shadow-primary/20 animate-in fade-in zoom-in duration-1000 rounded-3xl border border-white/5">
  <img
- src="/about_gaming.png"
+ src="/main.png"
  alt="BoostGG Gaming Experience"
  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-1000"
  />
@@ -162,69 +163,7 @@ const About = () => {
  </div>
  </section>
 
- {/* Trustpilot Section */}
- <section className="py-24 px-6">
- <div className="max-w-[1400px] mx-auto">
- <div className="text-center mb-16">
- <div className="flex items-center justify-center gap-2 mb-4">
- <Star className="w-6 h-6 fill-[#00B67A] text-[#00B67A]" />
- <span className="font-black text-xl ">
- Trustpilot
- </span>
- </div>
- <h2 className="text-4xl md:text-6xl font-black tracking-tighter uppercase">
- "BoostGG is really <br className="md:hidden" />
- trustworthy!"
- </h2>
- </div>
-
- <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
- {[
- {
- title: "Awesome! Just Awesome!",
- text: "Staff is super nice and replies extremely quickly. The pro I work with is really nice and gets stuff done quick!",
- author: "Verified Customer",
- },
- {
- title: "As Good As It Gets",
- text: "Fantastic service! Quick and professional. Players are really good and have great personalities. Cost is also way better than competitors.",
- author: "Verified Customer",
- },
- {
- title: "Awesome",
- text: "Their communication is fast and efficient, making the entire experience a breeze. The product they offer is nothing short of excellent.",
- author: "Verified Customer",
- },
- ].map((review, i) => (
- <div
- key={i}
- className="bg-[#0A0A0A] border border-white/5 p-10 rounded-[40px] relative overflow-hidden group hover:border-primary/20 transition-all"
- >
- <Quote className="absolute top-6 right-8 w-12 h-12 text-white/5 -rotate-12" />
- <div className="flex gap-1 mb-6">
- {[1, 2, 3, 4, 5].map((star) => (
- <div
- key={star}
- className="w-5 h-5 bg-[#00B67A] rounded-sm flex items-center justify-center"
- >
- <Star className="w-3 h-3 fill-white text-white" />
- </div>
- ))}
- </div>
- <h4 className="text-lg font-black mb-4 uppercase">
- {review.title}
- </h4>
- <p className="text-white/40 font-bold leading-relaxed mb-6">
- {review.text}
- </p>
- <p className="text-[10px] font-black uppercase tracking-widest text-[#00B67A]">
- {review.author}
- </p>
- </div>
- ))}
- </div>
- </div>
- </section>
+ <ReviewsSection/>
  </div>
  );
 };

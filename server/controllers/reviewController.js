@@ -9,7 +9,7 @@ exports.getActiveReviews = async (req, res, next) => {
     try {
         const reviews = await Review.find({
             isPublished: true
-        }).sort({ createdAt: -1 }).limit(12);
+        }).sort({ createdAt: -1 });
 
         res.status(200).json({
             success: true,
@@ -117,6 +117,16 @@ exports.updateReview = async (req, res, next) => {
             return res.status(404).json({ success: false, message: 'Review not found' });
         }
 
+        // Delete old images if they are being updated
+        if (req.body.reviewImage && review.reviewImage && req.body.reviewImage !== review.reviewImage) {
+            const oldPath = path.join(__dirname, '..', review.reviewImage.startsWith('/') ? review.reviewImage.slice(1) : review.reviewImage);
+            if (fs.existsSync(oldPath)) fs.unlinkSync(oldPath);
+        }
+        if (req.body.countryImage && review.countryImage && req.body.countryImage !== review.countryImage) {
+            const oldPath = path.join(__dirname, '..', review.countryImage.startsWith('/') ? review.countryImage.slice(1) : review.countryImage);
+            if (fs.existsSync(oldPath)) fs.unlinkSync(oldPath);
+        }
+
         review = await Review.findByIdAndUpdate(req.params.id, req.body, {
             new: true,
             runValidators: true
@@ -143,9 +153,15 @@ exports.deleteReview = async (req, res, next) => {
             return res.status(404).json({ success: false, message: 'Review not found' });
         }
 
-        // Optional: Delete associated images from storage
+        // Delete associated images from storage
         if (review.reviewImage) {
-            const imagePath = path.join(__dirname, '..', review.reviewImage);
+            const imagePath = path.join(__dirname, '..', review.reviewImage.startsWith('/') ? review.reviewImage.slice(1) : review.reviewImage);
+            if (fs.existsSync(imagePath)) {
+                fs.unlinkSync(imagePath);
+            }
+        }
+        if (review.countryImage) {
+            const imagePath = path.join(__dirname, '..', review.countryImage.startsWith('/') ? review.countryImage.slice(1) : review.countryImage);
             if (fs.existsSync(imagePath)) {
                 fs.unlinkSync(imagePath);
             }

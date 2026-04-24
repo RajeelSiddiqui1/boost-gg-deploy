@@ -31,17 +31,17 @@ const BrandBanner = () => {
  {/* Right Image/Graphic */}
  <div className="w-full lg:w-1/2 relative h-[400px] lg:h-full lg:absolute lg:right-0 lg:top-0">
  <img
- src="https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=1200"
+ src="/main.png"
  className="w-full h-full object-cover mix-blend-screen opacity-100 lg:scale-110 lg:-translate-y-10 group-hover:scale-115 transition-transform duration-1000"
  alt="Gamer"
  />
  {/* Lightning Overlay */}
- <div className="absolute inset-0 flex items-center justify-center">
+ {/* <div className="absolute inset-0 flex items-center justify-center">
  <div className="w-full h-full bg-gradient-to-l from-primary/20 via-primary/5 to-transparent"></div>
  <svg className="w-[300px] h-[300px] text-primary/40 absolute right-20" viewBox="0 0 24 24" fill="currentColor">
  <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
  </svg>
- </div>
+ </div> */}
  </div>
  </div>
  </div>

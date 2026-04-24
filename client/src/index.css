@@ -7,6 +7,7 @@
   --color-primary-dark: #8bc332;
   --color-accent: #d9f99d;
   --color-lavender: #ecfccb;
+  --color-payment-method: #6B3AFF;
   --font-sans: "Stolzl", "Outfit", "Inter", sans-serif;
 
   /* SkyCoach Audit Tokens */
@@ -499,4 +500,28 @@ input:focus-visible {
     flex-basis: var(--col-width, 100%) !important;
     max-width: var(--col-width, 100%) !important;
   }
+}
+
+/* ========================================
+   GLOBAL PRIMARY BUTTON GRADIENT
+   ======================================== */
+button.bg-primary,
+a.bg-primary {
+  background: linear-gradient(to right, var(--color-sky-green), var(--color-sky-green-light), var(--color-sky-green)) !important;
+  background-size: 200% auto !important;
+  color: #ffffff !important;
+  transition: background-position 0.5s ease, transform 0.3s ease, box-shadow 0.3s ease !important;
+  border: none !important;
+}
+
+button.bg-primary:hover,
+a.bg-primary:hover {
+  background-position: right center !important;
+  box-shadow: 0 10px 30px rgba(19, 193, 0, 0.4) !important;
+}
+
+/* Ensure icons and inner text inside the primary buttons turn white to match the image */
+button.bg-primary *,
+a.bg-primary * {
+  color: #ffffff !important;
 }

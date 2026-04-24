@@ -26,6 +26,7 @@ const AccountForm = ({ account, games, onClose, onSuccess }) => {
  const [error, setError] = useState('');
  const [uploading, setUploading] = useState(false);
  const [previewImages, setPreviewImages] = useState([]);
+ const [selectedFiles, setSelectedFiles] = useState([]);
 
  useEffect(() => {
  if (account) {
@@ -63,34 +64,14 @@ const AccountForm = ({ account, games, onClose, onSuccess }) => {
  }
  };
 
- const handleFileChange = async (e) => {
+ const handleFileChange = (e) => {
  const files = Array.from(e.target.files);
  if (files.length === 0) return;
 
- setUploading(true);
- const token = localStorage.getItem('token');
- const uploadFormData = new FormData();
- files.forEach(file => uploadFormData.append('files', file));
-
- try {
- const res = await axios.post(`${API_URL}/api/v1/uploads/multiple?folder=accounts`, uploadFormData, {
- headers: {
- 'Content-Type': 'multipart/form-data',
- Authorization: `Bearer ${token}`
- }
- });
-
- const newScreenshots = res.data.data; // Backend returns array of URLs in .data
- setFormData(prev => ({
- ...prev,
- screenshots: [...prev.screenshots, ...newScreenshots]
- }));
- setPreviewImages(prev => [...prev, ...newScreenshots.map(img => getImageUrl(img))]);
- } catch (err) {
- setError('Failed to upload screenshots. Make sure endpoint /api/v1/upload/multiple exists.');
- } finally {
- setUploading(false);
- }
+ const previewUrls = files.map(file => URL.createObjectURL(file));
+ 
+ setSelectedFiles(prev => [...prev, ...files]);
+ setPreviewImages(prev => [...prev, ...previewUrls]);
  };
 
  const removeScreenshot = (index) => {
@@ -99,6 +80,13 @@ const AccountForm = ({ account, games, onClose, onSuccess }) => {
  screenshots: prev.screenshots.filter((_, i) => i !== index)
  }));
  setPreviewImages(prev => prev.filter((_, i) => i !== index));
+ 
+ // Also remove from selected files if it's a new file
+ const existingScreenshotsCount = formData.screenshots.length;
+ if (index >= existingScreenshotsCount) {
+ const fileIndex = index - existingScreenshotsCount;
+ setSelectedFiles(prev => prev.filter((_, i) => i !== fileIndex));
+ }
  };
 
  const handleSubmit = async (e) => {
@@ -112,10 +100,23 @@ const AccountForm = ({ account, games, onClose, onSuccess }) => {
  headers: { Authorization: `Bearer ${token}` }
  };
 
+ let finalScreenshots = [...formData.screenshots];
+
+ if (selectedFiles.length > 0) {
+ const uploadFormData = new FormData();
+ selectedFiles.forEach(file => uploadFormData.append('files', file));
+ const uploadRes = await axios.post(`${API_URL}/api/v1/uploads/multiple?folder=accounts`, uploadFormData, {
+ headers: { 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${token}` }
+ });
+ finalScreenshots = [...finalScreenshots, ...uploadRes.data.data];
+ }
+
+ const submitData = { ...formData, screenshots: finalScreenshots };
+
  if (account) {
- await axios.put(`${API_URL}/api/v1/accounts/admin/${account._id}`, formData, config);
+ await axios.put(`${API_URL}/api/v1/accounts/admin/${account._id}`, submitData, config);
  } else {
- await axios.post(`${API_URL}/api/v1/accounts/admin`, formData, config);
+ await axios.post(`${API_URL}/api/v1/accounts/admin`, submitData, config);
  }
 
  if (onSuccess) onSuccess();

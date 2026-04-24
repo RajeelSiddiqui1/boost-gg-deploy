@@ -205,10 +205,12 @@ const HotOffers = () => {
  return (
  <section className="py-2 px-6 bg-black font-['Outfit']">
  {/* Main Outer Container with Perfect Rounding and Mesh Gradient */}
- <div className="max-w-[1400px] mx-auto bg-[#0F0F0F] rounded-[48px] p-8 border border-white/[0.04] relative overflow-hidden group/container">
- {/* Intense Lime Gradient Glow Layers */}
- <div className="absolute -bottom-[20%] -left-[10%] w-[60%] h-[110%] bg-[#a2e63e]/40 blur-[150px] rounded-full opacity-70 pointer-events-none animate-pulse-slow"></div>
- <div className="absolute top-[20%] -left-[5%] w-[40%] h-[80%] bg-[#8bc332]/20 blur-[120px] rounded-full opacity-30 pointer-events-none"></div>
+ <div className="max-w-[1400px] mx-auto bg-[#000000] rounded-[48px] p-8 border border-[#a2e63e]/20 relative overflow-hidden group/container shadow-[0_0_40px_rgba(162,230,62,0.05)]">
+ {/* Linear Gradient: Dark from bottom-left corner, ending light green at top-center */}
+ <div className="absolute inset-0 bg-[linear-gradient(60deg,#000000_0%,#000000_40%,rgba(162,230,62,0.25)_100%)] pointer-events-none z-0"></div>
+ 
+ {/* Extra center top light glow to emphasize the 'light at top center' */}
+ <div className="absolute -top-[15%] left-1/2 -translate-x-1/2 w-[70%] h-[50%] bg-[#a2e63e]/40 blur-[120px] rounded-full pointer-events-none z-0 animate-pulse-slow"></div>
 
  {/* Header Section */}
  <div className="flex items-center justify-between mb-8 relative z-10 px-4">

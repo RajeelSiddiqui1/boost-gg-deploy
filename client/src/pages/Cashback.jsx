@@ -21,6 +21,7 @@ import {
  MousePointer2,
  RefreshCcw
 } from 'lucide-react';
+import PaymentMethods from '../components/sections/PaymentMethods';
 
 const Cashback = () => {
  useEffect(() => {
@@ -255,11 +256,11 @@ const Cashback = () => {
 
                 {/* Counter Grid */}
                 <div className="flex items-center justify-center gap-2 md:gap-3 mb-20">
-                    <span className="text-4xl md:text-6xl font-black text-white/20 self-center mr-4">$</span>
+                    <span className="text-4xl md:text-6xl font-black text-white self-center mr-4">$</span>
                     {["1", "9", "0", "3", "5", "9", "8"].map((digit, i) => (
                         <div
                             key={i}
-                            className="w-12 h-16 md:w-20 md:h-28 bg-[#111] border border-white/10 rounded-2xl flex items-center justify-center text-4xl md:text-7xl font-black text-white shadow-[0_20px_40px_rgba(0,0,0,0.5)] relative overflow-hidden"
+                            className="w-12 h-16 md:w-20 md:h-28 bg-white text-black rounded-2xl flex items-center justify-center text-4xl md:text-7xl font-black  shadow-[0_20px_40px_rgba(0,0,0,0.5)] relative overflow-hidden"
                         >
                             <div className="absolute inset-0 bg-gradient-to-b from-white/5 to-transparent"></div>
                             <span className="relative z-10">{digit}</span>
@@ -371,17 +372,7 @@ const Cashback = () => {
             </div>
         </section>
 
-        {/* 8. Payment Icons Section */}
-        <section className="py-20 px-6 border-t border-white/5 opacity-40 grayscale group hover:opacity-100 hover:grayscale-0 transition-all duration-700">
-            <div className="max-w-[1400px] mx-auto flex flex-wrap justify-center items-center gap-8 md:gap-16">
-                <span className="text-2xl font-black tracking-widest opacity-40 uppercase hover:opacity-100 transition-opacity">PayPal</span>
-                <span className="text-2xl font-black tracking-widest opacity-40 uppercase hover:opacity-100 transition-opacity">VISA</span>
-                <span className="text-2xl font-black tracking-widest opacity-40 uppercase hover:opacity-100 transition-opacity">MasterCard</span>
-                <span className="text-2xl font-black tracking-widest opacity-40 uppercase hover:opacity-100 transition-opacity">Apple Pay</span>
-                <span className="text-2xl font-black tracking-widest opacity-40 uppercase hover:opacity-100 transition-opacity">G-Pay</span>
-                <span className="text-2xl font-black tracking-widest opacity-40 uppercase hover:opacity-100 transition-opacity">Crypto</span>
-            </div>
-        </section>
+       <PaymentMethods/>
 
  <style>{`
  @keyframes float {

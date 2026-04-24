@@ -1,11 +1,13 @@
 import React, { Suspense, lazy } from 'react';
 import SubNavbar from '../components/layout/SubNavbar';
 import { useMode } from '../context/ModeContext';
+import ReviewsSection from '../components/sections/ReviewsSection';
 
 // Lazy load mode components for total isolation and performance
 const BoostingMode = lazy(() => import('../components/modes/BoostingMode'));
 const CurrencyMode = lazy(() => import('../components/modes/CurrencyMode'));
 const AccountsMode = lazy(() => import('../components/modes/AccountsMode'));
+import BlogSection from '../components/sections/BlogSection';
 
 const Home = () => {
  const { activeMode, MODES } = useMode();
@@ -18,6 +20,8 @@ const Home = () => {
  {/* PlatformModeSwitcher removed as per user instruction to use only top switch */}
  </div>
 
+
+
  <Suspense fallback={
  <div className="py-24 flex items-center justify-center">
  <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
@@ -28,6 +32,9 @@ const Home = () => {
  {activeMode === MODES.CURRENCY && <CurrencyMode />}
  {activeMode === MODES.ACCOUNTS && <AccountsMode />}
  </Suspense>
+
+ {/* <BlogSection />
+ <ReviewsSection /> */}
 
  {/* Global animations and styles for the modes */}
  <style jsx>{`
