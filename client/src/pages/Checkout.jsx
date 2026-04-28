@@ -30,7 +30,7 @@ const Checkout = () => {
     const { formatPrice } = useCurrency();
     const navigate = useNavigate();
     const location = useLocation();
-    
+
     const preSelectedPayment = location.state?.selectedPaymentMethod || 'visa';
     const instantItem = location.state?.instantItem || null;
 
@@ -42,7 +42,6 @@ const Checkout = () => {
     const [promoLoading, setPromoLoading] = useState(false);
     const [promoError, setPromoError] = useState('');
 
-    // Determine items to display and total
     const displayItems = instantItem ? [instantItem] : cartItems;
     const displayTotal = instantItem ? (instantItem.price * instantItem.quantity) : cartTotal;
     const displayMode = instantItem ? instantItem.mode : cartMode;
