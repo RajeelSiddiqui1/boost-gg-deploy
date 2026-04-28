@@ -1,5 +1,5 @@
 import React from 'react';
-import { Sparkles, Coins, UserCircle2 } from 'lucide-react';
+import { Sparkles, Coins, UserCircle2, Star } from 'lucide-react';
 import { useMode } from '../../context/ModeContext';
 
 const SubNavbar = () => {
@@ -20,10 +20,28 @@ const SubNavbar = () => {
  return (
  <div className="bg-transparent px-6 relative z-50 pointer-events-none mt-2">
  <div className="max-w-[1400px] mx-auto py-2 flex flex-col lg:flex-row items-center justify-between gap-4 pointer-events-auto">
- <div className="flex items-center gap-2 text-[10px] font-black text-white/30 tracking-[0.2em]">
- <span className="w-1 h-1 bg-primary rounded-full"></span>
- CUSTOMIZE YOUR EXPERIENCE
- </div>
+                <div className="flex items-center gap-4 border border-white/30 bg-white/[0.03] rounded-2xl px-4 py-2">
+                    <div className="flex items-center gap-2">
+                        <div className="flex gap-0.5">
+                            {[1, 2, 3, 4, 5].map((i) => (
+                                <Star key={i} className="w-3 h-3 fill-[#FFB800] text-[#FFB800]" />
+                            ))}
+                        </div>
+                        <span className="text-[11px] font-black text-white ml-1">4.9</span>
+                        <span className="text-[10px] font-bold text-white/30 uppercase tracking-wider ml-1">11,200+ reviews</span>
+                    </div>
+
+                    <div className="w-[1px] h-3 bg-white/10"></div>
+
+                    <div className="flex items-center gap-2">
+                        <div className="relative">
+                            <div className="w-2 h-2 bg-[#13c100] rounded-full animate-pulse"></div>
+                            <div className="absolute inset-0 bg-[#13c100] rounded-full animate-ping opacity-20"></div>
+                        </div>
+                        <span className="text-[11px] font-black text-white">496</span>
+                        <span className="text-[10px] font-bold text-white/30 uppercase tracking-wider">players online</span>
+                    </div>
+                </div>
 
  <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-6">
  {items.map((item) => {

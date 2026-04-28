@@ -16,6 +16,8 @@ import StepProcess from '../sections/StepProcess';
 import DetailBanner from '../DetailBanner';
 
 
+
+
 const CurrencyMode = () => {
  const { gameSlug } = useParams();
  const navigate = useNavigate();
@@ -138,7 +140,7 @@ const CurrencyMode = () => {
  price: finalPrice,
  quantity: 1,
  currencyQuantity: quantity,
- image: selectedGame.icon,
+ image: getImageUrl(selectedGame.bgImage || selectedGame.image || selectedGame.icon),
  mode: 'currency',
  customerEmail: email,
  selectedOptions: {
@@ -182,15 +184,7 @@ const CurrencyMode = () => {
         <div className="absolute -top-[10%] -left-[10%] w-[50%] h-[500px] bg-primary/20 blur-[150px] pointer-events-none -z-10 rounded-full"></div>
         <div className="absolute top-0 left-0 w-[40%] h-[400px] bg-gradient-to-br from-primary/10 via-transparent to-transparent pointer-events-none -z-10"></div>
         
-        <div className="flex flex-col md:flex-row md:items-center justify-between mb-12 gap-6 relative z-10">
- <div className="space-y-2">
- <div className="flex items-center gap-3">
- <div className="w-2 h-8 bg-primary rounded-full"></div>
- <h1 className="text-4xl font-black uppercase tracking-tight text-white">Game Currency</h1>
- </div>
- <p className="text-white/40 font-medium">Select a game to see available gold and currency offers</p>
- </div>
- </div>
+
 
  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
  {games.map(game => (

@@ -309,30 +309,30 @@ export default function ServiceCreatorPage() {
  cashbackPercent: Number(state.cashbackPercent) || 5,
  isActive: state.isActive !== false,
  deliveryTime: Number(state.deliveryTime) || 24,
- pricing: {
- type: 'fixed',
- basePrice: Number(state.basePrice) || 0
- }
  };
 
- if (state.reviews && state.reviews.length > 0) {
- payload.sampleReviews = state.reviews;
- }
-
+ // Append scalar fields
  Object.keys(payload).forEach(key => {
- if (['sidebarSections', 'speedOptions', 'requirements', 'featureTags', 'reviews', 'pricing'].includes(key)) {
- const backendKey = key === 'featureTags' ? 'features' : key;
- if (payload[key]) {
- formData.append(backendKey, JSON.stringify(payload[key]));
- }
- } else {
- let backendKey = key;
- if (key === 'category') backendKey = 'categoryId';
  if (payload[key] !== undefined && payload[key] !== null && payload[key] !== "") {
- formData.append(backendKey, payload[key]);
- }
+ formData.append(key, payload[key]);
  }
  });
+
+ // Append pricing as JSON
+ formData.append('pricing', JSON.stringify({
+ type: 'fixed',
+ basePrice: Number(state.basePrice) || 0
+ }));
+
+ // Directly append array/object fields from state as JSON
+ formData.append('sidebarSections', JSON.stringify(state.sidebarSections || []));
+ formData.append('speedOptions', JSON.stringify(state.speedOptions || {}));
+ formData.append('requirements', JSON.stringify(state.requirements || []));
+ formData.append('features', JSON.stringify(state.featureTags || []));
+
+ if (state.reviews && state.reviews.length > 0) {
+ formData.append('sampleReviews', JSON.stringify(state.reviews));
+ }
 
  if (imageFile) {
  formData.append('backgroundImage', imageFile);

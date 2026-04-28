@@ -5,18 +5,20 @@ import { API_URL, getImageUrl } from '../utils/api';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
 import { useCurrency } from '../context/CurrencyContext';
+import ReviewsSection from '../components/sections/ReviewsSection';
 import {
  ChevronRight, Zap, Heart,
  Search, LayoutGrid, Star,
  ShieldCheck, Gamepad2,
  ChevronDown, Flame, Plus, Clock, Users,
  Award, Shield, Layers, Filter, CheckCircle2,
- ArrowRight, ShoppingCart
+ ArrowRight, ShoppingCart, Info
 } from 'lucide-react';
 import { useCart } from '../context/CartContext';
+import PaymentModal from '../components/layout/PaymentModal';
 
 /* ─── Compact Account Card ─── */
-const CompactAccountCard = ({ account }) => {
+const CompactAccountCard = ({ account, onBuyNow }) => {
  const { formatPrice } = useCurrency();
  const { addToCart } = useCart();
  const toast = useToast();
@@ -28,13 +30,16 @@ const CompactAccountCard = ({ account }) => {
  title: account.title,
  price: account.price,
  quantity: 1,
- image: account.thumbnail || account.gameId?.icon || account.screenshots?.[0],
+   image: account.screenshots?.[0] || account.thumbnail,
+
+ icon: account.gameId?.icon,
  mode: 'accounts',
  selectedOptions: {
  rank: account.rank,
  region: account.region,
  server: account.server
- }
+ },
+ type: 'account'
  };
  addToCart(cartItem);
  toast.success('Account added to cart');
@@ -117,12 +122,12 @@ const CompactAccountCard = ({ account }) => {
  <span className="text-[9px] font-black text-white/20 uppercase tracking-widest mb-0.5">One-time payment</span>
  <span className="text-2xl font-black text-white tracking-tighter ">{formatPrice(account.price)}</span>
  </div>
- <button 
- onClick={handleAddToCart}
- className="w-12 h-12 bg-primary rounded-2xl flex items-center justify-center text-black shadow-[0_10px_20px_rgba(162,230,62,0.15)] hover:scale-110 active:scale-95 transition-all"
- >
- <ShoppingCart className="w-5 h-5" />
- </button>
+            <button 
+                onClick={(e) => { e.preventDefault(); e.stopPropagation(); onBuyNow(account); }}
+                className="bg-primary text-black px-7 h-12 rounded-2xl flex items-center justify-center font-black text-[11px] uppercase tracking-[0.1em] shadow-[0_10px_25px_rgba(19,193,0,0.3)] hover:scale-105 active:scale-95 transition-all border-none"
+            >
+                Buy Now
+            </button>
  </div>
  </div>
  </Link>
@@ -130,7 +135,7 @@ const CompactAccountCard = ({ account }) => {
 };
 
 /* ─── Compact Vertical Service Card ─── */
-const CompactServiceCard = ({ service }) => {
+const CompactServiceCard = ({ service, onBuyNow }) => {
  const navigate = useNavigate();
  const { formatPrice } = useCurrency();
 
@@ -216,9 +221,12 @@ const CompactServiceCard = ({ service }) => {
  <span className="text-[10px] font-black text-primary/70 uppercase tracking-wide">View Options</span>
  )}
  </div>
- <div className="w-10 h-10 bg-white/[0.03] rounded-xl flex items-center justify-center border border-white/[0.07] group-hover:bg-primary group-hover:text-black group-hover:border-primary transition-all duration-300">
- <Plus className="w-4 h-4 transition-transform duration-300 group-hover:rotate-90" />
- </div>
+                <button 
+                    onClick={(e) => { e.preventDefault(); e.stopPropagation(); onBuyNow(service); }}
+                    className="bg-primary text-black h-11 px-6 rounded-2xl flex items-center justify-center font-black text-[11px] uppercase tracking-[0.1em] shadow-[0_10px_25px_rgba(19,193,0,0.3)] hover:scale-105 active:scale-95 transition-all border-none"
+                >
+                    Buy Now
+                </button>
  </div>
  </div>
  </div>
@@ -243,6 +251,45 @@ const GameHub = () => {
  const [isSaving, setIsSaving] = useState(false);
  const [isSaved, setIsSaved] = useState(false);
 
+    // Payment Modal State
+    const [showPaymentModal, setShowPaymentModal] = useState(false);
+    const [selectedItemForPayment, setSelectedItemForPayment] = useState(null);
+
+    const handleBuyNow = (item) => {
+        setSelectedItemForPayment(item);
+        setShowPaymentModal(true);
+    };
+
+    const confirmBuyNow = (paymentMethod) => {
+        if (!selectedItemForPayment) return;
+        
+        const isAccount = !!selectedItemForPayment.rank;
+        const instantItem = {
+            id: selectedItemForPayment._id,
+            title: selectedItemForPayment.title,
+            price: selectedItemForPayment.price || selectedItemForPayment.basePrice,
+            quantity: 1,
+            image: isAccount 
+                ? (selectedItemForPayment.screenshots?.[0] || selectedItemForPayment.thumbnail)
+                : (selectedItemForPayment.backgroundImage || selectedItemForPayment.image),
+            icon: selectedItemForPayment.icon,
+            mode: isAccount ? 'accounts' : 'boosting',
+            selectedOptions: isAccount ? {
+                rank: selectedItemForPayment.rank,
+                region: selectedItemForPayment.region
+            } : {},
+            type: isAccount ? 'account' : 'service'
+        };
+        
+        setShowPaymentModal(false);
+        navigate('/checkout', { 
+            state: { 
+                selectedPaymentMethod: paymentMethod,
+                instantItem: instantItem 
+            } 
+        });
+    };
+
  // Account Filters
  const [accountFilters, setAccountFilters] = useState({
  rank: 'all',
@@ -255,6 +302,7 @@ const GameHub = () => {
  const isAccountMode = searchParams.get('mode') === 'accounts';
 
  const { user, checkUserLoggedIn } = useAuth();
+ const { addToCart } = useCart();
  const toast = useToast();
 
  useEffect(() => {
@@ -385,33 +433,39 @@ const GameHub = () => {
  );
  }
 
- const faqs = [
- { q: `What is ${game.name} Boosting?`, a: `Boosting is a premium service where our verified professionals play on your behalf to achieve specific in-game milestones efficiently and safely.` },
- { q: "Is my account safe?", a: "Absolutely. We enforce bank-level security, premium localized VPNs, and rigorous PRO vetting to guarantee zero risk to your account." },
- { q: "When will my order begin?", a: "Industry-leading start time — the vast majority of our services commence within 15–30 minutes of payment confirmation." },
- { q: "Can I monitor the progress?", a: "Yes. You'll have direct communication with your assigned PRO and our 24/7 support team for real-time updates." }
- ];
-
- const fallbackReviews = [
- { name: "Alex K.", rating: 5, date: "2 hours ago", text: "Flawless execution. The team carried me through the hardest content without a single wipe." },
- { name: "Marcus R.", rating: 5, date: "5 hours ago", text: "Fastest delivery I've ever experienced. Highly recommend their currency services." },
- { name: "Elena V.", rating: 5, date: "Yesterday", text: "Super professional. Kept me updated the entire time and finished hours ahead of schedule." },
- { name: "David S.", rating: 5, date: "1 day ago", text: "Discreet and incredibly skilled. Will definitely be utilizing their services again." }
- ];
-
- const reviews = dbReviews.length > 0 ? dbReviews.map(r => ({
- name: r.reviewerName, rating: r.rating || 5,
- date: new Date(r.createdAt).toLocaleDateString(), text: r.text
- })) : fallbackReviews;
-
  // Stats derived from real backend data
- const totalServices = services.length;
- const avgRating = dbReviews.length > 0
- ? (dbReviews.reduce((acc, r) => acc + (r.rating || 5), 0) / dbReviews.length).toFixed(1)
- : '4.9';
+    const avgRating = dbReviews.length > 0
+        ? (dbReviews.reduce((acc, r) => acc + (r.rating || 5), 0) / dbReviews.length).toFixed(1)
+        : '4.9';
+
+    const faqs = [
+        { q: `What is ${game.name} Boosting?`, a: `Boosting is a premium service where our verified professionals play on your behalf to achieve specific in-game milestones efficiently and safely.` },
+        { q: "Is my account safe?", a: "Absolutely. We enforce bank-level security, premium localized VPNs, and rigorous PRO vetting to guarantee zero risk to your account." },
+        { q: "When will my order begin?", a: "Industry-leading start time — the vast majority of our services commence within 15–30 minutes of payment confirmation." },
+        { q: "Can I monitor the progress?", a: "Yes. You'll have direct communication with your assigned PRO and our 24/7 support team for real-time updates." }
+    ];
+
+    const fallbackReviews = [
+        { name: "Alex K.", rating: 5, date: "2 hours ago", text: "Flawless execution. The team carried me through the hardest content without a single wipe." },
+        { name: "Marcus R.", rating: 5, date: "5 hours ago", text: "Fastest delivery I've ever experienced. Highly recommend their currency services." },
+        { name: "Elena V.", rating: 5, date: "Yesterday", text: "Super professional. Kept me updated the entire time and finished hours ahead of schedule." },
+        { name: "David S.", rating: 5, date: "1 day ago", text: "Discreet and incredibly skilled. Will definitely be utilizing their services again." }
+    ];
+
+    const reviews = dbReviews.length > 0 ? dbReviews.map(r => ({
+        name: r.reviewerName, rating: r.rating || 5,
+        date: new Date(r.createdAt).toLocaleDateString(), text: r.text
+    })) : fallbackReviews;
 
  return (
  <div className="min-h-screen bg-[#060606] text-white font-['Outfit'] selection:bg-primary/30">
+        
+        <PaymentModal 
+            isOpen={showPaymentModal} 
+            onClose={() => setShowPaymentModal(false)} 
+            total={selectedItemForPayment?.price || selectedItemForPayment?.basePrice || 0}
+            onConfirm={confirmBuyNow}
+        />
 
  {/* ── HERO BANNER ── */}
  <div className="relative overflow-hidden" style={{ height: '320px' }}>
@@ -419,15 +473,15 @@ const GameHub = () => {
  <img
  src={isAccountMode ? getImageUrl(`uploads/bg/${slug}.jpg`) : (getImageUrl(game.banner) || getImageUrl(game.bgImage) || getImageUrl(game.image))}
  alt={game.name}
- className="absolute inset-0 w-full h-full object-cover object-center opacity-60"
+ className="absolute inset-0 w-full h-full object-cover object-center opacity-100"
  onError={(e) => { 
  if (isAccountMode) e.target.src = getImageUrl(game.banner || game.bgImage || game.image);
  else e.target.style.display = 'none'; 
  }}
  />
  {/* Gradients */}
- <div className="absolute inset-0 bg-gradient-to-t from-[#060606] via-[#060606]/80 to-[#060606]/20" />
- <div className="absolute inset-0 bg-gradient-to-r from-[#060606] via-[#060606]/40 to-transparent" />
+ <div className="absolute inset-0 bg-gradient-to-t from-[#060606] via-[#060606]/40 to-transparent" />
+ <div className="absolute inset-0 bg-gradient-to-r from-[#060606]/60 via-transparent to-transparent" />
  {/* Glow */}
  <div className="absolute bottom-0 left-0 w-[40vw] h-[40vw] bg-primary/10 blur-[120px] rounded-full pointer-events-none" />
 
@@ -496,7 +550,7 @@ const GameHub = () => {
  {/* Game pill */}
  <div className="flex items-center gap-2.5 p-3 rounded-2xl bg-white/[0.03] border border-white/[0.06]">
  {(game.icon || game.image) ? (
- <img src={getImageUrl(game.icon || game.image)} className="w-7 h-7 rounded-lg object-cover" alt={game.name} />
+ <img src={getImageUrl(game.icon || game.image)} className="w-15 h-15 rounded-lg object-cover" alt={game.name} />
  ) : (
  <div className="w-7 h-7 rounded-lg bg-primary/10 border border-primary/20 flex items-center justify-center">
  <Gamepad2 className="w-3.5 h-3.5 text-primary" />
@@ -664,7 +718,7 @@ const GameHub = () => {
  className="animate-fade-in-up"
  style={{ animationDelay: `${(idx % 9) * 40}ms` }}
  >
- <CompactAccountCard account={account} />
+ <CompactAccountCard account={account} onBuyNow={handleBuyNow} />
  </div>
  ))}
  </div>
@@ -723,7 +777,7 @@ const GameHub = () => {
  className="animate-fade-in-up"
  style={{ animationDelay: `${(idx % 9) * 35}ms` }}
  >
- <CompactServiceCard service={service} />
+ <CompactServiceCard service={service} onBuyNow={handleBuyNow} />
  </div>
  ))}
  </div>
@@ -744,102 +798,93 @@ const GameHub = () => {
  </div>
  </div>
 
- {/* ── FEATURES ── */}
- <div className="border-y border-white/5 bg-[#080808] py-20">
- <div className="max-w-[1400px] mx-auto px-6">
- <div className="text-center mb-12">
- <h2 className="text-3xl font-black text-white tracking-tighter uppercase mb-3">
- The <span className="text-primary">BoostGG</span> Standard
- </h2>
- <p className="text-white/35 font-medium text-sm max-w-xl mx-auto">
- Uncompromising quality on every single order.
- </p>
- </div>
- <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
- {[
- { Icon: ShieldCheck, title: 'Ironclad Security', desc: 'Elite VPNs matched to your locality, offline mode protocols, and hardware ID management.' },
- { Icon: Zap, title: 'Hyper-Fast Starts', desc: 'Operations commence within minutes of payment. Our global roster runs 24/7 with no queues.' },
- { Icon: Star, title: 'Top 1% Talent', desc: 'Rank 1 gladiators, world-first raiders, and e-sports veterans handle your orders personally.' },
- ].map(({ Icon, title, desc }, i) => (
- <div key={i} className="bg-[#0a0a0a] border border-white/[0.07] p-7 rounded-2xl hover:border-primary/30 transition-colors group">
- <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center border border-white/8 mb-5 group-hover:scale-110 transition-transform group-hover:bg-primary/10 group-hover:border-primary/20">
- <Icon className="w-5 h-5 text-white/60 group-hover:text-primary transition-colors" />
- </div>
- <h3 className="text-base font-black text-white uppercase tracking-tight mb-2">{title}</h3>
- <p className="text-white/35 font-medium leading-relaxed text-xs">{desc}</p>
- </div>
- ))}
- </div>
- </div>
- </div>
+  {/* FEATURES: REDESIGNED */}
+  <div className="py-32 relative overflow-hidden bg-[#060606]">
+    {/* Background Decorative Elements */}
+    <div className="absolute top-1/2 left-1/4 -translate-y-1/2 w-[400px] h-[400px] bg-primary/5 blur-[120px] rounded-full pointer-events-none" />
+    <div className="absolute top-1/3 right-1/4 -translate-y-1/2 w-[300px] h-[300px] bg-primary/5 blur-[100px] rounded-full pointer-events-none" />
+    
+    <div className="max-w-[1400px] mx-auto px-6 relative z-10">
+      <div className="text-center mb-24">
+        <div className="flex items-center justify-center gap-6 mb-6">
+          <div className="h-px bg-gradient-to-r from-transparent via-white/10 to-transparent flex-1 hidden md:block"></div>
+          <span className="text-primary font-black text-[10px] uppercase tracking-[0.4em]">Efficiency First</span>
+          <div className="h-px bg-gradient-to-l from-transparent via-white/10 to-transparent flex-1 hidden md:block"></div>
+        </div>
+        <h2 className="text-3xl md:text-5xl font-black text-white tracking-tighter uppercase mb-6 leading-none">
+          Optimize Your Time With <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-[#5eead4]">BoostGG</span>
+        </h2>
+        <p className="text-white/40 font-medium text-sm max-w-2xl mx-auto uppercase tracking-[0.2em] leading-relaxed">
+          Over 10 years in gaming, we know exactly what elite players need to stay at the top.
+        </p>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        {[
+          { 
+            svg: '/game-hub/competitive_prices_new.svg', 
+            title: 'Competitive Prices', 
+            desc: 'Premium services at the most competitive rates in the market, guaranteed.', 
+           
+            glowColor: 'primary'
+          },
+          { 
+            svg: '/game-hub/monitored_quality_new.svg', 
+            title: 'Monitored Quality', 
+            desc: '24/7 Human supervision and quality checks. No AI, only verified professionals.', 
+           
+            glowColor: 'primary'
+          },
+          { 
+            svg: '/game-hub/safety_with_transparency_new.svg', 
+            title: 'Safety & Transparency', 
+            desc: 'Industry-leading encryption and VPN protocols for maximum account safety.', 
+          
+            glowColor: 'primary'
+          },
+        ].map(({ svg, title, desc, btnText }, i) => (
+          <div 
+            key={i} 
+            className="group relative flex flex-col p-10 rounded-[2.5rem] bg-white/[0.02] border border-white/[0.05] hover:border-primary/30 transition-all duration-700 hover:-translate-y-2 overflow-hidden"
+          >
+            {/* Hover Glow Background */}
+            <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+            
+            {/* Icon Section */}
+            <div className="relative mb-8 self-start">
+              <div className="absolute inset-0 bg-primary/20 blur-2xl rounded-full opacity-0 group-hover:opacity-100 transition-all duration-700 scale-75 group-hover:scale-125" />
+              <div className="w-20 h-20 rounded-2xl bg-[#0d0d0d] border border-white/10 flex items-center justify-center relative overflow-hidden transition-all duration-500 group-hover:border-primary/50 group-hover:scale-110 group-hover:rotate-3 shadow-2xl">
+                <div className="absolute inset-0 bg-gradient-to-br from-white/[0.05] to-transparent" />
+                <img src={svg} alt={title} className="w-10 h-10 relative z-10 transition-transform duration-700 group-hover:scale-110" />
+              </div>
+            </div>
+
+            {/* Text Content */}
+            <h3 className="text-xl font-black text-white uppercase tracking-tight mb-4 group-hover:text-primary transition-colors duration-300">
+              {title}
+            </h3>
+            <p className="text-white/40 font-medium leading-relaxed text-sm mb-10">
+              {desc}
+            </p>
+
+            {/* Action Button */}
+           
+
+            {/* Subtle index number */}
+            <span className="absolute top-8 right-10 text-5xl font-black text-white/[0.02] pointer-events-none group-hover:text-primary/[0.05] transition-colors duration-700">
+              0{i + 1}
+            </span>
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+
 
  {/* ── REVIEWS ── */}
- <div className="py-20 overflow-hidden bg-[#060606]">
- <div className="max-w-[1400px] mx-auto px-6 mb-10 flex flex-col md:flex-row items-center justify-between gap-4">
- <div>
- <h2 className="text-2xl md:text-3xl font-black text-white tracking-tighter uppercase mb-1">
- {dbReviews.length > 0 ? `${dbReviews.length} Verified Reviews` : 'Verified Reviews'}
- </h2>
- <p className="text-white/25 font-medium text-xs">Real feedback from {game.name} clients.</p>
- </div>
- <div className="flex items-center gap-2.5 bg-[#0a0a0a] border border-white/[0.07] px-5 py-2.5 rounded-xl">
- <span className="text-xl font-black text-white">{avgRating}</span>
- <div className="flex gap-0.5">{[1,2,3,4,5].map(i => <Star key={i} className="w-3.5 h-3.5 fill-primary text-primary" />)}</div>
- <span className="text-[9px] font-black uppercase text-white/25 tracking-widest pl-2.5 border-l border-white/10">Trustpilot</span>
- </div>
- </div>
- <div className="flex overflow-x-auto gap-4 pb-6 px-6 lg:px-[5vw] no-scrollbar snap-x snap-mandatory">
- {reviews.map((rev, i) => (
- <div key={i} className="min-w-[280px] md:min-w-[320px] bg-[#0a0a0a] border border-white/[0.07] p-6 rounded-2xl snap-center hover:bg-[#0f0f0f] transition-colors flex-shrink-0">
- <div className="flex items-center justify-between mb-4">
- <div className="flex gap-0.5">{[1,2,3,4,5].map(j => <Star key={j} className="w-3 h-3 fill-primary text-primary" />)}</div>
- <span className="text-[9px] font-bold text-white/20">{rev.date}</span>
- </div>
- <p className="text-sm text-white/60 font-medium leading-relaxed mb-5 line-clamp-3">"{rev.text}"</p>
- <div className="flex items-center gap-2.5">
- <div className="w-8 h-8 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center font-black text-primary text-sm">
- {rev.name.charAt(0)}
- </div>
- <div>
- <p className="text-[11px] font-black text-white uppercase tracking-wide">{rev.name}</p>
- <div className="text-[8px] font-bold text-primary uppercase tracking-widest flex items-center gap-1 mt-0.5">
- <span className="w-1 h-1 bg-primary rounded-full" />
- Verified Buyer
- </div>
- </div>
- </div>
- </div>
- ))}
- </div>
- </div>
+ <ReviewsSection/>
 
- {/* ── FAQ ── */}
- <div className="py-20 bg-[#080808] border-t border-white/5">
- <div className="max-w-2xl mx-auto px-6">
- <div className="text-center mb-10">
- <h2 className="text-2xl md:text-3xl font-black text-white tracking-tighter uppercase mb-2">FAQ</h2>
- <p className="text-white/25 font-medium text-xs">Common questions about {game.name} services.</p>
- </div>
- <div className="space-y-2">
- {faqs.map((faq, i) => (
- <div key={i} className={`rounded-2xl overflow-hidden transition-all duration-300 border ${activeFaq === i ? 'bg-white/[0.04] border-primary/20' : 'bg-[#0a0a0a] border-white/[0.07] hover:border-white/12'}`}>
- <button
- onClick={() => setActiveFaq(activeFaq === i ? -1 : i)}
- className="w-full flex items-center justify-between px-5 py-4 text-left"
- >
- <span className={`text-xs font-black uppercase tracking-wide transition-colors ${activeFaq === i ? 'text-white' : 'text-white/50'}`}>{faq.q}</span>
- <div className={`w-6 h-6 rounded-full flex items-center justify-center transition-all flex-shrink-0 ml-4 ${activeFaq === i ? 'bg-primary text-black' : 'bg-white/5 text-white/30'}`}>
- <ChevronDown className={`w-3 h-3 transition-transform ${activeFaq === i ? 'rotate-180' : ''}`} />
- </div>
- </button>
- <div className={`px-5 overflow-hidden transition-all duration-300 ${activeFaq === i ? 'max-h-[200px] opacity-100 pb-5' : 'max-h-0 opacity-0'}`}>
- <p className="text-white/40 font-medium leading-relaxed text-xs pt-2 border-t border-white/5">{faq.a}</p>
- </div>
- </div>
- ))}
- </div>
- </div>
- </div>
+
 
  <style>{`
  .no-scrollbar::-webkit-scrollbar { display: none; }

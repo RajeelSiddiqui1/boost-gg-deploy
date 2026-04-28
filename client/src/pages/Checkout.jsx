@@ -1,383 +1,444 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import { useCurrency } from '../context/CurrencyContext';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, Link, useLocation } from 'react-router-dom';
 import {
- ShieldCheck, CreditCard, MessageSquare,
- ArrowRight, CheckCircle2, ShoppingCart,
- ChevronRight, Lock, Zap, Info, Tag
+    ShieldCheck, CreditCard, MessageSquare,
+    ArrowRight, CheckCircle2, ShoppingCart,
+    ChevronRight, Lock, Zap, Info, Tag, 
+    Globe, Smartphone, CreditCard as CardIcon,
+    Wallet, Bitcoin, ArrowLeft, Headphones, Package
 } from 'lucide-react';
 import axios from 'axios';
-import { API_URL } from '../utils/api';
+import { API_URL, getImageUrl } from '../utils/api';
+
+const PaymentMethodLogo = ({ id, active }) => {
+    switch (id) {
+        case 'visa': return <div className="flex items-center gap-1"><span className={`text-[10px] font-black italic ${active ? 'text-black' : 'text-white'}`}>VISA</span></div>;
+        case 'ideal': return <span className={`text-[10px] font-black uppercase tracking-tighter ${active ? 'text-black' : 'text-[#cc0066]'}`}>iDEAL</span>;
+        case 'skrill': return <span className={`text-[10px] font-black uppercase tracking-tight ${active ? 'text-black' : 'text-[#821361]'}`}>SKRILL</span>;
+        case 'crypto': return <span className={`text-[10px] font-black uppercase tracking-widest ${active ? 'text-black' : 'text-primary'}`}>CRYPTO</span>;
+        case 'google': return <span className={`text-[10px] font-black ${active ? 'text-black' : 'text-white'}`}>GPay</span>;
+        default: return <CardIcon className="w-4 h-4" />;
+    }
+};
 
 const Checkout = () => {
- const { cartItems, cartTotal, clearCart, cartMode } = useCart();
- const { user } = useAuth();
- const { formatPrice } = useCurrency();
- const navigate = useNavigate();
- const [step, setStep] = useState(1);
- const [isProcessing, setIsProcessing] = useState(false);
- const [isSuccess, setIsSuccess] = useState(false);
- const [promoCode, setPromoCode] = useState('');
- const [promoApplied, setPromoApplied] = useState(null);
- const [promoLoading, setPromoLoading] = useState(false);
- const [promoError, setPromoError] = useState('');
+    const { cartItems, cartTotal, clearCart, cartMode } = useCart();
+    const { user } = useAuth();
+    const { formatPrice } = useCurrency();
+    const navigate = useNavigate();
+    const location = useLocation();
+    
+    const preSelectedPayment = location.state?.selectedPaymentMethod || 'visa';
+    const instantItem = location.state?.instantItem || null;
 
- const [formData, setFormData] = useState({
- email: user?.email || '',
- discord: '',
- inGameName: '',
- paymentMethod: 'bank',
- deliveryMethod: 'face-to-face',
- serverConfirmation: true
- });
+    const [step, setStep] = useState(1);
+    const [isProcessing, setIsProcessing] = useState(false);
+    const [isSuccess, setIsSuccess] = useState(false);
+    const [promoCode, setPromoCode] = useState('');
+    const [promoApplied, setPromoApplied] = useState(null);
+    const [promoLoading, setPromoLoading] = useState(false);
+    const [promoError, setPromoError] = useState('');
 
- const applyPromoCode = async () => {
- if (!promoCode.trim()) return;
- setPromoLoading(true);
- setPromoError('');
- try {
- const res = await axios.post(`${API_URL}/api/v1/promo/validate`, {
- code: promoCode,
- orderAmount: cartTotal
- });
- setPromoApplied(res.data.data);
- } catch (err) {
- setPromoError(err.response?.data?.message || 'Invalid promo code');
- setPromoApplied(null);
- } finally {
- setPromoLoading(false);
- }
- };
+    // Determine items to display and total
+    const displayItems = instantItem ? [instantItem] : cartItems;
+    const displayTotal = instantItem ? (instantItem.price * instantItem.quantity) : cartTotal;
+    const displayMode = instantItem ? instantItem.mode : cartMode;
 
- const finalTotal = promoApplied ? cartTotal - promoApplied.discount : cartTotal;
+    const [formData, setFormData] = useState({
+        email: user?.email || instantItem?.selectedOptions?.buyerEmail || '',
+        discord: '',
+        inGameName: instantItem?.selectedOptions?.inGameName || '',
+        paymentMethod: preSelectedPayment,
+        deliveryMethod: 'face-to-face',
+        serverConfirmation: true
+    });
 
- const handleNext = () => setStep(prev => prev + 1);
- const handleBack = () => setStep(prev => prev - 1);
+    useEffect(() => {
+        if (location.state?.selectedPaymentMethod) {
+            setFormData(prev => ({ ...prev, paymentMethod: location.state.selectedPaymentMethod }));
+        }
+    }, [location.state]);
 
- const handlePlaceOrder = async () => {
- setIsProcessing(true);
- try {
- await axios.post(`${API_URL}/api/v1/orders`, {
- items: cartItems,
- contactInfo: {
- discord: formData.discord,
- email: formData.email,
- inGameName: formData.inGameName
- },
- orderMode: cartMode || 'boosting',
- paymentMethod: formData.paymentMethod,
- deliveryMethod: formData.deliveryMethod,
- promoCode: promoApplied?.code
- });
- setIsProcessing(false);
- setIsSuccess(true);
- clearCart();
- } catch (err) {
- alert(err.response?.data?.message || 'Order failed');
- setIsProcessing(false);
- }
- };
+    const applyPromoCode = async () => {
+        if (!promoCode.trim()) return;
+        setPromoLoading(true);
+        setPromoError('');
+        try {
+            const res = await axios.post(`${API_URL}/api/v1/promo/validate`, {
+                code: promoCode,
+                orderAmount: displayTotal
+            });
+            setPromoApplied(res.data.data);
+        } catch (err) {
+            setPromoError(err.response?.data?.message || 'Invalid promo code');
+            setPromoApplied(null);
+        } finally {
+            setPromoLoading(false);
+        }
+    };
 
- if (cartItems.length === 0 && !isSuccess) {
- return (
- <div className="min-h-screen bg-black flex flex-col items-center justify-center p-6 text-center space-y-6">
- <ShoppingCart className="w-20 h-20 text-white/10" />
- <h2 className="text-3xl font-black uppercase">Your cart is empty</h2>
- <Link to="/" className="px-8 py-4 bg-primary rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-[#722AEE] transition-all">Start Shopping</Link>
- </div>
- );
- }
+    const finalTotal = promoApplied ? displayTotal - promoApplied.discount : displayTotal;
 
- if (isSuccess) {
- return (
- <div className="min-h-screen bg-black flex items-center justify-center p-6 font-['Outfit'] relative overflow-hidden">
- <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-primary/20 blur-[150px] rounded-full"></div>
+    const handleNext = () => setStep(prev => prev + 1);
+    const handleBack = () => setStep(prev => prev - 1);
 
- <div className="max-w-[500px] w-full bg-[#0A0A0A] border border-white/5 rounded-[48px] p-12 text-center relative z-10 backdrop-blur-3xl">
- <div className="w-24 h-24 bg-green-500/20 rounded-full flex items-center justify-center border border-green-500/30 mx-auto mb-8 animate-bounce">
- <CheckCircle2 className="w-12 h-12 text-green-500" />
- </div>
- <h2 className="text-4xl font-black uppercase mb-2">Order Confirmed!</h2>
- <p className="text-white/40 text-sm font-bold uppercase tracking-widest mb-10 leading-relaxed">
- Thank you for choosing BoostGG. Our team will contact you on Discord shortly to begin your service.
- </p>
- <div className="space-y-4">
- <button onClick={() => navigate('/admin')} className="w-full bg-white text-black py-5 rounded-3xl font-black text-xs uppercase tracking-widest hover:bg-white/90 transition-all flex items-center justify-center gap-2">
- View Orders <ArrowRight className="w-4 h-4" />
- </button>
- <Link to="/" className="block text-white/30 hover:text-white font-black text-[10px] uppercase tracking-[0.2em] transition-colors">Return to Home</Link>
- </div>
- </div>
- </div>
- );
- }
+    const handlePlaceOrder = async () => {
+        setIsProcessing(true);
+        try {
+            await axios.post(`${API_URL}/api/v1/orders`, {
+                items: displayItems,
+                contactInfo: {
+                    discord: formData.discord,
+                    email: formData.email,
+                    inGameName: formData.inGameName
+                },
+                orderMode: displayMode || 'boosting',
+                paymentMethod: formData.paymentMethod,
+                deliveryMethod: formData.deliveryMethod,
+                promoCode: promoApplied?.code
+            });
+            setIsProcessing(false);
+            setIsSuccess(true);
+            if (!instantItem) clearCart();
+        } catch (err) {
+            alert(err.response?.data?.message || 'Order failed');
+            setIsProcessing(false);
+        }
+    };
 
- return (
- <div className="min-h-screen bg-black text-white pt-24 pb-20 font-['Outfit']">
- <div className="max-w-[1200px] mx-auto px-6 grid grid-cols-1 lg:grid-cols-12 gap-12">
+    if (displayItems.length === 0 && !isSuccess) {
+        return (
+            <div className="min-h-screen bg-[#060606] flex flex-col items-center justify-center p-6 text-center space-y-8">
+                <div className="w-32 h-32 bg-white/5 rounded-full flex items-center justify-center border border-white/10 relative">
+                    <ShoppingCart className="w-12 h-12 text-white/20" />
+                    <div className="absolute inset-0 bg-primary/10 blur-2xl rounded-full"></div>
+                </div>
+                <div>
+                    <h2 className="text-4xl font-black uppercase tracking-tighter mb-4">Your cart is empty</h2>
+                    <p className="text-white/40 text-sm font-bold uppercase tracking-widest max-w-xs mx-auto">Looks like you haven't added anything yet.</p>
+                </div>
+                <Link to="/" className="px-10 py-5 bg-primary text-black rounded-2xl font-black text-xs uppercase tracking-[0.2em] hover:scale-105 active:scale-95 transition-all shadow-xl shadow-primary/20">Explore Games</Link>
+            </div>
+        );
+    }
 
- {/* Left: Main Steps */}
- <div className="lg:col-span-8 space-y-8">
- {/* Progress Bar */}
- <div className="flex items-center gap-4 mb-10">
- <div className={`flex items-center gap-2 ${step >= 1 ? 'text-primary' : 'text-white/20'}`}>
- <div className={`w-8 h-8 rounded-full border-2 flex items-center justify-center text-xs font-black ${step >= 1 ? 'border-primary' : 'border-white/10'}`}>1</div>
- <span className="text-[10px] font-black uppercase tracking-widest">Contact</span>
- </div>
- <div className="h-px bg-white/5 flex-1"></div>
- <div className={`flex items-center gap-2 ${step >= 2 ? 'text-primary' : 'text-white/20'}`}>
- <div className={`w-8 h-8 rounded-full border-2 flex items-center justify-center text-xs font-black ${step >= 2 ? 'border-primary' : 'border-white/10'}`}>2</div>
- <span className="text-[10px] font-black uppercase tracking-widest">Payment</span>
- </div>
- </div>
+    if (isSuccess) {
+        return (
+            <div className="min-h-screen bg-[#060606] flex items-center justify-center p-6 font-['Outfit'] relative overflow-hidden">
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-primary/10 blur-[200px] rounded-full"></div>
 
- {step === 1 && (
- <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
- <div>
- <h3 className="text-2xl font-black uppercase mb-2">Contact Information</h3>
- <p className="text-white/40 text-sm font-bold uppercase tracking-widest">We'll use this to coordinate your boost</p>
- </div>
+                <div className="max-w-[560px] w-full bg-[#0D0D0D] border border-white/10 rounded-[3rem] p-12 text-center relative z-10 backdrop-blur-3xl shadow-[0_50px_100px_rgba(0,0,0,0.8)]">
+                    <div className="w-28 h-28 bg-primary/10 rounded-full flex items-center justify-center border border-primary/30 mx-auto mb-10 relative">
+                        <CheckCircle2 className="w-12 h-12 text-primary animate-pulse" />
+                        <div className="absolute inset-0 bg-primary/20 blur-xl rounded-full"></div>
+                    </div>
+                    <h2 className="text-5xl font-black uppercase tracking-tighter mb-4 leading-none">Payment Success!</h2>
+                    <p className="text-white/40 text-[11px] font-black uppercase tracking-[0.2em] mb-12 leading-relaxed">
+                        Order #GG-{Math.floor(Math.random() * 10000)} has been placed.<br/>Check your Discord messages.
+                    </p>
+                    <div className="grid grid-cols-1 gap-4">
+                        <button onClick={() => navigate('/admin')} className="w-full bg-white text-black py-6 rounded-3xl font-black text-xs uppercase tracking-[0.2em] hover:scale-105 transition-all flex items-center justify-center gap-3">
+                            Track Order <ArrowRight className="w-4 h-4" />
+                        </button>
+                        <Link to="/" className="block py-4 text-white/30 hover:text-white font-black text-[10px] uppercase tracking-[0.3em] transition-colors">Return to Marketplace</Link>
+                    </div>
+                </div>
+            </div>
+        );
+    }
 
- <div className="space-y-6">
- <div className="space-y-2">
- <label className="text-[10px] font-black uppercase tracking-[0.2em] text-white/30 ml-2">Discord ID (Required)</label>
- <div className="relative">
- <MessageSquare className="absolute left-6 top-1/2 -translate-y-1/2 w-5 h-5 text-white/20" />
- <input
- type="text"
- placeholder="User#1234"
- value={formData.discord}
- onChange={(e) => setFormData({ ...formData, discord: e.target.value })}
- className="w-full bg-white/[0.03] border border-white/5 rounded-[24px] py-5 pl-16 pr-8 focus:border-primary/50 transition-all outline-none font-bold text-white placeholder:text-white/10"
- />
- </div>
- </div>
- <div className="space-y-2">
- <label className="text-[10px] font-black uppercase tracking-[0.2em] text-white/30 ml-2">Email Address</label>
- <input
- type="email"
- value={formData.email}
- onChange={(e) => setFormData({ ...formData, email: e.target.value })}
- className={`w-full bg-white/[0.03] border border-white/5 rounded-[24px] py-5 px-8 focus:border-primary/50 transition-all outline-none font-bold text-white ${user ? 'text-white/40 cursor-not-allowed' : ''}`}
- readOnly={!!user}
- />
- </div>
+    return (
+        <div className="min-h-screen bg-[#060606] text-white pt-32 pb-20 font-['Outfit'] selection:bg-primary/30">
+            {/* Background Glow */}
+            <div className="fixed inset-0 pointer-events-none z-0">
+                <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] bg-primary/10 blur-[150px] rounded-full"></div>
+                <div className="absolute bottom-[-20%] right-[-10%] w-[40%] h-[40%] bg-blue-500/5 blur-[150px] rounded-full"></div>
+            </div>
 
- {cartMode === 'boosting' && (
- <div className="space-y-2 animate-in fade-in slide-in-from-top-2">
- <label className="text-[10px] font-black uppercase tracking-[0.2em] text-white/30 ml-2">Character Name (In-Game)</label>
- <input
- type="text"
- placeholder="YourHeroName"
- value={formData.inGameName}
- onChange={(e) => setFormData({ ...formData, inGameName: e.target.value })}
- className="w-full bg-white/[0.03] border border-white/5 rounded-[24px] py-5 px-8 focus:border-primary/50 transition-all outline-none font-bold text-white"
- />
- </div>
- )}
+            <div className="max-w-[1300px] mx-auto px-6 relative z-10">
+                
+                {/* Header Area */}
+                <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-8">
+                    <div>
+                        <div className="flex items-center gap-3 mb-4">
+                            <div className="w-10 h-10 bg-primary/10 border border-primary/20 rounded-xl flex items-center justify-center">
+                                <ShieldCheck className="w-5 h-5 text-primary" />
+                            </div>
+                            <span className="text-[10px] font-black text-primary uppercase tracking-[0.4em]">Checkout</span>
+                        </div>
+                        <h1 className="text-5xl md:text-7xl font-black uppercase tracking-tighter leading-none">Finish <span className="text-white/10">Order</span></h1>
+                    </div>
 
- {cartMode === 'currency' && (
- <div className="p-8 bg-white/[0.02] border border-white/5 rounded-[32px] space-y-6 animate-in fade-in">
- <div className="space-y-4">
- <label className="text-[10px] font-black uppercase tracking-widest text-primary">Delivery Method</label>
- <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
- {['face-to-face', 'mail', 'auction-house'].map(m => (
- <button
- key={m}
- onClick={() => setFormData({ ...formData, deliveryMethod: m })}
- className={`py-4 px-6 rounded-2xl text-[10px] font-black uppercase tracking-widest border transition-all ${formData.deliveryMethod === m ? 'bg-primary text-black border-primary' : 'bg-white/5 border-white/5 text-white/40 hover:border-white/20'
- }`}
- >
- {m.replace('-', ' ')}
- </button>
- ))}
- </div>
- </div>
- </div>
- )}
+                    {/* Step Indicators */}
+                    <div className="flex items-center gap-4 bg-white/[0.02] border border-white/5 p-2 rounded-3xl">
+                        {[1, 2].map(s => (
+                            <div key={s} className={`flex items-center gap-3 px-6 py-3 rounded-2xl transition-all ${step === s ? 'bg-white/5 text-white' : 'text-white/20'}`}>
+                                <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center text-[10px] font-black ${step === s ? 'border-primary text-primary shadow-[0_0_10px_rgba(19,193,0,0.5)]' : 'border-white/10'}`}>{s}</div>
+                                <span className="text-[10px] font-black uppercase tracking-[0.2em]">{s === 1 ? 'Contact' : 'Payment'}</span>
+                            </div>
+                        ))}
+                    </div>
+                </div>
 
- {cartMode === 'accounts' && (
- <div className="p-8 bg-primary/5 border border-primary/20 rounded-[32px] space-y-4 animate-in fade-in">
- <div className="flex items-center gap-3">
- <ShieldCheck className="w-5 h-5 text-primary" />
- <span className="text-[10px] font-black uppercase tracking-widest text-white">Instant Account Transfer</span>
- </div>
- <p className="text-[11px] text-white/40 font-medium leading-relaxed">
- This account is verified and ready for instant secure transfer.
- Upon payment, you will receive login details and instructions via email and Discord.
- </p>
- </div>
- )}
- </div>
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 items-start">
+                    
+                    {/* LEFT: FORM AREA */}
+                    <div className="lg:col-span-7 space-y-12">
+                        
+                        {step === 1 && (
+                            <div className="space-y-12 animate-fade-in-up">
+                                <div>
+                                    <h3 className="text-3xl font-black uppercase tracking-tighter mb-2">Who are you?</h3>
+                                    <p className="text-white/30 text-[11px] font-black uppercase tracking-widest">Personalize your delivery experience</p>
+                                </div>
 
- <button
- onClick={handleNext}
- disabled={!formData.discord}
- className="w-full bg-primary hover:bg-[#722AEE] text-white py-5 rounded-[24px] font-black text-xs uppercase tracking-[0.2em] flex items-center justify-center gap-3 transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed group"
- >
- Continue to Payment <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
- </button>
- </div>
- )}
+                                <div className="space-y-8">
+                                    <div className="space-y-3">
+                                        <label className="text-[10px] font-black uppercase tracking-[0.3em] text-white/40 ml-4">Discord User ID</label>
+                                        <div className="relative group">
+                                            <MessageSquare className="absolute left-8 top-1/2 -translate-y-1/2 w-5 h-5 text-white/20 group-focus-within:text-primary transition-colors" />
+                                            <input
+                                                type="text"
+                                                placeholder="User#1234"
+                                                value={formData.discord}
+                                                onChange={(e) => setFormData({ ...formData, discord: e.target.value })}
+                                                className="w-full bg-white/[0.03] border border-white/10 rounded-[2.5rem] py-7 pl-20 pr-10 focus:border-primary/50 transition-all outline-none font-black text-white text-sm placeholder:text-white/10 uppercase tracking-widest"
+                                            />
+                                        </div>
+                                    </div>
 
- {step === 2 && (
- <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
- <div>
- <h3 className="text-2xl font-black uppercase mb-2">Payment Method</h3>
- <p className="text-white/40 text-sm font-bold uppercase tracking-widest">Select your preferred payment gateway</p>
- </div>
+                                    <div className="space-y-3">
+                                        <label className="text-[10px] font-black uppercase tracking-[0.3em] text-white/40 ml-4">Email Delivery</label>
+                                        <div className="relative group">
+                                            <Lock className="absolute left-8 top-1/2 -translate-y-1/2 w-5 h-5 text-white/20" />
+                                            <input
+                                                type="email"
+                                                value={formData.email}
+                                                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                                                className={`w-full bg-white/[0.03] border border-white/10 rounded-[2.5rem] py-7 pl-20 pr-10 outline-none font-black text-white text-sm tracking-widest ${user ? 'opacity-40 cursor-not-allowed' : 'focus:border-primary/50 transition-all'}`}
+                                                readOnly={!!user}
+                                            />
+                                        </div>
+                                    </div>
 
- <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
- {[
- { id: 'bank', name: 'Direct Bank Transfer', desc: 'Secure local transfer' },
- { id: 'easypaisa', name: 'Easypaisa / JazzCash', desc: 'Instant mobile payment' },
- { id: 'crypto', name: 'Cryptocurrency', desc: 'USDT, BTC, ETH' }
- ].map((method) => (
- <div
- key={method.id}
- onClick={() => setFormData({ ...formData, paymentMethod: method.id })}
- className={`p-6 border rounded-[32px] cursor-pointer transition-all ${formData.paymentMethod === method.id ? 'border-primary bg-primary/5' : 'border-white/5 bg-white/[0.02] hover:border-white/10'}`}
- >
- <div className="flex justify-between items-start mb-4">
- <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${formData.paymentMethod === method.id ? 'bg-primary text-white' : 'bg-white/5 text-white/20'}`}>
- <CreditCard className="w-5 h-5" />
- </div>
- <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${formData.paymentMethod === method.id ? 'border-primary' : 'border-white/10'}`}>
- {formData.paymentMethod === method.id && <div className="w-2.5 h-2.5 bg-primary rounded-full"></div>}
- </div>
- </div>
- <h4 className="text-sm font-black text-white mb-1 uppercase tracking-wider">{method.name}</h4>
- <p className="text-[10px] font-bold text-white/30 uppercase tracking-widest">{method.desc}</p>
- </div>
- ))}
- </div>
+                                    {displayMode === 'boosting' && (
+                                        <div className="space-y-3 animate-fade-in">
+                                            <label className="text-[10px] font-black uppercase tracking-[0.3em] text-white/40 ml-4">Character Name</label>
+                                            <input
+                                                type="text"
+                                                placeholder="ENTER HERO NAME"
+                                                value={formData.inGameName}
+                                                onChange={(e) => setFormData({ ...formData, inGameName: e.target.value })}
+                                                className="w-full bg-white/[0.03] border border-white/10 rounded-[2.5rem] py-7 px-10 focus:border-primary/50 transition-all outline-none font-black text-white text-sm placeholder:text-white/10 uppercase tracking-widest"
+                                            />
+                                        </div>
+                                    )}
+                                </div>
 
- <div className="p-8 bg-primary/5 border border-primary/20 rounded-[32px] space-y-4">
- <div className="flex items-center gap-3">
- <ShieldCheck className="w-5 h-5 text-primary" />
- <span className="text-xs font-black uppercase tracking-widest">Secure Transaction</span>
- </div>
- <p className="text-[10px] font-bold text-white/40 uppercase leading-relaxed">
- Your payment is protected by our buyer protection policy. We only release funds to the booster once the service is confirmed.
- </p>
- </div>
+                                <button
+                                    onClick={handleNext}
+                                    disabled={!formData.discord}
+                                    className="w-full bg-primary text-black py-7 rounded-[2.5rem] font-black text-sm uppercase tracking-[0.3em] flex items-center justify-center gap-4 transition-all active:scale-95 disabled:opacity-30 shadow-[0_20px_40px_rgba(19,193,0,0.2)] group"
+                                >
+                                    Proceed to Selection <ChevronRight className="w-6 h-6 group-hover:translate-x-1 transition-transform" />
+                                </button>
+                            </div>
+                        )}
 
- <div className="flex gap-4">
- <button onClick={handleBack} className="w-1/3 border border-white/5 hover:bg-white/5 text-white/40 hover:text-white py-5 rounded-[24px] font-black text-xs uppercase tracking-widest transition-all">Back</button>
- <button
- onClick={handlePlaceOrder}
- disabled={isProcessing}
- className="w-2/3 bg-primary hover:bg-[#722AEE] text-white py-5 rounded-[24px] font-black text-xs uppercase tracking-[0.2em] flex items-center justify-center gap-3 transition-all active:scale-95 disabled:opacity-50"
- >
- {isProcessing ? <Zap className="w-5 h-5 animate-spin" /> : `Confirm ${formatPrice(finalTotal)}`}
- </button>
- </div>
- </div>
- )}
- </div>
+                        {step === 2 && (
+                            <div className="space-y-12 animate-fade-in-up">
+                                <div className="flex items-center justify-between">
+                                    <div>
+                                        <h3 className="text-3xl font-black uppercase tracking-tighter mb-2">Payment Choice</h3>
+                                        <p className="text-white/30 text-[11px] font-black uppercase tracking-widest">Selected from modal</p>
+                                    </div>
+                                    <button onClick={handleBack} className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-white/20 hover:text-white transition-colors">
+                                        <ArrowLeft className="w-4 h-4" /> Change Info
+                                    </button>
+                                </div>
 
- {/* Right: Summary Sidebar */}
- <div className="lg:col-span-4 lg:border-l lg:border-white/5 lg:pl-10 space-y-8">
- <div>
- <h3 className="text-sm font-black uppercase tracking-[0.3em] text-white/20 mb-8">Order Summary</h3>
- <div className="space-y-6">
- {cartItems.map((item, i) => (
- <div key={i} className="flex gap-4">
- <div className="w-12 h-12 bg-white/5 rounded-xl flex items-center justify-center shrink-0 border border-white/5">
- <img src={item.image} className="w-8 h-8 object-contain opacity-60" alt="" />
- </div>
- <div className="flex-1 min-w-0">
- <h4 className="text-[11px] font-black text-white/80 line-clamp-1 uppercase tracking-wider">{item.title}</h4>
- <p className="text-[9px] font-bold text-white/20 uppercase tracking-widest truncate">
- {item.calcValue} {item.unitName}
- </p>
- <div className="text-[10px] font-black text-primary mt-1">{formatPrice(item.price)}</div>
- </div>
- </div>
- ))}
- </div>
- </div>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    {[
+                                        { id: 'visa', name: 'Credit Card', desc: 'Visa, Master, Maestro' },
+                                        { id: 'ideal', name: 'iDeal', desc: 'Netherland Direct' },
+                                        { id: 'skrill', name: 'Digital Wallet', desc: 'Fast Skrill Pay' },
+                                        { id: 'crypto', name: 'Crypto Assets', desc: 'BTC, ETH, USDT' },
+                                        { id: 'google', name: 'Google Pay', desc: 'Instant Checkout' }
+                                    ].map((method) => (
+                                        <div
+                                            key={method.id}
+                                            onClick={() => setFormData({ ...formData, paymentMethod: method.id })}
+                                            className={`group p-6 border rounded-[2rem] cursor-pointer transition-all duration-500 ${formData.paymentMethod === method.id ? 'border-primary bg-primary shadow-[0_15px_30px_rgba(19,193,0,0.15)]' : 'border-white/5 bg-white/[0.02] hover:border-white/10'}`}
+                                        >
+                                            <div className="flex justify-between items-start mb-6">
+                                                <div className={`w-12 h-10 rounded-xl flex items-center justify-center transition-colors ${formData.paymentMethod === method.id ? 'bg-black text-white' : 'bg-white/5 border border-white/10 text-white/40'}`}>
+                                                    <PaymentMethodLogo id={method.id} active={formData.paymentMethod === method.id} />
+                                                </div>
+                                                <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all ${formData.paymentMethod === method.id ? 'border-black bg-black/10' : 'border-white/10'}`}>
+                                                    {formData.paymentMethod === method.id && <CheckCircle2 className="w-4 h-4 text-black" />}
+                                                </div>
+                                            </div>
+                                            <h4 className={`text-xs font-black uppercase tracking-widest mb-1 ${formData.paymentMethod === method.id ? 'text-black' : 'text-white'}`}>{method.name}</h4>
+                                            <p className={`text-[9px] font-bold uppercase tracking-tight ${formData.paymentMethod === method.id ? 'text-black/50' : 'text-white/20'}`}>{method.desc}</p>
+                                        </div>
+                                    ))}
+                                </div>
 
- <div className="pt-8 border-t border-white/5 space-y-4">
- {/* Promo Code Section */}
- <div className="space-y-3">
- {!promoApplied ? (
- <>
- <label className="text-[10px] font-black uppercase tracking-widest text-white/30">Have a promo code?</label>
- <div className="flex gap-2">
- <div className="relative flex-1">
- <Tag className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/20" />
- <input
- type="text"
- placeholder="Enter code"
- value={promoCode}
- onChange={(e) => setPromoCode(e.target.value.toUpperCase())}
- className="w-full bg-white/5 border border-white/5 rounded-xl py-3 pl-12 pr-4 text-xs font-bold text-white outline-none focus:border-primary/50 transition-all uppercase"
- />
- </div>
- <button
- onClick={applyPromoCode}
- disabled={promoLoading || !promoCode.trim()}
- className="px-4 py-3 bg-primary/20 border border-primary/30 text-primary rounded-xl font-black text-[10px] uppercase tracking-widest hover:bg-primary/30 transition-all disabled:opacity-50"
- >
- Apply
- </button>
- </div>
- {promoError && <p className="text-[10px] text-red-500 font-bold">{promoError}</p>}
- </>
- ) : (
- <div className="flex items-center justify-between p-3 bg-green-500/10 border border-green-500/20 rounded-xl">
- <div className="flex items-center gap-2">
- <CheckCircle2 className="w-4 h-4 text-green-500" />
- <span className="text-xs font-bold text-green-500 uppercase">{promoApplied.code}</span>
- <span className="text-[10px] text-green-500/70">(-{formatPrice(promoApplied.discount)})</span>
- </div>
- <button
- onClick={() => { setPromoApplied(null); setPromoCode(''); }}
- className="text-[10px] text-white/40 hover:text-white"
- >
- Remove
- </button>
- </div>
- )}
- </div>
+                                <div className="p-8 bg-white/[0.02] border border-white/5 rounded-[2.5rem] flex items-start gap-6">
+                                    <div className="w-12 h-12 bg-primary/10 rounded-2xl flex items-center justify-center flex-shrink-0">
+                                        <ShieldCheck className="w-6 h-6 text-primary" />
+                                    </div>
+                                    <div>
+                                        <p className="text-[11px] font-black text-white uppercase tracking-widest mb-1">Buy risk-free with BoostGG</p>
+                                        <p className="text-[10px] text-white/30 font-medium leading-relaxed uppercase tracking-tight">
+                                            We work only with verified sellers. Our team is online 24/7 and you're always guaranteed your money back.
+                                        </p>
+                                    </div>
+                                </div>
 
- <div className="flex justify-between items-center">
- <span className="text-[10px] font-black uppercase tracking-widest text-white/30">Subtotal</span>
- <span className="text-xs font-black">{formatPrice(cartTotal)}</span>
- </div>
- {promoApplied && (
- <div className="flex justify-between items-center">
- <span className="text-[10px] font-black uppercase tracking-widest text-green-500">Discount</span>
- <span className="text-xs font-black text-green-500">-{formatPrice(promoApplied.discount)}</span>
- </div>
- )}
- <div className="flex justify-between items-center">
- <span className="text-[10px] font-black uppercase tracking-widest text-white/30">Service Fee</span>
- <span className="text-xs font-black text-green-500">FREE</span>
- </div>
- <div className="flex justify-between items-center pt-4 border-t border-white/5">
- <span className="text-xs font-black uppercase tracking-[0.2em] text-white">Total</span>
- <span className="text-2xl font-black ">{formatPrice(finalTotal)}</span>
- </div>
- </div>
+                                <button
+                                    onClick={handlePlaceOrder}
+                                    disabled={isProcessing}
+                                    className="w-full bg-primary text-black py-7 rounded-[2.5rem] font-black text-sm uppercase tracking-[0.3em] flex items-center justify-center gap-4 transition-all active:scale-95 shadow-[0_20px_40px_rgba(19,193,0,0.2)] group"
+                                >
+                                    {isProcessing ? <Zap className="w-6 h-6 animate-spin" /> : <>Complete Payment <Zap className="w-6 h-6 fill-current" /></>}
+                                </button>
+                            </div>
+                        )}
+                    </div>
 
- <div className="bg-[#0A0A0A] border border-white/5 rounded-[24px] p-6 space-y-4">
- <div className="flex items-center gap-3 text-white/20">
- <Lock className="w-4 h-4" />
- <span className="text-[9px] font-black uppercase tracking-widest">SSL Encrypted Checkout</span>
- </div>
- <div className="flex items-center gap-3 text-white/20">
- <Info className="w-4 h-4" />
- <span className="text-[9px] font-black uppercase tracking-widest">Support: Online 24/7</span>
- </div>
- </div>
- </div>
- </div>
- </div>
- );
+                    {/* RIGHT: SUMMARY SIDEBAR (White Theme) */}
+                    <div className="lg:col-span-5">
+                        <div className="bg-white text-black rounded-[3rem] p-10 md:p-12 shadow-[0_40px_80px_rgba(0,0,0,0.5)] relative overflow-hidden">
+                            {/* Pattern Background */}
+                            <div className="absolute inset-0 opacity-[0.03] pointer-events-none select-none">
+                                <div className="absolute inset-0 bg-[radial-gradient(#000_1px,transparent_1px)] [background-size:20px_20px]"></div>
+                            </div>
+
+                            <div className="relative z-10 flex flex-col h-full">
+                                <div className="flex items-center justify-between mb-12">
+                                    <div>
+                                        <p className="text-[10px] font-black uppercase tracking-widest text-black/40">Your Order</p>
+                                        <h3 className="text-xl font-black uppercase tracking-tight">Summary</h3>
+                                    </div>
+                                    <div className="w-12 h-12 bg-black/5 rounded-2xl flex items-center justify-center">
+                                        <Package className="w-6 h-6 text-black/20" />
+                                    </div>
+                                </div>
+
+                                <div className="space-y-8 mb-12 max-h-[300px] overflow-y-auto pr-2 custom-scrollbar-light">
+                                    {displayItems.map((item, i) => (
+                                        <div key={i} className="flex gap-6 group">
+                                            <div className="w-20 h-20 bg-black/5 rounded-[2rem] flex items-center justify-center shrink-0 border border-black/5 relative overflow-hidden">
+                                                <img 
+                                                    src={getImageUrl(item.image)} 
+                                                    className="w-full h-full object-cover opacity-80 group-hover:scale-110 transition-transform duration-500" 
+                                                    alt="" 
+                                                />
+                                                {item.icon && (
+                                                    <div className="absolute inset-0 flex items-center justify-center">
+                                                        <img src={getImageUrl(item.icon)} className="w-10 h-10 object-contain drop-shadow-lg" alt="" />
+                                                    </div>
+                                                )}
+                                            </div>
+                                            <div className="flex-1 py-1">
+                                                <div className="flex items-center gap-2 mb-1">
+                                                    <span className="px-2 py-0.5 bg-black/5 rounded text-[8px] font-black uppercase tracking-widest text-black/40">{item.mode || 'Service'}</span>
+                                                </div>
+                                                <h4 className="text-sm font-black text-black leading-tight uppercase tracking-tight line-clamp-2">{item.title}</h4>
+                                                <div className="text-lg font-black mt-3">{formatPrice(item.price)}</div>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+
+                                {/* Promo Section */}
+                                <div className="pt-8 border-t border-black/5 space-y-6">
+                                    {!promoApplied ? (
+                                        <div className="space-y-4">
+                                            <label className="text-[10px] font-black uppercase tracking-widest text-black/30 ml-2">Promo Code</label>
+                                            <div className="flex gap-3">
+                                                <div className="relative flex-1">
+                                                    <Tag className="absolute left-6 top-1/2 -translate-y-1/2 w-4 h-4 text-black/20" />
+                                                    <input
+                                                        type="text"
+                                                        placeholder="CODE"
+                                                        value={promoCode}
+                                                        onChange={(e) => setPromoCode(e.target.value.toUpperCase())}
+                                                        className="w-full bg-black/5 border border-transparent rounded-2xl py-4 pl-14 pr-4 text-xs font-black text-black outline-none focus:bg-white focus:border-black/10 transition-all uppercase tracking-widest"
+                                                    />
+                                                </div>
+                                                <button
+                                                    onClick={applyPromoCode}
+                                                    disabled={promoLoading || !promoCode.trim()}
+                                                    className="px-8 py-4 bg-black text-white rounded-2xl font-black text-[10px] uppercase tracking-widest hover:scale-105 transition-all disabled:opacity-20"
+                                                >
+                                                    {promoLoading ? '...' : 'Apply'}
+                                                </button>
+                                            </div>
+                                        </div>
+                                    ) : (
+                                        <div className="flex items-center justify-between p-4 bg-green-500/5 border border-green-500/10 rounded-2xl">
+                                            <div className="flex items-center gap-3">
+                                                <CheckCircle2 className="w-5 h-5 text-green-600" />
+                                                <div>
+                                                    <span className="text-[10px] font-black text-green-600 uppercase tracking-widest">{promoApplied.code}</span>
+                                                    <p className="text-[9px] text-green-600/60 font-bold uppercase">Discount applied</p>
+                                                </div>
+                                            </div>
+                                            <button onClick={() => { setPromoApplied(null); setPromoCode(''); }} className="text-[9px] font-black uppercase tracking-widest text-black/20 hover:text-red-500 transition-colors">Remove</button>
+                                        </div>
+                                    )}
+
+                                    <div className="space-y-3 pt-4">
+                                        <div className="flex justify-between items-center text-[10px] font-black uppercase tracking-widest text-black/40">
+                                            <span>Subtotal</span>
+                                            <span>{formatPrice(displayTotal)}</span>
+                                        </div>
+                                        {promoApplied && (
+                                            <div className="flex justify-between items-center text-[10px] font-black uppercase tracking-widest text-green-600">
+                                                <span>Promo Discount</span>
+                                                <span>-{formatPrice(promoApplied.discount)}</span>
+                                            </div>
+                                        )}
+                                        <div className="flex justify-between items-center pt-6 border-t-2 border-black/5">
+                                            <span className="text-xs font-black uppercase tracking-[0.3em]">Total Amount</span>
+                                            <div className="text-right">
+                                                <span className="text-4xl font-black tracking-tighter leading-none">{formatPrice(finalTotal)}</span>
+                                                <p className="text-[9px] font-black uppercase tracking-widest text-black/20 mt-1">incl. all fees & tax</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Support Area */}
+                        <div className="mt-8 p-8 bg-white/[0.02] border border-white/5 rounded-[3rem] flex items-center justify-between">
+                            <div className="flex items-center gap-4">
+                                <Headphones className="w-8 h-8 text-white/20" />
+                                <div>
+                                    <p className="text-[10px] font-black uppercase tracking-widest text-white/60">Need help?</p>
+                                    <p className="text-[9px] font-bold uppercase tracking-widest text-white/20">Our team is online 24/7</p>
+                                </div>
+                            </div>
+                            <button className="px-6 py-3 bg-white/5 hover:bg-white/10 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all">Open Chat</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <style>{`
+                .custom-scrollbar-light::-webkit-scrollbar { width: 4px; }
+                .custom-scrollbar-light::-webkit-scrollbar-track { background: transparent; }
+                .custom-scrollbar-light::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.05); border-radius: 10px; }
+                .custom-scrollbar-light::-webkit-scrollbar-thumb:hover { background: rgba(0,0,0,0.1); }
+            `}</style>
+        </div>
+    );
 };
 
 export default Checkout;

@@ -7,7 +7,7 @@
   --color-primary-dark: #8bc332;
   --color-accent: #d9f99d;
   --color-lavender: #ecfccb;
-  --color-payment-method: #6B3AFF;
+  --color-payment-method: #0a1a0a;
   --font-sans: "Stolzl", "Outfit", "Inter", sans-serif;
 
   /* SkyCoach Audit Tokens */
@@ -578,4 +578,4 @@ a.bg-primary *,
 
 .premium-range-slider::-moz-range-thumb:hover {
   transform: scale(1.2);
-}
+}

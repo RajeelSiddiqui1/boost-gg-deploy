@@ -152,12 +152,17 @@ const MegaMenu = ({ isOpen, onClose }) => {
  key={game._id}
  onMouseEnter={() => setActiveGameId(game._id)}
  onClick={() => setActiveGameId(game._id)}
- className={`w-full text-left px-4 py-3 rounded-xl flex items-center justify-between group transition-all duration-200 ${activeGameId === game._id
- ? 'bg-primary text-white font-bold'
- : 'text-white/70 hover:bg-white/5 hover:text-white'
+ className={`w-full text-left px-4 py-3 rounded-2xl flex items-center justify-between group transition-all duration-300 ${activeGameId === game._id
+ ? 'bg-primary text-black shadow-[0_10px_20px_rgba(162,230,62,0.2)]'
+ : 'text-white/60 hover:bg-white/5 hover:text-white border border-transparent hover:border-white/5'
  }`}
  >
- <span className="truncate">{game.name || game.title}</span>
+ <div className="flex items-center gap-3 truncate">
+ <div className={`w-8 h-8 rounded-lg flex items-center justify-center border transition-all ${activeGameId === game._id ? 'bg-black/20 border-black/10' : 'bg-white/5 border-white/5 group-hover:border-primary/20'}`}>
+ <img src={getImageUrl(game.icon)} className="w-5 h-5 object-contain" alt="" />
+ </div>
+ <span className="truncate font-black uppercase tracking-tight text-[12px]">{game.name || game.title}</span>
+ </div>
  {activeGameId === game._id && <ChevronRight className="w-4 h-4" />}
  </button>
  ))}
@@ -177,12 +182,13 @@ const MegaMenu = ({ isOpen, onClose }) => {
  key={game._id}
  onMouseEnter={() => setActiveGameId(game._id)}
  onClick={() => setActiveGameId(game._id)}
- className={`w-full text-left px-4 py-2.5 rounded-xl text-sm font-medium transition-all ${activeGameId === game._id
+ className={`w-full text-left px-4 py-2.5 rounded-xl flex items-center gap-3 transition-all ${activeGameId === game._id
  ? 'text-primary bg-primary/5'
- : 'text-white/60 hover:text-white hover:bg-white/5'
+ : 'text-white/40 hover:text-white hover:bg-white/5'
  }`}
  >
- {game.name || game.title}
+ <img src={getImageUrl(game.icon)} className={`w-4 h-4 object-contain transition-opacity ${activeGameId === game._id ? 'opacity-100' : 'opacity-30'}`} alt="" />
+ <span className="text-[12px] font-bold tracking-tight">{game.name || game.title}</span>
  </button>
  ))}
  </div>

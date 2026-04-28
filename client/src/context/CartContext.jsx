@@ -56,8 +56,8 @@ export const CartProvider = ({ children }) => {
  }
  return [...prev, { ...product, mode, quantity: product.quantity || 1 }];
  });
- setIsCartOpen(true);
- };
+    // setIsCartOpen(true); // Disabled for direct payment flow
+  };
 
  const confirmClearAndAdd = () => {
  if (pendingItem) {
@@ -65,8 +65,8 @@ export const CartProvider = ({ children }) => {
  setCartMode(pendingItem.mode);
  setPendingItem(null);
  setShowModeMismatchModal(false);
- setIsCartOpen(true);
- }
+      // setIsCartOpen(true); // Disabled for direct payment flow
+    }
  };
 
  const cancelModeMismatch = () => {

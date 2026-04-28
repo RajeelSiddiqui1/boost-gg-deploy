@@ -95,15 +95,20 @@ const Navbar = () => {
 
  {user?.role !== "admin" && (
  <div className="hidden md:flex items-center gap-6 flex-1 max-w-2xl ml-4">
- <button
- onClick={() => setIsMegaMenuOpen(!isMegaMenuOpen)}
- className={`flex-shrink-0 flex items-center gap-3 ${isMegaMenuOpen ? "bg-primary border-primary" : "bg-[#8bc332] border-white/5"} hover:scale-[1.02] text-black px-6 py-2.5 rounded-xl font-bold text-[14px] transition-all active:scale-95 shadow-lg shadow-[#a2e63e]/20 border`}
- >
- Choose your game{" "}
- <ChevronDown
- className={`w-4 h-4 transition-transform duration-500 ${isMegaMenuOpen ? "rotate-180 opacity-100" : "opacity-60"}`}
- />
- </button>
+                <button
+                    onClick={() => setIsMegaMenuOpen(!isMegaMenuOpen)}
+                    className={`flex-shrink-0 flex items-center gap-3 px-6 py-2.5 rounded-[18px] font-black text-[13px] uppercase tracking-wider transition-all active:scale-95 shadow-xl ${
+                        isMegaMenuOpen 
+                        ? "bg-primary text-black shadow-[0_0_30px_rgba(19,193,0,0.6)]" 
+                        : "bg-primary text-black hover:shadow-[0_10px_25px_rgba(19,193,0,0.3)] hover:scale-105"
+                    }`}
+                >
+                    <LayoutGrid className="w-4 h-4" />
+                    Choose your game
+                    <ChevronDown
+                        className={`w-4 h-4 transition-transform duration-500 ${isMegaMenuOpen ? "rotate-180" : "opacity-40"}`}
+                    />
+                </button>
 
  {/* Enforced Persistent Search Bar */}
  <div className="flex-1 relative group/search">
@@ -133,21 +138,30 @@ const Navbar = () => {
  </div>
  {searchResults.length > 0 ? (
  <div className="space-y-1">
- {searchResults.slice(0, 5).map((game) => (
- <Link
- key={game._id}
- to={game.slug === 'wow' ? '/wow-boost' : `/game/${game.slug || game._id || 'undefined'}`}
- onClick={() => setSearchTerm("")}
- className="flex items-center gap-3 p-2 rounded-xl hover:bg-white/5 transition-all group"
- >
- <div className="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center">
- <Zap className="w-4 h-4 text-white/20 group-hover:text-primary transition-colors" />
- </div>
- <span className="text-xs font-bold text-white/60 group-hover:text-white transition-colors">
- {game.title}
- </span>
- </Link>
- ))}
+                                {searchResults.slice(0, 5).map((game) => (
+                                    <Link
+                                        key={game._id}
+                                        to={game.slug === 'wow' ? '/wow-boost' : `/game/${game.slug || game._id || 'undefined'}`}
+                                        onClick={() => setSearchTerm("")}
+                                        className="flex items-center gap-3 p-2.5 rounded-xl hover:bg-white/5 transition-all group border border-transparent hover:border-white/5"
+                                    >
+                                        <div className="w-9 h-9 rounded-xl bg-white/5 border border-white/5 flex items-center justify-center overflow-hidden shrink-0 group-hover:border-primary/30 transition-all">
+                                            {game.icon ? (
+                                                <img src={getImageUrl(game.icon)} className="w-6 h-6 object-contain" alt="" />
+                                            ) : (
+                                                <Zap className="w-4 h-4 text-white/20 group-hover:text-primary transition-colors" />
+                                            )}
+                                        </div>
+                                        <div className="flex flex-col">
+                                            <span className="text-[13px] font-bold text-white group-hover:text-primary transition-colors">
+                                                {game.title || game.name}
+                                            </span>
+                                            <span className="text-[9px] font-black uppercase tracking-widest text-white/20">
+                                                {game.category || 'Game'}
+                                            </span>
+                                        </div>
+                                    </Link>
+                                ))}
  </div>
  ) : (
  <div className="p-4 text-center">
@@ -336,11 +350,11 @@ const Navbar = () => {
  <div className="space-y-0.5 mb-2">
  {[
  { label: "About us", icon: Zap, path: "/about" },
- {
- label: "Cashback",
- icon: RefreshCcw,
- path: "/cashback",
- },
+//  {
+//  label: "Cashback",
+//  icon: RefreshCcw,
+//  path: "/cashback",
+//  },
  { label: "Blog", icon: BookOpen, path: "/blog" },
  {
  label: "Work with us",
