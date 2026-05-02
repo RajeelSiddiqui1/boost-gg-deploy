@@ -2,8 +2,9 @@ import React from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import {
  LayoutDashboard, ShoppingCart, User as UserIcon,
- Settings, LogOut, ChevronLeft, Zap, ShieldCheck
+ Settings, LogOut, ChevronLeft, Zap, ShieldCheck, Heart
 } from 'lucide-react';
+
 import { useAuth } from '../../context/AuthContext';
 import { useCurrency } from '../../context/CurrencyContext';
 
@@ -21,22 +22,23 @@ const DashboardLayout = ({ children, title }) => {
  const isAdmin = user?.role === 'admin';
 
  const menuItems = [
- { name: 'Dashboard', icon: LayoutDashboard, path: '/dashboard' },
+  { name: 'Dashboard', icon: LayoutDashboard, path: '/dashboard' },
  ];
 
  if (isAdmin) {
- menuItems.push({ name: 'Admin Panel', icon: ShieldCheck, path: '/admin' });
- menuItems.push({ name: 'Users', icon: UserIcon, path: '/admin/users' });
- menuItems.push({ name: 'Orders', icon: ShoppingCart, path: '/admin/orders' });
- menuItems.push({ name: 'Finance', icon: Zap, path: '/admin/finance' });
+  menuItems.push({ name: 'Admin Panel', icon: ShieldCheck, path: '/admin' });
+  menuItems.push({ name: 'Users', icon: UserIcon, path: '/admin/users' });
+  menuItems.push({ name: 'Orders', icon: ShoppingCart, path: '/admin/orders' });
+  menuItems.push({ name: 'Finance', icon: Zap, path: '/admin/finance' });
  } else if (isPro) {
- menuItems.push({ name: 'Active Tasks', icon: ShoppingCart, path: '/dashboard?tab=work' });
- menuItems.push({ name: 'Earnings', icon: Zap, path: '/dashboard?tab=earnings' });
- menuItems.push({ name: 'Performance', icon: ShieldCheck, path: '/dashboard?tab=performance' });
+  menuItems.push({ name: 'Active Tasks', icon: ShoppingCart, path: '/dashboard?tab=work' });
+  menuItems.push({ name: 'Earnings', icon: Zap, path: '/dashboard?tab=earnings' });
+  menuItems.push({ name: 'Performance', icon: ShieldCheck, path: '/dashboard?tab=performance' });
  } else {
- // Buyer roles
- menuItems.push({ name: 'My Orders', icon: ShoppingCart, path: '/dashboard?tab=orders' });
- menuItems.push({ name: 'My Wallet', icon: Zap, path: '/dashboard?tab=wallet' });
+  // Buyer roles
+  menuItems.push({ name: 'My Orders', icon: ShoppingCart, path: '/dashboard?tab=orders' });
+  menuItems.push({ name: 'My Wallet', icon: Zap, path: '/dashboard?tab=wallet' });
+  menuItems.push({ name: 'My Favorites', icon: Heart, path: '/dashboard?tab=favorites' });
  }
 
  menuItems.push({ name: 'Profile Settings', icon: UserIcon, path: '/dashboard?tab=profile' });

@@ -79,7 +79,7 @@ exports.createOrder = async (req, res) => {
 exports.getMyOrders = async (req, res) => {
     try {
         const orders = await Order.find({ userId: req.user.id })
-            .populate('serviceId', 'title image game')
+            .populate('serviceId', 'title image icon backgroundImage characterImage game')
             .populate('pro', 'name')
             .sort('-createdAt');
 
@@ -93,7 +93,7 @@ exports.getAvailableOrders = async (req, res) => {
     try {
         // Available orders for PROs (pending and no pro assigned)
         const orders = await Order.find({ status: 'pending', pro: { $exists: false } })
-            .populate('serviceId', 'title image game pricing categorySlug pricingRules')
+            .populate('serviceId', 'title image icon backgroundImage characterImage game pricing categorySlug pricingRules')
             .sort('-createdAt');
 
         res.status(200).json({ success: true, count: orders.length, data: orders });
@@ -105,7 +105,7 @@ exports.getAvailableOrders = async (req, res) => {
 exports.getBoosterOrders = async (req, res) => {
     try {
         const orders = await Order.find({ pro: req.user.id })
-            .populate('serviceId', 'title image game pricing categorySlug pricingRules')
+            .populate('serviceId', 'title image icon backgroundImage characterImage game pricing categorySlug pricingRules')
             .populate('userId', 'name email')
             .sort('-createdAt');
 
@@ -201,24 +201,28 @@ exports.submitReview = async (req, res) => {
     }
 };
 
-exports.claimOrder = async (req, res) => {
+exports.claimOrder = async (req, res, next) => {
     try {
         let order = await Order.findById(req.params.id);
         if (!order) return res.status(404).json({ success: false, message: 'Order not found' });
 
         if (order.pro) return res.status(400).json({ success: false, message: 'Order already claimed' });
 
+        // Assign booster and affiliate tracking
         order.pro = req.user.id;
+        order.affiliateId = req.user.id; // As requested: pro's userId goes to affiliateId
         order.status = 'processing';
 
         // Calculate booster earnings at time of claiming
         const pro = await User.findById(req.user.id);
+        if (!pro) return res.status(404).json({ success: false, message: 'Booster profile not found' });
+        
         const commissionRate = pro.boosterCommissionRate || 80;
         order.boosterEarnings = Math.round((order.price * (commissionRate / 100)) * 100) / 100;
 
         await order.save();
 
-        res.status(200).json({ success: true, data: order });
+        res.status(200).json({ success: true, message: 'Order claimed successfully and moved to processing', data: order });
     } catch (err) {
         res.status(400).json({ success: false, message: err.message });
     }
@@ -244,27 +248,111 @@ exports.sendChatMessage = async (req, res) => {
         const order = await Order.findById(req.params.id);
         if (!order) return res.status(404).json({ success: false, message: 'Order not found' });
 
-        const { message } = req.body;
+        const { message, type = 'text', attachment } = req.body;
 
         const newMessage = {
             sender: req.user.id,
             message: message,
+            type: type,
+            attachment: attachment,
             timestamp: new Date()
         };
 
         order.chat.push(newMessage);
         await order.save();
+        const broadcastMsg = order.chat[order.chat.length - 1];
 
         // Broadcast to order room
         try {
             const io = require('../socket').getIO();
-            io.to(order._id.toString()).emit('newMessage', newMessage);
+            io.to(order._id.toString()).emit('newMessage', broadcastMsg);
         } catch (e) {
             console.error('Socket broadcast error:', e.message);
         }
 
         res.status(200).json({ success: true, data: order });
     } catch (err) {
+        res.status(400).json({ success: false, message: err.message });
+    }
+};
+
+exports.uploadChatFile = async (req, res) => {
+    try {
+        if (!req.file) {
+            return res.status(400).json({ success: false, message: 'Please upload a file' });
+        }
+
+        const fileType = req.file.mimetype.startsWith('image/') ? 'image' 
+                        : req.file.mimetype.startsWith('video/') ? 'video'
+                        : req.file.mimetype === 'application/pdf' ? 'pdf'
+                        : 'text';
+
+        const subfolder = fileType === 'image' ? 'images' 
+                        : fileType === 'video' ? 'videos' 
+                        : fileType === 'pdf' ? 'pdf' 
+                        : 'others';
+
+        const fileUrl = `/uploads/chats/${subfolder}/${req.file.filename}`;
+
+        res.status(200).json({
+            success: true,
+            data: {
+                url: fileUrl,
+                name: req.file.originalname,
+                size: req.file.size,
+                type: fileType,
+                mimeType: req.file.mimetype
+            }
+        });
+    } catch (err) {
+        res.status(400).json({ success: false, message: err.message });
+    }
+};
+
+exports.deleteChatMessage = async (req, res) => {
+    try {
+        console.log('Delete Request - Order ID:', req.params.id);
+        console.log('Delete Request - Message ID:', req.body.messageId);
+
+        const order = await Order.findById(req.params.id);
+        if (!order) {
+            console.log('Order not found');
+            return res.status(404).json({ success: false, message: 'Order not found' });
+        }
+
+        const { messageId } = req.body;
+        if (!messageId) {
+            return res.status(400).json({ success: false, message: 'Message ID is required' });
+        }
+
+        const messageIndex = order.chat.findIndex(m => m._id && m._id.toString() === messageId);
+        
+        if (messageIndex === -1) {
+            console.log('Message not found in order. Chat length:', order.chat.length);
+            // Log first few message IDs for debugging
+            order.chat.slice(0, 3).forEach(m => console.log('Message ID in DB:', m._id));
+            return res.status(404).json({ success: false, message: 'Message not found' });
+        }
+
+        // Only sender or admin can delete
+        if (order.chat[messageIndex].sender.toString() !== req.user.id && req.user.role !== 'admin') {
+            return res.status(403).json({ success: false, message: 'Not authorized to delete this message' });
+        }
+
+        order.chat.splice(messageIndex, 1);
+        await order.save();
+
+        // Broadcast deletion
+        try {
+            const io = require('../socket').getIO();
+            io.to(order._id.toString()).emit('messageDeleted', messageId);
+        } catch (e) {
+            console.error('Socket broadcast error:', e.message);
+        }
+
+        res.status(200).json({ success: true, message: 'Message deleted' });
+    } catch (err) {
+        console.error('Delete Chat Error:', err);
         res.status(400).json({ success: false, message: err.message });
     }
 };
@@ -328,13 +416,8 @@ exports.getAllOrders = async (req, res) => {
     try {
         const { status, proId, userId, page = 1, limit = 20, search } = req.query;
 
-        const query = {};
-        if (status) query.status = status;
-        if (proId) query.pro = proId;
-        if (userId) query.userId = userId;
-
         const orders = await Order.find(query)
-            .populate('serviceId', 'title image game')
+            .populate('serviceId', 'title image icon backgroundImage characterImage game')
             .populate('userId', 'name email')
             .populate('pro', 'name email rating')
             .sort({ createdAt: -1 })

@@ -1,4 +1,6 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
+
 
 const BrandBanner = () => {
  return (
@@ -19,10 +21,16 @@ const BrandBanner = () => {
  </p>
  </div>
  <div className="flex gap-4">
- <button className="bg-white hover:bg-white/90 text-black px-10 py-4 rounded-2xl font-black text-[14px] uppercase tracking-widest transition-all">
+ <Link 
+ to="/about"
+ className="bg-white hover:bg-white/90 text-black px-10 py-4 rounded-2xl font-black text-[14px] uppercase tracking-widest transition-all inline-block"
+ >
  About us
- </button>
- <button className="border border-white/10 hover:bg-white/5 text-white px-10 py-4 rounded-2xl font-black text-[14px] uppercase tracking-widest transition-all">
+ </Link>
+ <button 
+ onClick={() => window.dispatchEvent(new CustomEvent('openSupportChat'))}
+ className="border border-white/10 hover:bg-white/5 text-white px-10 py-4 rounded-2xl font-black text-[14px] uppercase tracking-widest transition-all"
+ >
  Support
  </button>
  </div>

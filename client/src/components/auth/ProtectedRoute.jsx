@@ -81,15 +81,15 @@ const ProtectedRoute = ({ children, allowedRoles, adminOnly, proOnly, affiliateO
  return <Navigate to="/" replace />;
  }
 
- // PRO only pages (must be verified)
- if (proOnly && (user.role !== ROLES.PRO || user.proStatus !== 'approved')) {
- return <Navigate to="/become-pro" replace />;
- }
+  // PRO only pages (must be verified) - Also allowed for Admins
+  if (proOnly && user.role !== ROLES.ADMIN && (user.role !== ROLES.PRO || user.proStatus !== 'approved')) {
+    return <Navigate to="/become-pro" replace />;
+  }
 
- // Affiliate only pages
- if (affiliateOnly && user.role !== ROLES.AFFILIATE) {
- return <Navigate to="/affiliate" replace />;
- }
+  // Affiliate only pages - Also allowed for Admins
+  if (affiliateOnly && user.role !== ROLES.ADMIN && user.role !== ROLES.AFFILIATE) {
+    return <Navigate to="/affiliate" replace />;
+  }
 
  // Specific role access
  if (effectiveAllowedRoles && !effectiveAllowedRoles.includes(user.role)) {

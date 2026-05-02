@@ -1,30 +1,45 @@
 import React, { useState } from 'react';
-import { X, ShieldCheck, Lock, CheckCircle2, ChevronRight, Info } from 'lucide-react';
+import { X, ShieldCheck, Lock, CheckCircle2, ChevronRight, Info, Shield } from 'lucide-react';
 import { useCurrency } from '../../context/CurrencyContext';
 
 const PaymentMethodIcon = ({ id, selected }) => {
-    // Simple high-end text-based or icon logos for payment methods
+    // High-end text-based or icon logos for payment methods matching the screenshot
     switch (id) {
         case 'visa':
             return (
                 <div className="flex items-center gap-1">
-                    <span className={`text-[10px] font-black italic ${selected ? 'text-black' : 'text-white'}`}>VISA</span>
-                    <span className={`text-[10px] font-black italic opacity-40 ${selected ? 'text-black' : 'text-white'}`}>| mc</span>
+                    <span className="text-[10px] font-bold italic text-white">VISA</span>
+                    <div className="flex -space-x-1">
+                        <div className="w-3 h-3 rounded-full bg-[#EB001B] opacity-80"></div>
+                        <div className="w-3 h-3 rounded-full bg-[#F79E1B] opacity-80"></div>
+                    </div>
                 </div>
             );
+        case 'paypal':
+            return <span className="text-[10px] font-bold italic tracking-tighter text-[#003087]">PayPal</span>;
         case 'ideal':
-            return <span className={`text-[10px] font-black uppercase tracking-tighter ${selected ? 'text-black' : 'text-[#cc0066]'}`}>iDEAL</span>;
-        case 'skrill':
-            return <span className={`text-[10px] font-black uppercase tracking-tight ${selected ? 'text-black' : 'text-[#821361]'}`}>SKRILL</span>;
-        case 'crypto':
-            return <span className={`text-[10px] font-black uppercase tracking-widest ${selected ? 'text-black' : 'text-primary'}`}>CRYPTO</span>;
-        case 'google':
             return (
                 <div className="flex items-center gap-1">
-                    <span className={`text-[10px] font-black ${selected ? 'text-black' : 'text-white'}`}>G</span>
-                    <span className={`text-[10px] font-black opacity-40 ${selected ? 'text-black' : 'text-white'}`}>Pay</span>
+                    <div className="w-4 h-4 bg-black border border-white/20 flex items-center justify-center rounded-sm">
+                        <span className="text-[6px] font-bold text-white">iDEAL</span>
+                    </div>
                 </div>
             );
+        case 'skrill':
+            return <span className="text-[10px] font-bold uppercase tracking-tight text-[#821361]">Skrill</span>;
+        case 'neteller':
+            return <span className="text-[10px] font-bold uppercase tracking-widest text-[#73b640]">NETELLER</span>;
+        case 'crypto':
+            return (
+                <div className="flex items-center gap-1">
+                    <div className="w-4 h-4 rounded-full bg-white/10 flex items-center justify-center">
+                        <span className="text-[8px]">₿</span>
+                    </div>
+                    <span className="text-[8px] font-bold text-white/40 uppercase">Crypto</span>
+                </div>
+            );
+        case 'other':
+            return <Lock className="w-3 h-3 text-white/40" />;
         default:
             return <CheckCircle2 className="w-4 h-4" />;
     }
@@ -37,11 +52,13 @@ const PaymentModal = ({ isOpen, onClose, total, onConfirm }) => {
     if (!isOpen) return null;
 
     const paymentMethods = [
-        { id: 'visa', name: 'Card Payment', fee: '+ 3.9%', description: 'Visa, Mastercard, Maestro' },
-        { id: 'ideal', name: 'iDeal', fee: '+ 2.9%', description: 'Direct bank transfer' },
-        { id: 'google', name: 'Google Pay', fee: '+ 3.9%', description: 'Fast and secure' },
-        { id: 'skrill', name: 'Skrill', fee: '+ 5.9%', description: 'Digital wallet' },
-        { id: 'crypto', name: 'Crypto', fee: '+ 1.0%', description: 'BTC, ETH, USDT (L2 supported)' },
+        { id: 'visa', name: 'Visa or Mastercard', fee: '+ 3.9% + 0.99€', isSpecial: true },
+        { id: 'paypal', name: 'PayPal', fee: '+ 5.9%' },
+        { id: 'ideal', name: 'iDeal', fee: '+ 5.9%' },
+        { id: 'skrill', name: 'Skrill Digital Wallet', fee: '+ 5.9%' },
+        { id: 'neteller', name: 'Neteller', fee: '+ 5.9%' },
+        { id: 'crypto', name: 'BTC, ETH, USDT, USDC and more', fee: '+ 5.9%' },
+        { id: 'other', name: 'Other: Klarna, Przelewy24, Rapid, Paysafe', fee: '+ 5.9%' },
     ];
 
     const vatRate = 0.21;
@@ -51,130 +68,93 @@ const PaymentModal = ({ isOpen, onClose, total, onConfirm }) => {
     const finalTotal = total + vatAmount + commissionAmount;
 
     return (
-        <div className="fixed inset-0 z-[1000] flex items-center justify-center p-4 md:p-6 bg-black/90 backdrop-blur-md animate-fade-in font-['Outfit']">
-            <div className="bg-[#080808] border border-white/10 rounded-[2.5rem] max-w-4xl w-full flex flex-col md:flex-row overflow-hidden shadow-[0_50px_100px_rgba(0,0,0,1)] relative">
+        <div className="fixed inset-0 z-[1000] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in font-['Outfit']">
+            <div className="bg-[#121212] border border-white/5 rounded-[2.5rem] max-w-4xl w-full flex flex-col md:flex-row overflow-hidden shadow-2xl relative">
                 
                 {/* Close Button */}
                 <button 
                     onClick={onClose}
-                    className="absolute top-6 right-6 z-20 text-white/20 hover:text-white transition-colors w-10 h-10 flex items-center justify-center bg-white/5 rounded-full"
+                    className="absolute top-6 right-8 z-20 text-white/20 hover:text-white transition-colors"
                 >
-                    <X className="w-5 h-5" />
+                    <X className="w-6 h-6" />
                 </button>
 
                 {/* LEFT: Selection Area */}
-                <div className="flex-1 p-8 md:p-12 overflow-y-auto max-h-[80vh] custom-scrollbar">
-                    <div className="mb-10">
-                        <div className="flex items-center gap-3 mb-2">
-                            <div className="w-8 h-8 rounded-xl bg-primary/10 flex items-center justify-center">
-                                <Lock className="w-4 h-4 text-primary" />
-                            </div>
-                            <span className="text-[10px] font-black text-primary uppercase tracking-[0.3em]">Secure Checkout</span>
-                        </div>
-                        <h3 className="text-4xl font-black text-white uppercase tracking-tighter">Payment method</h3>
-                        <p className="text-white/30 text-xs font-medium uppercase tracking-widest mt-2">Select your preferred way to pay</p>
+                <div className="flex-1 p-8 md:p-12 overflow-y-auto max-h-[85vh] custom-scrollbar">
+                    <div className="mb-10 text-center md:text-left">
+                        <h3 className="text-4xl font-bold text-white tracking-tight">Payment method</h3>
                     </div>
 
-                    <div className="space-y-3">
+                    <div className="grid gap-2">
                         {paymentMethods.map((method) => (
                             <button
                                 key={method.id}
                                 onClick={() => setSelectedPayment(method.id)}
-                                className={`w-full group relative flex items-center justify-between p-5 rounded-2xl border transition-all duration-500 ${
+                                className={`w-full group flex items-center justify-between p-4 rounded-2xl border transition-all duration-300 ${
                                     selectedPayment === method.id 
-                                    ? 'bg-primary border-primary shadow-[0_10px_30px_rgba(19,193,0,0.2)] scale-[1.02]' 
-                                    : 'bg-white/[0.03] border-white/5 hover:bg-white/[0.06] hover:border-white/10'
+                                    ? 'bg-white/10 border-white/20' 
+                                    : 'bg-white/[0.02] border-white/[0.05] hover:bg-white/[0.05] hover:border-white/10'
                                 }`}
                             >
-                                <div className="flex items-center gap-5">
-                                    <div className={`w-14 h-10 rounded-xl flex items-center justify-center transition-colors ${selectedPayment === method.id ? 'bg-black text-white' : 'bg-white/5 border border-white/10'}`}>
+                                <div className="flex items-center gap-4">
+                                    <div className="w-16 h-10 rounded-xl bg-white/[0.03] flex items-center justify-center border border-white/5">
                                         <PaymentMethodIcon id={method.id} selected={selectedPayment === method.id} />
                                     </div>
                                     <div className="text-left">
-                                        <p className={`text-xs font-black uppercase tracking-widest ${selectedPayment === method.id ? 'text-black' : 'text-white'}`}>{method.name}</p>
-                                        <p className={`text-[9px] font-bold uppercase tracking-tight mt-0.5 ${selectedPayment === method.id ? 'text-black/50' : 'text-white/20'}`}>{method.description}</p>
+                                        <p className="text-xs font-bold text-white/90">{method.name}</p>
                                     </div>
                                 </div>
-                                <div className="flex items-center gap-3">
-                                    <span className={`text-[10px] font-black px-2.5 py-1 rounded-lg ${selectedPayment === method.id ? 'bg-black/10 text-black' : 'bg-white/5 text-white/40'}`}>
+                                <div>
+                                    <span className={`text-[10px] font-bold px-3 py-1.5 rounded-full ${method.isSpecial ? 'bg-[#6345ff] text-white' : 'bg-white/5 text-white/40'}`}>
                                         {method.fee}
                                     </span>
-                                    <ChevronRight className={`w-4 h-4 transition-transform group-hover:translate-x-1 ${selectedPayment === method.id ? 'text-black' : 'text-white/20'}`} />
                                 </div>
                             </button>
                         ))}
                     </div>
-
-                    {/* Security Text */}
-                    <div className="mt-12 flex items-start gap-4 p-6 bg-white/[0.02] rounded-3xl border border-white/5">
-                        <ShieldCheck className="w-6 h-6 text-primary flex-shrink-0" />
-                        <div>
-                            <p className="text-[10px] font-black text-white uppercase tracking-widest mb-1">BoostGG Protection</p>
-                            <p className="text-[9px] text-white/30 font-medium leading-relaxed uppercase tracking-tight">
-                                Your payment is processed through encrypted channels. We never store your full card details. Money-back guarantee active.
-                            </p>
-                        </div>
-                    </div>
                 </div>
 
                 {/* RIGHT: Summary Area */}
-                <div className="w-full md:w-[380px] bg-white text-black p-8 md:p-12 flex flex-col justify-between relative overflow-hidden">
-                    {/* Pattern Background Overlay */}
-                    <div className="absolute inset-0 opacity-[0.03] pointer-events-none select-none">
-                        <div className="absolute inset-0 bg-[radial-gradient(#000_1px,transparent_1px)] [background-size:20px_20px]"></div>
-                    </div>
-
-                    <div className="relative z-10">
-                        <div className="flex items-center gap-3 mb-8">
-                            <div className="w-10 h-10 bg-black rounded-xl flex items-center justify-center">
-                                <CheckCircle2 className="w-5 h-5 text-primary" />
-                            </div>
-                            <div>
-                                <p className="text-[9px] font-black uppercase tracking-widest text-black/40">Order Summary</p>
-                                <p className="text-xs font-black uppercase tracking-tight">Review details</p>
-                            </div>
+                <div className="w-full md:w-[380px] bg-[#0c0c0c]/50 p-8 md:p-12 flex flex-col relative border-l border-white/5">
+                    <div className="flex flex-col gap-6 mb-12">
+                        <div className="flex justify-between items-center">
+                            <span className="text-xs font-medium text-white/40">Offer's price</span>
+                            <span className="text-sm font-bold text-white">{formatPrice(total)}</span>
                         </div>
-
-                        <div className="space-y-5">
-                            <div className="flex justify-between items-center">
-                                <span className="text-[10px] font-black text-black/40 uppercase tracking-[0.2em]">Offer Price</span>
-                                <span className="text-sm font-black">{formatPrice(total)}</span>
-                            </div>
-                            <div className="flex justify-between items-center">
-                                <span className="text-[10px] font-black text-black/40 uppercase tracking-[0.2em]">Platform VAT (21%)</span>
-                                <span className="text-sm font-black text-red-600">+{formatPrice(vatAmount)}</span>
-                            </div>
-                            <div className="flex justify-between items-center">
-                                <div className="flex items-center gap-1.5">
-                                    <span className="text-[10px] font-black text-black/40 uppercase tracking-[0.2em]">Processing Fee</span>
-                                    <Info className="w-3 h-3 text-black/20" />
-                                </div>
-                                <span className="text-sm font-black">+{formatPrice(commissionAmount)}</span>
-                            </div>
-                            
-                            <div className="pt-8 mt-8 border-t-2 border-black/5 flex flex-col gap-2">
-                                <span className="text-[10px] font-black text-black/40 uppercase tracking-[0.3em]">Total Amount</span>
-                                <div className="flex items-baseline gap-1">
-                                    <span className="text-4xl font-black tracking-tighter">{formatPrice(finalTotal)}</span>
-                                    <span className="text-[10px] font-black text-black/30 uppercase tracking-widest">EUR</span>
-                                </div>
-                            </div>
+                        <div className="flex justify-between items-center">
+                            <span className="text-xs font-medium text-white/40">VAT</span>
+                            <span className="text-sm font-bold text-white">{formatPrice(vatAmount)}</span>
+                        </div>
+                        <div className="flex justify-between items-center">
+                            <span className="text-xs font-medium text-white/40">Payment commission</span>
+                            <span className="text-sm font-bold text-white">{formatPrice(commissionAmount)}</span>
+                        </div>
+                        
+                        <div className="mt-4 pt-6 border-t border-white/10 flex justify-between items-baseline">
+                            <span className="text-2xl font-bold text-white">Total price</span>
+                            <span className="text-3xl font-bold text-white tracking-tighter">{formatPrice(finalTotal)}</span>
                         </div>
                     </div>
 
-                    <div className="mt-12 space-y-4 relative z-10">
+                    <div className="mt-auto space-y-8">
                         <button 
                             onClick={() => onConfirm(selectedPayment)}
-                            className="w-full bg-black text-white py-6 rounded-2xl font-black text-sm uppercase tracking-[0.2em] flex items-center justify-center gap-3 transition-all active:scale-95 shadow-[0_20px_40px_rgba(0,0,0,0.2)] hover:shadow-[0_25px_50px_rgba(0,0,0,0.3)] group"
+                            className="w-full bg-[#13C100] hover:bg-[#15d600] text-white py-5 rounded-2xl font-bold text-lg flex items-center justify-center gap-3 transition-all active:scale-95 shadow-lg shadow-[#13C100]/20"
                         >
-                            Complete Order <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                            Buy now <Shield className="w-5 h-5 fill-white/10" />
                         </button>
 
-                        <div className="flex items-center justify-center gap-4 opacity-20 hover:opacity-100 transition-opacity">
-                             <span className="text-[8px] font-black uppercase tracking-widest">VISA</span>
-                             <span className="text-[8px] font-black uppercase tracking-widest">MASTERCARD</span>
-                             <span className="text-[8px] font-black uppercase tracking-widest">IDEAL</span>
-                             <span className="text-[8px] font-black uppercase tracking-widest">BITCOIN</span>
+                        <div className="space-y-4">
+                            <div className="flex items-center gap-3 opacity-30">
+                                <ShieldCheck className="w-10 h-10 text-white" strokeWidth={1} />
+                                <div className="flex flex-col">
+                                    <span className="text-[10px] font-bold text-white uppercase tracking-tighter leading-none">SECURE</span>
+                                    <span className="text-[8px] text-white uppercase tracking-widest leading-none">SSL ENCRYPTION</span>
+                                </div>
+                            </div>
+                            <p className="text-[10px] text-white/30 font-medium leading-relaxed">
+                                We protect your privacy with advanced encryption
+                            </p>
                         </div>
                     </div>
                 </div>
@@ -183,7 +163,7 @@ const PaymentModal = ({ isOpen, onClose, total, onConfirm }) => {
                     .custom-scrollbar::-webkit-scrollbar { width: 4px; }
                     .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
                     .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.05); border-radius: 10px; }
-                    .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: rgba(19, 193, 0, 0.3); }
+                    .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.1); }
                 `}</style>
             </div>
         </div>

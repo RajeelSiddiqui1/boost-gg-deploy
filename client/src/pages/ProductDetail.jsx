@@ -36,6 +36,8 @@ const ProductDetail = () => {
     const [selectedPlatform, setSelectedPlatform] = useState(null);
     const [selectedRegion, setSelectedRegion] = useState(null);
     const [showPaymentModal, setShowPaymentModal] = useState(false);
+    const [isFavorite, setIsFavorite] = useState(false);
+
 
     // Helper function to get base price
     const getBasePrice = (serviceData) => {
@@ -129,6 +131,45 @@ const ProductDetail = () => {
         if (id) fetchService();
         window.scrollTo(0, 0);
     }, [id]);
+
+    // Check if favorite
+    useEffect(() => {
+        const checkFavorite = async () => {
+            if (user && service) {
+                try {
+                    const token = localStorage.getItem('token');
+                    const res = await axios.get(`${API_URL}/api/v1/favorites/check/${service._id}`, {
+                        headers: { Authorization: `Bearer ${token}` }
+                    });
+                    setIsFavorite(res.data.isFavorite);
+                } catch (err) {
+                    console.error("Error checking favorite:", err);
+                }
+            }
+        };
+        checkFavorite();
+    }, [user, service]);
+
+    const handleToggleFavorite = async () => {
+        if (!user) {
+            toast.info('Please login to add favorites');
+            return;
+        }
+        try {
+            const token = localStorage.getItem('token');
+            const res = await axios.post(`${API_URL}/api/v1/favorites/toggle`, {
+                itemId: service._id,
+                itemType: 'Service'
+            }, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            setIsFavorite(res.data.success && res.data.message.includes('Added'));
+            toast.success(res.data.message);
+        } catch (err) {
+            toast.error(err.response?.data?.message || 'Failed to update favorites');
+        }
+    };
+
 
     // Calculate total price based on selections
     const totalPrice = useMemo(() => {
@@ -257,7 +298,7 @@ const ProductDetail = () => {
         };
         
         setShowPaymentModal(false);
-        navigate('/checkout', { 
+        navigate('/payment-gateway', { 
             state: { 
                 selectedPaymentMethod: paymentMethod,
                 instantItem: instantItem 
@@ -517,7 +558,7 @@ const ProductDetail = () => {
             <div className="min-h-screen bg-black text-white font-['Outfit'] pt-28 pb-20 overflow-x-hidden">
             {/* Background Glow Effects */}
             <div className="fixed inset-0 pointer-events-none z-0">
-                <div className="absolute -top-[30%] -left-[20%] w-[80%] h-[50%] bg-primary/20 blur-[150px] rounded-full"></div>
+                <div className="absolute -top-[20%] -left-[25%] w-[80%] h-[50%] bg-primary/20 blur-[100px] rounded-full"></div>
                 <div className="absolute bottom-0 right-0 w-[60%] h-[40%] bg-purple-500/10 blur-[150px] rounded-full"></div>
             </div>
             
@@ -561,13 +602,21 @@ const ProductDetail = () => {
                         </div>
                     </div>
                     <div className="flex items-center gap-4">
-                        <button className="p-3 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 transition-colors">
-                            <Heart className="w-5 h-5 text-white/60" />
+                        <button 
+                            onClick={handleToggleFavorite}
+                            className={`p-3 rounded-full border transition-all ${
+                                isFavorite 
+                                    ? 'bg-primary/20 border-primary text-primary' 
+                                    : 'bg-white/5 border-white/10 text-white/60 hover:bg-white/10 hover:text-white'
+                            }`}
+                        >
+                            <Heart className={`w-5 h-5 ${isFavorite ? 'fill-current' : ''}`} />
                         </button>
                         <button className="p-3 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 transition-colors">
                             <Share2 className="w-5 h-5 text-white/60" />
                         </button>
                     </div>
+
                 </div>
 
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-start mb-20">

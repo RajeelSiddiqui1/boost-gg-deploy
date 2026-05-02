@@ -11,6 +11,8 @@ import { Coins, MapPin, Server, Zap, ChevronRight,
  Shield, Lock, RotateCcw, Monitor
 } from 'lucide-react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { useAuth } from '../../context/AuthContext';
+
 
 import StepProcess from '../sections/StepProcess';
 import DetailBanner from '../DetailBanner';
@@ -35,6 +37,8 @@ const CurrencyMode = () => {
  const { formatPrice } = useCurrency();
  const toast = useToast();
  const { addToCart } = useCart();
+ const { user } = useAuth();
+ const [isFavorite, setIsFavorite] = useState(false);
 
  // Display price function - moved to top before usage
  const displayPrice = (price, isUnit = false) => {
@@ -119,6 +123,46 @@ const CurrencyMode = () => {
  return () => clearTimeout(timer);
  }
  }, [selectedListing, quantity, toast]);
+
+ // Check if favorite
+ useEffect(() => {
+   const checkFavorite = async () => {
+     if (user && selectedListing) {
+       try {
+         const token = localStorage.getItem('token');
+         const res = await axios.get(`${API_URL}/api/v1/favorites/check/${selectedListing._id}`, {
+           headers: { Authorization: `Bearer ${token}` }
+         });
+         setIsFavorite(res.data.isFavorite);
+       } catch (err) {
+         console.error("Error checking favorite:", err);
+       }
+     }
+   };
+   checkFavorite();
+ }, [user, selectedListing]);
+
+ const handleToggleFavorite = async () => {
+   if (!user) {
+     toast.info('Please login to add favorites');
+     return;
+   }
+   if (!selectedListing) return;
+
+   try {
+     const token = localStorage.getItem('token');
+     const res = await axios.post(`${API_URL}/api/v1/favorites/toggle`, {
+       itemId: selectedListing._id,
+       itemType: 'CurrencyListing'
+     }, {
+       headers: { Authorization: `Bearer ${token}` }
+     });
+     setIsFavorite(res.data.success && res.data.message.includes('Added'));
+     toast.success(res.data.message);
+   } catch (err) {
+     toast.error(err.response?.data?.message || 'Failed to update favorites');
+   }
+ };
 
  const handleAddToCart = () => {
  if (!selectedListing || !priceData) {
@@ -267,16 +311,23 @@ const CurrencyMode = () => {
  </h1>
  </div>
  </div>
- {/* <div className="flex items-center gap-4">
- <button className="flex items-center gap-3 px-8 py-4 bg-white/5 border border-white/10 rounded-2xl text-[12px] font-black uppercase tracking-widest text-white/60 hover:bg-white/10 hover:text-white transition-all">
- <Share2 className="w-4 h-4" />
- Share
- </button>
- <button className="flex items-center gap-3 px-8 py-4 bg-primary rounded-2xl text-[12px] font-black uppercase tracking-widest text-black hover:scale-[1.05] transition-all">
- <Heart className="w-4 h-4 fill-black" />
- Favorite
- </button>
- </div> */}
+  <div className="flex items-center gap-4">
+  <button className="flex items-center gap-3 px-8 py-4 bg-white/5 border border-white/10 rounded-2xl text-[12px] font-black uppercase tracking-widest text-white/60 hover:bg-white/10 hover:text-white transition-all">
+  <Share2 className="w-4 h-4" />
+  Share
+  </button>
+  <button 
+    onClick={handleToggleFavorite}
+    className={`flex items-center gap-3 px-8 py-4 rounded-2xl text-[12px] font-black uppercase tracking-widest transition-all ${
+      isFavorite 
+        ? 'bg-primary text-black' 
+        : 'bg-white/5 border border-white/10 text-white/60 hover:bg-white/10 hover:text-white'
+    }`}
+  >
+  <Heart className={`w-4 h-4 ${isFavorite ? 'fill-current' : ''}`} />
+  {isFavorite ? 'Favorited' : 'Favorite'}
+  </button>
+  </div>
  </div>
 
  {/* Main Content Layout */}

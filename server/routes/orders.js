@@ -11,6 +11,8 @@ const {
     submitReview,
     getOrder,
     sendChatMessage,
+    uploadChatFile,
+    deleteChatMessage,
     assignProToOrder,
     rejectOrder,
     getAllOrders
@@ -27,6 +29,10 @@ router.put('/:id/complete', protect, authorize('pro', 'admin'), completeOrder);
 router.put('/:id/assign-pro', protect, authorize('admin'), assignProToOrder);
 router.put('/:id/reject', protect, authorize('pro'), rejectOrder);
 router.post('/:id/review', protect, submitReview);
+const chatUpload = require('../middleware/chatUpload');
+
 router.post('/:id/chat', protect, sendChatMessage);
+router.post('/:id/chat/upload', protect, chatUpload.single('file'), uploadChatFile);
+router.delete('/:id/chat', protect, deleteChatMessage);
 
 module.exports = router;

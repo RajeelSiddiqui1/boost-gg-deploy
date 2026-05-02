@@ -31,6 +31,8 @@ const currencyRoutes = require('./routes/currencies');
 const accountRoutes = require('./routes/accounts');
 const uploadRoutes = require('./routes/uploads');
 const customSectionRoutes = require('./routes/customSections');
+const favoriteRoutes = require('./routes/favorites');
+
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -102,6 +104,8 @@ app.use('/api/v1/accounts', accountRoutes);
 app.use('/api/v1/account', accountRoutes);
 app.use('/api/v1/uploads', uploadRoutes);
 app.use('/api/v1/custom-sections', customSectionRoutes);
+app.use('/api/v1/favorites', favoriteRoutes);
+
 
 
 app.get('/health', (req, res) => {

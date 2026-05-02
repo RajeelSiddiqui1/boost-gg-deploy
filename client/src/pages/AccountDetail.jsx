@@ -5,6 +5,9 @@ import { API_URL, getImageUrl } from '../utils/api';
 import { useCurrency } from '../context/CurrencyContext';
 import { useCart } from '../context/CartContext';
 import { useToast } from '../context/ToastContext';
+import { useAuth } from '../context/AuthContext';
+
+
 import { 
   ChevronLeft, ChevronRight, Zap, ShieldCheck, 
   Clock, Heart, Share2, Info, Star, 
@@ -110,6 +113,8 @@ const AccountDetail = () => {
   const { formatPrice, currency } = useCurrency();
   const { addToCart } = useCart();
   const toast = useToast();
+  const { user } = useAuth();
+
 
   const [account, setAccount] = useState(null);
   const [relatedAccounts, setRelatedAccounts] = useState([]);
@@ -119,6 +124,8 @@ const AccountDetail = () => {
   const [warrantyEnabled, setWarrantyEnabled] = useState(false);
   const [isVerifiedModalOpen, setIsVerifiedModalOpen] = useState(false);
   const [showPaymentModal, setShowPaymentModal] = useState(false);
+  const [isFavorite, setIsFavorite] = useState(false);
+
 
   // Constant warranty price (could be dynamic based on account price in future)
   const warrantyPrice = 8.96;
@@ -148,6 +155,45 @@ const AccountDetail = () => {
       window.scrollTo(0, 0);
     }
   }, [id]);
+
+  // Check if favorite
+  useEffect(() => {
+    const checkFavorite = async () => {
+      if (user && account) {
+        try {
+          const token = localStorage.getItem('token');
+          const res = await axios.get(`${API_URL}/api/v1/favorites/check/${account._id}`, {
+            headers: { Authorization: `Bearer ${token}` }
+          });
+          setIsFavorite(res.data.isFavorite);
+        } catch (err) {
+          console.error("Error checking favorite:", err);
+        }
+      }
+    };
+    checkFavorite();
+  }, [user, account]);
+
+  const handleToggleFavorite = async () => {
+    if (!user) {
+      toast.info('Please login to add favorites');
+      return;
+    }
+    try {
+      const token = localStorage.getItem('token');
+      const res = await axios.post(`${API_URL}/api/v1/favorites/toggle`, {
+        itemId: account._id,
+        itemType: 'AccountListing'
+      }, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setIsFavorite(res.data.success && res.data.message.includes('Added'));
+      toast.success(res.data.message);
+    } catch (err) {
+      toast.error(err.response?.data?.message || 'Failed to update favorites');
+    }
+  };
+
 
   const finalPrice = useMemo(() => {
     if (!account) return 0;
@@ -289,7 +335,23 @@ const AccountDetail = () => {
           <Link to={`/game/${account.gameSlug || account.gameId?.slug}?mode=accounts`} className="hover:text-primary transition-colors">{account.gameId?.name || 'Game'}</Link>
           <ChevronRight className="w-3 h-3 flex-shrink-0" />
           <span className="text-white/60 truncate">{account.title}</span>
+          <div className="ml-auto flex items-center gap-3">
+            <button 
+              onClick={handleToggleFavorite}
+              className={`w-10 h-10 rounded-2xl border flex items-center justify-center transition-all ${
+                isFavorite 
+                  ? 'bg-primary/20 border-primary text-primary' 
+                  : 'bg-white/5 border-white/10 text-white/40 hover:bg-white/10'
+              }`}
+            >
+              <Heart className={`w-4 h-4 ${isFavorite ? 'fill-current' : ''}`} />
+            </button>
+            <button className="w-10 h-10 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-white/40 hover:bg-white/10 transition-all">
+              <Share2 className="w-4 h-4" />
+            </button>
+          </div>
         </div>
+
 
         <div className="flex flex-col lg:flex-row gap-8 items-start">
           

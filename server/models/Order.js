@@ -66,13 +66,23 @@ const orderSchema = new mongoose.Schema({
     region: { type: String },
     // Cashback earned on this order
     cashbackEarned: { type: Number, default: 0 },
-    // Chat messages between customer and booster
     chat: [{
         sender: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'User'
         },
         message: String,
+        type: {
+            type: String,
+            enum: ['text', 'image', 'video', 'pdf'],
+            default: 'text'
+        },
+        attachment: {
+            url: String,
+            name: String,
+            size: Number,
+            mimeType: String
+        },
         timestamp: {
             type: Date,
             default: Date.now
@@ -155,15 +165,13 @@ const orderSchema = new mongoose.Schema({
 });
 
 // Pre-save middleware to update timestamps
-orderSchema.pre('save', function (next) {
+orderSchema.pre('save', function () {
     this.updatedAt = Date.now();
 
     // Set completedAt when status changes to completed
     if (this.isModified('status') && this.status === 'completed' && !this.completedAt) {
         this.completedAt = new Date();
     }
-
-    next();
 });
 
 // INDEXES FOR PERFORMANCE

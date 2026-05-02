@@ -521,19 +521,7 @@ const GameHub = () => {
  <span className="text-2xl font-black text-white leading-none mb-1">{isAccountMode ? accounts.length : services.length}</span>
  <span className="text-[8px] font-black uppercase text-white/30 tracking-widest leading-none">{isAccountMode ? 'Accounts' : 'Services'}</span>
  </div>
- <div className="flex flex-col items-center px-4 py-2.5 bg-black/40 backdrop-blur-md border border-white/10 rounded-2xl">
- <div className="flex items-center gap-1">
- <span className="text-xl font-black text-white">{avgRating}</span>
- <Star className="w-3.5 h-3.5 fill-primary text-primary" />
- </div>
- <span className="text-[8px] font-black uppercase text-white/30 tracking-widest">Rating</span>
- </div>
- <button
- onClick={handleToggleSave}
- className={`flex items-center justify-center w-10 h-10 rounded-full border transition-all ${isSaved ? 'bg-primary/10 border-primary text-primary' : 'bg-black/40 border-white/10 text-white hover:bg-white/10'}`}
- >
- <Heart className={`w-4 h-4 ${isSaved ? 'fill-current' : ''}`} />
- </button>
+
  </div>
  </div>
  </div>
@@ -697,14 +685,8 @@ const GameHub = () => {
  {searchQuery && ` matching "${searchQuery}"`}
  </p>
  </div>
- <div className="hidden sm:flex items-center gap-3 px-4 py-2.5 bg-white/[0.03] border border-white/[0.08] rounded-2xl">
- <div className="flex items-center gap-1.5">
- <Star className="w-3.5 h-3.5 fill-primary text-primary" />
- <span className="text-xs font-black text-white">{avgRating}</span>
- </div>
- <span className="w-px h-3 bg-white/10"></span>
- <span className="text-[9px] font-black text-white/30 uppercase tracking-widest">Client Reviews</span>
- </div>
+ 
+ 
  </div>
 
  {/* Cards grid */}

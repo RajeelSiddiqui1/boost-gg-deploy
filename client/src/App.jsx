@@ -18,6 +18,7 @@ import { API_URL } from './utils/api';
 import { UIProvider } from './context/UIContext';
 import { CurrencyProvider } from './context/CurrencyContext';
 import { ModeProvider } from './context/ModeContext';
+import { io } from 'socket.io-client';
 
 const Home = lazy(() => import('./pages/Home'));
 const Offers = lazy(() => import('./pages/Offers'));
@@ -63,168 +64,175 @@ const AccountDetail = lazy(() => import('./pages/AccountDetail'));
 const AdminServiceCreator = lazy(() => import('./pages/admin/ServiceCreatorPage'));
 const AdminProApplications = lazy(() => import('./pages/admin/ProApplications'));
 const ProSettings = lazy(() => import('./pages/ProSettings'));
+const PaymentGateway = lazy(() => import('./pages/PaymentGateway'));
+const BoosterOrderDetails = lazy(() => import('./pages/BoosterOrderDetails'));
+const ChatHub = lazy(() => import('./pages/ChatHub'));
+const CustomerOrderDetails = lazy(() => import('./pages/CustomerOrderDetails'));
 
 const AppContent = () => {
- const location = useLocation();
- const { user, loading: authLoading, isPro, isAdmin, isAffiliate, ROLES } = useAuth();
- const [maintenance, setMaintenance] = useState(false);
- const [checkingMaintenance, setCheckingMaintenance] = useState(true);
+  const location = useLocation();
+  const { user, loading: authLoading, isPro, isAdmin, isAffiliate, ROLES } = useAuth();
+  const [maintenance, setMaintenance] = useState(false);
+  const [checkingMaintenance, setCheckingMaintenance] = useState(true);
 
- const hideLayoutPaths = ['/login', '/signup', '/forgot-password', '/reset-password', '/admin'];
- const shouldHideLayout = hideLayoutPaths.some(path => location.pathname.startsWith(path));
+  const hideLayoutPaths = ['/login', '/signup', '/forgot-password', '/reset-password', '/admin', '/payment-gateway'];
+  const shouldHideLayout = hideLayoutPaths.some(path => location.pathname.startsWith(path));
 
- useEffect(() => {
- const checkStatus = async () => {
- try {
- const res = await axios.get(`${API_URL}/api/v1/auth/status`);
- setMaintenance(res.data.maintenance);
- } catch (err) {
- if (err.response && err.response.status === 503) {
- setMaintenance(true);
- }
- } finally {
- setCheckingMaintenance(false);
- }
- };
- checkStatus();
- }, []);
+  useEffect(() => {
+    const checkStatus = async () => {
+      try {
+        const res = await axios.get(`${API_URL}/api/v1/auth/status`);
+        setMaintenance(res.data.maintenance);
+      } catch (err) {
+        if (err.response && err.response.status === 503) {
+          setMaintenance(true);
+        }
+      } finally {
+        setCheckingMaintenance(false);
+      }
+    };
+    checkStatus();
+  }, []);
 
- useEffect(() => {
- const fetchSettings = async () => {
- try {
- const res = await axios.get(`${API_URL}/api/v1/public/settings`);
- const { site_name, site_description } = res.data.data;
+  useEffect(() => {
+    const fetchSettings = async () => {
+      try {
+        const res = await axios.get(`${API_URL}/api/v1/public/settings`);
+        const { site_name, site_description } = res.data.data;
 
- if (site_name) {
- document.title = site_name;
- }
+        if (site_name) {
+          document.title = site_name;
+        }
 
- if (site_description) {
- let metaDescription = document.querySelector('meta[name="description"]');
- if (!metaDescription) {
- metaDescription = document.createElement('meta');
- metaDescription.name = "description";
- document.head.appendChild(metaDescription);
- }
- metaDescription.content = site_description;
- }
- } catch (err) {
- console.error('Failed to fetch site settings', err);
- }
- };
- fetchSettings();
- }, []);
+        if (site_description) {
+          let metaDescription = document.querySelector('meta[name="description"]');
+          if (!metaDescription) {
+            metaDescription = document.createElement('meta');
+            metaDescription.name = "description";
+            document.head.appendChild(metaDescription);
+          }
+          metaDescription.content = site_description;
+        }
+      } catch (err) {
+        console.error('Failed to fetch site settings', err);
+      }
+    };
+    fetchSettings();
+  }, []);
 
- if ((maintenance && user?.role !== 'admin') && !location.pathname.startsWith('/admin') && !location.pathname.startsWith('/login')) {
- return <Maintenance />;
- }
+  if ((maintenance && user?.role !== 'admin') && !location.pathname.startsWith('/admin') && !location.pathname.startsWith('/login')) {
+    return <Maintenance />;
+  }
 
- const getDashboardRoute = () => {
- if (!user) return '/login';
- if (user.role === ROLES.ADMIN) return '/admin';
- if (user.role === ROLES.PRO && user.proStatus === 'approved') return '/pro/dashboard';
- if (user.role === ROLES.AFFILIATE) return '/affiliate/dashboard';
- return '/dashboard';
- };
+  const getDashboardRoute = () => {
+    if (!user) return '/login';
+    if (user.role === ROLES.ADMIN) return '/admin';
+    if (user.role === ROLES.PRO && user.proStatus === 'approved') return '/pro/dashboard';
+    if (user.role === ROLES.AFFILIATE) return '/affiliate/dashboard';
+    return '/dashboard';
+  };
 
- return (
- <div className="min-h-screen bg-black text-white font-sans selection:bg-primary/50 transition-colors duration-300">
- <ScrollToTop />
- {!shouldHideLayout && <Navbar />}
+  return (
+    <div className="min-h-screen bg-black text-white font-sans selection:bg-primary/50 transition-colors duration-300">
+      <ScrollToTop />
+      {!shouldHideLayout && <Navbar />}
 
- <main>
- <Suspense fallback={
- <div className="min-h-screen flex items-center justify-center">
- <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
- </div>
- }>
- <Routes>
- <Route path="/" element={<ProtectedRoute isPublic><Home /></ProtectedRoute>} />
+      <main>
+        <Suspense fallback={
+          <div className="min-h-screen flex items-center justify-center">
+            <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
+          </div>
+        }>
+          <Routes>
+            <Route path="/" element={<ProtectedRoute isPublic><Home /></ProtectedRoute>} />
 
- <Route path="/offers" element={<ProtectedRoute isPublic><Offers /></ProtectedRoute>} />
- <Route path="/about" element={<ProtectedRoute isPublic><About /></ProtectedRoute>} />
- <Route path="/contact" element={<ProtectedRoute isPublic><Contact /></ProtectedRoute>} />
- <Route path="/verify-email/:token" element={<ProtectedRoute isPublic><VerifyEmail /></ProtectedRoute>} />
- <Route path="/offer/:id" element={<ProtectedRoute isPublic><ProductDetail /></ProtectedRoute>} />
- <Route path="/products/:id" element={<ProtectedRoute isPublic><ProductDetail /></ProtectedRoute>} />
- <Route path="/cashback" element={<ProtectedRoute isPublic><Cashback /></ProtectedRoute>} />
- <Route path="/blog" element={<ProtectedRoute isPublic><Blog /></ProtectedRoute>} />
- <Route path="/blog/:slug" element={<ProtectedRoute isPublic><BlogPost /></ProtectedRoute>} />
- <Route path="/game/:slug" element={<ProtectedRoute isPublic><GameHub /></ProtectedRoute>} />
- <Route path="/currency/:gameSlug" element={<ProtectedRoute isPublic><Home /></ProtectedRoute>} />
- <Route path="/accounts/:id" element={<ProtectedRoute isPublic><AccountDetail /></ProtectedRoute>} />
-  <Route path="/wow-boost" element={<ProtectedRoute isPublic><WowBoost /></ProtectedRoute>} />
-  <Route path="/reviews" element={<ProtectedRoute isPublic><Reviews /></ProtectedRoute>} />
+            <Route path="/offers" element={<ProtectedRoute isPublic><Offers /></ProtectedRoute>} />
+            <Route path="/about" element={<ProtectedRoute isPublic><About /></ProtectedRoute>} />
+            <Route path="/contact" element={<ProtectedRoute isPublic><Contact /></ProtectedRoute>} />
+            <Route path="/verify-email/:token" element={<ProtectedRoute isPublic><VerifyEmail /></ProtectedRoute>} />
+            <Route path="/offer/:id" element={<ProtectedRoute isPublic><ProductDetail /></ProtectedRoute>} />
+            <Route path="/products/:id" element={<ProtectedRoute isPublic><ProductDetail /></ProtectedRoute>} />
+            <Route path="/cashback" element={<ProtectedRoute isPublic><Cashback /></ProtectedRoute>} />
+            <Route path="/blog" element={<ProtectedRoute isPublic><Blog /></ProtectedRoute>} />
+            <Route path="/blog/:slug" element={<ProtectedRoute isPublic><BlogPost /></ProtectedRoute>} />
+            <Route path="/game/:slug" element={<ProtectedRoute isPublic><GameHub /></ProtectedRoute>} />
+            <Route path="/currency/:gameSlug" element={<ProtectedRoute isPublic><Home /></ProtectedRoute>} />
+            <Route path="/accounts/:id" element={<ProtectedRoute isPublic><AccountDetail /></ProtectedRoute>} />
+            <Route path="/wow-boost" element={<ProtectedRoute isPublic><WowBoost /></ProtectedRoute>} />
+            <Route path="/reviews" element={<ProtectedRoute isPublic><Reviews /></ProtectedRoute>} />
 
- <Route path="/login" element={<ProtectedRoute guestOnly><Login /></ProtectedRoute>} />
- <Route path="/signup" element={<ProtectedRoute guestOnly><Signup /></ProtectedRoute>} />
- <Route path="/forgot-password" element={<ProtectedRoute guestOnly><ForgotPassword /></ProtectedRoute>} />
- <Route path="/reset-password/:token" element={<ProtectedRoute guestOnly><ResetPassword /></ProtectedRoute>} />
+            <Route path="/login" element={<ProtectedRoute guestOnly><Login /></ProtectedRoute>} />
+            <Route path="/signup" element={<ProtectedRoute guestOnly><Signup /></ProtectedRoute>} />
+            <Route path="/forgot-password" element={<ProtectedRoute guestOnly><ForgotPassword /></ProtectedRoute>} />
+            <Route path="/reset-password/:token" element={<ProtectedRoute guestOnly><ResetPassword /></ProtectedRoute>} />
 
- <Route path="/checkout" element={<ProtectedRoute><Checkout /></ProtectedRoute>} />
- <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
- <Route path="/become-pro" element={<ProtectedRoute isPublic><BecomePro /></ProtectedRoute>} />
+            <Route path="/checkout" element={<ProtectedRoute><Checkout /></ProtectedRoute>} />
+            <Route path="/payment-gateway" element={<ProtectedRoute><PaymentGateway /></ProtectedRoute>} />
+            <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+            <Route path="/order/:id" element={<ProtectedRoute><CustomerOrderDetails /></ProtectedRoute>} />
+            <Route path="/become-pro" element={<ProtectedRoute isPublic><BecomePro /></ProtectedRoute>} />
 
- <Route path="/pro/dashboard" element={<ProtectedRoute proOnly><BoosterDashboard /></ProtectedRoute>} />
- <Route path="/pro/settings" element={<ProtectedRoute proOnly><ProSettings /></ProtectedRoute>} />
+            <Route path="/pro/dashboard" element={<ProtectedRoute proOnly><BoosterDashboard /></ProtectedRoute>} />
+            <Route path="/pro/settings" element={<ProtectedRoute proOnly><ProSettings /></ProtectedRoute>} />
+            <Route path="/pro/order/:id" element={<ProtectedRoute proOnly><BoosterOrderDetails /></ProtectedRoute>} />
+            <Route path="/pro/chat" element={<ProtectedRoute><ChatHub /></ProtectedRoute>} />
+            <Route path="/pro/chat/:orderId" element={<ProtectedRoute><ChatHub /></ProtectedRoute>} />
 
- <Route path="/affiliate/dashboard" element={<ProtectedRoute affiliateOnly><AffiliateDashboard /></ProtectedRoute>} />
+            <Route path="/affiliate/dashboard" element={<ProtectedRoute affiliateOnly><AffiliateDashboard /></ProtectedRoute>} />
 
- <Route path="/admin" element={<ProtectedRoute adminOnly><AdminDashboard /></ProtectedRoute>} />
- <Route path="/admin/games" element={<ProtectedRoute adminOnly><AdminGames /></ProtectedRoute>} />
- <Route path="/admin/categories" element={<ProtectedRoute adminOnly><AdminCategories /></ProtectedRoute>} />
- <Route path="/admin/services" element={<ProtectedRoute adminOnly><AdminServices /></ProtectedRoute>} />
- <Route path="/admin/services/new" element={<ProtectedRoute adminOnly><AdminServiceCreator /></ProtectedRoute>} />
- <Route path="/admin/services/:id/edit" element={<ProtectedRoute adminOnly><AdminServiceCreator /></ProtectedRoute>} />
- <Route path="/admin/currency" element={<ProtectedRoute adminOnly><AdminCurrency /></ProtectedRoute>} />
- <Route path="/admin/accounts" element={<ProtectedRoute adminOnly><AdminAccounts /></ProtectedRoute>} />
- <Route path="/admin/offers" element={<ProtectedRoute adminOnly><AdminOffers /></ProtectedRoute>} />
- <Route path="/admin/blogs" element={<ProtectedRoute adminOnly><AdminBlogs /></ProtectedRoute>} />
- <Route path="/admin/blogs/new" element={<ProtectedRoute adminOnly><BlogEditor /></ProtectedRoute>} />
- <Route path="/admin/blogs/:id/edit" element={<ProtectedRoute adminOnly><BlogEditor /></ProtectedRoute>} />
- <Route path="/admin/users" element={<ProtectedRoute adminOnly><AdminUsers /></ProtectedRoute>} />
- <Route path="/admin/orders" element={<ProtectedRoute adminOnly><AdminOrders /></ProtectedRoute>} />
- <Route path="/admin/chat" element={<ProtectedRoute adminOnly><AdminChat /></ProtectedRoute>} />
- <Route path="/admin/finance" element={<ProtectedRoute adminOnly><AdminFinance /></ProtectedRoute>} />
- <Route path="/admin/reviews" element={<ProtectedRoute adminOnly><AdminReviews /></ProtectedRoute>} />
- <Route path="/admin/settings" element={<ProtectedRoute adminOnly><AdminSettings /></ProtectedRoute>} />
- <Route path="/admin/promo" element={<ProtectedRoute adminOnly><PromoCodes /></ProtectedRoute>} />
- <Route path="/admin/sections" element={<ProtectedRoute adminOnly><AdminSections /></ProtectedRoute>} />
- <Route path="/admin/pro-applications" element={<ProtectedRoute adminOnly><AdminProApplications /></ProtectedRoute>} />
+            <Route path="/admin" element={<ProtectedRoute adminOnly><AdminDashboard /></ProtectedRoute>} />
+            <Route path="/admin/games" element={<ProtectedRoute adminOnly><AdminGames /></ProtectedRoute>} />
+            <Route path="/admin/categories" element={<ProtectedRoute adminOnly><AdminCategories /></ProtectedRoute>} />
+            <Route path="/admin/services" element={<ProtectedRoute adminOnly><AdminServices /></ProtectedRoute>} />
+            <Route path="/admin/services/new" element={<ProtectedRoute adminOnly><AdminServiceCreator /></ProtectedRoute>} />
+            <Route path="/admin/services/:id/edit" element={<ProtectedRoute adminOnly><AdminServiceCreator /></ProtectedRoute>} />
+            <Route path="/admin/currency" element={<ProtectedRoute adminOnly><AdminCurrency /></ProtectedRoute>} />
+            <Route path="/admin/accounts" element={<ProtectedRoute adminOnly><AdminAccounts /></ProtectedRoute>} />
+            <Route path="/admin/offers" element={<ProtectedRoute adminOnly><AdminOffers /></ProtectedRoute>} />
+            <Route path="/admin/blogs" element={<ProtectedRoute adminOnly><AdminBlogs /></ProtectedRoute>} />
+            <Route path="/admin/blogs/new" element={<ProtectedRoute adminOnly><BlogEditor /></ProtectedRoute>} />
+            <Route path="/admin/blogs/:id/edit" element={<ProtectedRoute adminOnly><BlogEditor /></ProtectedRoute>} />
+            <Route path="/admin/users" element={<ProtectedRoute adminOnly><AdminUsers /></ProtectedRoute>} />
+            <Route path="/admin/orders" element={<ProtectedRoute adminOnly><AdminOrders /></ProtectedRoute>} />
+            <Route path="/admin/chat" element={<ProtectedRoute adminOnly><AdminChat /></ProtectedRoute>} />
+            <Route path="/admin/finance" element={<ProtectedRoute adminOnly><AdminFinance /></ProtectedRoute>} />
+            <Route path="/admin/reviews" element={<ProtectedRoute adminOnly><AdminReviews /></ProtectedRoute>} />
+            <Route path="/admin/settings" element={<ProtectedRoute adminOnly><AdminSettings /></ProtectedRoute>} />
+            <Route path="/admin/promo" element={<ProtectedRoute adminOnly><PromoCodes /></ProtectedRoute>} />
+            <Route path="/admin/sections" element={<ProtectedRoute adminOnly><AdminSections /></ProtectedRoute>} />
+            <Route path="/admin/pro-applications" element={<ProtectedRoute adminOnly><AdminProApplications /></ProtectedRoute>} />
 
- <Route path="*" element={<ProtectedRoute isPublic><NotFound /></ProtectedRoute>} />
- </Routes>
- </Suspense>
- <CartOverlay />
- </main>
+            <Route path="*" element={<ProtectedRoute isPublic><NotFound /></ProtectedRoute>} />
+          </Routes>
+        </Suspense>
+        <CartOverlay />
+      </main>
 
- {!shouldHideLayout && <Footer />}
- <SupportWidget />
- <ToastContainer />
- </div>
- );
+      {!shouldHideLayout && <Footer />}
+      <SupportWidget />
+      <ToastContainer />
+    </div>
+  );
 };
 
-
-
 function App() {
- return (
- <Router>
- <ToastProvider>
- <AuthProvider>
- <CurrencyProvider>
- <CartProvider>
- <ModeProvider>
- <UIProvider>
- <AppContent />
- </UIProvider>
- </ModeProvider>
- </CartProvider>
- </CurrencyProvider>
- </AuthProvider>
- </ToastProvider>
- </Router>
- );
+  return (
+    <Router>
+      <ToastProvider>
+        <AuthProvider>
+          <CurrencyProvider>
+            <CartProvider>
+              <ModeProvider>
+                <UIProvider>
+                  <AppContent />
+                </UIProvider>
+              </ModeProvider>
+            </CartProvider>
+          </CurrencyProvider>
+        </AuthProvider>
+      </ToastProvider>
+    </Router>
+  );
 }
 
 export default App;
