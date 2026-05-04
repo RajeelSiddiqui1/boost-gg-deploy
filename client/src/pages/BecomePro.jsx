@@ -128,22 +128,32 @@ const BecomePro = () => {
         { text: "Awesome interface, everything is organized. No hassle finding orders or chatting with customers. Super happy.", user: "ProGamer99", icon: Layout }
     ];
 
+    const [screenshotFile, setScreenshotFile] = useState(null);
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
+
+        const formDataToSend = new FormData();
+        formDataToSend.append('proType', selectedRole);
+        formDataToSend.append('discord', formData.discord);
+        formDataToSend.append('telegram', formData.telegram);
+        formDataToSend.append('email', formData.email);
+        formDataToSend.append('hoursPerDay', formData.hoursPerDay);
+        formDataToSend.append('experienceText', formData.experienceText);
+        formDataToSend.append('referralSource', formData.referralSource);
+        formDataToSend.append('games', JSON.stringify(formData.games)); // Array of game IDs
+        if (screenshotFile) {
+            formDataToSend.append('screenshot', screenshotFile);
+        }
+
         try {
             const token = localStorage.getItem('token');
-            await axios.post(`${API_URL}/api/v1/pro/apply`, {
-                proType: selectedRole,
-                discord: formData.discord,
-                telegram: formData.telegram,
-                email: formData.email,
-                hoursPerDay: formData.hoursPerDay,
-                experienceText: formData.experienceText,
-                referralSource: formData.referralSource,
-                games: formData.games
-            }, {
-                headers: { Authorization: `Bearer ${token}` }
+            await axios.post(`${API_URL}/api/v1/pro/apply`, formDataToSend, {
+                headers: { 
+                    Authorization: `Bearer ${token}`,
+                    'Content-Type': 'multipart/form-data'
+                }
             });
             setIsSubmitted(true);
         } catch (err) {
@@ -400,17 +410,37 @@ const BecomePro = () => {
                             </div>
 
                             <div className="space-y-4">
+                                <label className="text-[10px] font-black uppercase tracking-[0.2em] text-white/30 ml-4">Game ID Verification Screenshot</label>
+                                <div className="relative group">
+                                    <FileText className="absolute left-6 top-1/2 -translate-y-1/2 w-4 h-4 text-white/20 group-focus-within:text-primary transition-colors" />
+                                    <input
+                                        required
+                                        type="file"
+                                        accept="image/*"
+                                        className="w-full bg-black border border-white/5 rounded-3xl py-6 pl-16 pr-8 text-sm font-bold focus:border-primary/50 transition-all outline-none file:hidden"
+                                        onChange={(e) => setScreenshotFile(e.target.files[0])}
+                                    />
+                                    <span className="absolute right-8 top-1/2 -translate-y-1/2 text-[10px] font-black uppercase tracking-widest text-white/40 pointer-events-none">
+                                        {screenshotFile ? screenshotFile.name : 'Click to upload Verification Screenshot (PNG, JPG)'}
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div className="space-y-4">
                                 <label className="text-[10px] font-black uppercase tracking-[0.2em] text-white/30 ml-4">Main Games Selection</label>
 
                                 <div className="flex flex-wrap gap-2 mb-4 px-2">
-                                    {formData.games.map((gameTitle, idx) => (
-                                        <div key={idx} className="px-4 py-2 bg-primary/10 border border-primary/20 rounded-xl text-[10px] font-black uppercase tracking-widest text-primary flex items-center gap-2">
-                                            {gameTitle}
-                                            <button type="button" onClick={() => setFormData({ ...formData, games: formData.games.filter(g => g !== gameTitle) })} className="hover:text-white transition-colors">
-                                                <X className="w-3.5 h-3.5" />
-                                            </button>
-                                        </div>
-                                    ))}
+                                    {formData.games.map((gameId, idx) => {
+                                        const game = allGames.find(g => g._id === gameId);
+                                        return (
+                                            <div key={idx} className="px-4 py-2 bg-primary/10 border border-primary/20 rounded-xl text-[10px] font-black uppercase tracking-widest text-primary flex items-center gap-2">
+                                                {game?.title || game?.name || 'Unknown Game'}
+                                                <button type="button" onClick={() => setFormData({ ...formData, games: formData.games.filter(g => g !== gameId) })} className="hover:text-white transition-colors">
+                                                    <X className="w-3.5 h-3.5" />
+                                                </button>
+                                            </div>
+                                        );
+                                    })}
                                     {formData.games.length === 0 && (
                                         <div className="text-[10px] font-bold text-white/20 uppercase tracking-widest py-2 px-2">No games selected yet...</div>
                                     )}
@@ -430,7 +460,7 @@ const BecomePro = () => {
                                                 setIsGameDropdownOpen(true);
                                             }}
                                         />
-                                        <ChevronDown className={`absolute right-6 top-1/2 -translate-y-1/2 w-4 h-4 text-white/20 transition-transform ${isGameDropdownOpen ? 'rotate-180' : ''}`} />
+                                        <ChevronDown className={`absolute right-6 top-1/2 -translate-y-1/2 w-4 h-4 text-white/20 transition-transform ${isGameDropdownOpen ? 'rotate-180' : 'rotate-0'}`} />
                                     </div>
 
                                     {isGameDropdownOpen && (
@@ -438,12 +468,12 @@ const BecomePro = () => {
                                             <div className="fixed inset-0 z-10" onClick={() => setIsGameDropdownOpen(false)}></div>
                                             <div className="absolute top-[calc(100%+8px)] left-0 right-0 bg-[#111] border border-white/10 rounded-[32px] p-4 shadow-2xl z-20 max-h-[300px] overflow-y-auto custom-scrollbar animate-in fade-in zoom-in-95 duration-200">
                                                 <div className="space-y-1">
-                                                    {allGames.filter(game => (game.title || game.name || '').toLowerCase().includes(gameSearch.toLowerCase()) && !formData.games.includes(game.title || game.name)).map((game, idx) => (
+                                                    {allGames.filter(game => (game.title || game.name || '').toLowerCase().includes(gameSearch.toLowerCase()) && !formData.games.includes(game._id)).map((game, idx) => (
                                                         <button
                                                             key={game._id || idx}
                                                             type="button"
                                                             onClick={() => {
-                                                                setFormData({ ...formData, games: [...formData.games, game.title || game.name] });
+                                                                setFormData({ ...formData, games: [...formData.games, game._id] });
                                                                 setGameSearch('');
                                                                 setIsGameDropdownOpen(false);
                                                             }}

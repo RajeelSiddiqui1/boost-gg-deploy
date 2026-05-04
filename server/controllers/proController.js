@@ -18,7 +18,7 @@ exports.apply = async (req, res) => {
             hoursPerDay,
             experienceText,
             referralSource,
-            games, // Expecting an array of strings
+            games, // Expecting an array of game IDs
             personalStatement,
             experience,
             skills,
@@ -31,6 +31,12 @@ exports.apply = async (req, res) => {
                 success: false,
                 message: 'You are already a PRO member'
             });
+        }
+
+        // Handle screenshot file
+        let screenshotUrl = '';
+        if (req.file) {
+            screenshotUrl = `/uploads/pro-game-id-screenshot/${req.file.filename}`;
         }
 
         // Check for pending application
@@ -70,6 +76,18 @@ exports.apply = async (req, res) => {
             });
         }
 
+        // Parse games if it was sent as a string (common with multipart/form-data)
+        let gamesArray = [];
+        if (typeof games === 'string') {
+            try {
+                gamesArray = JSON.parse(games);
+            } catch (e) {
+                gamesArray = games.split(',').filter(g => isValidObjectId(g));
+            }
+        } else if (Array.isArray(games)) {
+            gamesArray = games;
+        }
+
         // Create application
         const application = await ProApplication.create({
             userId: req.user?._id,
@@ -80,7 +98,8 @@ exports.apply = async (req, res) => {
             hoursPerDay,
             experienceText,
             referralSource,
-            games: Array.isArray(games) ? games : [],
+            games: gamesArray,
+            screenshotUrl,
             personalStatement,
             experience,
             skills,

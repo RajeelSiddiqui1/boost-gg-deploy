@@ -1,8 +1,8 @@
 import React from 'react';
-import { NavLink, useNavigate } from 'react-router-dom';
+import { NavLink, useNavigate, useLocation } from 'react-router-dom';
 import {
  LayoutDashboard, ShoppingCart, User as UserIcon,
- Settings, LogOut, ChevronLeft, Zap, ShieldCheck, Heart
+ Settings, LogOut, ChevronLeft, Zap, ShieldCheck, Heart, MessageSquare
 } from 'lucide-react';
 
 import { useAuth } from '../../context/AuthContext';
@@ -12,6 +12,7 @@ const DashboardLayout = ({ children, title }) => {
  const { logout, user } = useAuth();
  const { formatPrice } = useCurrency();
  const navigate = useNavigate();
+ const location = useLocation();
 
  const handleLogout = async () => {
  await logout();
@@ -21,27 +22,31 @@ const DashboardLayout = ({ children, title }) => {
  const isPro = user?.role === 'pro';
  const isAdmin = user?.role === 'admin';
 
- const menuItems = [
-  { name: 'Dashboard', icon: LayoutDashboard, path: '/dashboard' },
- ];
+ const menuItems = [];
 
  if (isAdmin) {
+  menuItems.push({ name: 'Dashboard', icon: LayoutDashboard, path: '/dashboard' });
   menuItems.push({ name: 'Admin Panel', icon: ShieldCheck, path: '/admin' });
   menuItems.push({ name: 'Users', icon: UserIcon, path: '/admin/users' });
   menuItems.push({ name: 'Orders', icon: ShoppingCart, path: '/admin/orders' });
   menuItems.push({ name: 'Finance', icon: Zap, path: '/admin/finance' });
  } else if (isPro) {
-  menuItems.push({ name: 'Active Tasks', icon: ShoppingCart, path: '/dashboard?tab=work' });
+  menuItems.push({ name: 'Dashboard', icon: LayoutDashboard, path: '/dashboard?tab=work' });
+  menuItems.push({ name: 'Active Tasks', icon: ShoppingCart, path: '/dashboard?tab=active' });
+  menuItems.push({ name: 'My Bids', icon: Zap, path: '/dashboard?tab=bids' });
+  menuItems.push({ name: 'Messages', icon: MessageSquare, path: '/pro/chat' });
   menuItems.push({ name: 'Earnings', icon: Zap, path: '/dashboard?tab=earnings' });
   menuItems.push({ name: 'Performance', icon: ShieldCheck, path: '/dashboard?tab=performance' });
+  menuItems.push({ name: 'Profile Settings', icon: UserIcon, path: '/dashboard?tab=profile' });
  } else {
   // Buyer roles
+  menuItems.push({ name: 'Dashboard', icon: LayoutDashboard, path: '/dashboard' });
   menuItems.push({ name: 'My Orders', icon: ShoppingCart, path: '/dashboard?tab=orders' });
+  menuItems.push({ name: 'Messages', icon: MessageSquare, path: '/pro/chat' });
   menuItems.push({ name: 'My Wallet', icon: Zap, path: '/dashboard?tab=wallet' });
   menuItems.push({ name: 'My Favorites', icon: Heart, path: '/dashboard?tab=favorites' });
+  menuItems.push({ name: 'Profile Settings', icon: UserIcon, path: '/dashboard?tab=profile' });
  }
-
- menuItems.push({ name: 'Profile Settings', icon: UserIcon, path: '/dashboard?tab=profile' });
 
  return (
  <div className="min-h-screen bg-black text-white flex font-['Outfit']">
@@ -56,19 +61,25 @@ const DashboardLayout = ({ children, title }) => {
 
  <nav className="flex-1 p-6 space-y-2">
  <p className="text-[10px] font-black uppercase tracking-[0.2em] text-white/20 ml-4 mb-4">Main Menu</p>
- {menuItems.map((item) => (
- <NavLink
- key={item.name}
- to={item.path}
- className={({ isActive }) => `
- flex items-center gap-4 px-4 py-4 rounded-2xl font-black text-xs uppercase tracking-widest transition-all
- ${isActive ? 'bg-primary text-white shadow-lg shadow-primary/20' : 'text-white/40 hover:text-white hover:bg-white/5'}
- `}
- >
- <item.icon className="w-5 h-5" />
- {item.name}
- </NavLink>
- ))}
+ {menuItems.map((item) => {
+  const isActive = location.pathname + location.search === item.path || 
+          (item.path.startsWith('/dashboard') && location.pathname === '/dashboard' && !location.search && item.name === 'Dashboard') ||
+          (item.name === 'Messages' && location.pathname.startsWith('/pro/chat'));
+  
+  return (
+  <NavLink
+  key={item.name}
+  to={item.path}
+  className={`
+  flex items-center gap-4 px-4 py-4 rounded-2xl font-black text-xs uppercase tracking-widest transition-all
+  ${isActive ? 'bg-primary text-black shadow-lg shadow-primary/20' : 'text-white/40 hover:text-white hover:bg-white/5'}
+  `}
+  >
+  <item.icon className="w-5 h-5" />
+  {item.name}
+  </NavLink>
+  );
+ })}
  </nav>
 
  <div className="p-6 border-t border-white/5">

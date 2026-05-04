@@ -15,7 +15,8 @@ const {
     deleteChatMessage,
     assignProToOrder,
     rejectOrder,
-    getAllOrders
+    getAllOrders,
+    updateClaimPrice
 } = require('../controllers/orderController');
 
 router.post('/', protect, createOrder);
@@ -28,6 +29,7 @@ router.put('/:id/claim', protect, authorize('pro', 'admin'), claimOrder);
 router.put('/:id/complete', protect, authorize('pro', 'admin'), completeOrder);
 router.put('/:id/assign-pro', protect, authorize('admin'), assignProToOrder);
 router.put('/:id/reject', protect, authorize('pro'), rejectOrder);
+router.put('/:id/claim-price', protect, authorize('admin'), updateClaimPrice);
 router.post('/:id/review', protect, submitReview);
 const chatUpload = require('../middleware/chatUpload');
 

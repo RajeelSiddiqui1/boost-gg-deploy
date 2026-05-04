@@ -91,9 +91,23 @@ exports.getMyOrders = async (req, res) => {
 
 exports.getAvailableOrders = async (req, res) => {
     try {
-        // Available orders for PROs (pending and no pro assigned)
-        const orders = await Order.find({ status: 'pending', pro: { $exists: false } })
-            .populate('serviceId', 'title image icon backgroundImage characterImage game pricing categorySlug pricingRules')
+        const query = { status: 'pending', pro: { $exists: false } };
+
+        // If user is a PRO, filter by their specialized games
+        if (req.user && req.user.role === 'pro' && req.user.specializedGames && req.user.specializedGames.length > 0) {
+            // We need to find orders whose services belong to the pro's specialized games
+            // This is easier with aggregation or by finding service IDs first
+            const Service = require('../models/Service');
+            const authorizedServices = await Service.find({ 
+                gameId: { $in: req.user.specializedGames } 
+            }).select('_id');
+            
+            const serviceIds = authorizedServices.map(s => s._id);
+            query.serviceId = { $in: serviceIds };
+        }
+
+        const orders = await Order.find(query)
+            .populate('serviceId', 'title image icon backgroundImage characterImage game pricing categorySlug pricingRules gameId')
             .sort('-createdAt');
 
         res.status(200).json({ success: true, count: orders.length, data: orders });
@@ -231,9 +245,15 @@ exports.claimOrder = async (req, res, next) => {
 exports.getOrder = async (req, res) => {
     try {
         const order = await Order.findById(req.params.id)
-            .populate('serviceId')
-            .populate('userId', 'name')
-            .populate('pro', 'name');
+            .populate({
+                path: 'serviceId',
+                populate: {
+                    path: 'gameId',
+                    select: 'name title icon banner bgImage'
+                }
+            })
+            .populate('userId', 'name avatar')
+            .populate('pro', 'name avatar');
 
         if (!order) return res.status(404).json({ success: false, message: 'Order not found' });
 
@@ -436,6 +456,31 @@ exports.getAllOrders = async (req, res) => {
                 pages: Math.ceil(total / limit)
             }
         });
+    } catch (err) {
+        res.status(400).json({ success: false, message: err.message });
+    }
+};
+
+// @desc    Admin: Update Custom Claim Price
+// @route   PUT /api/v1/orders/:id/claim-price
+// @access  Private (Admin)
+exports.updateClaimPrice = async (req, res) => {
+    try {
+        const { customClaimPrice } = req.body;
+        
+        if (customClaimPrice === undefined) {
+            return res.status(400).json({ success: false, message: 'Please provide customClaimPrice' });
+        }
+
+        const order = await Order.findById(req.params.id);
+        if (!order) {
+            return res.status(404).json({ success: false, message: 'Order not found' });
+        }
+
+        order.customClaimPrice = customClaimPrice;
+        await order.save();
+
+        res.status(200).json({ success: true, message: 'Claim price updated successfully', data: order });
     } catch (err) {
         res.status(400).json({ success: false, message: err.message });
     }

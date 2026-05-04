@@ -22,10 +22,30 @@ const BuyerDashboard = () => {
   const [favorites, setFavorites] = useState([]);
   const [viewMode, setViewMode] = useState('list');
 
-  const { user } = useAuth();
+  const { user, checkUserLoggedIn } = useAuth();
   const { formatPrice } = useCurrency();
   const location = useLocation();
   const navigate = useNavigate();
+  const [profileName, setProfileName] = useState(user?.name || '');
+
+  useEffect(() => {
+    if (user?.name) setProfileName(user.name);
+  }, [user]);
+
+  const handleUpdateProfile = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      await axios.put(`${API_URL}/api/v1/auth/updatedetails`, {
+        name: profileName
+      }, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      alert('Profile updated successfully');
+      checkUserLoggedIn();
+    } catch (err) {
+      alert(err.response?.data?.message || 'Failed to update profile');
+    }
+  };
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);
@@ -201,21 +221,13 @@ const BuyerDashboard = () => {
       <div className="space-y-12 animate-in fade-in slide-in-from-bottom-4 duration-1000">
         
         <div className="flex flex-col lg:flex-row items-center justify-between gap-8">
-            <div className="flex flex-wrap gap-2 p-1.5 bg-[#0A0A0A] border border-white/5 rounded-[24px] w-full lg:w-fit">
-              {[
-                { id: 'orders', label: 'Recent Orders', icon: ShoppingCart },
-                { id: 'wallet', label: 'Cashback Vault', icon: DollarSign },
-                { id: 'favorites', label: 'Watchlist', icon: Heart },
-                { id: 'profile', label: 'Security Settings', icon: User }
-              ].map(t => (
-                <button
-                  key={t.id}
-                  onClick={() => navigate(`/dashboard?tab=${t.id}`)}
-                  className={`flex-1 lg:flex-none flex items-center justify-center lg:justify-start gap-3 px-8 py-4 rounded-[18px] text-[10px] font-black uppercase tracking-widest transition-all ${tab === t.id ? 'bg-primary text-black shadow-lg shadow-primary/20' : 'text-white/40 hover:text-white hover:bg-white/5'}`}
-                >
-                  <t.icon className="w-4 h-4" /> {t.label}
-                </button>
-              ))}
+            <div className="flex-1">
+              <h2 className="text-3xl font-black uppercase tracking-tighter">
+                {tab === 'orders' && 'Recent Orders'}
+                {tab === 'wallet' && 'Cashback Vault'}
+                {tab === 'favorites' && 'Watchlist'}
+                {tab === 'profile' && 'Security Settings'}
+              </h2>
             </div>
         </div>
 

@@ -20,6 +20,7 @@ router.get('/applications', async (req, res) => {
 
         const applications = await ProApplication.find(query)
             .populate('userId', 'name email avatar rating createdAt')
+            .populate('games', 'title name icon')
             .sort({ createdAt: -1 })
             .skip((page - 1) * limit)
             .limit(parseInt(limit));
@@ -45,7 +46,8 @@ router.get('/applications', async (req, res) => {
 router.get('/applications/:id', async (req, res) => {
     try {
         const application = await ProApplication.findById(req.params.id)
-            .populate('userId', 'name email avatar rating createdAt');
+            .populate('userId', 'name email avatar rating createdAt')
+            .populate('games', 'title name icon');
 
         if (!application) {
             return res.status(404).json({ success: false, message: 'Application not found' });
@@ -100,7 +102,8 @@ router.post('/applications/:id/review', async (req, res) => {
                 proType: application.proType,
                 proStatus: 'approved',
                 isProVerified: true,
-                permissions: defaultPermissions
+                permissions: defaultPermissions,
+                specializedGames: application.games || []
             });
         } else {
             application.rejectionReason = reviewNotes;

@@ -1,11 +1,12 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import DashboardLayout from '../components/layout/DashboardLayout';
 import {
   Zap, Clock, CheckCircle2,
   MessageSquare, ChevronRight,
   Gamepad2, Info, Check, X,
+  Loader2,
   DollarSign, TrendingUp, AlertCircle,
   Monitor,Globe,
   BarChart3, Wallet, ShieldCheck,
@@ -14,6 +15,9 @@ import {
   LayoutGrid, List, User, ExternalLink
 } from 'lucide-react';
 import { API_URL, getImageUrl } from '../utils/api';
+import { io } from 'socket.io-client';
+
+const socket = io(API_URL.replace('/api/v1', ''));
 import { useAuth } from '../context/AuthContext';
 import { useCurrency } from '../context/CurrencyContext';
 import { useToast } from '../context/ToastContext';
@@ -116,38 +120,73 @@ const ProDashboard = () => {
   const isContentPro = useMemo(() => ['content_creator', 'blogger'].includes(user?.proType), [user]);
   const isPartnerPro = useMemo(() => user?.proType === 'influencer_partner', [user]);
 
-  const [tab, setTab] = useState('work');
+  const [searchParams, setSearchParams] = useSearchParams();
+  const tab = searchParams.get('tab') || 'work';
+
+  const setTab = (newTab) => {
+    setSearchParams({ tab: newTab });
+  };
   const [viewMode, setViewMode] = useState('list');
 
   useEffect(() => {
-    if (isCommercePro) setTab('work');
-    else if (isContentPro) setTab('assignments');
-    else if (isPartnerPro) setTab('referrals');
-  }, [isCommercePro, isContentPro, isPartnerPro]);
+    if (!searchParams.get('tab')) {
+      if (isCommercePro) setTab('work');
+      else if (isContentPro) setTab('assignments');
+      else if (isPartnerPro) setTab('referrals');
+    }
+  }, [isCommercePro, isContentPro, isPartnerPro, searchParams]);
 
   const [availableOrders, setAvailableOrders] = useState([]);
   const [activeOrders, setActiveOrders] = useState([]);
   const [payouts, setPayouts] = useState([]);
+  const [myBids, setMyBids] = useState([]);
   const [loading, setLoading] = useState(true);
   const [claimingId, setClaimingId] = useState(null);
   const [completingId, setCompletingId] = useState(null);
+  const [isCompetitorsModalOpen, setIsCompetitorsModalOpen] = useState(false);
+  const [selectedBidForCompetitors, setSelectedBidForCompetitors] = useState(null);
   const [isPayoutModalOpen, setIsPayoutModalOpen] = useState(false);
   
   const [showProofUpload, setShowProofUpload] = useState(null);
   const [tempProofs, setTempProofs] = useState([]);
   const { formatPrice } = useCurrency();
   const toast = useToast();
+  const [profileName, setProfileName] = useState(user?.name || '');
+
+  useEffect(() => {
+    if (user?.name) setProfileName(user.name);
+  }, [user]);
+
+  const handleUpdateProfile = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      await axios.put(`${API_URL}/api/v1/auth/updatedetails`, {
+        name: profileName
+      }, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      toast.show('Success', 'Profile updated successfully', 'success');
+      checkUserLoggedIn();
+    } catch (err) {
+      toast.show('Error', err.response?.data?.message || 'Failed to update profile', 'error');
+    }
+  };
 
   const fetchData = async () => {
     try {
-      const [availableRes, myOrdersRes, payoutRes] = await Promise.all([
+      const token = localStorage.getItem('token');
+      const [availableRes, myOrdersRes, payoutRes, bidsRes] = await Promise.all([
         axios.get(`${API_URL}/api/v1/orders/available`),
         axios.get(`${API_URL}/api/v1/orders/booster`),
-        axios.get(`${API_URL}/api/v1/payouts/me`)
+        axios.get(`${API_URL}/api/v1/payouts/me`),
+        axios.get(`${API_URL}/api/v1/bids/me`, {
+          headers: { Authorization: `Bearer ${token}` }
+        })
       ]);
       setAvailableOrders(availableRes.data.data);
       setActiveOrders(myOrdersRes.data.data.filter(o => o.status === 'processing' || o.status === 'pending'));
       setPayouts(payoutRes.data.data);
+      setMyBids(bidsRes.data.data);
       setLoading(false);
     } catch (err) {
       console.error(err);
@@ -157,21 +196,108 @@ const ProDashboard = () => {
 
   useEffect(() => {
     fetchData();
-    const interval = setInterval(fetchData, 30000);
-    return () => clearInterval(interval);
+    
+    // Global market updates (new orders, etc)
+    socket.on('marketUpdate', () => {
+      fetchData();
+    });
+
+    return () => {
+      socket.off('marketUpdate');
+    };
   }, []);
 
-  const handleClaim = async (id) => {
-    setClaimingId(id);
+  // Listen for specific order updates when modal is open
+  useEffect(() => {
+    if (isCompetitorsModalOpen && selectedBidForCompetitors?.orderId?._id) {
+      const orderId = selectedBidForCompetitors.orderId._id;
+      socket.emit('joinOrder', orderId);
+
+      const handleBidUpdate = (data) => {
+        if (data.orderId === orderId) {
+          fetchData();
+        }
+      };
+
+      socket.on('bidUpdate', handleBidUpdate);
+
+      return () => {
+        socket.emit('leaveOrder', orderId);
+        socket.off('bidUpdate', handleBidUpdate);
+      };
+    }
+  }, [isCompetitorsModalOpen, selectedBidForCompetitors]);
+
+  // Sync selected bid with fresh data from myBids
+  useEffect(() => {
+    if (selectedBidForCompetitors) {
+      const freshBid = myBids.find(b => b._id === selectedBidForCompetitors._id);
+      if (freshBid) setSelectedBidForCompetitors(freshBid);
+    }
+  }, [myBids]);
+
+  const [isBidModalOpen, setIsBidModalOpen] = useState(false);
+  const [bidData, setBidData] = useState({ orderId: null, amount: '', message: '', type: 'bid' });
+
+  const handleAction = (order, type) => {
+    const baseAmount = order.customClaimPrice || order.boosterEarnings || order.price;
+    if (type === 'claim') {
+      // Direct claim with base price
+      setBidData({ ...bidData, orderId: order._id, amount: baseAmount, type: 'claim', message: 'I want to claim this job for the base price.' });
+      setIsBidModalOpen(true); // Still show modal to confirm and maybe add a message
+    } else {
+      // Open modal for custom bid
+      setBidData({ ...bidData, orderId: order._id, amount: baseAmount, type: 'bid', message: '' });
+      setIsBidModalOpen(true);
+    }
+  };
+
+  const handleBidSubmit = async () => {
+    if (!bidData.amount) return toast.error('Please enter a bid amount');
+    setClaimingId(bidData.orderId);
     try {
-      await axios.put(`${API_URL}/api/v1/orders/${id}/claim`);
-      toast.success('Assignment accepted!');
+      const token = localStorage.getItem('token');
+      
+      if (bidData._id) {
+        // Update existing bid
+        await axios.put(`${API_URL}/api/v1/bids/${bidData._id}`, {
+          bidAmount: bidData.amount,
+          message: bidData.message
+        }, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        toast.success('Bid updated successfully!');
+      } else {
+        // Create new bid
+        await axios.post(`${API_URL}/api/v1/bids`, {
+          orderId: bidData.orderId,
+          bidAmount: bidData.amount,
+          message: bidData.message,
+          type: bidData.type
+        }, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        toast.success(bidData.type === 'claim' ? 'Claim request sent!' : 'Bid submitted to admin!');
+      }
+      
+      setIsBidModalOpen(false);
+      setBidData({ orderId: null, amount: '', message: '', type: 'bid' });
       fetchData();
     } catch (err) {
-      toast.error(err.response?.data?.message || 'Failed to claim order');
+      toast.error(err.response?.data?.message || 'Failed to process bid');
     } finally {
       setClaimingId(null);
     }
+  };
+
+  const handleEditBid = (bid) => {
+    setBidData({
+      _id: bid._id,
+      orderId: bid.orderId._id,
+      amount: bid.bidAmount,
+      message: bid.message || ''
+    });
+    setIsBidModalOpen(true);
   };
 
   const handleCompleteSubmit = async (orderId) => {
@@ -208,6 +334,7 @@ const ProDashboard = () => {
 
   const renderOrderRow = (order, isStatusActive = false) => {
     const service = order.serviceId;
+    const hasBid = myBids.some(b => b.orderId?._id === order._id);
     return (
       <div 
         key={order._id}
@@ -225,6 +352,9 @@ const ProDashboard = () => {
                 {service?.game || 'Any Game'}
               </span>
               <span className="text-[9px] font-bold text-white/20 uppercase tracking-widest">#{order._id.slice(-6).toUpperCase()}</span>
+              {hasBid && (
+                <span className="text-[8px] font-black uppercase bg-green-500/10 text-green-500 px-2 py-0.5 rounded border border-green-500/20">Bid Placed</span>
+              )}
             </div>
             <h4 className="text-lg font-black text-white uppercase tracking-tight truncate group-hover:text-primary transition-colors">
               {service?.title}
@@ -265,7 +395,14 @@ const ProDashboard = () => {
         <div className="flex items-center gap-10 w-full md:w-auto justify-between md:justify-end">
           <div className="text-right">
             <p className="text-[9px] font-black text-white/20 uppercase tracking-widest">Revenue</p>
-            <p className="text-2xl font-black text-white tracking-tighter">{formatPrice(order.boosterEarnings || order.price)}</p>
+            {order.customClaimPrice ? (
+              <div className="flex flex-col items-end">
+                <p className="text-sm font-black text-white/40 line-through decoration-red-500/50">{formatPrice(order.boosterEarnings || order.price)}</p>
+                <p className="text-2xl font-black text-primary tracking-tighter">{formatPrice(order.customClaimPrice)}</p>
+              </div>
+            ) : (
+              <p className="text-2xl font-black text-white tracking-tighter">{formatPrice(order.boosterEarnings || order.price)}</p>
+            )}
           </div>
 
           <div className="flex items-center gap-3">
@@ -277,13 +414,22 @@ const ProDashboard = () => {
             </button>
             
             {!isStatusActive ? (
-              <button
-                onClick={(e) => { e.stopPropagation(); handleClaim(order._id); }}
-                disabled={claimingId === order._id}
-                className="px-8 py-4 bg-primary hover:bg-white text-black rounded-2xl font-black text-[11px] uppercase tracking-widest transition-all shadow-lg shadow-primary/10 disabled:opacity-50"
-              >
-                {claimingId === order._id ? 'Securing...' : 'Claim Job'}
-              </button>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={(e) => { e.stopPropagation(); handleAction(order, 'claim'); }}
+                  disabled={claimingId === order._id}
+                  className="px-6 py-4 bg-white/5 hover:bg-white text-white hover:text-black border border-white/10 rounded-2xl font-black text-[10px] uppercase tracking-widest transition-all disabled:opacity-50"
+                >
+                  Claim Job
+                </button>
+                <button
+                  onClick={(e) => { e.stopPropagation(); handleAction(order, 'bid'); }}
+                  disabled={claimingId === order._id}
+                  className="px-8 py-4 bg-primary hover:bg-white text-black rounded-2xl font-black text-[11px] uppercase tracking-widest transition-all shadow-lg shadow-primary/10 disabled:opacity-50"
+                >
+                  {claimingId === order._id ? 'Securing...' : 'Place Bid'}
+                </button>
+              </div>
             ) : (
               <button
                 onClick={(e) => { e.stopPropagation(); setShowProofUpload(order._id); }}
@@ -300,6 +446,7 @@ const ProDashboard = () => {
 
   const renderOrderCard = (order, isStatusActive = false) => {
     const service = order.serviceId;
+    const hasBid = myBids.some(b => b.orderId?._id === order._id);
     return (
       <div 
         key={order._id} 
@@ -315,6 +462,12 @@ const ProDashboard = () => {
             <img src={getImageUrl(service?.icon || service?.image)} className="h-32 object-contain transition-transform duration-500 group-hover:scale-110 drop-shadow-[0_20px_40px_rgba(0,0,0,0.8)]" alt="" />
           </div>
           <div className="absolute inset-0 bg-gradient-to-t from-[#111111] via-transparent to-transparent"></div>
+          
+          {hasBid && (
+            <div className="absolute top-6 right-6 z-20">
+              <span className="text-[8px] font-black uppercase bg-green-500 text-black px-3 py-1.5 rounded-full shadow-2xl">Bid Placed</span>
+            </div>
+          )}
         </div>
 
         <div className="p-8 flex flex-col flex-grow">
@@ -329,17 +482,33 @@ const ProDashboard = () => {
           <div className="mt-auto pt-6 border-t border-white/5 flex items-center justify-between gap-4">
             <div className="flex flex-col">
               <span className="text-[9px] font-black text-white/20 uppercase tracking-[0.2em]">Payout</span>
-              <span className="text-2xl font-black text-white">{formatPrice(order.boosterEarnings || order.price)}</span>
+              {order.customClaimPrice ? (
+                <div className="flex flex-col">
+                  <span className="text-xs font-black text-white/40 line-through decoration-red-500/50">{formatPrice(order.boosterEarnings || order.price)}</span>
+                  <span className="text-2xl font-black text-primary">{formatPrice(order.customClaimPrice)}</span>
+                </div>
+              ) : (
+                <span className="text-2xl font-black text-white">{formatPrice(order.boosterEarnings || order.price)}</span>
+              )}
             </div>
             
             {!isStatusActive ? (
-              <button
-                onClick={() => handleClaim(order._id)}
-                disabled={claimingId === order._id}
-                className="px-6 py-4 bg-primary text-black rounded-2xl font-black text-[10px] uppercase transition-all"
-              >
-                {claimingId === order._id ? '...' : 'Claim'}
-              </button>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => handleAction(order, 'claim')}
+                  disabled={claimingId === order._id}
+                  className="px-4 py-4 bg-white/5 hover:bg-white text-white hover:text-black border border-white/10 rounded-2xl font-black text-[9px] uppercase transition-all"
+                >
+                  Claim
+                </button>
+                <button
+                  onClick={() => handleAction(order, 'bid')}
+                  disabled={claimingId === order._id}
+                  className="px-4 py-4 bg-primary hover:bg-white text-black rounded-2xl font-black text-[9px] uppercase transition-all shadow-lg shadow-primary/10"
+                >
+                  {claimingId === order._id ? '...' : 'Bid'}
+                </button>
+              </div>
             ) : (
               <div className="flex gap-2">
                 <button
@@ -384,21 +553,15 @@ const ProDashboard = () => {
 
         <div className="space-y-12">
           <div className="flex flex-col lg:flex-row items-center justify-between gap-8">
-            <div className="flex flex-wrap gap-2 p-1.5 bg-[#0A0A0A] border border-white/5 rounded-[24px] w-full lg:w-fit">
-              {[
-                { id: 'work', label: 'Marketplace', icon: Zap },
-                { id: 'active', label: 'Active Tasks', icon: Clock },
-                { id: 'earnings', label: 'Financials', icon: Wallet }
-              ].map(t => (
-                <button
-                  key={t.id}
-                  onClick={() => setTab(t.id)}
-                  className={`flex-1 lg:flex-none flex items-center justify-center lg:justify-start gap-3 px-8 py-4 rounded-[18px] text-[10px] font-black uppercase tracking-widest transition-all ${tab === t.id ? 'bg-primary text-black shadow-lg shadow-primary/20' : 'text-white/40 hover:text-white hover:bg-white/5'}`}
-                >
-                  <t.icon className="w-4 h-4" /> {t.label}
-                  {t.id === 'work' && availableOrders.length > 0 && <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse ml-1"></span>}
-                </button>
-              ))}
+            <div className="flex-1">
+              <h2 className="text-3xl font-black uppercase tracking-tighter">
+                {tab === 'work' && 'Marketplace'}
+                {tab === 'active' && 'Active Tasks'}
+                {tab === 'bids' && 'My Proposals'}
+                {tab === 'earnings' && 'Financial Overview'}
+                {tab === 'performance' && 'Performance Analytics'}
+                {tab === 'profile' && 'Account Settings'}
+              </h2>
             </div>
 
             {(tab === 'work' || tab === 'active') && (
@@ -417,14 +580,17 @@ const ProDashboard = () => {
                   <p className="text-[10px] font-bold text-white/20 uppercase tracking-widest">Real-time Sync Active</p>
                 </div>
 
-                {availableOrders.length === 0 ? (
+                {availableOrders.filter(o => !myBids.some(b => b.orderId?._id === o._id)).length === 0 ? (
                   <div className="py-32 flex flex-col items-center justify-center bg-[#0A0A0A] border border-white/5 border-dashed rounded-[40px] text-center space-y-6">
                     <AlertCircle className="w-12 h-12 text-white/10" />
-                    <h4 className="text-xl font-black uppercase text-white/40">Market is quiet</h4>
+                    <h4 className="text-xl font-black uppercase text-white/40">No New Missions</h4>
                   </div>
                 ) : (
                   <div className={viewMode === 'grid' ? "grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8" : "space-y-4"}>
-                    {availableOrders.map(o => viewMode === 'grid' ? renderOrderCard(o) : renderOrderRow(o))}
+                    {availableOrders
+                      .filter(o => !myBids.some(b => b.orderId?._id === o._id))
+                      .map(o => viewMode === 'grid' ? renderOrderCard(o) : renderOrderRow(o))
+                    }
                   </div>
                 )}
               </div>
@@ -443,11 +609,112 @@ const ProDashboard = () => {
               </div>
             )}
 
+            {tab === 'bids' && (
+              <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-2xl font-black uppercase tracking-tight">Active Proposals</h3>
+                  <p className="text-[10px] font-bold text-white/20 uppercase tracking-widest">Manage Your Terms</p>
+                </div>
+
+                {myBids.length === 0 ? (
+                  <div className="py-24 text-center text-white/20 font-black uppercase tracking-widest border border-white/5 border-dashed rounded-[40px]">You haven't placed any bids yet.</div>
+                ) : (
+                  <div className="space-y-4">
+                    {myBids.map((bid) => (
+                      <div 
+                        key={bid._id} 
+                        onClick={() => {
+                          setSelectedBidForCompetitors(bid);
+                          setIsCompetitorsModalOpen(true);
+                        }}
+                        className="bg-[#0A0A0A] border border-white/5 hover:border-primary/20 rounded-[32px] p-8 transition-all flex flex-col md:flex-row items-center justify-between gap-8 group cursor-pointer"
+                      >
+                        <div className="flex items-center gap-6 flex-1">
+                          <div className="w-16 h-16 rounded-2xl bg-white/[0.03] border border-white/5 flex items-center justify-center p-3">
+                            <img src={getImageUrl(bid.orderId?.serviceId?.icon)} className="w-full h-full object-contain" alt="" />
+                          </div>
+                          <div>
+                            <div className="flex items-center gap-2 mb-1">
+                              <span className={`text-[8px] font-black uppercase px-2 py-0.5 rounded border ${bid.status === 'approved' ? 'bg-green-500/10 text-green-500 border-green-500/20' : bid.status === 'rejected' ? 'bg-red-500/10 text-red-500 border-red-500/20' : 'bg-yellow-500/10 text-yellow-500 border-yellow-500/20'}`}>
+                                {bid.status}
+                              </span>
+                              <span className="text-[9px] font-bold text-white/20 uppercase tracking-widest">#ORD-{bid.orderId?._id.slice(-6).toUpperCase()}</span>
+                            </div>
+                            <h4 className="text-lg font-black text-white uppercase tracking-tight">{bid.orderId?.serviceId?.title || 'Custom Service'}</h4>
+                            <p className="text-[10px] font-bold text-white/40 uppercase tracking-widest mt-1">
+                              Your Bid: <span className="text-primary">{formatPrice(bid.bidAmount)}</span> 
+                              {bid.highestBid && (
+                                <span className="ml-3">Best Price: <span className={bid.isLowest ? 'text-green-500' : 'text-red-500'}>{formatPrice(bid.highestBid)}</span></span>
+                              )}
+                            </p>
+                            
+                            {/* Competition Visualizer */}
+                            {bid.highestBid && (
+                              <div className="mt-4 w-full h-1.5 bg-white/5 rounded-full overflow-hidden relative">
+                                <div 
+                                  className={`absolute h-full transition-all duration-1000 ${bid.isLowest ? 'bg-green-500 shadow-[0_0_10px_rgba(34,197,94,0.5)]' : 'bg-primary'}`}
+                                  style={{ width: `${Math.min(100, (bid.highestBid / bid.bidAmount) * 100)}%` }}
+                                ></div>
+                              </div>
+                            )}
+
+                            {/* Competitors List */}
+                            {bid.competitors?.length > 0 && (
+                              <div className="mt-4 flex items-center gap-3">
+                                <div className="flex -space-x-3">
+                                  {bid.competitors.slice(0, 3).map((comp, idx) => (
+                                    <div 
+                                      key={idx} 
+                                      className="w-7 h-7 rounded-full bg-[#1A1A1A] border-2 border-[#0A0A0A] flex items-center justify-center relative group/comp"
+                                      title={comp.name}
+                                    >
+                                      <User size={12} className="text-white/20" />
+                                      <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-1.5 bg-white text-black text-[9px] font-black uppercase rounded-lg opacity-0 group-hover/comp:opacity-100 transition-opacity whitespace-nowrap z-30">
+                                        {comp.name} ({formatPrice(comp.amount)})
+                                      </div>
+                                    </div>
+                                  ))}
+                                  {bid.competitors.length > 3 && (
+                                    <div className="w-7 h-7 rounded-full bg-white/5 border-2 border-[#0A0A0A] flex items-center justify-center text-[8px] font-black text-white/40">
+                                      +{bid.competitors.length - 3}
+                                    </div>
+                                  )}
+                                </div>
+                                <span className="text-[9px] font-bold text-white/10 uppercase tracking-widest">
+                                  {bid.competitors.length} Competitor{bid.competitors.length > 1 ? 's' : ''} Active
+                                </span>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+
+                        <div className="flex items-center gap-4">
+                          {bid.status === 'pending' && (
+                            <button
+                              onClick={() => handleEditBid(bid)}
+                              className="px-6 py-3 bg-white/5 hover:bg-white text-white hover:text-black rounded-xl text-[10px] font-black uppercase tracking-widest transition-all"
+                            >
+                              Revise Terms
+                            </button>
+                          )}
+                          <button
+                            onClick={() => navigate(`/pro/order/${bid.orderId?._id}`)}
+                            className="p-3 bg-white/5 hover:bg-white/10 rounded-xl text-white/20 hover:text-white transition-all"
+                          >
+                            <ExternalLink size={18} />
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
+
             {tab === 'earnings' && (
               <div className="space-y-12 animate-in fade-in slide-in-from-bottom-4 duration-500">
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                   <div className="lg:col-span-2 space-y-8">
-                    <h3 className="text-2xl font-black uppercase tracking-tight">Financial Overview</h3>
                     <div className="bg-[#0A0A0A] border border-white/5 rounded-[40px] p-10 relative overflow-hidden">
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-12 relative z-10">
                         <div>
@@ -480,6 +747,80 @@ const ProDashboard = () => {
                 </div>
               </div>
             )}
+
+            {tab === 'performance' && (
+              <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                  <div className="bg-[#0A0A0A] border border-white/5 rounded-[32px] p-8">
+                    <div className="w-12 h-12 rounded-2xl bg-blue-500/10 flex items-center justify-center text-blue-500 mb-6">
+                      <BarChart3 className="w-6 h-6" />
+                    </div>
+                    <p className="text-[10px] font-black uppercase text-white/20 tracking-widest mb-1">Win Rate</p>
+                    <p className="text-3xl font-black">94%</p>
+                  </div>
+                  <div className="bg-[#0A0A0A] border border-white/5 rounded-[32px] p-8">
+                    <div className="w-12 h-12 rounded-2xl bg-purple-500/10 flex items-center justify-center text-purple-500 mb-6">
+                      <Clock className="w-6 h-6" />
+                    </div>
+                    <p className="text-[10px] font-black uppercase text-white/20 tracking-widest mb-1">Avg. Completion</p>
+                    <p className="text-3xl font-black">4.2 Hours</p>
+                  </div>
+                  <div className="bg-[#0A0A0A] border border-white/5 rounded-[32px] p-8">
+                    <div className="w-12 h-12 rounded-2xl bg-green-500/10 flex items-center justify-center text-green-500 mb-6">
+                      <ShieldCheck className="w-6 h-6" />
+                    </div>
+                    <p className="text-[10px] font-black uppercase text-white/20 tracking-widest mb-1">Orders Completed</p>
+                    <p className="text-3xl font-black">{user?.ordersCompleted || 0}</p>
+                  </div>
+                </div>
+                <div className="py-24 flex flex-col items-center justify-center bg-[#0A0A0A] border border-white/5 border-dashed rounded-[40px] text-center">
+                   <TrendingUp className="w-12 h-12 text-white/10 mb-6" />
+                   <h4 className="text-xl font-black uppercase text-white/40">Performance history coming soon</h4>
+                </div>
+              </div>
+            )}
+
+            {tab === 'profile' && (
+              <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+                <div className="max-w-2xl bg-[#0A0A0A] border border-white/5 rounded-[40px] p-12 space-y-10">
+                  <div className="flex items-center gap-8">
+                    <div className="w-24 h-24 rounded-full bg-primary/20 border-4 border-white/5 flex items-center justify-center relative group">
+                      <span className="text-4xl font-black text-primary">{user?.name?.charAt(0)}</span>
+                      <button className="absolute inset-0 bg-black/60 rounded-full opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                        <Upload className="w-6 h-6 text-white" />
+                      </button>
+                    </div>
+                    <div>
+                      <h3 className="text-2xl font-black uppercase">{user?.name}</h3>
+                      <p className="text-white/40 font-bold uppercase text-[10px] tracking-widest">{user?.email}</p>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-8 pt-6">
+                    <div className="space-y-2">
+                      <label className="text-[10px] font-black uppercase text-white/30 ml-2">Display Name</label>
+                      <input 
+                        type="text" 
+                        value={profileName} 
+                        onChange={(e) => setProfileName(e.target.value)}
+                        className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 px-6 text-white outline-none focus:border-primary/50" 
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-[10px] font-black uppercase text-white/30 ml-2">Email Address</label>
+                      <input type="email" defaultValue={user?.email} disabled className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 px-6 text-white/40 outline-none" />
+                    </div>
+                  </div>
+
+                  <button 
+                    onClick={handleUpdateProfile}
+                    className="w-full py-5 bg-white/5 hover:bg-white/10 border border-white/10 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all"
+                  >
+                    Update Profile
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
         </div>
 
@@ -503,6 +844,150 @@ const ProDashboard = () => {
           </div>
         )}
       </div>
+
+      {isBidModalOpen && (
+        <div className="fixed inset-0 z-[150] flex items-center justify-center p-6">
+          <div className="absolute inset-0 bg-black/90 backdrop-blur-xl" onClick={() => setIsBidModalOpen(false)}></div>
+          <div className="relative w-full max-w-[500px] bg-[#0A0A0A] border border-white/10 rounded-[48px] p-12 overflow-hidden shadow-2xl space-y-10">
+            <div>
+              <h3 className="text-3xl font-black uppercase text-white tracking-tight mb-2">Place Your Bid</h3>
+              <p className="text-[10px] font-bold uppercase text-white/20 tracking-[0.2em]">Secure this mission by offering your terms</p>
+            </div>
+
+            <div className="space-y-6">
+            <div className="space-y-8 mt-12">
+              <div className="space-y-3">
+                <label className="text-[10px] font-black uppercase text-white/40 ml-4">
+                  {bidData.type === 'claim' ? 'Platform Base Price ($)' : 'Your Proposal Price ($)'}
+                </label>
+                <div className="relative group">
+                  <DollarSign className={`absolute left-6 top-1/2 -translate-y-1/2 w-4 h-4 transition-colors ${bidData.type === 'claim' ? 'text-primary' : 'text-white/20 group-focus-within:text-primary'}`} />
+                  <input 
+                    type="number" 
+                    value={bidData.amount}
+                    onChange={(e) => setBidData({ ...bidData, amount: e.target.value })}
+                    readOnly={bidData.type === 'claim'}
+                    className={`w-full bg-black border rounded-3xl py-6 pl-16 pr-8 text-sm font-bold transition-all outline-none ${bidData.type === 'claim' ? 'border-primary/50 text-primary cursor-not-allowed' : 'border-white/5 text-white focus:border-primary/50'}`} 
+                    placeholder="Enter bid amount..."
+                  />
+                  {bidData.type === 'claim' && (
+                    <div className="absolute right-6 top-1/2 -translate-y-1/2 flex items-center gap-2">
+                      <ShieldCheck size={14} className="text-primary" />
+                      <span className="text-[8px] font-black uppercase text-primary">Locked</span>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              <div className="space-y-3">
+                <label className="text-[10px] font-black uppercase text-white/40 ml-4">Deployment Statement</label>
+                <div className="relative group">
+                  <MessageSquare className="absolute left-6 top-8 w-4 h-4 text-white/20 group-focus-within:text-primary transition-colors" />
+                  <textarea 
+                    value={bidData.message}
+                    onChange={(e) => setBidData({ ...bidData, message: e.target.value })}
+                    className="w-full bg-black border border-white/5 rounded-3xl py-6 pl-16 pr-8 text-sm font-bold text-white focus:border-primary/50 transition-all outline-none min-h-[120px] resize-none" 
+                    placeholder="Any message for the admin?..."
+                  ></textarea>
+                </div>
+              </div>
+            </div>
+
+            <div className="flex gap-4 pt-8">
+              <button 
+                onClick={() => setIsBidModalOpen(false)}
+                className="flex-1 py-5 bg-white/5 hover:bg-white/10 rounded-[30px] text-[10px] font-black uppercase tracking-widest text-white transition-all"
+              >
+                Abort
+              </button>
+              <button 
+                onClick={handleBidSubmit}
+                disabled={claimingId}
+                className="flex-1 py-5 bg-primary hover:bg-white text-black rounded-[30px] text-[10px] font-black uppercase tracking-widest transition-all shadow-xl shadow-primary/20 flex items-center justify-center gap-2"
+              >
+                {claimingId ? <Loader2 className="w-4 h-4 animate-spin" /> : <Zap className="w-4 h-4" />}
+                {bidData.type === 'claim' ? 'Confirm Claim' : 'Submit Bid'}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    )}
+
+      {isCompetitorsModalOpen && selectedBidForCompetitors && (
+        <div className="fixed inset-0 z-[200] flex items-center justify-center p-6">
+          <div className="absolute inset-0 bg-black/95 backdrop-blur-md" onClick={() => setIsCompetitorsModalOpen(false)}></div>
+          <div className="relative w-full max-w-[550px] bg-[#0A0A0A] border border-white/10 rounded-[48px] p-12 overflow-hidden shadow-2xl">
+            <div className="flex items-center justify-between mb-10">
+              <div>
+                <h3 className="text-3xl font-black uppercase text-white tracking-tight">Market Intelligence</h3>
+                <p className="text-[10px] font-bold text-white/20 uppercase tracking-[0.2em] mt-1">Live competitive data for #{selectedBidForCompetitors.orderId?._id.slice(-6).toUpperCase()}</p>
+              </div>
+              <button 
+                onClick={() => setIsCompetitorsModalOpen(false)}
+                className="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-white/40 hover:text-white transition-all"
+              >
+                <X size={20} />
+              </button>
+            </div>
+
+            <div className="space-y-6">
+              <div className="bg-primary/5 border border-primary/10 rounded-[32px] p-6 flex items-center justify-between">
+                <div>
+                  <p className="text-[10px] font-black uppercase text-primary mb-1">Your Proposal</p>
+                  <p className="text-xl font-black text-white uppercase tracking-tight">{user?.name}</p>
+                </div>
+                <div className="text-right">
+                  <p className="text-[10px] font-black uppercase text-primary mb-1">Price</p>
+                  <p className="text-xl font-black text-white">{formatPrice(selectedBidForCompetitors.bidAmount)}</p>
+                </div>
+              </div>
+
+              <div className="space-y-4 max-h-[300px] overflow-y-auto pr-2 custom-scrollbar">
+                <p className="text-[10px] font-black uppercase text-white/20 tracking-widest ml-4">Active Competitors</p>
+                
+                {selectedBidForCompetitors.competitors?.length === 0 ? (
+                  <div className="py-12 text-center bg-white/[0.02] border border-white/5 border-dashed rounded-[32px]">
+                    <p className="text-xs font-bold text-white/20 uppercase">No other proposals yet</p>
+                  </div>
+                ) : (
+                  selectedBidForCompetitors.competitors.map((comp, idx) => (
+                    <div key={idx} className="bg-white/[0.03] border border-white/5 rounded-[24px] p-5 flex items-center justify-between group hover:bg-white/[0.05] transition-all">
+                      <div className="flex items-center gap-4">
+                        <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center border border-white/10">
+                          <User size={16} className="text-white/20 group-hover:text-primary transition-colors" />
+                        </div>
+                        <p className="text-sm font-black text-white uppercase tracking-tight">{comp.name}</p>
+                      </div>
+                      <p className="text-sm font-black text-white/60">{formatPrice(comp.amount)}</p>
+                    </div>
+                  ))
+                )}
+              </div>
+            </div>
+
+            <div className="flex gap-4 mt-10">
+              <button 
+                onClick={() => setIsCompetitorsModalOpen(false)}
+                className="flex-1 py-5 bg-white/5 hover:bg-white/10 rounded-[30px] text-[10px] font-black uppercase tracking-widest text-white transition-all"
+              >
+                Dismiss
+              </button>
+              {selectedBidForCompetitors.status === 'pending' && (
+                <button 
+                  onClick={() => {
+                    setIsCompetitorsModalOpen(false);
+                    handleEditBid(selectedBidForCompetitors);
+                  }}
+                  className="flex-1 py-5 bg-primary hover:bg-white text-black rounded-[30px] text-[10px] font-black uppercase tracking-widest transition-all shadow-xl shadow-primary/20"
+                >
+                  Revise Proposal
+                </button>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
 
       <PayoutModal isOpen={isPayoutModalOpen} onClose={() => setIsPayoutModalOpen(false)} balance={user?.earnings || 0} onRefresh={() => { fetchData(); checkUserLoggedIn(); }} />
     </DashboardLayout>

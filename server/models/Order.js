@@ -99,6 +99,10 @@ const orderSchema = new mongoose.Schema({
         type: Number,
         default: 0
     },
+    // Admin-overridden price for Pros to claim
+    customClaimPrice: {
+        type: Number
+    },
     // When the order was completed
     completedAt: {
         type: Date

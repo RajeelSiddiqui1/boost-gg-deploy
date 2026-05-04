@@ -36,6 +36,7 @@ const AdminAccounts = lazy(() => import('./pages/admin/Accounts'));
 const AdminOffers = lazy(() => import('./pages/admin/Offers'));
 const AdminUsers = lazy(() => import('./pages/admin/Users'));
 const AdminOrders = lazy(() => import('./pages/admin/Orders'));
+const OrderBids = lazy(() => import('./pages/admin/OrderBids'));
 const AdminChat = lazy(() => import('./pages/admin/Chat'));
 const AdminFinance = lazy(() => import('./pages/admin/Finance'));
 const AdminReviews = lazy(() => import('./pages/admin/Reviews'));
@@ -194,6 +195,7 @@ const AppContent = () => {
             <Route path="/admin/blogs/:id/edit" element={<ProtectedRoute adminOnly><BlogEditor /></ProtectedRoute>} />
             <Route path="/admin/users" element={<ProtectedRoute adminOnly><AdminUsers /></ProtectedRoute>} />
             <Route path="/admin/orders" element={<ProtectedRoute adminOnly><AdminOrders /></ProtectedRoute>} />
+            <Route path="/admin/orders/:id/bids" element={<ProtectedRoute adminOnly><OrderBids /></ProtectedRoute>} />
             <Route path="/admin/chat" element={<ProtectedRoute adminOnly><AdminChat /></ProtectedRoute>} />
             <Route path="/admin/finance" element={<ProtectedRoute adminOnly><AdminFinance /></ProtectedRoute>} />
             <Route path="/admin/reviews" element={<ProtectedRoute adminOnly><AdminReviews /></ProtectedRoute>} />

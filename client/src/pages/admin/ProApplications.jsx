@@ -202,74 +202,95 @@ const AdminProApplications = () => {
  </div>
 
  {/* Application Details Modal */}
- {selectedApp && (
- <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-black/80 backdrop-blur-sm">
- <div className="bg-[#0A0A0A] border border-white/10 rounded-[48px] p-10 max-w-2xl w-full max-h-[90vh] overflow-y-auto relative shadow-2xl">
- <button
- onClick={() => setSelectedApp(null)}
- className="absolute top-8 right-8 p-3 bg-white/[0.03] border border-white/5 rounded-full hover:bg-white/10 transition-all"
- >
- <X className="w-5 h-5" />
- </button>
+  {selectedApp && (
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-black/80 backdrop-blur-sm">
+      <div className="bg-[#0A0A0A] border border-white/10 rounded-[48px] p-10 max-w-2xl w-full max-h-[90vh] overflow-y-auto relative shadow-2xl">
+        <button
+          onClick={() => setSelectedApp(null)}
+          className="absolute top-8 right-8 p-3 bg-white/[0.03] border border-white/5 rounded-full hover:bg-white/10 transition-all"
+        >
+          <X className="w-5 h-5" />
+        </button>
 
- <div className="space-y-8">
- <div className="flex items-center gap-6">
- <div className="w-20 h-20 rounded-3xl bg-primary/20 flex items-center justify-center border border-primary/20">
- {React.createElement(getRoleIcon(selectedApp.proType), { className: "w-10 h-10 text-primary" })}
- </div>
- <div>
- <h2 className="text-3xl font-black uppercase tracking-tighter">Review Application</h2>
- <p className="text-white/40 text-xs font-bold uppercase tracking-widest mt-1">Submitted {new Date(selectedApp.createdAt).toLocaleDateString()}</p>
- </div>
- </div>
+        <div className="space-y-8">
+          <div className="flex items-center gap-6">
+            <div className="w-20 h-20 rounded-3xl bg-primary/20 flex items-center justify-center border border-primary/20">
+              {React.createElement(getRoleIcon(selectedApp.proType), { className: "w-10 h-10 text-primary" })}
+            </div>
+            <div>
+              <h2 className="text-3xl font-black uppercase tracking-tighter">Review Application</h2>
+              <p className="text-white/40 text-xs font-bold uppercase tracking-widest mt-1">Submitted {new Date(selectedApp.createdAt).toLocaleDateString()}</p>
+            </div>
+          </div>
 
- <div className="grid grid-cols-2 gap-8">
- <div className="space-y-4 p-6 bg-white/[0.03] border border-white/5 rounded-3xl">
- <h4 className="text-[10px] font-black uppercase tracking-widest text-primary">Contact Info</h4>
- <div className="space-y-3">
- <div className="text-sm font-bold flex items-center gap-3"><Mail className="w-4 h-4 text-white/20" /> {selectedApp.email}</div>
- <div className="text-sm font-bold flex items-center gap-3"><MessageSquare className="w-4 h-4 text-white/20" /> {selectedApp.discord}</div>
- {selectedApp.telegram && (
- <div className="text-sm font-bold flex items-center gap-3"><Send className="w-4 h-4 text-white/20" /> {selectedApp.telegram}</div>
- )}
- </div>
- </div>
- <div className="space-y-4 p-6 bg-white/[0.03] border border-white/5 rounded-3xl">
- <h4 className="text-[10px] font-black uppercase tracking-widest text-primary">Details</h4>
- <div className="space-y-3">
- <div className="text-sm font-bold flex items-center gap-3"><Clock className="w-4 h-4 text-white/20" /> Availability: {selectedApp.hoursPerDay}</div>
- <div className="text-sm font-bold flex items-center gap-3"><Gamepad2 className="w-4 h-4 text-white/20" /> Games: {selectedApp.games?.join(', ')}</div>
- </div>
- </div>
- </div>
+          <div className="grid grid-cols-2 gap-8">
+            <div className="space-y-4 p-6 bg-white/[0.03] border border-white/5 rounded-3xl">
+              <h4 className="text-[10px] font-black uppercase tracking-widest text-primary">Contact Info</h4>
+              <div className="space-y-3">
+                <div className="text-sm font-bold flex items-center gap-3"><Mail className="w-4 h-4 text-white/20" /> {selectedApp.email}</div>
+                <div className="text-sm font-bold flex items-center gap-3"><MessageSquare className="w-4 h-4 text-white/20" /> {selectedApp.discord}</div>
+                {selectedApp.telegram && (
+                  <div className="text-sm font-bold flex items-center gap-3"><Send className="w-4 h-4 text-white/20" /> {selectedApp.telegram}</div>
+                )}
+              </div>
+            </div>
+            <div className="space-y-4 p-6 bg-white/[0.03] border border-white/5 rounded-3xl">
+              <h4 className="text-[10px] font-black uppercase tracking-widest text-primary">Details</h4>
+              <div className="space-y-3">
+                <div className="text-sm font-bold flex items-center gap-3"><Clock className="w-4 h-4 text-white/20" /> Availability: {selectedApp.hoursPerDay}</div>
+                <div className="text-sm font-bold flex items-start gap-3">
+                  <Gamepad2 className="w-4 h-4 text-white/20 mt-1" /> 
+                  <div className="flex flex-wrap gap-1">
+                    {selectedApp.games?.map((game, idx) => (
+                      <span key={idx} className="px-2 py-0.5 bg-primary/10 border border-primary/20 rounded text-[9px] font-bold text-primary">
+                        {typeof game === 'string' ? game : (game.title || game.name)}
+                      </span>
+                    )) || <span className="text-white/20">None selected</span>}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
 
- <div className="space-y-4 p-8 bg-white/[0.03] border border-white/5 rounded-[32px]">
- <h4 className="text-[10px] font-black uppercase tracking-widest text-primary">Experience & Achievements</h4>
- <p className="text-sm text-white/60 leading-relaxed ">{selectedApp.experienceText || selectedApp.personalStatement}</p>
- </div>
+          {selectedApp.screenshotUrl && (
+            <div className="space-y-4 p-8 bg-white/[0.03] border border-white/5 rounded-[32px]">
+              <h4 className="text-[10px] font-black uppercase tracking-widest text-primary">Verification Screenshot</h4>
+              <img 
+                src={`${API_URL}${selectedApp.screenshotUrl}`} 
+                alt="Verification" 
+                className="w-full h-auto max-h-[400px] object-contain transition-transform group-hover:scale-105"
+                onClick={() => window.open(`${API_URL}${selectedApp.screenshotUrl}`, '_blank')}
+              />
+            </div>
+          )}
 
- {selectedApp.status === 'pending' && (
- <div className="flex gap-4 pt-4">
- <button
- disabled={actionLoading}
- onClick={() => handleReview(selectedApp._id, 'rejected', 'Does not meet our current requirements.')}
- className="flex-1 py-5 rounded-3xl bg-red-500/10 border border-red-500/20 text-red-400 font-black text-xs uppercase tracking-widest hover:bg-red-500/20 transition-all flex items-center justify-center gap-3"
- >
- <X className="w-4 h-4" /> Reject Application
- </button>
- <button
- disabled={actionLoading}
- onClick={() => handleReview(selectedApp._id, 'approved', 'Welcome to the team!')}
- className="flex-1 py-5 rounded-3xl bg-primary text-black font-black text-xs uppercase tracking-widest hover:bg-primary/90 transition-all flex items-center justify-center gap-3 shadow-2xl shadow-primary/20"
- >
- {actionLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Check className="w-4 h-4" />} Approve Candidate
- </button>
- </div>
- )}
- </div>
- </div>
- </div>
- )}
+          <div className="space-y-4 p-8 bg-white/[0.03] border border-white/5 rounded-[32px]">
+            <h4 className="text-[10px] font-black uppercase tracking-widest text-primary">Experience & Achievements</h4>
+            <p className="text-sm text-white/60 leading-relaxed ">{selectedApp.experienceText || selectedApp.personalStatement}</p>
+          </div>
+
+          {selectedApp.status === 'pending' && (
+            <div className="flex gap-4 pt-4">
+              <button
+                disabled={actionLoading}
+                onClick={() => handleReview(selectedApp._id, 'rejected', 'Does not meet our current requirements.')}
+                className="flex-1 py-5 rounded-3xl bg-red-500/10 border border-red-500/20 text-red-400 font-black text-xs uppercase tracking-widest hover:bg-red-500/20 transition-all flex items-center justify-center gap-3"
+              >
+                <X className="w-4 h-4" /> Reject Application
+              </button>
+              <button
+                disabled={actionLoading}
+                onClick={() => handleReview(selectedApp._id, 'approved', 'Welcome to the team!')}
+                className="flex-1 py-5 rounded-3xl bg-primary text-black font-black text-xs uppercase tracking-widest hover:bg-primary/90 transition-all flex items-center justify-center gap-3 shadow-2xl shadow-primary/20"
+              >
+                {actionLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Check className="w-4 h-4" />} Approve Candidate
+              </button>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  )}
  </AdminLayout>
  );
 };

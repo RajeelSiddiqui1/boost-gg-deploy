@@ -148,6 +148,10 @@ const userSchema = new mongoose.Schema({
         type: Number,
         default: 0
     },
+    missionDone: {
+        type: Number,
+        default: 0
+    },
     boosterCommissionRate: {
         type: Number,
         default: 80 // 80% default to booster
@@ -227,6 +231,10 @@ const userSchema = new mongoose.Schema({
         trim: true
     },
     savedGames: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Game'
+    }],
+    specializedGames: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Game'
     }],

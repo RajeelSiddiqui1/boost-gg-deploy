@@ -25,8 +25,10 @@ router.get('/types', (req, res) => {
     });
 });
 
+const proUpload = require('../middleware/proUpload');
+
 // Public: Apply to become PRO (Guest or User)
-router.post('/apply', optionalProtect, proController.apply);
+router.post('/apply', optionalProtect, proUpload.single('screenshot'), proController.apply);
 
 // PRO Protected Routes
 // Get PRO dashboard data

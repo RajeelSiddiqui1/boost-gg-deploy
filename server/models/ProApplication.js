@@ -50,6 +50,16 @@ const proApplicationSchema = new mongoose.Schema({
         enum: ['pending', 'under_review', 'approved', 'rejected'],
         default: 'pending'
     },
+    // Selected games for specialization
+    games: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Game'
+    }],
+    // Screenshot of game ID/proof
+    screenshotUrl: {
+        type: String,
+        trim: true
+    },
     // Existing fields kept for compatibility ...
     personalStatement: {
         type: String,
