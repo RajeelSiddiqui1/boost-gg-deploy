@@ -59,7 +59,7 @@ const CommunityEarnings = () => {
  return (
  <section ref={sectionRef} className="py-32 px-6 bg-black">
  <div className="max-w-[1400px] mx-auto text-center">
- <p className="text-white/40 font-bold text-xs uppercase tracking-[0.3em] mb-12">
+ <p className="text-white font-bold text-xs  tracking-[0.3em] mb-12">
  Join thousands of gamers leveling up with us
  </p>
 
@@ -68,17 +68,17 @@ const CommunityEarnings = () => {
  {digits.map((digit, i) => (
  <div
  key={i}
- className="w-12 h-20 md:w-20 md:h-28 bg-white rounded-xl md:rounded-2xl flex items-center justify-center text-5xl md:text-8xl font-black text-primary shadow-xl"
+ className="w-12 h-20 md:w-20 md:h-28 bg-white rounded-xl md:rounded-2xl flex items-center justify-center text-5xl md:text-8xl font-black text-white shadow-xl"
  >
  {digit}
  </div>
  ))}
  </div>
 
- <h2 className="text-[24px] md:text-[32px] font-black uppercase tracking-[0.2em] text-white mt-12 mb-2">
+ <h2 className="text-[24px] md:text-[32px] font-black  tracking-[0.2em] text-white mt-12 mb-2">
  Completed Orders
  </h2>
- <p className="text-white/40 font-medium text-sm md:text-base ">
+ <p className="text-white font-medium text-sm md:text-base ">
  and counting...
  </p>
  </div>
@@ -87,3 +87,4 @@ const CommunityEarnings = () => {
 };
 
 export default CommunityEarnings;
+

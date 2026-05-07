@@ -199,10 +199,10 @@ const GameForm = ({ game, onClose }) => {
  {/* Header */}
  <div className="flex items-center justify-between mb-8">
  <div>
- <h2 className="text-2xl md:text-3xl font-black text-white uppercase tracking-tighter">
+ <h2 className="text-2xl md:text-3xl font-black text-white  tracking-tighter">
  {game ? 'Edit Game' : 'Add New Game'}
  </h2>
- <p className="text-white/40 text-[10px] font-bold uppercase tracking-widest mt-1">Configure your boosting titles</p>
+ <p className="text-white text-[10px] font-bold  tracking-widest mt-1">Configure your boosting titles</p>
  </div>
  <button
  onClick={onClose}
@@ -214,7 +214,7 @@ const GameForm = ({ game, onClose }) => {
 
  {/* Error Message */}
  {error && (
- <div className="mb-6 p-4 bg-red-500/10 border border-red-500/20 rounded-2xl text-red-500 text-xs font-bold uppercase tracking-wider">
+ <div className="mb-6 p-4 bg-red-500/10 border border-red-500/20 rounded-2xl text-white text-xs font-bold  tracking-wider">
  {error}
  </div>
  )}
@@ -224,7 +224,7 @@ const GameForm = ({ game, onClose }) => {
  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
  {/* Title */}
  <div className="md:col-span-2">
- <label className="block text-white/40 text-[10px] font-black uppercase tracking-widest mb-3 px-1">Game Title *</label>
+ <label className="block text-white text-[10px] font-black  tracking-widest mb-3 px-1">Game Title *</label>
  <input
  type="text"
  name="title"
@@ -238,7 +238,7 @@ const GameForm = ({ game, onClose }) => {
 
  {/* Subtitle */}
  <div className="md:col-span-2">
- <label className="block text-white/40 text-[10px] font-black uppercase tracking-widest mb-3 px-1">Subtitle/Tag</label>
+ <label className="block text-white text-[10px] font-black  tracking-widest mb-3 px-1">Subtitle/Tag</label>
  <input
  type="text"
  name="subtitle"
@@ -251,7 +251,7 @@ const GameForm = ({ game, onClose }) => {
 
  {/* Category */}
  <div className="md:col-span-2">
- <label className="block text-white/40 text-[10px] font-black uppercase tracking-widest mb-3 px-1">Category</label>
+ <label className="block text-white text-[10px] font-black  tracking-widest mb-3 px-1">Category</label>
  <select
  name="category"
  value={formData.category}
@@ -266,7 +266,7 @@ const GameForm = ({ game, onClose }) => {
 
  {/* Description */}
  <div className="md:col-span-2">
- <label className="block text-white/40 text-[10px] font-black uppercase tracking-widest mb-3 px-1">Description</label>
+ <label className="block text-white text-[10px] font-black  tracking-widest mb-3 px-1">Description</label>
  <textarea
  name="description"
  value={formData.description}
@@ -279,7 +279,7 @@ const GameForm = ({ game, onClose }) => {
 
  {/* Offers Count */}
  <div>
- <label className="block text-white/40 text-[10px] font-black uppercase tracking-widest mb-3 px-1">Offers Count *</label>
+ <label className="block text-white text-[10px] font-black  tracking-widest mb-3 px-1">Offers Count *</label>
  <input
  type="number"
  name="offersCount"
@@ -294,7 +294,7 @@ const GameForm = ({ game, onClose }) => {
 
  {/* Display Order */}
  <div>
- <label className="block text-white/40 text-[10px] font-black uppercase tracking-widest mb-3 px-1">Order</label>
+ <label className="block text-white text-[10px] font-black  tracking-widest mb-3 px-1">Order</label>
  <input
  type="number"
  name="displayOrder"
@@ -308,7 +308,7 @@ const GameForm = ({ game, onClose }) => {
 
  {/* Status */}
  <div className="md:col-span-2">
- <label className="block text-white/40 text-[10px] font-black uppercase tracking-widest mb-3 px-1">Visibility Status</label>
+ <label className="block text-white text-[10px] font-black  tracking-widest mb-3 px-1">Visibility Status</label>
  <select
  name="status"
  value={formData.status}
@@ -333,7 +333,7 @@ const GameForm = ({ game, onClose }) => {
  />
  <div className="w-11 h-6 bg-white/5 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white/20 after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary/50 peer-checked:after:bg-primary"></div>
  </div>
- <span className="text-white/40 text-[10px] font-black uppercase tracking-widest group-hover:text-white transition-colors">Mark as Popular Game</span>
+ <span className="text-white text-[10px] font-black  tracking-widest group-hover:text-white transition-colors">Mark as Popular Game</span>
  </label>
  </div>
 
@@ -350,13 +350,13 @@ const GameForm = ({ game, onClose }) => {
  />
  <div className="w-11 h-6 bg-white/5 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white/20 after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-orange-500/50 peer-checked:after:bg-orange-500"></div>
  </div>
- <span className="text-white/40 text-[10px] font-black uppercase tracking-widest group-hover:text-white transition-colors">Hot right now</span>
+ <span className="text-white text-[10px] font-black  tracking-widest group-hover:text-white transition-colors">Hot right now</span>
  </label>
  </div>
 
  {/* Background Image */}
  <div>
- <label className="block text-white/40 text-[10px] font-black uppercase tracking-widest mb-3 px-1">
+ <label className="block text-white text-[10px] font-black  tracking-widest mb-3 px-1">
  Background Card *
  </label>
  <label className="cursor-pointer block">
@@ -372,7 +372,7 @@ const GameForm = ({ game, onClose }) => {
  <Upload className="w-5 h-5 text-white/20 group-hover:text-primary transition-colors" />
  </div>
  )}
- <p className="text-white/20 text-[9px] font-black uppercase tracking-widest leading-tight">
+ <p className="text-white text-[9px] font-black  tracking-widest leading-tight">
  {bgImagePreview ? 'REPLACE BG' : 'UPLOAD BACKGROUND IMAGE'}
  </p>
  </div>
@@ -382,7 +382,7 @@ const GameForm = ({ game, onClose }) => {
 
  {/* Character Image */}
  <div>
- <label className="block text-white/40 text-[10px] font-black uppercase tracking-widest mb-3 px-1">
+ <label className="block text-white text-[10px] font-black  tracking-widest mb-3 px-1">
  Character Asset (PNG)
  </label>
  <label className="cursor-pointer block">
@@ -398,7 +398,7 @@ const GameForm = ({ game, onClose }) => {
  <ImageIcon className="w-5 h-5 text-white/20 group-hover:text-primary transition-colors" />
  </div>
  )}
- <p className="text-white/20 text-[9px] font-black uppercase tracking-widest leading-tight">
+ <p className="text-white text-[9px] font-black  tracking-widest leading-tight">
  {characterImagePreview ? 'REPLACE CHARACTER' : 'UPLOAD PNG CHARACTER'}
  </p>
  </div>
@@ -408,7 +408,7 @@ const GameForm = ({ game, onClose }) => {
 
  {/* Icon */}
  <div>
- <label className="block text-white/40 text-[10px] font-black uppercase tracking-widest mb-3 px-1">
+ <label className="block text-white text-[10px] font-black  tracking-widest mb-3 px-1">
  Game Icon
  </label>
  <label className="cursor-pointer block">
@@ -424,7 +424,7 @@ const GameForm = ({ game, onClose }) => {
  <Upload className="w-5 h-5 text-white/20 group-hover:text-primary transition-colors" />
  </div>
  )}
- <p className="text-white/20 text-[9px] font-black uppercase tracking-widest leading-tight">
+ <p className="text-white text-[9px] font-black  tracking-widest leading-tight">
  {iconPreview ? 'REPLACE ICON' : 'UPLOAD ICON'}
  </p>
  </div>
@@ -434,7 +434,7 @@ const GameForm = ({ game, onClose }) => {
 
  {/* Banner */}
  <div className="md:col-span-2">
- <label className="block text-white/40 text-[10px] font-black uppercase tracking-widest mb-3 px-1">
+ <label className="block text-white text-[10px] font-black  tracking-widest mb-3 px-1">
  Game Banner
  </label>
  <label className="cursor-pointer block">
@@ -450,7 +450,7 @@ const GameForm = ({ game, onClose }) => {
  <Upload className="w-5 h-5 text-white/20 group-hover:text-primary transition-colors" />
  </div>
  )}
- <p className="text-white/20 text-[9px] font-black uppercase tracking-widest leading-tight">
+ <p className="text-white text-[9px] font-black  tracking-widest leading-tight">
  {bannerPreview ? 'REPLACE BANNER' : 'UPLOAD BANNER'}
  </p>
  </div>
@@ -464,14 +464,14 @@ const GameForm = ({ game, onClose }) => {
  <button
  type="button"
  onClick={onClose}
- className="w-full md:flex-1 px-8 py-5 bg-white/5 hover:bg-white/10 text-white rounded-[24px] font-black uppercase tracking-widest text-[11px] transition-all border border-white/5"
+ className="w-full md:flex-1 px-8 py-5 bg-white/5 hover:bg-white/10 text-white rounded-[24px] font-black  tracking-widest text-[11px] transition-all border border-white/5"
  >
  Discard
  </button>
  <button
  type="submit"
  disabled={loading}
- className="w-full md:flex-1 px-8 py-5 bg-primary hover:bg-[#722AEE] text-white rounded-[24px] font-black uppercase tracking-widest text-[11px] transition-all disabled:opacity-50 flex items-center justify-center gap-3 shadow-xl shadow-primary/20"
+ className="w-full md:flex-1 px-8 py-5 bg-primary hover:bg-[#722AEE] text-white rounded-[24px] font-black  tracking-widest text-[11px] transition-all disabled:opacity-50 flex items-center justify-center gap-3 shadow-xl shadow-primary/20"
  >
  {loading ? (
  <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin"></div>
@@ -491,4 +491,5 @@ const GameForm = ({ game, onClose }) => {
 };
 
 export default GameForm;
+
 

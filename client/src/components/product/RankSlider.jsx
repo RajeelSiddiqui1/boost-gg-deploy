@@ -48,21 +48,21 @@ const RankSlider = ({
  <div className="space-y-8 p-6 rounded-[32px] bg-white/[0.02] border border-white/5">
  <div className="flex items-center justify-between">
  <div className="space-y-1">
- <p className="text-[10px] font-black uppercase tracking-[0.2em] text-primary">Rank Selection</p>
- <h3 className="text-xl font-black text-white uppercase ">Define Your Goal</h3>
+ <p className="text-[10px] font-black  tracking-[0.2em] text-white">Rank Selection</p>
+ <h3 className="text-xl font-black text-white  ">Define Your Goal</h3>
  </div>
  <div className="flex items-center gap-3">
  <div className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center">
  <span className="text-xs font-black text-white">{toIndex - fromIndex}</span>
  </div>
- <span className="text-[10px] font-black uppercase tracking-widest text-white/20">Ranks</span>
+ <span className="text-[10px] font-black  tracking-widest text-white">Ranks</span>
  </div>
  </div>
 
  <div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
  {/* From Rank */}
  <div className="space-y-4">
- <label className="text-[10px] font-black uppercase tracking-widest text-white/40 block pl-2">Current Rank</label>
+ <label className="text-[10px] font-black  tracking-widest text-white block pl-2">Current Rank</label>
  <div className="relative">
  <select
  value={fromIndex}
@@ -80,7 +80,7 @@ const RankSlider = ({
  {ranks[fromIndex]?.icon ? (
  <img src={ranks[fromIndex].icon} alt="" className="w-full h-full object-contain grayscale group-hover:grayscale-0 transition-all" />
  ) : (
- <div className="text-2xl font-black text-white/10 uppercase tracking-tighter ">{ranks[fromIndex]?.label?.[0]}</div>
+ <div className="text-2xl font-black text-white  tracking-tighter ">{ranks[fromIndex]?.label?.[0]}</div>
  )}
  </div>
  </div>
@@ -88,7 +88,7 @@ const RankSlider = ({
 
  {/* To Rank */}
  <div className="space-y-4">
- <label className="text-[10px] font-black uppercase tracking-widest text-white/40 block pl-2">Desired Rank</label>
+ <label className="text-[10px] font-black  tracking-widest text-white block pl-2">Desired Rank</label>
  <div className="relative">
  <select
  value={toIndex}
@@ -106,7 +106,7 @@ const RankSlider = ({
  {ranks[toIndex]?.icon ? (
  <img src={ranks[toIndex].icon} alt="" className="w-full h-full object-contain filter drop-shadow-[0_0_10px_rgba(162,230,62,0.3)]" />
  ) : (
- <div className="text-2xl font-black text-primary uppercase tracking-tighter ">{ranks[toIndex]?.label?.[0]}</div>
+ <div className="text-2xl font-black text-white  tracking-tighter ">{ranks[toIndex]?.label?.[0]}</div>
  )}
  <div className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-primary text-black flex items-center justify-center">
  <Zap className="w-3 h-3 fill-current" />
@@ -127,7 +127,7 @@ const RankSlider = ({
  }}
  ></div>
  </div>
- <div className="flex justify-between text-[8px] font-black uppercase tracking-widest text-white/20 px-1">
+ <div className="flex justify-between text-[8px] font-black  tracking-widest text-white px-1">
  <span>{ranks[0].label}</span>
  <span>{ranks[ranks.length - 1].label}</span>
  </div>
@@ -137,3 +137,4 @@ const RankSlider = ({
 };
 
 export default RankSlider;
+

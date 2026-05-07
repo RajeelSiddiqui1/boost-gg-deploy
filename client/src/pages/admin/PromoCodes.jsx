@@ -139,15 +139,15 @@ const PromoCodes = () => {
  <div className="space-y-8">
  <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
  <div className="space-y-1">
- <h2 className="text-2xl font-black uppercase tracking-tight flex items-center gap-3">
+ <h2 className="text-2xl font-black  tracking-tight flex items-center gap-3">
  <Tag className="w-6 h-6 text-primary" />
  Promo Codes
  </h2>
- <p className="text-[10px] font-bold uppercase text-white/20 tracking-widest">Manage discount campaigns</p>
+ <p className="text-[10px] font-bold  text-white tracking-widest">Manage discount campaigns</p>
  </div>
  <button
  onClick={() => { setShowForm(true); setEditingPromo(null); resetForm(); }}
- className="flex items-center gap-2 bg-primary text-black px-6 py-3 rounded-2xl font-black text-[10px] uppercase tracking-widest hover:bg-primary/90 transition-all"
+ className="flex items-center gap-2 bg-primary text-black px-6 py-3 rounded-2xl font-black text-[10px]  tracking-widest hover:bg-primary/90 transition-all"
  >
  <Plus className="w-4 h-4" />
  Create Promo
@@ -168,7 +168,7 @@ const PromoCodes = () => {
  <select
  value={filter}
  onChange={(e) => setFilter(e.target.value)}
- className="bg-white/5 border border-white/10 rounded-2xl py-3 px-6 text-xs text-white font-black uppercase outline-none focus:border-primary transition-all appearance-none cursor-pointer"
+ className="bg-white/5 border border-white/10 rounded-2xl py-3 px-6 text-xs text-white font-black  outline-none focus:border-primary transition-all appearance-none cursor-pointer"
  >
  <option value="all">All Status</option>
  <option value="active">Active</option>
@@ -180,24 +180,24 @@ const PromoCodes = () => {
 
  {showForm && (
  <div className="bg-[#0A0A0A] border border-white/5 rounded-[32px] p-8">
- <h3 className="text-lg font-black uppercase mb-6">
+ <h3 className="text-lg font-black  mb-6">
  {editingPromo ? 'Edit Promo Code' : 'Create New Promo Code'}
  </h3>
  <form onSubmit={handleSubmit} className="space-y-6">
  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
  <div className="space-y-2">
- <label className="text-[10px] font-black uppercase tracking-widest text-white/40">Promo Code</label>
+ <label className="text-[10px] font-black  tracking-widest text-white">Promo Code</label>
  <input
  type="text"
  required
- className="w-full bg-white/5 border border-white/10 rounded-2xl py-3 px-6 text-sm text-white outline-none focus:border-primary transition-all uppercase"
+ className="w-full bg-white/5 border border-white/10 rounded-2xl py-3 px-6 text-sm text-white outline-none focus:border-primary transition-all "
  value={formData.code}
  onChange={(e) => setFormData({ ...formData, code: e.target.value.toUpperCase() })}
  placeholder="SAVE20"
  />
  </div>
  <div className="space-y-2">
- <label className="text-[10px] font-black uppercase tracking-widest text-white/40">Description</label>
+ <label className="text-[10px] font-black  tracking-widest text-white">Description</label>
  <input
  type="text"
  className="w-full bg-white/5 border border-white/10 rounded-2xl py-3 px-6 text-sm text-white outline-none focus:border-primary transition-all"
@@ -207,7 +207,7 @@ const PromoCodes = () => {
  />
  </div>
  <div className="space-y-2">
- <label className="text-[10px] font-black uppercase tracking-widest text-white/40">Discount Type</label>
+ <label className="text-[10px] font-black  tracking-widest text-white">Discount Type</label>
  <select
  className="w-full bg-white/5 border border-white/10 rounded-2xl py-3 px-6 text-sm text-white outline-none focus:border-primary transition-all"
  value={formData.discountType}
@@ -219,7 +219,7 @@ const PromoCodes = () => {
  </select>
  </div>
  <div className="space-y-2">
- <label className="text-[10px] font-black uppercase tracking-widest text-white/40">Discount Value</label>
+ <label className="text-[10px] font-black  tracking-widest text-white">Discount Value</label>
  <input
  type="number"
  required
@@ -230,7 +230,7 @@ const PromoCodes = () => {
  />
  </div>
  <div className="space-y-2">
- <label className="text-[10px] font-black uppercase tracking-widest text-white/40">Max Discount (Amount)</label>
+ <label className="text-[10px] font-black  tracking-widest text-white">Max Discount (Amount)</label>
  <input
  type="number"
  min="0"
@@ -241,7 +241,7 @@ const PromoCodes = () => {
  />
  </div>
  <div className="space-y-2">
- <label className="text-[10px] font-black uppercase tracking-widest text-white/40">Min Order Amount</label>
+ <label className="text-[10px] font-black  tracking-widest text-white">Min Order Amount</label>
  <input
  type="number"
  min="0"
@@ -251,7 +251,7 @@ const PromoCodes = () => {
  />
  </div>
  <div className="space-y-2">
- <label className="text-[10px] font-black uppercase tracking-widest text-white/40">Max Uses</label>
+ <label className="text-[10px] font-black  tracking-widest text-white">Max Uses</label>
  <input
  type="number"
  min="1"
@@ -262,7 +262,7 @@ const PromoCodes = () => {
  />
  </div>
  <div className="space-y-2">
- <label className="text-[10px] font-black uppercase tracking-widest text-white/40">Expires At</label>
+ <label className="text-[10px] font-black  tracking-widest text-white">Expires At</label>
  <input
  type="date"
  required
@@ -276,13 +276,13 @@ const PromoCodes = () => {
  <button
  type="button"
  onClick={() => { setShowForm(false); setEditingPromo(null); }}
- className="px-6 py-3 rounded-2xl font-black text-[10px] uppercase tracking-widest border border-white/10 text-white/60 hover:border-white/20 transition-all"
+ className="px-6 py-3 rounded-2xl font-black text-[10px]  tracking-widest border border-white/10 text-white/60 hover:border-white/20 transition-all"
  >
  Cancel
  </button>
  <button
  type="submit"
- className="px-8 py-3 rounded-2xl font-black text-[10px] uppercase tracking-widest bg-primary text-black hover:bg-primary/90 transition-all"
+ className="px-8 py-3 rounded-2xl font-black text-[10px]  tracking-widest bg-primary text-black hover:bg-primary/90 transition-all"
  >
  {editingPromo ? 'Update' : 'Create'}
  </button>
@@ -296,12 +296,12 @@ const PromoCodes = () => {
  <table className="w-full text-left">
  <thead className="bg-white/[0.01]">
  <tr>
- <th className="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-white/20">Code</th>
- <th className="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-white/20">Discount</th>
- <th className="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-white/20">Usage</th>
- <th className="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-white/20">Expires</th>
- <th className="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-white/20">Status</th>
- <th className="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-white/20 text-right">Actions</th>
+ <th className="px-8 py-5 text-[10px] font-black  tracking-widest text-white/20">Code</th>
+ <th className="px-8 py-5 text-[10px] font-black  tracking-widest text-white/20">Discount</th>
+ <th className="px-8 py-5 text-[10px] font-black  tracking-widest text-white/20">Usage</th>
+ <th className="px-8 py-5 text-[10px] font-black  tracking-widest text-white/20">Expires</th>
+ <th className="px-8 py-5 text-[10px] font-black  tracking-widest text-white/20">Status</th>
+ <th className="px-8 py-5 text-[10px] font-black  tracking-widest text-white/20 text-right">Actions</th>
  </tr>
  </thead>
  <tbody className="divide-y divide-white/5">
@@ -316,23 +316,23 @@ const PromoCodes = () => {
  <div className="flex items-center gap-3">
  <Tag className="w-5 h-5 text-primary" />
  <div>
- <p className="text-sm font-black uppercase text-white">{promo.code}</p>
- <p className="text-[9px] font-bold text-white/20 uppercase">{promo.description || 'No description'}</p>
+ <p className="text-sm font-black  text-white">{promo.code}</p>
+ <p className="text-[9px] font-bold text-white ">{promo.description || 'No description'}</p>
  </div>
  </div>
  </td>
  <td className="px-8 py-6">
- <p className="text-sm font-black text-green-500">
+ <p className="text-sm font-black text-white">
  {promo.discountType === 'percentage' ? `${promo.discountValue}%` :
  promo.discountType === 'fixed' ? formatPrice(promo.discountValue) :
  'Free Delivery'}
  </p>
  {promo.maxDiscountAmount && (
- <p className="text-[9px] font-bold text-white/20 uppercase">Max: {formatPrice(promo.maxDiscountAmount)}</p>
+ <p className="text-[9px] font-bold text-white ">Max: {formatPrice(promo.maxDiscountAmount)}</p>
  )}
  </td>
  <td className="px-8 py-6">
- <p className="text-xs font-black text-white/60">{promo.currentUses} / {promo.maxUses || '∞'}</p>
+ <p className="text-xs font-black text-white">{promo.currentUses} / {promo.maxUses || '∞'}</p>
  </td>
  <td className="px-8 py-6">
  <div className="flex items-center gap-2">
@@ -341,13 +341,13 @@ const PromoCodes = () => {
  ) : (
  <Clock className="w-4 h-4 text-white/40" />
  )}
- <span className={`text-xs font-bold ${isExpired(promo.expiresAt) ? 'text-red-500' : 'text-white/60'}`}>
+ <span className={`text-xs font-bold ${isExpired(promo.expiresAt) ? 'text-red-500' : 'text-white'}`}>
  {new Date(promo.expiresAt).toLocaleDateString()}
  </span>
  </div>
  </td>
  <td className="px-8 py-6">
- <span className={`px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest border ${getStatusStyle(promo.status)}`}>
+ <span className={`px-3 py-1 rounded-full text-[9px] font-black  tracking-widest border ${getStatusStyle(promo.status)}`}>
  {promo.status}
  </span>
  </td>
@@ -380,3 +380,4 @@ const PromoCodes = () => {
 };
 
 export default PromoCodes;
+

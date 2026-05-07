@@ -90,7 +90,7 @@ const GameCard = ({ game, className = "h-[200px]" }) => {
  {(game.isHot || game.isFeatured) && (
  <Flame className="w-3 h-3 text-orange-500 fill-orange-500 drop-shadow-[0_0_8px_rgba(249,115,22,0.8)]" />
  )}
- <p className="text-[10px] font-bold text-white/40 uppercase tracking-[0.15em] drop-shadow-md">
+ <p className="text-[10px] font-bold text-white  tracking-[0.15em] drop-shadow-md">
  {game.category || 'Premium Category'}
  </p>
  </div>
@@ -104,12 +104,12 @@ const GameCard = ({ game, className = "h-[200px]" }) => {
  <div className="w-6 h-6 rounded-full bg-white/10 flex items-center justify-center">
  <span className="text-[10px] font-black text-white">{game.servicesCount || 0}</span>
  </div>
- <span className="text-[9px] font-bold text-white/50 uppercase tracking-[0.2em] pt-0.5">Services</span>
+ <span className="text-[9px] font-bold text-white  tracking-[0.2em] pt-0.5">Services</span>
  </div>
 
  <button className="flex items-center gap-2 bg-primary group-hover:bg-[#8cc63e] text-black px-6 py-3 rounded-full transition-all duration-300 shadow-[0_0_20px_rgba(162,230,62,0.2)] group-hover:shadow-[0_0_30px_rgba(162,230,62,0.4)] hover:scale-105 active:scale-95">
  <ButtonIcon className="w-4 h-4 fill-current" />
- <span className="text-[11px] font-black uppercase tracking-widest leading-none pt-0.5">{buttonText}</span>
+ <span className="text-[11px] font-black  tracking-widest leading-none pt-0.5">{buttonText}</span>
  </button>
  </div>
  </div>
@@ -118,3 +118,4 @@ const GameCard = ({ game, className = "h-[200px]" }) => {
 };
 
 export default GameCard;
+

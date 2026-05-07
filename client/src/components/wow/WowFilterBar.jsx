@@ -36,7 +36,7 @@ const WowFilterBar = ({ activeCategory, onCategoryChange, priceRange, onPriceCha
  <div className="flex flex-wrap items-center gap-4">
  <div className="flex items-center gap-3 px-4 py-2.5 bg-white/5 border border-white/5 rounded-xl">
  <SlidersHorizontal className="w-4 h-4 text-primary" />
- <span className="text-xs font-bold text-white/40 uppercase tracking-widest">Sort:</span>
+ <span className="text-xs font-bold text-white  tracking-widest">Sort:</span>
  <select
  value={sortBy}
  onChange={(e) => onSortChange(e.target.value)}
@@ -56,3 +56,4 @@ const WowFilterBar = ({ activeCategory, onCategoryChange, priceRange, onPriceCha
 };
 
 export default WowFilterBar;
+

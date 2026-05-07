@@ -81,10 +81,10 @@ const CategoryForm = ({ category, games, onClose, onSuccess }) => {
  {/* Header */}
  <div className="flex items-center justify-between mb-8">
  <div>
- <h2 className="text-2xl md:text-3xl font-black text-white uppercase tracking-tighter">
+ <h2 className="text-2xl md:text-3xl font-black text-white  tracking-tighter">
  {category ? 'Edit Category' : 'Add Category'}
  </h2>
- <p className="text-white/40 text-[10px] font-bold uppercase tracking-widest mt-1">Organize services under games</p>
+ <p className="text-white text-[10px] font-bold  tracking-widest mt-1">Organize services under games</p>
  </div>
  <button
  onClick={onClose}
@@ -95,7 +95,7 @@ const CategoryForm = ({ category, games, onClose, onSuccess }) => {
  </div>
 
  {error && (
- <div className="mb-6 p-4 bg-red-500/10 border border-red-500/20 rounded-2xl text-red-500 text-xs font-bold uppercase tracking-wider">
+ <div className="mb-6 p-4 bg-red-500/10 border border-red-500/20 rounded-2xl text-white text-xs font-bold  tracking-wider">
  {error}
  </div>
  )}
@@ -104,7 +104,7 @@ const CategoryForm = ({ category, games, onClose, onSuccess }) => {
  <div className="space-y-6">
  {/* Game Selection */}
  <div>
- <label className="block text-white/40 text-[10px] font-black uppercase tracking-widest mb-3 px-1">Game *</label>
+ <label className="block text-white text-[10px] font-black  tracking-widest mb-3 px-1">Game *</label>
  <select
  name="gameId"
  value={formData.gameId}
@@ -121,7 +121,7 @@ const CategoryForm = ({ category, games, onClose, onSuccess }) => {
 
  {/* Name */}
  <div>
- <label className="block text-white/40 text-[10px] font-black uppercase tracking-widest mb-3 px-1">Category Name *</label>
+ <label className="block text-white text-[10px] font-black  tracking-widest mb-3 px-1">Category Name *</label>
  <input
  type="text"
  name="name"
@@ -135,7 +135,7 @@ const CategoryForm = ({ category, games, onClose, onSuccess }) => {
 
  {/* Sort Order */}
  <div>
- <label className="block text-white/40 text-[10px] font-black uppercase tracking-widest mb-3 px-1">Sort Order</label>
+ <label className="block text-white text-[10px] font-black  tracking-widest mb-3 px-1">Sort Order</label>
  <input
  type="number"
  name="sortOrder"
@@ -157,7 +157,7 @@ const CategoryForm = ({ category, games, onClose, onSuccess }) => {
  className="sr-only peer"
  />
  <div className="w-11 h-6 bg-white/5 rounded-full peer peer-checked:bg-primary/50 relative after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white/20 after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-full peer-checked:after:bg-primary"></div>
- <span className="text-white/40 text-[10px] font-black uppercase tracking-widest group-hover:text-white transition-colors">Featured</span>
+ <span className="text-white text-[10px] font-black  tracking-widest group-hover:text-white transition-colors">Featured</span>
  </label>
 
  <label className="flex items-center gap-4 cursor-pointer group p-4 bg-white/[0.02] border border-white/5 rounded-2xl hover:bg-white/[0.05] transition-all">
@@ -169,7 +169,7 @@ const CategoryForm = ({ category, games, onClose, onSuccess }) => {
  className="sr-only peer"
  />
  <div className="w-11 h-6 bg-white/5 rounded-full peer peer-checked:bg-green-500/50 relative after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white/20 after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-full peer-checked:after:bg-green-500"></div>
- <span className="text-white/40 text-[10px] font-black uppercase tracking-widest group-hover:text-white transition-colors">Active</span>
+ <span className="text-white text-[10px] font-black  tracking-widest group-hover:text-white transition-colors">Active</span>
  </label>
  </div>
  </div>
@@ -179,14 +179,14 @@ const CategoryForm = ({ category, games, onClose, onSuccess }) => {
  <button
  type="button"
  onClick={onClose}
- className="flex-1 px-8 py-5 bg-white/5 hover:bg-white/10 text-white rounded-[24px] font-black uppercase tracking-widest text-[11px] transition-all border border-white/5"
+ className="flex-1 px-8 py-5 bg-white/5 hover:bg-white/10 text-white rounded-[24px] font-black  tracking-widest text-[11px] transition-all border border-white/5"
  >
  Cancel
  </button>
  <button
  type="submit"
  disabled={loading}
- className="flex-1 px-8 py-5 bg-primary hover:bg-[#722AEE] text-white rounded-[24px] font-black uppercase tracking-widest text-[11px] transition-all disabled:opacity-50 flex items-center justify-center gap-3 shadow-xl shadow-primary/20"
+ className="flex-1 px-8 py-5 bg-primary hover:bg-[#722AEE] text-white rounded-[24px] font-black  tracking-widest text-[11px] transition-all disabled:opacity-50 flex items-center justify-center gap-3 shadow-xl shadow-primary/20"
  >
  {loading ? (
  <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin"></div>
@@ -206,3 +206,4 @@ const CategoryForm = ({ category, games, onClose, onSuccess }) => {
 };
 
 export default CategoryForm;
+

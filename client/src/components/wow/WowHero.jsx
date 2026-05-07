@@ -16,17 +16,17 @@ const WowHero = ({ stats }) => {
 
  <div className="container mx-auto px-6 relative z-20">
  <div className="max-w-2xl">
- <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-bold uppercase tracking-widest mb-6 animate-pulse">
+ <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-white text-xs font-bold  tracking-widest mb-6 animate-pulse">
  <Zap className="w-3 h-3 fill-current" />
  Dragonflight & Classic Season of Discovery Ready
  </div>
 
- <h1 className="text-5xl md:text-7xl font-black uppercase tracking-tighter text-white mb-6 leading-tight">
+ <h1 className="text-5xl md:text-7xl font-black  tracking-tighter text-white mb-6 leading-tight">
  Power Up Your <br />
  <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-[#a2e63e]">WoW Achievement</span>
  </h1>
 
- <p className="text-lg text-white/60 mb-8 leading-relaxed max-w-lg">
+ <p className="text-lg text-white mb-8 leading-relaxed max-w-lg">
  Premium World of Warcraft boosting services. Raids, Dungeons, PvP, and Powerleveling delivered by top 0.1% PRO players. Safe, fast, and guaranteed.
  </p>
 
@@ -37,7 +37,7 @@ const WowHero = ({ stats }) => {
  </div>
  <div>
  <div className="text-2xl font-black text-white">{stats?.offersCount || 150}+</div>
- <div className="text-[10px] font-bold uppercase tracking-widest text-white/40">Active Offers</div>
+ <div className="text-[10px] font-bold  tracking-widest text-white">Active Offers</div>
  </div>
  </div>
  <div className="bg-white/5 border border-white/10 rounded-2xl p-4 flex items-center gap-4 hover:border-primary/50 transition-colors">
@@ -46,7 +46,7 @@ const WowHero = ({ stats }) => {
  </div>
  <div>
  <div className="text-2xl font-black text-white">{stats?.totalOrders || '2.5k'}+</div>
- <div className="text-[10px] font-bold uppercase tracking-widest text-white/40">Boosts Completed</div>
+ <div className="text-[10px] font-bold  tracking-widest text-white">Boosts Completed</div>
  </div>
  </div>
  <div className="bg-white/5 border border-white/10 rounded-2xl p-4 flex items-center gap-4 hover:border-primary/50 transition-colors">
@@ -55,7 +55,7 @@ const WowHero = ({ stats }) => {
  </div>
  <div>
  <div className="text-2xl font-black text-white">4.9/5</div>
- <div className="text-[10px] font-bold uppercase tracking-widest text-white/40">Trustpilot Rating</div>
+ <div className="text-[10px] font-bold  tracking-widest text-white">Trustpilot Rating</div>
  </div>
  </div>
  </div>
@@ -71,3 +71,4 @@ const WowHero = ({ stats }) => {
 };
 
 export default WowHero;
+

@@ -10,13 +10,13 @@ const PromoBanner = () => {
  <h2 className="text-[40px] lg:text-[56px] font-black text-white leading-[1] tracking-tighter mb-8">
  Money, tips,<br />giveaways & more
  </h2>
- <p className="text-white/40 text-[11px] font-black uppercase tracking-[0.3em] mb-10">Join our newsletter to stay updated</p>
+ <p className="text-white text-[11px] font-black  tracking-[0.3em] mb-10">Join our newsletter to stay updated</p>
 
  <div className="flex gap-4">
- <button className="flex items-center gap-2 px-6 py-2 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl text-white text-[12px] font-black uppercase tracking-widest transition-all">
+ <button className="flex items-center gap-2 px-6 py-2 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl text-white text-[12px] font-black  tracking-widest transition-all">
  Telegram <span className="w-2 h-2 bg-primary rounded-full"></span>
  </button>
- <button className="flex items-center gap-2 px-6 py-2 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl text-white text-[12px] font-black uppercase tracking-widest transition-all">
+ <button className="flex items-center gap-2 px-6 py-2 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl text-white text-[12px] font-black  tracking-widest transition-all">
  Discord <span className="w-2 h-2 bg-primary rounded-full"></span>
  </button>
  </div>
@@ -42,3 +42,4 @@ const PromoBanner = () => {
 };
 
 export default PromoBanner;
+

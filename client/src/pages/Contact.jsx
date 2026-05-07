@@ -36,7 +36,7 @@ const Contact = () => {
  <h2 className="text-3xl font-black mb-8">Send us a message</h2>
  <form onSubmit={handleSubmit} className="space-y-6">
  <div>
- <label className="block text-sm font-black uppercase tracking-wider mb-2 text-white/60">
+ <label className="block text-sm font-black  tracking-wider mb-2 text-white">
  Name
  </label>
  <input
@@ -51,7 +51,7 @@ const Contact = () => {
  </div>
 
  <div>
- <label className="block text-sm font-black uppercase tracking-wider mb-2 text-white/60">
+ <label className="block text-sm font-black  tracking-wider mb-2 text-white">
  Email
  </label>
  <input
@@ -66,7 +66,7 @@ const Contact = () => {
  </div>
 
  <div>
- <label className="block text-sm font-black uppercase tracking-wider mb-2 text-white/60">
+ <label className="block text-sm font-black  tracking-wider mb-2 text-white">
  Subject
  </label>
  <input
@@ -81,7 +81,7 @@ const Contact = () => {
  </div>
 
  <div>
- <label className="block text-sm font-black uppercase tracking-wider mb-2 text-white/60">
+ <label className="block text-sm font-black  tracking-wider mb-2 text-white">
  Message
  </label>
  <textarea
@@ -97,7 +97,7 @@ const Contact = () => {
 
  <button
  type="submit"
- className="w-full bg-primary hover:bg-primary-light text-white px-8 py-5 rounded-2xl font-black text-sm uppercase tracking-wider transition-all hover:scale-105 shadow-2xl"
+ className="w-full bg-primary hover:bg-primary-light text-white px-8 py-5 rounded-2xl font-black text-sm  tracking-wider transition-all hover:scale-105 shadow-2xl"
  >
  Send Message
  </button>
@@ -111,8 +111,8 @@ const Contact = () => {
  <Mail className="w-8 h-8 text-primary" />
  </div>
  <h3 className="text-2xl font-black mb-3">Email Us</h3>
- <p className="text-white/60 font-bold mb-2">support@boostgg.com</p>
- <p className="text-white/60 font-bold">sales@boostgg.com</p>
+ <p className="text-white font-bold mb-2">support@boostgg.com</p>
+ <p className="text-white font-bold">sales@boostgg.com</p>
  </div>
 
  <div className="bg-dark-card p-10 rounded-[48px] border border-white/10 hover:border-primary/50 transition-all">
@@ -120,7 +120,7 @@ const Contact = () => {
  <MessageSquare className="w-8 h-8 text-primary" />
  </div>
  <h3 className="text-2xl font-black mb-3">Live Chat</h3>
- <p className="text-white/60 font-bold mb-4">Available 24/7 for instant support</p>
+ <p className="text-white font-bold mb-4">Available 24/7 for instant support</p>
  <button
  onClick={() => window.dispatchEvent(new CustomEvent('openSupportChat'))}
  className="bg-primary hover:bg-primary-light px-8 py-3 rounded-2xl font-black text-sm transition-all"
@@ -131,11 +131,11 @@ const Contact = () => {
 
  <div className="bg-dark-card p-10 rounded-[48px] border border-white/10 hover:border-primary/50 transition-all">
  <div className="w-16 h-16 bg-primary/20 rounded-2xl flex items-center justify-center mb-6">
- <Phone className="w-8 h-8 text-primary" />
+ <Phone className="w-8 h-8 text-white" />
  </div>
  <h3 className="text-2xl font-black mb-3">Call Us</h3>
- <p className="text-white/60 font-bold">+1 (555) 123-4567</p>
- <p className="text-sm text-white/40 font-bold mt-2">Mon-Fri: 9AM - 6PM EST</p>
+ <p className="text-white font-bold">+1 (555) 123-4567</p>
+ <p className="text-sm text-white font-bold mt-2">Mon-Fri: 9AM - 6PM EST</p>
  </div>
  </div>
  </div>
@@ -145,3 +145,4 @@ const Contact = () => {
 };
 
 export default Contact;
+

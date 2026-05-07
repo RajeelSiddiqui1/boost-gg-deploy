@@ -38,10 +38,10 @@ const ResetPassword = () => {
  <Link to="/" className="inline-flex items-center gap-2 mb-8">
  <img src={logo} alt="BOOSTGG" className="h-10 w-auto object-contain" />
  </Link>
- <h1 className="text-3xl md:text-4xl font-black tracking-tight text-white mb-4 uppercase leading-none">
+ <h1 className="text-3xl md:text-4xl font-black tracking-tight text-white mb-4  leading-none">
  {success ? 'Success' : 'New Password'}
  </h1>
- <p className="text-white/40 text-[11px] font-bold uppercase tracking-[0.2em]">
+ <p className="text-white text-[11px] font-bold  tracking-[0.2em]">
  {success ? 'Password has been reset' : 'Secure your account'}
  </p>
  </div>
@@ -50,7 +50,7 @@ const ResetPassword = () => {
  <form onSubmit={handleSubmit} className="space-y-6">
  <div className="space-y-4">
  <div className="relative group">
- <label className="absolute -top-2.5 left-5 px-2 bg-[#0A0A0A] text-[10px] font-black uppercase tracking-[0.2em] text-white/20 z-10 group-focus-within:text-primary transition-colors">New Password</label>
+ <label className="absolute -top-2.5 left-5 px-2 bg-[#0A0A0A] text-[10px] font-black  tracking-[0.2em] text-white/20 z-10 group-focus-within:text-white transition-colors">New Password</label>
  <input
  type="password"
  value={password}
@@ -63,7 +63,7 @@ const ResetPassword = () => {
  <Lock className="absolute right-5 top-1/2 -translate-y-1/2 text-white/5 group-focus-within:text-primary/30 transition-colors w-5 h-5" />
  </div>
  <div className="relative group">
- <label className="absolute -top-2.5 left-5 px-2 bg-[#0A0A0A] text-[10px] font-black uppercase tracking-[0.2em] text-white/20 z-10 group-focus-within:text-primary transition-colors">Confirm Password</label>
+ <label className="absolute -top-2.5 left-5 px-2 bg-[#0A0A0A] text-[10px] font-black  tracking-[0.2em] text-white/20 z-10 group-focus-within:text-white transition-colors">Confirm Password</label>
  <input
  type="password"
  value={confirmPassword}
@@ -78,7 +78,7 @@ const ResetPassword = () => {
  <button
  type="submit"
  disabled={loading || !password || password !== confirmPassword}
- className="w-full bg-primary hover:bg-[#722AEE] text-white py-4.5 rounded-2xl font-black text-xs uppercase tracking-[0.2em] flex items-center justify-center gap-3 transition-all active:scale-95 shadow-xl shadow-primary/30 disabled:opacity-50 group/btn"
+ className="w-full bg-primary hover:bg-[#722AEE] text-white py-4.5 rounded-2xl font-black text-xs  tracking-[0.2em] flex items-center justify-center gap-3 transition-all active:scale-95 shadow-xl shadow-primary/30 disabled:opacity-50 group/btn"
  >
  {loading ? (
  <Loader2 className="w-5 h-5 animate-spin" />
@@ -93,7 +93,7 @@ const ResetPassword = () => {
  ) : (
  <div className="text-center py-4 scale-in-fade">
  <CheckCircle className="w-16 h-16 text-primary mx-auto mb-6 animate-bounce" />
- <p className="text-white/60 text-sm leading-relaxed">
+ <p className="text-white text-sm leading-relaxed">
  Your password has been successfully reset. Redirecting you to login...
  </p>
  </div>
@@ -105,3 +105,4 @@ const ResetPassword = () => {
 };
 
 export default ResetPassword;
+

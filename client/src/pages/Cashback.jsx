@@ -62,7 +62,7 @@ const Cashback = () => {
                                 }}
                             >
                                 <div className="w-full h-full flex items-center justify-center opacity-60">
-                                    <span className="text-[12px] font-black text-primary">$</span>
+                                    <span className="text-[12px] font-black text-white">$</span>
                                 </div>
                             </div>
                         ))}
@@ -72,7 +72,7 @@ const Cashback = () => {
                     <div className="relative z-10 w-[240px] h-[480px] bg-black/60 backdrop-blur-2xl border-2 border-white/5 rounded-[48px] shadow-[0_0_80px_rgba(162,230,62,0.15)] overflow-hidden flex flex-col p-6 items-center justify-center group hover:border-primary/50 transition-all duration-700">
                         <div className="absolute inset-0 bg-gradient-to-t from-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
                         <div className="w-12 h-1 bg-white/20 rounded-full mb-8"></div>
-                        <div className="text-primary text-6xl mb-4 group-hover:scale-110 transition-transform duration-700">
+                        <div className="text-white text-6xl mb-4 group-hover:scale-110 transition-transform duration-700">
                             <Trophy className="w-20 h-20" />
                         </div>
                     </div>
@@ -80,11 +80,11 @@ const Cashback = () => {
 
                 {/* Right: Headline */}
                 <div className="text-center lg:text-left relative z-20">
-                    <p className="text-primary text-sm font-black uppercase tracking-[0.3em] mb-6">Boost your game — and your wallet</p>
-                    <h1 className="text-6xl md:text-[100px] font-black tracking-tighter leading-[0.8] mb-8 uppercase">
-                        Cashback <br /> <span className="text-white/40">Program</span>
+                    <p className="text-white text-sm font-black  tracking-[0.3em] mb-6">Boost your game — and your wallet</p>
+                    <h1 className="text-6xl md:text-[100px] font-black tracking-tighter leading-[0.8] mb-8 ">
+                        Cashback <br /> <span className="text-white">Program</span>
                     </h1>
-                    <p className="text-white/60 text-lg font-medium max-w-xl">Earn a percentage back on every purchase. The more you buy, the higher your tier, and the more cashback you earn for future orders.</p>
+                    <p className="text-white text-lg font-medium max-w-xl">Earn a percentage back on every purchase. The more you buy, the higher your tier, and the more cashback you earn for future orders.</p>
                 </div>
             </div>
         </section>
@@ -94,44 +94,44 @@ const Cashback = () => {
             <div className="max-w-[1400px] mx-auto grid grid-cols-1 lg:grid-cols-2 gap-8">
                 {/* Boosting Card */}
                 <div className="bg-[#0A0A0A] border border-white/5 rounded-[40px] p-10 md:p-12 relative overflow-hidden group hover:border-primary/30 transition-all duration-500 hover:-translate-y-2">
-                    <div className="absolute top-0 right-0 p-12 text-primary/5 group-hover:text-primary/10 transition-colors -z-0">
+                    <div className="absolute top-0 right-0 p-12 text-primary/5 group-hover:text-white/10 transition-colors -z-0">
                         <Zap className="w-48 h-48" />
                     </div>
-                    <h3 className="text-3xl font-black uppercase tracking-tighter mb-8 relative z-10">Boosting Services</h3>
+                    <h3 className="text-3xl font-black  tracking-tighter mb-8 relative z-10">Boosting Services</h3>
                     <div className="flex flex-col md:flex-row gap-6 relative z-10">
                         <div className="flex-1 bg-white/[0.02] border border-white/5 rounded-3xl p-6 group-hover:bg-white/[0.04] transition-colors">
-                            <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-4 py-2 rounded-xl text-lg font-black mb-4">
+                            <div className="inline-flex items-center gap-2 bg-primary/10 text-white px-4 py-2 rounded-xl text-lg font-black mb-4">
                                 Earn <span className="ml-1 text-2xl tracking-tighter">5-20%</span>
                             </div>
-                            <p className="text-[10px] font-black uppercase tracking-[0.2em] text-white/40 leading-relaxed">back on all boosting orders</p>
+                            <p className="text-[10px] font-black  tracking-[0.2em] text-white leading-relaxed">back on all boosting orders</p>
                         </div>
                         <div className="flex-1 bg-white/[0.02] border border-white/5 rounded-3xl p-6 group-hover:bg-white/[0.04] transition-colors">
-                            <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-4 py-2 rounded-xl text-lg font-black mb-4">
+                            <div className="inline-flex items-center gap-2 bg-primary/10 text-white px-4 py-2 rounded-xl text-lg font-black mb-4">
                                 Cover <span className="ml-1 text-2xl tracking-tighter">UP TO 30%</span>
                             </div>
-                            <p className="text-[10px] font-black uppercase tracking-[0.2em] text-white/40 leading-relaxed">on future boost purchases</p>
+                            <p className="text-[10px] font-black  tracking-[0.2em] text-white leading-relaxed">on future boost purchases</p>
                         </div>
                     </div>
                 </div>
 
                 {/* Currencies & Accounts Card */}
                 <div className="bg-[#0A0A0A] border border-white/5 rounded-[40px] p-10 md:p-12 relative overflow-hidden group hover:border-primary/30 transition-all duration-500 hover:-translate-y-2">
-                    <div className="absolute top-0 right-0 p-12 text-primary/5 group-hover:text-primary/10 transition-colors -z-0">
+                    <div className="absolute top-0 right-0 p-12 text-primary/5 group-hover:text-white/10 transition-colors -z-0">
                         <Coins className="w-48 h-48" />
                     </div>
-                    <h3 className="text-3xl font-black uppercase tracking-tighter mb-8 relative z-10">Currencies & Accounts</h3>
+                    <h3 className="text-3xl font-black  tracking-tighter mb-8 relative z-10">Currencies & Accounts</h3>
                     <div className="flex flex-col md:flex-row gap-6 relative z-10">
                         <div className="flex-1 bg-white/[0.02] border border-white/5 rounded-3xl p-6 group-hover:bg-white/[0.04] transition-colors">
-                            <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-4 py-2 rounded-xl text-lg font-black mb-4">
+                            <div className="inline-flex items-center gap-2 bg-primary/10 text-white px-4 py-2 rounded-xl text-lg font-black mb-4">
                                 Earn <span className="ml-1 text-2xl tracking-tighter">1-4%</span>
                             </div>
-                            <p className="text-[10px] font-black uppercase tracking-[0.2em] text-white/40 leading-relaxed text-left">back on game assets</p>
+                            <p className="text-[10px] font-black  tracking-[0.2em] text-white leading-relaxed text-left">back on game assets</p>
                         </div>
                         <div className="flex-1 bg-white/[0.02] border border-white/5 rounded-3xl p-6 group-hover:bg-white/[0.04] transition-colors">
-                            <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-4 py-2 rounded-xl text-lg font-black mb-4">
+                            <div className="inline-flex items-center gap-2 bg-primary/10 text-white px-4 py-2 rounded-xl text-lg font-black mb-4">
                                 Cover <span className="ml-1 text-2xl tracking-tighter">UP TO 6%</span>
                             </div>
-                            <p className="text-[10px] font-black uppercase tracking-[0.2em] text-white/40 leading-relaxed">on future asset orders</p>
+                            <p className="text-[10px] font-black  tracking-[0.2em] text-white leading-relaxed">on future asset orders</p>
                         </div>
                     </div>
                 </div>
@@ -143,18 +143,18 @@ const Cashback = () => {
             <div className="max-w-[1400px] mx-auto">
                 <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
                     <div>
-                        <h2 className="text-5xl md:text-[70px] font-black tracking-tighter uppercase leading-[0.9]">Cashback that <br/><span className="text-white/40">levels with you</span></h2>
+                        <h2 className="text-5xl md:text-[70px] font-black tracking-tighter  leading-[0.9]">Cashback that <br/><span className="text-white">levels with you</span></h2>
                     </div>
-                    <p className="text-white/40 font-bold max-w-sm">Watch your balance grow and automatically apply discounts to your next checkout.</p>
+                    <p className="text-white font-bold max-w-sm">Watch your balance grow and automatically apply discounts to your next checkout.</p>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                     {/* Balance Card */}
                     <div className="bg-[#0A0A0A] border border-white/5 rounded-[40px] p-10 hover:border-primary/20 transition-colors group">
-                        <p className="text-[10px] font-black uppercase tracking-[0.3em] text-white/40 mb-8">User balance</p>
-                        <p className="text-6xl font-black uppercase tracking-tighter mb-4">$125<span className="text-2xl text-white/20">.00</span></p>
-                        <div className="inline-flex items-center gap-2 bg-primary/10 border border-primary/20 text-primary px-4 py-2 rounded-xl text-xs font-black">
-                            +$0.74 <span className="text-primary/60 font-medium tracking-wide">cashback after purchase</span>
+                        <p className="text-[10px] font-black  tracking-[0.3em] text-white mb-8">User balance</p>
+                        <p className="text-6xl font-black  tracking-tighter mb-4">$125<span className="text-2xl text-white">.00</span></p>
+                        <div className="inline-flex items-center gap-2 bg-primary/10 border border-primary/20 text-white px-4 py-2 rounded-xl text-xs font-black">
+                            +$0.74 <span className="text-white/60 font-medium tracking-wide">cashback after purchase</span>
                         </div>
                     </div>
 
@@ -163,19 +163,19 @@ const Cashback = () => {
                         <div className="w-16 h-16 rounded-2xl bg-white/5 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
                             <Wallet className="w-8 h-8 text-primary" />
                         </div>
-                        <p className="text-[12px] font-black uppercase tracking-[0.2em] text-white/60">Track your balance in your personal dashboard</p>
+                        <p className="text-[12px] font-black  tracking-[0.2em] text-white">Track your balance in your personal dashboard</p>
                     </div>
 
                     {/* Toggle Card */}
                     <div className="bg-[#0A0A0A] border border-white/5 rounded-[40px] p-10 hover:border-primary/20 transition-colors group">
                         <div className="flex justify-between items-center mb-10">
-                            <p className="text-[10px] font-black uppercase tracking-[0.3em] text-white/40">Use cashback</p>
+                            <p className="text-[10px] font-black  tracking-[0.3em] text-white">Use cashback</p>
                             <div className="w-14 h-7 bg-primary rounded-full relative p-1 cursor-pointer">
                                 <div className="absolute right-1 top-1 w-5 h-5 bg-black rounded-full shadow-md"></div>
                             </div>
                         </div>
-                        <p className="text-white/40 text-sm font-bold mb-4 uppercase">Discount: <span className="text-primary">-$15.23</span></p>
-                        <button className="w-full bg-primary text-black py-5 rounded-2xl font-black uppercase tracking-[0.2em] text-xs flex items-center justify-center gap-3 hover:scale-[1.02] transition-transform">
+                        <p className="text-white text-sm font-bold mb-4 ">Discount: <span className="text-white">-$15.23</span></p>
+                        <button className="w-full bg-primary text-black py-5 rounded-2xl font-black  tracking-[0.2em] text-xs flex items-center justify-center gap-3 hover:scale-[1.02] transition-transform">
                             Apply to Cart
                         </button>
                     </div>
@@ -189,11 +189,11 @@ const Cashback = () => {
                 <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/5 blur-[120px] rounded-full pointer-events-none"></div>
                 <div className="flex flex-col lg:flex-row gap-16 items-center">
                     <div className="max-w-md relative z-10">
-                        <p className="text-[10px] font-black uppercase tracking-[0.3em] text-primary mb-6">Progression System</p>
-                        <h2 className="text-5xl md:text-[70px] font-black tracking-tighter leading-[0.9] mb-8 uppercase">
-                            Boost more. <br /> <span className="text-white/40">Earn more.</span>
+                        <p className="text-[10px] font-black  tracking-[0.3em] text-white mb-6">Progression System</p>
+                        <h2 className="text-5xl md:text-[70px] font-black tracking-tighter leading-[0.9] mb-8 ">
+                            Boost more. <br /> <span className="text-white">Earn more.</span>
                         </h2>
-                        <p className="text-white/40 font-medium text-lg mb-10 leading-relaxed">
+                        <p className="text-white font-medium text-lg mb-10 leading-relaxed">
                             Unlock higher cashback rates as your total spending grows. Use your cashback freely across all BoostGG services.
                         </p>
 
@@ -201,15 +201,15 @@ const Cashback = () => {
                             <div className="flex items-center gap-4 p-4 rounded-2xl bg-white/5 border border-white/5">
                                 <div className="w-4 h-4 rounded-full bg-primary shadow-[0_0_15px_rgba(162,230,62,0.6)]"></div>
                                 <div>
-                                    <p className="text-sm font-black uppercase tracking-widest text-white">Boosting services</p>
-                                    <p className="text-[10px] font-black uppercase tracking-widest text-white/40">Up to 20% back</p>
+                                    <p className="text-sm font-black  tracking-widest text-white">Boosting services</p>
+                                    <p className="text-[10px] font-black  tracking-widest text-white">Up to 20% back</p>
                                 </div>
                             </div>
                             <div className="flex items-center gap-4 p-4 rounded-2xl bg-white/5 border border-white/5">
                                 <div className="w-4 h-4 rounded-full bg-primary/40 shadow-[0_0_15px_rgba(162,230,62,0.2)]"></div>
                                 <div>
-                                    <p className="text-sm font-black uppercase tracking-widest text-white">Game assets</p>
-                                    <p className="text-[10px] font-black uppercase tracking-widest text-white/40">Up to 4% back</p>
+                                    <p className="text-sm font-black  tracking-widest text-white">Game assets</p>
+                                    <p className="text-[10px] font-black  tracking-widest text-white">Up to 4% back</p>
                                 </div>
                             </div>
                         </div>
@@ -235,7 +235,7 @@ const Cashback = () => {
                                         <span className="text-[9px] text-white font-black -rotate-90 md:rotate-0 tracking-tighter mt-2">{tier.curr}</span>
                                     </div>
                                 </div>
-                                <p className="mt-6 text-[10px] font-black text-white/40 tracking-widest group-hover/bar:text-white transition-colors">{tier.spend}</p>
+                                <p className="mt-6 text-[10px] font-black text-white tracking-widest group-hover/bar:text-white transition-colors">{tier.spend}</p>
                             </div>
                         ))}
                     </div>
@@ -246,11 +246,11 @@ const Cashback = () => {
         {/* 5. Community Earnings Display */}
         <section className="py-32 px-6 relative z-10 border-y border-white/5 bg-black/50">
             <div className="max-w-[1400px] mx-auto text-center">
-                <p className="text-primary font-black text-[10px] uppercase tracking-[0.4em] mb-8">
+                <p className="text-white font-black text-[10px]  tracking-[0.4em] mb-8">
                     Join thousands of gamers
                 </p>
 
-                <h2 className="text-[60px] md:text-[120px] font-black uppercase leading-[0.85] mb-16 tracking-tighter text-transparent bg-clip-text bg-gradient-to-b from-white to-white/20">
+                <h2 className="text-[60px] md:text-[120px] font-black  leading-[0.85] mb-16 tracking-tighter text-transparent bg-clip-text bg-gradient-to-b from-white to-white/20">
                     Community <br /> Earnings
                 </h2>
 
@@ -268,7 +268,7 @@ const Cashback = () => {
                     ))}
                 </div>
 
-                <button className="bg-primary text-black px-12 py-6 rounded-2xl font-black uppercase tracking-[0.2em] text-[13px] hover:scale-[1.02] transition-transform flex items-center gap-4 mx-auto shadow-[0_0_30px_rgba(162,230,62,0.3)]">
+                <button className="bg-primary text-black px-12 py-6 rounded-2xl font-black  tracking-[0.2em] text-[13px] hover:scale-[1.02] transition-transform flex items-center gap-4 mx-auto shadow-[0_0_30px_rgba(162,230,62,0.3)]">
                     Create Account Now
                     <ArrowUpRight className="w-5 h-5 stroke-[3px]" />
                 </button>
@@ -280,8 +280,8 @@ const Cashback = () => {
             <div className="max-w-[1400px] mx-auto">
                 <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
                     <div>
-                        <h2 className="text-5xl md:text-[70px] font-black text-white leading-[0.9] tracking-tighter uppercase">
-                            Spend smarter. <br/><span className="text-white/40">Boost bigger.</span>
+                        <h2 className="text-5xl md:text-[70px] font-black text-white leading-[0.9] tracking-tighter ">
+                            Spend smarter. <br/><span className="text-white">Boost bigger.</span>
                         </h2>
                     </div>
                 </div>
@@ -292,8 +292,8 @@ const Cashback = () => {
                         <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center mb-10 group-hover:scale-110 transition-transform">
                             <ShoppingCart className="w-8 h-8 text-primary" />
                         </div>
-                        <h4 className="text-2xl font-black text-white mb-4 uppercase tracking-tighter">Reduce prices</h4>
-                        <p className="text-white/40 font-medium leading-relaxed text-sm">
+                        <h4 className="text-2xl font-black text-white mb-4  tracking-tighter">Reduce prices</h4>
+                        <p className="text-white font-medium leading-relaxed text-sm">
                             Apply your cashback instantly at checkout to cut down the cost of any new purchase seamlessly.
                         </p>
                     </div>
@@ -303,8 +303,8 @@ const Cashback = () => {
                         <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center mb-10 group-hover:scale-110 transition-transform">
                             <TrendingUp className="w-8 h-8 text-primary" />
                         </div>
-                        <h4 className="text-2xl font-black text-white mb-4 uppercase tracking-tighter">Save for later</h4>
-                        <p className="text-white/40 font-medium leading-relaxed text-sm">
+                        <h4 className="text-2xl font-black text-white mb-4  tracking-tighter">Save for later</h4>
+                        <p className="text-white font-medium leading-relaxed text-sm">
                             Let your cashback accumulate over time in your wallet and use it later for massive discounts.
                         </p>
                     </div>
@@ -314,8 +314,8 @@ const Cashback = () => {
                         <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center mb-10 group-hover:scale-110 transition-transform">
                             <CheckCircle2 className="w-8 h-8 text-primary" />
                         </div>
-                        <h4 className="text-2xl font-black text-white mb-4 uppercase tracking-tighter">No restrictions</h4>
-                        <p className="text-white/40 font-medium leading-relaxed text-sm">
+                        <h4 className="text-2xl font-black text-white mb-4  tracking-tighter">No restrictions</h4>
+                        <p className="text-white font-medium leading-relaxed text-sm">
                             There are no limits — spend your cashback however you like across the entire BoostGG platform.
                         </p>
                     </div>
@@ -332,14 +332,14 @@ const Cashback = () => {
                 <div className="relative z-10 p-10 md:p-20 flex flex-col lg:flex-row items-center justify-between gap-16">
                     {/* Left Content */}
                     <div className="max-w-xl text-center lg:text-left">
-                        <p className="text-primary font-black text-[10px] uppercase tracking-[0.3em] mb-6">Affiliate Network</p>
-                        <h2 className="text-5xl md:text-[80px] font-black text-white leading-[0.8] mb-8 tracking-tighter uppercase">
-                            Invite & <br /> <span className="text-white/40">Earn $20</span>
+                        <p className="text-white font-black text-[10px]  tracking-[0.3em] mb-6">Affiliate Network</p>
+                        <h2 className="text-5xl md:text-[80px] font-black text-white leading-[0.8] mb-8 tracking-tighter ">
+                            Invite & <br /> <span className="text-white">Earn $20</span>
                         </h2>
-                        <p className="text-white/60 font-medium text-lg mb-10 leading-relaxed">
+                        <p className="text-white font-medium text-lg mb-10 leading-relaxed">
                             Share your unique link with friends. When they register and place their first order, you'll instantly receive $20 in your wallet.
                         </p>
-                        <button className="bg-primary text-black px-10 py-5 rounded-2xl font-black text-[13px] uppercase tracking-[0.2em] hover:scale-105 transition-all shadow-[0_0_30px_rgba(162,230,62,0.2)] flex items-center justify-center gap-3 w-full sm:w-auto">
+                        <button className="bg-primary text-black px-10 py-5 rounded-2xl font-black text-[13px]  tracking-[0.2em] hover:scale-105 transition-all shadow-[0_0_30px_rgba(162,230,62,0.2)] flex items-center justify-center gap-3 w-full sm:w-auto">
                             Get Your Link
                             <ArrowUpRight className="w-5 h-5 stroke-[3px]" />
                         </button>
@@ -364,7 +364,7 @@ const Cashback = () => {
                                     animation: `float ${4 + i}s infinite ease-in-out`
                                 }}
                             >
-                                <span className="text-primary font-black text-lg">+$20</span>
+                                <span className="text-white font-black text-lg">+$20</span>
                             </div>
                         ))}
                     </div>
@@ -395,3 +395,4 @@ const Cashback = () => {
 };
 
 export default Cashback;
+

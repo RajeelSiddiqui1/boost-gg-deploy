@@ -90,13 +90,13 @@ const ProSettings = () => {
  {/* Header */}
  <div className="flex items-center justify-between">
  <div>
- <h1 className="text-4xl font-black uppercase tracking-tighter text-white">Public Profile</h1>
- <p className="text-white/40 text-[10px] font-black uppercase tracking-widest mt-1">Customize how clients see you on the marketplace</p>
+ <h1 className="text-4xl font-black  tracking-tighter text-white">Public Profile</h1>
+ <p className="text-white text-[10px] font-black  tracking-widest mt-1">Customize how clients see you on the marketplace</p>
  </div>
  <button
  onClick={handleSave}
  disabled={saveLoading}
- className="px-8 py-4 bg-primary text-black rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-white transition-all flex items-center gap-2 shadow-xl shadow-primary/20 disabled:opacity-50"
+ className="px-8 py-4 bg-primary text-black rounded-2xl font-black text-xs  tracking-widest hover:bg-white transition-all flex items-center gap-2 shadow-xl shadow-primary/20 disabled:opacity-50"
  >
  {saveLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
  Save Changes
@@ -112,12 +112,12 @@ const ProSettings = () => {
  <div className="p-3 bg-primary/10 rounded-xl">
  <FileText className="w-5 h-5 text-primary" />
  </div>
- <h3 className="text-lg font-black uppercase tracking-tight">Biography & Tagline</h3>
+ <h3 className="text-lg font-black  tracking-tight">Biography & Tagline</h3>
  </div>
 
  <div className="space-y-6">
  <div className="space-y-2">
- <label className="text-[10px] font-black uppercase text-white/30 ml-4">Catchy Tagline</label>
+ <label className="text-[10px] font-black  text-white ml-4">Catchy Tagline</label>
  <input
  type="text"
  placeholder="e.g. #1 Rank Global Booster | Content Guru"
@@ -127,7 +127,7 @@ const ProSettings = () => {
  />
  </div>
  <div className="space-y-2">
- <label className="text-[10px] font-black uppercase text-white/30 ml-4">Full Bio</label>
+ <label className="text-[10px] font-black  text-white ml-4">Full Bio</label>
  <textarea
  rows="6"
  placeholder="Describe your professional career, achievements, and why clients should choose you..."
@@ -145,15 +145,15 @@ const ProSettings = () => {
  <div className="p-3 bg-blue-500/10 rounded-xl">
  <Share2 className="w-5 h-5 text-blue-500" />
  </div>
- <h3 className="text-lg font-black uppercase tracking-tight">Social Presence</h3>
+ <h3 className="text-lg font-black  tracking-tight">Social Presence</h3>
  </div>
 
  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
  {Object.entries(profile.socialLinks).map(([platform, value]) => (
  <div key={platform} className="space-y-2">
- <label className="text-[10px] font-black uppercase text-white/30 ml-4">{platform}</label>
+ <label className="text-[10px] font-black  text-white ml-4">{platform}</label>
  <div className="relative group">
- <div className="absolute left-6 top-1/2 -translate-y-1/2 text-white/20 group-focus-within:text-primary transition-colors">
+ <div className="absolute left-6 top-1/2 -translate-y-1/2 text-white/20 group-focus-within:text-white transition-colors">
  {platform === 'youtube' && <Youtube className="w-4 h-4" />}
  {platform === 'twitter' && <Twitter className="w-4 h-4" />}
  {platform === 'instagram' && <Instagram className="w-4 h-4" />}
@@ -185,7 +185,7 @@ const ProSettings = () => {
  <div className="p-3 bg-purple-500/10 rounded-xl">
  <Award className="w-5 h-5 text-purple-500" />
  </div>
- <h3 className="text-lg font-black uppercase tracking-tight">Portfolio & Evidence</h3>
+ <h3 className="text-lg font-black  tracking-tight">Portfolio & Evidence</h3>
  </div>
  <button onClick={addPortfolioItem} className="p-3 bg-white/5 hover:bg-white/10 rounded-xl transition-all">
  <Plus className="w-5 h-5" />
@@ -203,7 +203,7 @@ const ProSettings = () => {
  </button>
  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
  <div className="space-y-2">
- <label className="text-[8px] font-black uppercase text-white/20 ml-2">Title</label>
+ <label className="text-[8px] font-black  text-white ml-2">Title</label>
  <input
  type="text"
  value={item.title}
@@ -212,7 +212,7 @@ const ProSettings = () => {
  />
  </div>
  <div className="space-y-2">
- <label className="text-[8px] font-black uppercase text-white/20 ml-2">URL</label>
+ <label className="text-[8px] font-black  text-white ml-2">URL</label>
  <input
  type="text"
  value={item.url}
@@ -221,7 +221,7 @@ const ProSettings = () => {
  />
  </div>
  <div className="space-y-2">
- <label className="text-[8px] font-black uppercase text-white/20 ml-2">Type</label>
+ <label className="text-[8px] font-black  text-white ml-2">Type</label>
  <select
  value={item.type}
  onChange={(e) => updatePortfolioItem(index, 'type', e.target.value)}
@@ -238,7 +238,7 @@ const ProSettings = () => {
  ))}
  {profile.portfolio.length === 0 && (
  <div className="py-20 text-center border-2 border-dashed border-white/5 rounded-3xl">
- <p className="text-[10px] font-black uppercase tracking-widest text-white/20">No items added yet. Showcase your best work!</p>
+ <p className="text-[10px] font-black  tracking-widest text-white">No items added yet. Showcase your best work!</p>
  </div>
  )}
  </div>
@@ -253,33 +253,33 @@ const ProSettings = () => {
  {user?.avatar ? <img src={user.avatar} className="w-full h-full object-cover" /> : <User className="w-8 h-8 text-primary" />}
  </div>
  <div>
- <h4 className="text-xl font-black uppercase tracking-tighter">{user?.name}</h4>
- <span className="text-[9px] font-black uppercase tracking-widest bg-primary/20 text-primary px-3 py-1 rounded-full border border-primary/20">
+ <h4 className="text-xl font-black  tracking-tighter">{user?.name}</h4>
+ <span className="text-[9px] font-black  tracking-widest bg-primary/20 text-white px-3 py-1 rounded-full border border-primary/20">
  {user?.proType?.replace('_', ' ')}
  </span>
  </div>
  </div>
  <div className="h-px bg-primary/10 w-full"></div>
  <div className="space-y-4">
- <div className="flex justify-between items-center text-[10px] font-black uppercase tracking-widest text-white/40">
+ <div className="flex justify-between items-center text-[10px] font-black  tracking-widest text-white">
  <span>Profile Reliability</span>
- <span className="text-primary">High</span>
+ <span className="text-white">High</span>
  </div>
  <div className="w-full bg-white/5 h-1.5 rounded-full overflow-hidden">
  <div className="bg-primary h-full w-[85%]"></div>
  </div>
  </div>
- <p className="text-[10px] text-white/30 font-bold leading-relaxed uppercase tracking-wider">
+ <p className="text-[10px] text-white font-bold leading-relaxed  tracking-wider">
  A complete profile increases your chances of getting high-value orders and assignments by <span className="text-white">40%</span>.
  </p>
  </div>
 
  {/* Specialties */}
  <div className="bg-[#0A0A0A] border border-white/5 rounded-[40px] p-8 space-y-4">
- <h4 className="text-xs font-black uppercase tracking-[0.2em] text-white/40">My Specialties</h4>
+ <h4 className="text-xs font-black  tracking-[0.2em] text-white">My Specialties</h4>
  <div className="flex flex-wrap gap-2">
  {profile.specialties.map((s, i) => (
- <span key={i} className="px-4 py-2 bg-white/5 rounded-xl text-[9px] font-black uppercase tracking-widest flex items-center gap-2">
+ <span key={i} className="px-4 py-2 bg-white/5 rounded-xl text-[9px] font-black  tracking-widest flex items-center gap-2">
  {s} <button onClick={() => setProfile({ ...profile, specialties: profile.specialties.filter((_, idx) => idx !== i) })}><Trash2 className="w-3 h-3 text-red-400" /></button>
  </span>
  ))}
@@ -288,7 +288,7 @@ const ProSettings = () => {
  const s = prompt('Enter specialty:');
  if (s) setProfile({ ...profile, specialties: [...profile.specialties, s] });
  }}
- className="px-4 py-2 bg-primary/10 border border-primary/20 rounded-xl text-[9px] font-black uppercase text-primary tracking-widest"
+ className="px-4 py-2 bg-primary/10 border border-primary/20 rounded-xl text-[9px] font-black  text-primary tracking-widest"
  >
  + Add
  </button>
@@ -302,3 +302,4 @@ const ProSettings = () => {
 };
 
 export default ProSettings;
+

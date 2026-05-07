@@ -110,13 +110,13 @@ const OfferForm = ({ offer, games, onClose }) => {
  <div className="p-8 border-b border-white/5 flex items-center justify-between shrink-0">
  <div className="flex items-center gap-4">
  <div className="w-12 h-12 bg-primary/20 rounded-2xl flex items-center justify-center border border-primary/30">
- <Plus className="w-6 h-6 text-primary" />
+ <Plus className="w-6 h-6 text-white" />
  </div>
  <div>
- <h2 className="text-xl font-black uppercase tracking-tighter text-white">
+ <h2 className="text-xl font-black  tracking-tighter text-white">
  {isEdit ? 'Update Service' : 'Create New Service'}
  </h2>
- <p className="text-[10px] font-bold text-white/40 uppercase tracking-widest">
+ <p className="text-[10px] font-bold text-white  tracking-widest">
  {isEdit ? `Editing: ${offer.title}` : 'Fill in the service details below'}
  </p>
  </div>
@@ -129,7 +129,7 @@ const OfferForm = ({ offer, games, onClose }) => {
  {/* Form Body */}
  <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto p-10 space-y-12">
  {error && (
- <div className="p-4 bg-red-500/10 border border-red-500/20 rounded-2xl text-red-500 text-xs font-bold uppercase tracking-widest text-center">
+ <div className="p-4 bg-red-500/10 border border-red-500/20 rounded-2xl text-white text-xs font-bold  tracking-widest text-center">
  {error}
  </div>
  )}
@@ -138,11 +138,11 @@ const OfferForm = ({ offer, games, onClose }) => {
  <div className="space-y-8">
  <div className="flex items-center gap-3">
  <Layout className="w-4 h-4 text-primary" />
- <h3 className="text-sm font-black uppercase tracking-widest text-white/60">Basic Information</h3>
+ <h3 className="text-sm font-black  tracking-widest text-white">Basic Information</h3>
  </div>
  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
  <div className="space-y-2">
- <label className="text-[10px] font-black uppercase tracking-[0.2em] text-white/30 ml-2">Service Title</label>
+ <label className="text-[10px] font-black  tracking-[0.2em] text-white ml-2">Service Title</label>
  <input
  required
  value={formData.title}
@@ -152,7 +152,7 @@ const OfferForm = ({ offer, games, onClose }) => {
  />
  </div>
  <div className="space-y-2">
- <label className="text-[10px] font-black uppercase tracking-[0.2em] text-white/30 ml-2">Game Category</label>
+ <label className="text-[10px] font-black  tracking-[0.2em] text-white ml-2">Game Category</label>
  <select
  value={formData.game}
  onChange={(e) => setFormData({ ...formData, game: e.target.value })}
@@ -174,8 +174,8 @@ const OfferForm = ({ offer, games, onClose }) => {
  <div className="w-11 h-6 bg-white/5 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white/20 after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-orange-500/50 peer-checked:after:bg-orange-500"></div>
  </div>
  <div className="flex flex-col">
- <span className="text-white/40 text-[10px] font-black uppercase tracking-widest group-hover:text-white transition-colors">Hot right now</span>
- <span className="text-[9px] font-bold text-white/20 uppercase">Featured in the Home Page "Hot" section</span>
+ <span className="text-white text-[10px] font-black  tracking-widest group-hover:text-white transition-colors">Hot right now</span>
+ <span className="text-[9px] font-bold text-white ">Featured in the Home Page "Hot" section</span>
  </div>
  </label>
  </div>
@@ -185,11 +185,11 @@ const OfferForm = ({ offer, games, onClose }) => {
  <div className="space-y-8">
  <div className="flex items-center gap-3">
  <DollarSign className="w-4 h-4 text-green-500" />
- <h3 className="text-sm font-black uppercase tracking-widest text-white/60">Pricing & Display</h3>
+ <h3 className="text-sm font-black  tracking-widest text-white">Pricing & Display</h3>
  </div>
  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
  <div className="space-y-2">
- <label className="text-[10px] font-black uppercase tracking-[0.2em] text-white/30 ml-2">Base Price (USD)</label>
+ <label className="text-[10px] font-black  tracking-[0.2em] text-white ml-2">Base Price (USD)</label>
  <input
  type="number"
  required
@@ -199,7 +199,7 @@ const OfferForm = ({ offer, games, onClose }) => {
  />
  </div>
  <div className="space-y-2">
- <label className="text-[10px] font-black uppercase tracking-[0.2em] text-white/30 ml-2">Old Price (Optional)</label>
+ <label className="text-[10px] font-black  tracking-[0.2em] text-white ml-2">Old Price (Optional)</label>
  <input
  type="number"
  value={formData.oldPrice}
@@ -208,7 +208,7 @@ const OfferForm = ({ offer, games, onClose }) => {
  />
  </div>
  <div className="space-y-2">
- <label className="text-[10px] font-black uppercase tracking-[0.2em] text-white/30 ml-2">Image URL</label>
+ <label className="text-[10px] font-black  tracking-[0.2em] text-white ml-2">Image URL</label>
  <div className="relative">
  <ImageIcon className="absolute left-6 top-1/2 -translate-y-1/2 w-4 h-4 text-white/20" />
  <input
@@ -228,12 +228,12 @@ const OfferForm = ({ offer, games, onClose }) => {
  <div className="flex items-center justify-between">
  <div className="flex items-center gap-3">
  <Calculator className="w-5 h-5 text-primary" />
- <h3 className="text-sm font-black uppercase tracking-widest text-white/60">Dynamic Calculator</h3>
+ <h3 className="text-sm font-black  tracking-widest text-white">Dynamic Calculator</h3>
  </div>
  <select
  value={formData.calculatorType}
  onChange={(e) => setFormData({ ...formData, calculatorType: e.target.value })}
- className="bg-[#0A0A0A] border border-white/10 rounded-xl px-4 py-2 text-[10px] font-black uppercase tracking-widest text-primary outline-none"
+ className="bg-[#0A0A0A] border border-white/10 rounded-xl px-4 py-2 text-[10px] font-black  tracking-widest text-primary outline-none"
  >
  <option value="none">Disabled</option>
  <option value="slider">Price Slider</option>
@@ -244,7 +244,7 @@ const OfferForm = ({ offer, games, onClose }) => {
  {formData.calculatorType !== 'none' && (
  <div className="grid grid-cols-1 md:grid-cols-4 gap-6 animate-in fade-in duration-500">
  <div className="space-y-2">
- <label className="text-[10px] font-black uppercase text-white/30 ml-2">Min Value</label>
+ <label className="text-[10px] font-black  text-white ml-2">Min Value</label>
  <input
  type="number"
  value={formData.calculatorSettings.min}
@@ -253,7 +253,7 @@ const OfferForm = ({ offer, games, onClose }) => {
  />
  </div>
  <div className="space-y-2">
- <label className="text-[10px] font-black uppercase text-white/30 ml-2">Max Value</label>
+ <label className="text-[10px] font-black  text-white ml-2">Max Value</label>
  <input
  type="number"
  value={formData.calculatorSettings.max}
@@ -262,7 +262,7 @@ const OfferForm = ({ offer, games, onClose }) => {
  />
  </div>
  <div className="space-y-2">
- <label className="text-[10px] font-black uppercase text-white/30 ml-2">Price Per Unit</label>
+ <label className="text-[10px] font-black  text-white ml-2">Price Per Unit</label>
  <input
  type="number"
  value={formData.calculatorSettings.basePrice}
@@ -271,7 +271,7 @@ const OfferForm = ({ offer, games, onClose }) => {
  />
  </div>
  <div className="space-y-2">
- <label className="text-[10px] font-black uppercase text-white/30 ml-2">Unit Name</label>
+ <label className="text-[10px] font-black  text-white ml-2">Unit Name</label>
  <input
  value={formData.calculatorSettings.unitName}
  onChange={(e) => setFormData({ ...formData, calculatorSettings: { ...formData.calculatorSettings, unitName: e.target.value } })}
@@ -287,7 +287,7 @@ const OfferForm = ({ offer, games, onClose }) => {
  <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
  <div className="space-y-6">
  <div className="flex items-center justify-between">
- <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-white/30">Service Features</h3>
+ <h3 className="text-[10px] font-black  tracking-[0.2em] text-white">Service Features</h3>
  <button type="button" onClick={() => addListField('features')} className="text-primary hover:text-white transition-colors"><Plus className="w-4 h-4" /></button>
  </div>
  <div className="space-y-3">
@@ -306,7 +306,7 @@ const OfferForm = ({ offer, games, onClose }) => {
  </div>
  <div className="space-y-6">
  <div className="flex items-center justify-between">
- <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-white/30">Requirements</h3>
+ <h3 className="text-[10px] font-black  tracking-[0.2em] text-white">Requirements</h3>
  <button type="button" onClick={() => addListField('requirements')} className="text-primary hover:text-white transition-colors"><Plus className="w-4 h-4" /></button>
  </div>
  <div className="space-y-3">
@@ -331,14 +331,14 @@ const OfferForm = ({ offer, games, onClose }) => {
  <button
  type="button"
  onClick={onClose}
- className="px-8 py-4 bg-white/5 hover:bg-white/10 rounded-2xl font-black uppercase tracking-widest text-xs transition-all"
+ className="px-8 py-4 bg-white/5 hover:bg-white/10 rounded-2xl font-black  tracking-widest text-xs transition-all"
  >
  Discard
  </button>
  <button
  onClick={handleSubmit}
  disabled={loading}
- className="px-10 py-4 bg-primary hover:bg-primary/90 text-white rounded-2xl font-black uppercase tracking-widest text-xs transition-all flex items-center gap-2 shadow-lg shadow-primary/20 disabled:opacity-50"
+ className="px-10 py-4 bg-primary hover:bg-primary/90 text-white rounded-2xl font-black  tracking-widest text-xs transition-all flex items-center gap-2 shadow-lg shadow-primary/20 disabled:opacity-50"
  >
  {loading && <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>}
  <Save className="w-4 h-4" />
@@ -351,3 +351,4 @@ const OfferForm = ({ offer, games, onClose }) => {
 };
 
 export default OfferForm;
+

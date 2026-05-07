@@ -116,17 +116,17 @@ const AdminAccounts = () => {
  <AdminLayout>
  <div className="space-y-8 relative">
  {notification && (
- <div className={`fixed top-10 right-10 z-[9999] flex items-center gap-3 px-6 py-4 rounded-2xl border shadow-2xl animate-fade-in ${notification.type === 'success' ? 'bg-green-500/10 border-green-500/20 text-green-500' : 'bg-red-500/10 border-red-500/20 text-red-500'
+ <div className={`fixed top-10 right-10 z-[9999] flex items-center gap-3 px-6 py-4 rounded-2xl border shadow-2xl animate-fade-in ${notification.type === 'success' ? 'bg-green-500/10 border-green-500/20 text-green-500' : 'bg-red-500/10 border-red-500/20 text-white'
  }`}>
  {notification.type === 'success' ? <CheckCircle2 className="w-5 h-5" /> : <AlertCircle className="w-5 h-5" />}
- <span className="text-xs font-black uppercase tracking-widest">{notification.message}</span>
+ <span className="text-xs font-black  tracking-widest">{notification.message}</span>
  </div>
  )}
 
  <div className="flex flex-col md:flex-row items-center justify-between gap-4">
  <div>
- <h1 className="text-2xl font-black text-white uppercase tracking-tighter text-sky-primary">Accounts Management</h1>
- <p className="text-white/40 text-xs font-bold uppercase tracking-widest leading-relaxed">Manage game account listings</p>
+ <h1 className="text-2xl font-black text-white  tracking-tighter text-sky-primary">Accounts Management</h1>
+ <p className="text-white text-xs font-bold  tracking-widest leading-relaxed">Manage game account listings</p>
  </div>
  <div className="flex items-center gap-4 w-full md:w-auto">
  <div className="relative flex-1 md:w-64">
@@ -141,7 +141,7 @@ const AdminAccounts = () => {
  </div>
  <button
  onClick={() => { setEditingListing(null); setShowForm(true); }}
- className="flex items-center gap-2 px-6 py-3 bg-primary hover:bg-[#722AEE] text-white rounded-xl font-black uppercase tracking-tighter text-xs transition-all shadow-lg shadow-primary/20 flex-shrink-0"
+ className="flex items-center gap-2 px-6 py-3 bg-primary hover:bg-[#722AEE] text-white rounded-xl font-black  tracking-tighter text-xs transition-all shadow-lg shadow-primary/20 flex-shrink-0"
  >
  <Plus className="w-4 h-4" />
  Add New
@@ -170,25 +170,25 @@ const AdminAccounts = () => {
  <Camera className="w-10 h-10 text-white/10" />
  </div>
  )}
- <div className="absolute top-4 left-4 px-3 py-1 bg-black/60 backdrop-blur-md rounded-lg text-[9px] font-black text-white uppercase tracking-widest border border-white/10">
+ <div className="absolute top-4 left-4 px-3 py-1 bg-black/60 backdrop-blur-md rounded-lg text-[9px] font-black text-white  tracking-widest border border-white/10">
  {item.gameId?.title || 'Game'}
  </div>
  </div>
  <div className="p-6 space-y-4">
  <div className="space-y-1">
- <h3 className="text-sm font-black text-white uppercase tracking-tight line-clamp-1">{item.title}</h3>
- <p className="text-[10px] text-white/30 uppercase font-bold tracking-widest">{item.rank} • {item.region}</p>
+ <h3 className="text-sm font-black text-white  tracking-tight line-clamp-1">{item.title}</h3>
+ <p className="text-[10px] text-white  font-bold tracking-widest">{item.rank} • {item.region}</p>
  </div>
  <div className="flex items-center justify-between">
- <div className="text-xl font-black text-primary">${item.price}</div>
+ <div className="text-xl font-black text-white">${item.price}</div>
  <div className="flex gap-1">
  <button onClick={() => handleEdit(item)} className="p-2 bg-white/5 hover:bg-white/10 rounded-xl text-white/30 hover:text-white transition-all"><Edit2 className="w-4 h-4" /></button>
  <button onClick={() => handleDelete(item._id)} className="p-2 bg-white/5 hover:bg-red-500/10 rounded-xl text-white/30 hover:text-red-500 transition-all"><Trash2 className="w-4 h-4" /></button>
  </div>
  </div>
  <div className="flex gap-2 pt-2">
- {item.instantDelivery && <span className="p-1.5 bg-green-500/10 rounded-lg text-green-500" title="Instant Delivery"><Zap className="w-3.5 h-3.5" /></span>}
- {item.secureTransfer && <span className="p-1.5 bg-blue-500/10 rounded-lg text-blue-500" title="Secure Transfer"><Shield className="w-3.5 h-3.5" /></span>}
+ {item.instantDelivery && <span className="p-1.5 bg-green-500/10 rounded-lg text-white" title="Instant Delivery"><Zap className="w-3.5 h-3.5" /></span>}
+ {item.secureTransfer && <span className="p-1.5 bg-blue-500/10 rounded-lg text-white" title="Secure Transfer"><Shield className="w-3.5 h-3.5" /></span>}
  </div>
  </div>
  </div>
@@ -200,7 +200,7 @@ const AdminAccounts = () => {
  <button
  onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
  disabled={currentPage === 1}
- className={`px-4 py-2 rounded-xl text-xs font-black uppercase transition-all ${currentPage === 1 ? 'bg-white/5 text-white/10' : 'bg-white/5 text-white hover:bg-primary hover:text-black'}`}
+ className={`px-4 py-2 rounded-xl text-xs font-black  transition-all ${currentPage === 1 ? 'bg-white/5 text-white/10' : 'bg-white/5 text-white hover:bg-primary hover:text-black'}`}
  >
  Prev
  </button>
@@ -218,7 +218,7 @@ const AdminAccounts = () => {
  <button
  onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
  disabled={currentPage === totalPages}
- className={`px-4 py-2 rounded-xl text-xs font-black uppercase transition-all ${currentPage === totalPages ? 'bg-white/5 text-white/10' : 'bg-white/5 text-white hover:bg-primary hover:text-black'}`}
+ className={`px-4 py-2 rounded-xl text-xs font-black  transition-all ${currentPage === totalPages ? 'bg-white/5 text-white/10' : 'bg-white/5 text-white hover:bg-primary hover:text-black'}`}
  >
  Next
  </button>
@@ -231,3 +231,4 @@ const AdminAccounts = () => {
 };
 
 export default AdminAccounts;
+

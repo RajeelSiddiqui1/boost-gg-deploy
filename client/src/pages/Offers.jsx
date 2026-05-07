@@ -44,12 +44,12 @@ const Offers = () => {
  <h3 className="text-2xl font-black mb-4 text-white">
  {offer.title}
  </h3>
- <p className="font-bold mb-8 text-white/60">
+ <p className="font-bold mb-8 text-white">
  {offer.description || 'Exclusive boost offer for our community.'}
  </p>
  <div className="flex items-center justify-between">
- <span className="text-primary text-2xl font-black">{formatPrice(offer.price || 49.99)}</span>
- <button className="bg-primary text-white px-8 py-3 rounded-2xl font-black uppercase text-sm tracking-widest hover:scale-105 transition-all">
+ <span className="text-white text-2xl font-black">{formatPrice(offer.price || 49.99)}</span>
+ <button className="bg-primary text-white px-8 py-3 rounded-2xl font-black  text-sm tracking-normal hover:scale-105 transition-all">
  View Detail
  </button>
  </div>
@@ -62,3 +62,4 @@ const Offers = () => {
 };
 
 export default Offers;
+

@@ -60,13 +60,13 @@ const RelatedAccountCard = ({ account }) => {
           />
         ) : (
           <div className="w-full h-full bg-gradient-to-br from-primary/10 to-transparent flex items-center justify-center">
-            <Users className="w-10 h-10 text-white/10" />
+            <Users className="w-10 h-10 text-white" />
           </div>
         )}
         <div className="absolute inset-0 bg-gradient-to-t from-[#0d0d0d] via-transparent to-transparent opacity-60"></div>
         <div className="absolute top-4 left-4">
           {account.instantDelivery && (
-            <div className="px-3 py-1 bg-primary text-black text-[9px] font-black uppercase tracking-widest rounded-full shadow-xl flex items-center gap-1.5">
+            <div className="px-3 py-1 bg-primary text-black text-[9px] font-black  tracking-normal rounded-full shadow-xl flex items-center gap-1.5">
               <Zap className="w-2.5 h-2.5 fill-current" />
               Instant
             </div>
@@ -76,21 +76,21 @@ const RelatedAccountCard = ({ account }) => {
 
       <div className="p-5 flex flex-col flex-grow">
         <div className="flex items-center gap-2 mb-2">
-          <span className="text-[9px] font-black text-primary uppercase tracking-widest">{account.region}</span>
+          <span className="text-[9px] font-black text-white  tracking-normal">{account.region}</span>
           <span className="w-1 h-1 bg-white/20 rounded-full"></span>
-          <span className="text-[9px] font-black text-white/40 uppercase tracking-widest">{account.server}</span>
+          <span className="text-[9px] font-black text-white  tracking-normal">{account.server}</span>
         </div>
-        <h3 className="text-sm font-black text-white uppercase tracking-tight mb-4 group-hover:text-primary transition-colors line-clamp-2 leading-tight h-8">
+        <h3 className="text-sm font-black text-white  tracking-tight mb-4 group-hover:text-white transition-colors line-clamp-2 leading-tight h-8">
           {account.title}
         </h3>
         <div className="grid grid-cols-2 gap-2 mb-4">
           <div className="bg-white/[0.03] border border-white/[0.05] rounded-xl p-2 flex items-center gap-2">
-            <Award className="w-3 h-3 text-primary/60" />
-            <span className="text-[9px] font-black text-white uppercase truncate">{account.rank || 'N/A'}</span>
+            <Award className="w-3 h-3 text-white/60" />
+            <span className="text-[9px] font-black text-white  truncate">{account.rank || 'N/A'}</span>
           </div>
           <div className="bg-white/[0.03] border border-white/[0.05] rounded-xl p-2 flex items-center gap-2">
-            <Layers className="w-3 h-3 text-primary/60" />
-            <span className="text-[9px] font-black text-white uppercase truncate">{account.specifications?.skinsCount || 0} Skins</span>
+            <Layers className="w-3 h-3 text-white/60" />
+            <span className="text-[9px] font-black text-white  truncate">{account.specifications?.skinsCount || 0} Skins</span>
           </div>
         </div>
         <div className="mt-auto pt-4 border-t border-white/[0.05] flex items-center justify-between">
@@ -273,8 +273,8 @@ const AccountDetail = () => {
   if (!account) {
     return (
       <div className="min-h-screen bg-[#060606] flex flex-col items-center justify-center text-white">
-        <h1 className="text-4xl font-black uppercase mb-6 tracking-tighter">Account Not Found</h1>
-        <Link to="/" className="px-8 py-3 bg-primary text-black font-black uppercase rounded-full">Back to Home</Link>
+        <h1 className="text-4xl font-black  mb-6 tracking-tighter">Account Not Found</h1>
+        <Link to="/" className="px-8 py-3 bg-primary text-black font-black  rounded-full">Back to Home</Link>
       </div>
     );
   }
@@ -297,7 +297,7 @@ const AccountDetail = () => {
           <div className="relative bg-[#111] border border-white/10 rounded-[2.5rem] p-10 max-w-md w-full text-center shadow-[0_30px_60px_rgba(0,0,0,0.8)] animate-fade-in">
             <button 
               onClick={() => setIsVerifiedModalOpen(false)}
-              className="absolute top-6 right-6 text-white/20 hover:text-white transition-colors"
+              className="absolute top-6 right-6 text-white hover:text-white transition-colors"
             >
               <ChevronLeft className="w-6 h-6 rotate-90" />
             </button>
@@ -307,18 +307,18 @@ const AccountDetail = () => {
                 <ShieldCheck className="w-10 h-10 text-[#a2e63e]" />
                 <div className="text-left">
                   <div className="text-xl font-black text-white leading-none">BOOSTGG</div>
-                  <div className="text-sm font-black text-[#a2e63e] leading-none uppercase tracking-widest mt-1">VERIFIED</div>
+                  <div className="text-sm font-black text-[#a2e63e] leading-none  tracking-normal mt-1">VERIFIED</div>
                 </div>
               </div>
-              <h2 className="text-4xl font-black uppercase tracking-tighter ">Buy risk-free with BoostGG</h2>
-              <p className="text-white/40 text-sm font-medium uppercase tracking-tight leading-relaxed">
+              <h2 className="text-4xl font-black  tracking-tighter ">Buy risk-free with BoostGG</h2>
+              <p className="text-white text-sm font-medium  tracking-tight leading-relaxed">
                 We work only with verified sellers, our team is online 24/7 and you're always guaranteed your money back.
               </p>
             </div>
             
             <button 
               onClick={() => setIsVerifiedModalOpen(false)}
-              className="w-full py-4 bg-primary text-black font-black uppercase tracking-[0.2em] rounded-2xl hover:scale-105 transition-all shadow-xl"
+              className="w-full py-4 bg-primary text-black font-black  tracking-normal rounded-2xl hover:scale-105 transition-all shadow-xl"
             >
               Got it
             </button>
@@ -329,24 +329,24 @@ const AccountDetail = () => {
       <div className="max-w-[1400px] mx-auto px-6">
         
         {/* ── BREADCRUMB ── */}
-        <div className="flex items-center gap-3 text-[10px] font-black uppercase tracking-[0.2em] text-white/30 mb-8 overflow-x-auto no-scrollbar whitespace-nowrap">
-          <Link to="/" className="hover:text-primary transition-colors">Home</Link>
+        <div className="flex items-center gap-3 text-[10px] font-black  tracking-normal text-white mb-8 overflow-x-auto no-scrollbar whitespace-nowrap">
+          <Link to="/" className="hover:text-white transition-colors">Home</Link>
           <ChevronRight className="w-3 h-3 flex-shrink-0" />
-          <Link to={`/game/${account.gameSlug || account.gameId?.slug}?mode=accounts`} className="hover:text-primary transition-colors">{account.gameId?.name || 'Game'}</Link>
+          <Link to={`/game/${account.gameSlug || account.gameId?.slug}?mode=accounts`} className="hover:text-white transition-colors">{account.gameId?.name || 'Game'}</Link>
           <ChevronRight className="w-3 h-3 flex-shrink-0" />
-          <span className="text-white/60 truncate">{account.title}</span>
+          <span className="text-white truncate">{account.title}</span>
           <div className="ml-auto flex items-center gap-3">
             <button 
               onClick={handleToggleFavorite}
               className={`w-10 h-10 rounded-2xl border flex items-center justify-center transition-all ${
                 isFavorite 
-                  ? 'bg-primary/20 border-primary text-primary' 
-                  : 'bg-white/5 border-white/10 text-white/40 hover:bg-white/10'
+                  ? 'bg-primary/20 border-primary text-white' 
+                  : 'bg-white/5 border-white/10 text-white hover:bg-white/10'
               }`}
             >
               <Heart className={`w-4 h-4 ${isFavorite ? 'fill-current' : ''}`} />
             </button>
-            <button className="w-10 h-10 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-white/40 hover:bg-white/10 transition-all">
+            <button className="w-10 h-10 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-white hover:bg-white/10 transition-all">
               <Share2 className="w-4 h-4" />
             </button>
           </div>
@@ -361,10 +361,10 @@ const AccountDetail = () => {
             {/* Title Section (Mobile Visible) */}
             <div className="lg:hidden mb-6">
               <div className="flex items-center gap-3 mb-2">
-                <span className="px-3 py-1 bg-primary/10 border border-primary/20 rounded-full text-[10px] font-black text-primary uppercase tracking-widest">{account.region}</span>
-                <span className="px-3 py-1 bg-white/5 border border-white/10 rounded-full text-[10px] font-black text-white/40 uppercase tracking-widest">{account.server}</span>
+                <span className="px-3 py-1 bg-primary/10 border border-primary/20 rounded-full text-[10px] font-black text-white  tracking-normal">{account.region}</span>
+                <span className="px-3 py-1 bg-white/5 border border-white/10 rounded-full text-[10px] font-black text-white  tracking-normal">{account.server}</span>
               </div>
-              <h1 className="text-3xl font-black uppercase tracking-tighter leading-none mb-4">{account.title}</h1>
+              <h1 className="text-3xl font-black  tracking-tighter leading-none mb-4">{account.title}</h1>
             </div>
 
             {/* Image Gallery */}
@@ -398,8 +398,8 @@ const AccountDetail = () => {
                 {/* Image Label */}
                 <div className="absolute bottom-8 left-8">
                   <div className="flex items-center gap-3 px-4 py-2 bg-black/60 backdrop-blur-md border border-white/10 rounded-2xl">
-                    <Users className="w-4 h-4 text-primary" />
-                    <span className="text-[11px] font-black uppercase tracking-widest">Screenshots {activeImage + 1} / {images.length}</span>
+                    <Users className="w-4 h-4 text-white" />
+                    <span className="text-[11px] font-black  tracking-normal">Screenshots {activeImage + 1} / {images.length}</span>
                   </div>
                 </div>
               </div>
@@ -429,9 +429,9 @@ const AccountDetail = () => {
                 { icon: Star, label: 'Win Rate', value: `${account.specifications?.winRate || '0'}%` },
               ].map((spec, i) => (
                 <div key={i} className="bg-white/[0.02] border border-white/5 rounded-3xl p-5 flex flex-col items-center justify-center text-center group hover:bg-white/[0.04] transition-all">
-                  <spec.icon className="w-5 h-5 mb-3 text-primary group-hover:scale-110 transition-transform" />
-                  <span className="text-[9px] font-black uppercase tracking-widest text-white/20 mb-1">{spec.label}</span>
-                  <span className="text-sm font-black text-white uppercase tracking-tight">{spec.value}</span>
+                  <spec.icon className="w-5 h-5 mb-3 text-white group-hover:scale-110 transition-transform" />
+                  <span className="text-[9px] font-black  tracking-normal text-white mb-1">{spec.label}</span>
+                  <span className="text-sm font-black text-white  tracking-tight">{spec.value}</span>
                 </div>
               ))}
             </div>
@@ -439,10 +439,10 @@ const AccountDetail = () => {
             {/* Description & Specs */}
             <div className="bg-white/[0.02] border border-white/5 rounded-[3rem] p-8 md:p-12 space-y-12">
               <section>
-                <h2 className="text-2xl font-black uppercase tracking-tighter mb-6 flex items-center gap-3">
-                  <Info className="w-6 h-6 text-primary" /> Account Description
+                <h2 className="text-2xl font-black  tracking-tighter mb-6 flex items-center gap-3">
+                  <Info className="w-6 h-6 text-white" /> Account Description
                 </h2>
-                <div className="text-white/40 font-medium leading-relaxed uppercase tracking-tight text-sm space-y-4">
+                <div className="text-white font-medium leading-relaxed  tracking-tight text-sm space-y-4">
                   {account.description ? (
                     <div dangerouslySetInnerHTML={{ __html: account.description }}></div>
                   ) : (
@@ -452,16 +452,16 @@ const AccountDetail = () => {
               </section>
 
               <section>
-                <h2 className="text-2xl font-black uppercase tracking-tighter mb-8 flex items-center gap-3">
-                  <Award className="w-6 h-6 text-primary" /> Key Highlights
+                <h2 className="text-2xl font-black  tracking-tighter mb-8 flex items-center gap-3">
+                  <Award className="w-6 h-6 text-white" /> Key Highlights
                 </h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {(account.highlights?.length > 0 ? account.highlights : ['Full Access', 'Email Changeable', 'LIFETIME Warranty', 'Verified Source']).map((hl, i) => (
                     <div key={i} className="flex items-center gap-4 p-4 bg-white/[0.03] border border-white/5 rounded-2xl group hover:border-primary/20 transition-all">
                       <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center group-hover:bg-primary transition-all">
-                        <CheckCircle2 className="w-5 h-5 text-primary group-hover:text-black" />
+                        <CheckCircle2 className="w-5 h-5 text-white group-hover:text-black" />
                       </div>
-                      <span className="text-[11px] font-black uppercase tracking-widest text-white/60">{hl}</span>
+                      <span className="text-[11px] font-black  tracking-normal text-white">{hl}</span>
                     </div>
                   ))}
                 </div>
@@ -470,15 +470,15 @@ const AccountDetail = () => {
 
             {/* FAQ Section */}
             <div className="space-y-4">
-              <h2 className="text-2xl font-black uppercase tracking-tighter mb-6">Frequently Asked Questions</h2>
+              <h2 className="text-2xl font-black  tracking-tighter mb-6">Frequently Asked Questions</h2>
               {[
                 { q: "How do I buy an account?", a: "Select the account, enter your email, and complete the payment. You will receive the credentials instantly." },
                 { q: "Is the email changeable?", a: "Yes, all our accounts come with full access, meaning you can change the email and password immediately." },
                 { q: "Is my payment secure?", a: "Absolutely. We use industry-standard encryption and verified payment gateways for all transactions." }
               ].map((faq, i) => (
                 <div key={i} className="bg-white/[0.02] border border-white/5 rounded-2xl p-6">
-                  <h4 className="text-[11px] font-black uppercase tracking-widest text-primary mb-2 ">Q: {faq.q}</h4>
-                  <p className="text-xs text-white/40 font-medium leading-relaxed uppercase tracking-tight">{faq.a}</p>
+                  <h4 className="text-[11px] font-black  tracking-normal text-white mb-2 ">Q: {faq.q}</h4>
+                  <p className="text-xs text-white font-medium leading-relaxed  tracking-tight">{faq.a}</p>
                 </div>
               ))}
             </div>
@@ -489,18 +489,18 @@ const AccountDetail = () => {
             
             {/* FAST CHECKOUT HEADER ICONS */}
             <div className="mb-6">
-              <h2 className="text-4xl font-black text-white uppercase tracking-tighter mb-6 ">Fast checkout</h2>
+              <h2 className="text-4xl font-black text-white  tracking-tighter mb-6 ">Fast checkout</h2>
               <div className="grid grid-cols-3 gap-4">
                 {[
                   { icon: Star, label: 'Delivery within 24h', color: 'text-yellow-400' },
-                  { icon: ShieldCheck, label: 'Account creds can be changed', color: 'text-primary' },
-                  { icon: Award, label: 'Seller approved by BoostGG', color: 'text-white/40' }
+                  { icon: ShieldCheck, label: 'Account creds can be changed', color: 'text-white' },
+                  { icon: Award, label: 'Seller approved by BoostGG', color: 'text-white' }
                 ].map((item, i) => (
                   <div key={i} className="flex flex-col items-center text-center gap-3">
                     <div className={`w-12 h-12 rounded-full bg-white/5 border border-white/10 flex items-center justify-center ${item.color}`}>
                       <item.icon className="w-6 h-6" />
                     </div>
-                    <span className="text-[9px] font-black uppercase tracking-tight text-white/40 leading-tight">{item.label}</span>
+                    <span className="text-[9px] font-black  tracking-tight text-white leading-tight">{item.label}</span>
                   </div>
                 ))}
               </div>
@@ -516,21 +516,21 @@ const AccountDetail = () => {
                     <div className={`w-5 h-5 rounded-md border-2 transition-all flex items-center justify-center ${warrantyEnabled ? 'bg-primary border-primary' : 'bg-transparent border-white/20 group-hover:border-white/40'}`}>
                       {warrantyEnabled && <CheckCircle2 className="w-4 h-4 text-black" />}
                     </div>
-                    <span className="text-[11px] font-black uppercase tracking-widest text-white">Lifetime warranty 💪</span>
+                    <span className="text-[11px] font-black  tracking-normal text-white">Lifetime warranty 💪</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <span className="text-[11px] font-black text-white/60">+{formatPrice(warrantyPrice)}</span>
-                    <Info className="w-3.5 h-3.5 text-white/40" />
+                    <span className="text-[11px] font-black text-white">+{formatPrice(warrantyPrice)}</span>
+                    <Info className="w-3.5 h-3.5 text-white" />
                   </div>
                 </div>
 
                 <div className="flex justify-between items-end">
-                  <span className="text-xl font-black text-white/60 uppercase tracking-tighter mb-1">Total</span>
+                  <span className="text-xl font-black text-white  tracking-tighter mb-1">Total</span>
                   <div className="text-right">
                     <div className="flex items-baseline justify-end gap-2">
                       <span className="text-5xl font-black text-white tracking-tighter leading-none">{formatPrice(finalPrice)}</span>
                     </div>
-                    <span className="text-[10px] font-black text-white/40 uppercase tracking-widest mt-2 block">excl. VAT</span>
+                    <span className="text-[10px] font-black text-white  tracking-normal mt-2 block">excl. VAT</span>
                   </div>
                 </div>
 
@@ -541,18 +541,18 @@ const AccountDetail = () => {
                       placeholder="ENTER YOUR EMAIL"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
-                      className="w-full bg-white/5 border border-white/10 rounded-2xl py-5 px-6 text-[11px] font-black uppercase tracking-widest text-white placeholder:text-white/20 outline-none focus:border-primary/40 transition-all"
+                      className="w-full bg-white/5 border border-white/10 rounded-2xl py-5 px-6 text-[11px] font-black  tracking-normal text-white placeholder:text-white outline-none focus:border-primary/40 transition-all"
                     />
                   </div>
 
                   <div className="flex items-center justify-center gap-3">
                     <div className="px-3 py-1 bg-white/10 rounded-lg text-[10px] font-black text-white">{formatPrice(finalPrice * 0.01)}</div>
-                    <span className="text-[10px] font-black text-white/40 uppercase tracking-widest">cashback after purchase</span>
+                    <span className="text-[10px] font-black text-white  tracking-normal">cashback after purchase</span>
                   </div>
 
                   <button 
                     onClick={handleBuyNow}
-                    className="w-full bg-primary text-black font-black uppercase tracking-[0.2em] py-6 rounded-2xl transition-all shadow-[0_15px_40px_rgba(19,193,0,0.4)] flex items-center justify-center gap-3 active:scale-95 group border-none"
+                    className="w-full bg-primary text-black font-black  tracking-normal py-6 rounded-2xl transition-all shadow-[0_15px_40px_rgba(19,193,0,0.4)] flex items-center justify-center gap-3 active:scale-95 group border-none"
                   >
                     Buy Now <ShieldCheck className="w-6 h-6 group-hover:scale-110 transition-transform" />
                   </button>
@@ -563,15 +563,15 @@ const AccountDetail = () => {
             {/* VERIFIED BADGE & READ MORE */}
             <div className="flex items-center justify-between p-4 bg-white/[0.03] border border-white/5 rounded-[2rem]">
               <div className="flex items-center gap-3">
-                <ShieldCheck className="w-8 h-8 text-primary" />
+                <ShieldCheck className="w-8 h-8 text-white" />
                 <div>
                   <div className="text-[11px] font-black text-white leading-none">BOOSTGG</div>
-                  <div className="text-[8px] font-black text-primary leading-none uppercase tracking-widest mt-0.5">VERIFIED</div>
+                  <div className="text-[8px] font-black text-white leading-none  tracking-normal mt-0.5">VERIFIED</div>
                 </div>
               </div>
               <button 
                 onClick={() => setIsVerifiedModalOpen(true)}
-                className="px-6 py-3 bg-white/5 hover:bg-white/10 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all"
+                className="px-6 py-3 bg-white/5 hover:bg-white/10 rounded-2xl text-[10px] font-black  tracking-normal transition-all"
               >
                 Read more
               </button>
@@ -592,7 +592,7 @@ const AccountDetail = () => {
                 ))}
               </div>
               <div className="text-center">
-                <p className="text-[9px] text-white/20 font-bold uppercase tracking-widest leading-relaxed">
+                <p className="text-[9px] text-white font-bold  tracking-normal leading-relaxed">
                   Instant start • 24/7 Support • Moneyback Guarantee
                 </p>
               </div>
@@ -600,10 +600,10 @@ const AccountDetail = () => {
 
             {/* SUPPORT HELP */}
             <div className="p-8 bg-white/[0.02] border border-white/5 rounded-[3rem] text-center space-y-4">
-              <p className="text-[10px] text-white/30 font-bold uppercase tracking-[0.2em]">Any questions?</p>
+              <p className="text-[10px] text-white font-bold  tracking-normal">Any questions?</p>
               <button 
                 onClick={() => window.dispatchEvent(new CustomEvent('openSupportChat'))}
-                className="w-full py-4 border border-white/10 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-white/5 transition-all flex items-center justify-center gap-3"
+                className="w-full py-4 border border-white/10 rounded-2xl text-[10px] font-black  tracking-normal hover:bg-white/5 transition-all flex items-center justify-center gap-3"
               >
                 <MessageSquare className="w-4 h-4" /> Ask our team
               </button>
@@ -616,12 +616,12 @@ const AccountDetail = () => {
           <div className="mt-32">
             <div className="flex items-end justify-between mb-12">
               <div>
-                <h2 className="text-3xl md:text-5xl font-black uppercase tracking-tighter leading-none mb-4">You May <span className="text-primary">Also Like</span></h2>
-                <p className="text-white/40 font-bold uppercase tracking-widest text-[11px]">Recommended based on this selection</p>
+                <h2 className="text-3xl md:text-5xl font-black  tracking-tighter leading-none mb-4">You May <span className="text-white">Also Like</span></h2>
+                <p className="text-white font-bold  tracking-normal text-[11px]">Recommended based on this selection</p>
               </div>
               <Link 
                 to={`/game/${account.gameSlug || account.gameId?.slug}?mode=accounts`}
-                className="hidden md:flex items-center gap-3 text-[11px] font-black text-primary uppercase tracking-widest hover:gap-5 transition-all"
+                className="hidden md:flex items-center gap-3 text-[11px] font-black text-white  tracking-normal hover:gap-5 transition-all"
               >
                 View All <ArrowRight className="w-4 h-4" />
               </Link>
@@ -639,3 +639,6 @@ const AccountDetail = () => {
 };
 
 export default AccountDetail;
+
+
+

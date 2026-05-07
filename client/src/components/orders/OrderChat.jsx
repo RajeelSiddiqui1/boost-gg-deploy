@@ -103,14 +103,14 @@ const OrderChat = ({ orderId, isOpen, onClose }) => {
               <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-4 border-[#0A0A0A]"></div>
             </div>
             <div>
-              <h3 className="text-xl font-black uppercase text-white tracking-tight leading-none mb-2">
+              <h3 className="text-xl font-black  text-white tracking-tight leading-none mb-2">
                 Order Channel
               </h3>
               <div className="flex items-center gap-3">
-                <span className="text-[10px] font-black text-primary uppercase tracking-[0.2em] px-2 py-0.5 bg-primary/10 rounded border border-primary/20">
+                <span className="text-[10px] font-black text-white  tracking-[0.2em] px-2 py-0.5 bg-primary/10 rounded border border-primary/20">
                   #{order?._id.slice(-6).toUpperCase()}
                 </span>
-                <span className="text-[10px] font-bold text-white/30 uppercase tracking-widest flex items-center gap-1.5">
+                <span className="text-[10px] font-bold text-white  tracking-widest flex items-center gap-1.5">
                   <ShieldCheck className="w-3 h-3 text-primary/60" />
                   Secured Transaction
                 </span>
@@ -139,8 +139,8 @@ const OrderChat = ({ orderId, isOpen, onClose }) => {
                 <MessageSquare className="w-10 h-10 text-white/20" />
               </div>
               <div className="space-y-1">
-                <p className="text-sm font-black uppercase tracking-[0.3em] text-white">Encrypted Hub</p>
-                <p className="text-[10px] font-bold text-white/40 uppercase tracking-widest">Awaiting first transmission...</p>
+                <p className="text-sm font-black  tracking-[0.3em] text-white">Encrypted Hub</p>
+                <p className="text-[10px] font-bold text-white  tracking-widest">Awaiting first transmission...</p>
               </div>
             </div>
           ) : (
@@ -148,7 +148,7 @@ const OrderChat = ({ orderId, isOpen, onClose }) => {
                 {/* Date Divider */}
                 <div className="flex items-center gap-6 opacity-20">
                     <div className="h-[1px] flex-1 bg-white"></div>
-                    <span className="text-[9px] font-black uppercase tracking-[0.4em]">MISSION LOG</span>
+                    <span className="text-[9px] font-black  tracking-[0.4em]">MISSION LOG</span>
                     <div className="h-[1px] flex-1 bg-white"></div>
                 </div>
 
@@ -160,17 +160,17 @@ const OrderChat = ({ orderId, isOpen, onClose }) => {
                             <div className={`relative group`}>
                                 <div className={`px-7 py-5 rounded-[32px] text-[15px] font-bold leading-relaxed shadow-xl ${isMe
                                     ? 'bg-gradient-to-br from-primary to-[#8cc63e] text-black rounded-tr-none'
-                                    : 'bg-white/[0.03] text-white/90 border border-white/5 rounded-tl-none backdrop-blur-md'
+                                    : 'bg-white/[0.03] text-white border border-white/5 rounded-tl-none backdrop-blur-md'
                                 }`}>
                                     {msg.message}
                                 </div>
                                 <div className={`absolute -bottom-6 ${isMe ? 'right-2' : 'left-2'} flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity`}>
-                                     <p className="text-[9px] font-black uppercase tracking-widest text-white/20">
+                                     <p className="text-[9px] font-black  tracking-widest text-white">
                                         {format(new Date(msg.timestamp), 'HH:mm')}
                                     </p>
                                 </div>
                             </div>
-                            <p className={`text-[8px] font-black uppercase tracking-[0.2em] text-white/10 pt-1 ${isMe ? 'text-right' : 'text-left'}`}>
+                            <p className={`text-[8px] font-black  tracking-[0.2em] text-white pt-1 ${isMe ? 'text-right' : 'text-left'}`}>
                                 {isMe ? 'YOU' : 'CLIENT'} • {format(new Date(msg.timestamp), 'h:mm a')}
                             </p>
                         </div>
@@ -208,7 +208,7 @@ const OrderChat = ({ orderId, isOpen, onClose }) => {
             </div>
           </form>
           
-          <div className="mt-6 flex items-center justify-center gap-6 text-[10px] font-black text-white/10 uppercase tracking-[0.3em]">
+          <div className="mt-6 flex items-center justify-center gap-6 text-[10px] font-black text-white  tracking-[0.3em]">
              <div className="flex items-center gap-2">
                 <ShieldCheck className="w-3.5 h-3.5" />
                 <span>P2P ENCRYPTION ACTIVE</span>
@@ -242,3 +242,4 @@ const OrderChat = ({ orderId, isOpen, onClose }) => {
 };
 
 export default OrderChat;
+

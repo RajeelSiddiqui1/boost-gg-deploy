@@ -15,8 +15,8 @@ const WowOfferGrid = ({ services, loading }) => {
  if (!services || services.length === 0) {
  return (
  <div className="text-center py-20 bg-white/5 rounded-[2rem] border border-white/5">
- <h3 className="text-2xl font-black uppercase text-white/40 ">No offers found matching your filters</h3>
- <p className="text-white/20 mt-2">Try adjusting your filters or search for something else.</p>
+ <h3 className="text-2xl font-black  text-white ">No offers found matching your filters</h3>
+ <p className="text-white mt-2">Try adjusting your filters or search for something else.</p>
  </div>
  );
  }
@@ -31,3 +31,4 @@ const WowOfferGrid = ({ services, loading }) => {
 };
 
 export default WowOfferGrid;
+

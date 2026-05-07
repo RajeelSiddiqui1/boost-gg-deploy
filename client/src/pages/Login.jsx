@@ -52,15 +52,15 @@ const Login = () => {
  </div>
 
  <div className="max-w-md">
- <h2 className="text-6xl font-black uppercase leading-[0.85] tracking-tighter mb-6 text-white">
- Join the <br /> <span className="text-primary">Pro Ranks</span>
+ <h2 className="text-6xl font-black  leading-[0.85] tracking-tighter mb-6 text-white">
+ Join the <br /> <span className="text-white">Pro Ranks</span>
  </h2>
- <p className="text-white/60 font-medium text-lg leading-relaxed">
+ <p className="text-white font-medium text-lg leading-relaxed">
  Access elite services, track your progress, and level up your gaming experience with BoostGG.
  </p>
  </div>
 
- <div className="flex items-center gap-6 text-white/20">
+ <div className="flex items-center gap-6 text-white">
  <div className="flex -space-x-3">
  {[...Array(4)].map((_, i) => (
  <div key={i} className="w-10 h-10 rounded-full border-2 border-black bg-white/10 overflow-hidden">
@@ -68,7 +68,7 @@ const Login = () => {
  </div>
  ))}
  </div>
- <p className="text-[10px] font-black uppercase tracking-widest">Joined by 10k+ Pros</p>
+ <p className="text-[10px] font-black  tracking-widest">Joined by 10k+ Pros</p>
  </div>
  </div>
  </div>
@@ -88,8 +88,8 @@ const Login = () => {
  <div className="lg:hidden inline-flex items-center gap-2 mb-8">
  <img src={logo} alt="BOOSTGG" className="h-10 w-auto object-contain" />
  </div>
- <h1 className="text-3xl md:text-4xl font-black tracking-tight text-white mb-4 uppercase leading-none">Welcome back</h1>
- <p className="text-white/40 text-[11px] font-bold uppercase tracking-[0.2em]">Secure access to your vault</p>
+ <h1 className="text-3xl md:text-4xl font-black tracking-tight text-white mb-4  leading-none">Welcome back</h1>
+ <p className="text-white text-[11px] font-bold  tracking-[0.2em]">Secure access to your vault</p>
  </div>
 
 
@@ -98,7 +98,7 @@ const Login = () => {
  <form onSubmit={handleSubmit} className="space-y-6">
  <div className="space-y-2">
  <div className="relative group">
- <label className="absolute -top-2.5 left-5 px-2 bg-[#0A0A0A] text-[10px] font-black uppercase tracking-[0.2em] text-white/20 z-10 group-focus-within:text-primary transition-colors">Email</label>
+ <label className="absolute -top-2.5 left-5 px-2 bg-[#0A0A0A] text-[10px] font-black  tracking-[0.2em] text-white/20 z-10 group-focus-within:text-white transition-colors">Email</label>
  <input
  type="email"
  value={email}
@@ -112,7 +112,7 @@ const Login = () => {
 
  <div className="space-y-2">
  <div className="relative group">
- <label className="absolute -top-2.5 left-5 px-2 bg-[#0A0A0A] text-[10px] font-black uppercase tracking-[0.2em] text-white/20 z-10 group-focus-within:text-primary transition-colors">Password</label>
+ <label className="absolute -top-2.5 left-5 px-2 bg-[#0A0A0A] text-[10px] font-black  tracking-[0.2em] text-white/20 z-10 group-focus-within:text-white transition-colors">Password</label>
  <input
  type="password"
  value={password}
@@ -123,14 +123,14 @@ const Login = () => {
  />
  </div>
  <div className="flex justify-end">
- <Link to="/forgot-password" size="sm" className="text-[10px] font-black uppercase tracking-widest text-white/30 hover:text-primary transition-colors">Forgot Password?</Link>
+ <Link to="/forgot-password" size="sm" className="text-[10px] font-black  tracking-widest text-white/30 hover:text-primary transition-colors">Forgot Password?</Link>
  </div>
  </div>
 
  <button
  type="submit"
  disabled={loading}
- className="w-full bg-primary hover:bg-[#722AEE] text-white py-4.5 rounded-2xl font-black text-xs uppercase tracking-[0.2em] flex items-center justify-center gap-3 transition-all active:scale-95 shadow-xl shadow-primary/30 disabled:opacity-50 group/btn"
+ className="w-full bg-primary hover:bg-[#722AEE] text-white py-4.5 rounded-2xl font-black text-xs  tracking-[0.2em] flex items-center justify-center gap-3 transition-all active:scale-95 shadow-xl shadow-primary/30 disabled:opacity-50 group/btn"
  >
  {loading ? (
  <Loader2 className="w-5 h-5 animate-spin" />
@@ -145,7 +145,7 @@ const Login = () => {
 
  {/* Footer */}
  <div className="mt-10 pt-8 border-t border-white/5 text-center space-y-3">
- <p className="text-white/40 text-[11px] font-bold uppercase tracking-[0.1em]">
+ <p className="text-white text-[11px] font-bold  tracking-[0.1em]">
  New here? {' '}
  <Link to="/signup" className="text-primary hover:text-white ml-2 transition-colors border-b border-primary/20 hover:border-white">Create account</Link>
  </p>
@@ -155,9 +155,9 @@ const Login = () => {
 
  {/* Additional Links */}
  <div className="mt-10 flex items-center justify-center gap-8 opacity-20 hover:opacity-100 transition-opacity">
- <Link to="/terms" className="text-[10px] font-black uppercase tracking-widest text-white hover:text-primary">Terms</Link>
- <Link to="/privacy" className="text-[10px] font-black uppercase tracking-widest text-white hover:text-primary">Privacy</Link>
- <Link to="/contact" className="text-[10px] font-black uppercase tracking-widest text-white hover:text-primary">Support</Link>
+ <Link to="/terms" className="text-[10px] font-black  tracking-widest text-white hover:text-primary">Terms</Link>
+ <Link to="/privacy" className="text-[10px] font-black  tracking-widest text-white hover:text-primary">Privacy</Link>
+ <Link to="/contact" className="text-[10px] font-black  tracking-widest text-white hover:text-primary">Support</Link>
  </div>
  </div>
  </div>
@@ -177,22 +177,22 @@ const Login = () => {
  <div className="w-16 h-16 bg-yellow-500/20 rounded-full flex items-center justify-center border border-yellow-500/30 mx-auto mb-6">
  <ShieldCheck className="w-8 h-8 text-yellow-500" />
  </div>
- <h2 className="text-2xl font-black text-white uppercase mb-3">Email Not Verified</h2>
- <p className="text-white/60 text-sm mb-8 leading-relaxed">
+ <h2 className="text-2xl font-black text-white  mb-3">Email Not Verified</h2>
+ <p className="text-white text-sm mb-8 leading-relaxed">
  You are not a verified user. Please verify your account to access all features.
  </p>
 
  <div className="flex gap-3">
  <button
  onClick={handleCancelModal}
- className="flex-1 bg-white/5 hover:bg-white/10 text-white py-3.5 rounded-xl font-bold text-sm uppercase tracking-widest border border-white/10 transition-all"
+ className="flex-1 bg-white/5 hover:bg-white/10 text-white py-3.5 rounded-xl font-bold text-sm  tracking-widest border border-white/10 transition-all"
  >
  Cancel
  </button>
  <button
  onClick={handleVerifyAccount}
  disabled={resendingEmail}
- className="flex-1 bg-yellow-500 hover:bg-yellow-600 text-black py-3.5 rounded-xl font-bold text-sm uppercase tracking-widest transition-all disabled:opacity-50 flex items-center justify-center gap-2"
+ className="flex-1 bg-yellow-500 hover:bg-yellow-600 text-black py-3.5 rounded-xl font-bold text-sm  tracking-widest transition-all disabled:opacity-50 flex items-center justify-center gap-2"
  >
  {resendingEmail ? (
  <>
@@ -245,3 +245,4 @@ const Login = () => {
 };
 
 export default Login;
+

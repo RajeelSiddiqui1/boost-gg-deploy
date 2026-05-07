@@ -227,7 +227,7 @@ const ServiceDetail = () => {
 
  if (error) {
  return (
- <div className="min-h-screen bg-black flex items-center justify-center text-white/40">
+ <div className="min-h-screen bg-black flex items-center justify-center text-white">
  {error}
  </div>
  );
@@ -285,7 +285,7 @@ const ServiceDetail = () => {
 
  {/* How it Works Section */}
  <div className="space-y-10">
- <h3 className="text-3xl font-black text-white uppercase tracking-tighter flex items-center gap-4">
+ <h3 className="text-3xl font-black text-white  tracking-tighter flex items-center gap-4">
  <div className="w-1.5 h-8 bg-primary rounded-full shadow-[0_0_15px_rgba(162,230,62,0.5)]"></div>
  How it Works
  </h3>
@@ -296,9 +296,9 @@ const ServiceDetail = () => {
  { step: "03", title: "Boost Starts", desc: "Our pro boosters take over and complete your request." }
  ].map((item, i) => (
  <div key={i} className="group relative p-8 rounded-[32px] bg-white/[0.02] border border-white/5 hover:border-primary/20 transition-all">
- <span className="text-4xl font-black text-primary/10 group-hover:text-primary/20 transition-colors absolute top-6 right-8">{item.step}</span>
- <h4 className="text-lg font-black text-white uppercase mb-4">{item.title}</h4>
- <p className="text-sm text-white/40 leading-relaxed">{item.desc}</p>
+ <span className="text-4xl font-black text-white group-hover:text-white transition-colors absolute top-6 right-8">{item.step}</span>
+ <h4 className="text-lg font-black text-white  mb-4">{item.title}</h4>
+ <p className="text-sm text-white leading-relaxed">{item.desc}</p>
  </div>
  ))}
  </div>
@@ -307,8 +307,8 @@ const ServiceDetail = () => {
  {/* Requirements & FAQ */}
  <div className="grid grid-cols-1 md:grid-cols-2 gap-8 pt-6">
  <div className="p-10 rounded-[40px] bg-gradient-to-br from-white/[0.03] to-transparent border border-white/5 space-y-8">
- <h3 className="text-2xl font-black text-white uppercase tracking-tight flex items-center gap-4">
- <Zap className="w-6 h-6 text-primary fill-primary" />
+ <h3 className="text-2xl font-black text-white  tracking-tight flex items-center gap-4">
+ <Zap className="w-6 h-6 text-white fill-primary" />
  Requirements
  </h3>
  <ul className="space-y-5">
@@ -318,7 +318,7 @@ const ServiceDetail = () => {
  "Account Access (Piloted) / Online Presence (Self-Play)",
  "Basic Gear for selected difficulty"
  ]).map((req, i) => (
- <li key={i} className="flex items-center gap-4 text-[15px] text-white/60 font-medium group">
+ <li key={i} className="flex items-center gap-4 text-[15px] text-white font-medium group">
  <div className="w-2 h-2 rounded-full bg-primary/20 group-hover:bg-primary transition-colors"></div>
  {req}
  </li>
@@ -327,7 +327,7 @@ const ServiceDetail = () => {
  </div>
 
  <div className="p-10 rounded-[40px] bg-gradient-to-br from-white/[0.03] to-transparent border border-white/5 space-y-8">
- <h3 className="text-2xl font-black text-white uppercase tracking-tight flex items-center gap-4">
+ <h3 className="text-2xl font-black text-white  tracking-tight flex items-center gap-4">
  <MessageCircle className="w-6 h-6 text-sky-purple fill-sky-purple" />
  Common FAQ
  </h3>
@@ -337,8 +337,8 @@ const ServiceDetail = () => {
  { q: "Can I play during the boost?", a: "Yes, but not at the same time if using piloted mode. We'll coordinate." }
  ]).map((item, i) => (
  <div key={i} className="space-y-2 border-l-2 border-white/5 pl-6 hover:border-sky-purple transition-colors">
- <p className="text-[13px] font-black text-white uppercase tracking-tight ">{item.q}</p>
- <p className="text-xs text-white/40 font-medium leading-relaxed">{item.a}</p>
+ <p className="text-[13px] font-black text-white  tracking-tight ">{item.q}</p>
+ <p className="text-xs text-white font-medium leading-relaxed">{item.a}</p>
  </div>
  ))}
  </div>
@@ -356,13 +356,13 @@ const ServiceDetail = () => {
  <div key={section._id || idx} className="space-y-10 pt-10 border-t border-white/5">
  <div className="space-y-4">
  {section.settings?.showTitle !== false && (
- <h3 className="text-3xl font-black text-white uppercase tracking-tighter flex items-center gap-4">
+ <h3 className="text-3xl font-black text-white  tracking-tighter flex items-center gap-4">
  <div className="w-1.5 h-8 bg-primary rounded-full shadow-[0_0_15px_rgba(162,230,62,0.5)]"></div>
  {section.title}
  </h3>
  )}
  {section.settings?.showSubheading !== false && section.subheading && (
- <p className="text-white/40 text-sm font-bold uppercase tracking-widest">{section.subheading}</p>
+ <p className="text-white text-sm font-bold  tracking-normal">{section.subheading}</p>
  )}
  </div>
 
@@ -371,10 +371,10 @@ const ServiceDetail = () => {
  {section.fields?.map((field, fIdx) => (
  <div key={fIdx} className="p-8 rounded-[32px] bg-white/[0.02] border border-white/5 hover:border-primary/20 transition-all space-y-4">
  <div className="flex items-center gap-3">
- <HelpCircle className="w-5 h-5 text-primary" />
- <h4 className="text-sm font-black text-white uppercase ">{field.label}</h4>
+ <HelpCircle className="w-5 h-5 text-white" />
+ <h4 className="text-sm font-black text-white  ">{field.label}</h4>
  </div>
- <p className="text-xs text-white/40 leading-relaxed font-medium">{field.placeholder || field.sublabel}</p>
+ <p className="text-xs text-white leading-relaxed font-medium">{field.placeholder || field.sublabel}</p>
  </div>
  ))}
  </div>
@@ -382,7 +382,7 @@ const ServiceDetail = () => {
  <div className="p-8 md:p-12 rounded-[40px] bg-white/[0.01] border border-white/5 grid grid-cols-1 md:grid-cols-2 gap-8">
  {section.fields?.map((field, fIdx) => (
  <div key={fIdx} className="space-y-3">
- <label className="text-[10px] font-black text-white/20 uppercase tracking-[0.2em] px-1">{field.label}</label>
+ <label className="text-[10px] font-black text-white  tracking-normal px-1">{field.label}</label>
  {field.fieldType === 'select' ? (
  <select className="w-full bg-white/[0.02] border border-white/10 rounded-2xl p-4 text-white text-sm font-bold focus:border-primary/50 outline-none transition-all">
  <option value="" className="bg-black">Select {field.label}...</option>
@@ -402,12 +402,12 @@ const ServiceDetail = () => {
  </div>
  ) : (
  <div className="p-10 rounded-[40px] bg-gradient-to-br from-white/[0.02] to-transparent border border-white/5">
- <p className="text-white/60 leading-relaxed text-lg font-medium ">{section.description}</p>
+ <p className="text-white leading-relaxed text-lg font-medium ">{section.description}</p>
  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
  {section.fields?.map((field, fIdx) => (
- <div key={fIdx} className="flex items-center gap-4 text-white/40 group">
- <CheckCircle2 className="w-5 h-5 text-primary/40 group-hover:text-primary transition-colors" />
- <span className="text-sm font-bold uppercase tracking-tight">{field.label}</span>
+ <div key={fIdx} className="flex items-center gap-4 text-white group">
+ <CheckCircle2 className="w-5 h-5 text-white/40 group-hover:text-white transition-colors" />
+ <span className="text-sm font-bold  tracking-tight">{field.label}</span>
  </div>
  ))}
  </div>
@@ -436,3 +436,6 @@ const ServiceDetail = () => {
 };
 
 export default ServiceDetail;
+
+
+

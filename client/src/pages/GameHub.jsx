@@ -57,7 +57,7 @@ const CompactAccountCard = ({ account, onBuyNow }) => {
  />
  ) : (
  <div className="w-full h-full bg-gradient-to-br from-primary/10 to-transparent flex items-center justify-center">
- <Users className="w-10 h-10 text-white/10" />
+ <Users className="w-10 h-10 text-white" />
  </div>
  )}
  <div className="absolute inset-0 bg-gradient-to-t from-[#0d0d0d] via-transparent to-transparent opacity-60"></div>
@@ -65,7 +65,7 @@ const CompactAccountCard = ({ account, onBuyNow }) => {
  {/* Badges */}
  <div className="absolute top-4 left-4 flex flex-col gap-2">
  {account.instantDelivery && (
- <div className="px-3 py-1 bg-primary text-black text-[9px] font-black uppercase tracking-widest rounded-full shadow-xl flex items-center gap-1.5">
+ <div className="px-3 py-1 bg-primary text-black text-[9px] font-black  tracking-normal rounded-full shadow-xl flex items-center gap-1.5">
  <Zap className="w-2.5 h-2.5 fill-current" />
  Instant
  </div>
@@ -74,7 +74,7 @@ const CompactAccountCard = ({ account, onBuyNow }) => {
 
  {/* Level Badge */}
  {account.level > 0 && (
- <div className="absolute top-4 right-4 px-2 py-1 bg-black/40 backdrop-blur-md border border-white/10 rounded-lg text-[10px] font-black text-white/70">
+ <div className="absolute top-4 right-4 px-2 py-1 bg-black/40 backdrop-blur-md border border-white/10 rounded-lg text-[10px] font-black text-white">
  LVL {account.level}
  </div>
  )}
@@ -83,28 +83,28 @@ const CompactAccountCard = ({ account, onBuyNow }) => {
  {/* Info Section */}
  <div className="p-6 flex flex-col flex-grow">
  <div className="flex items-center gap-2 mb-2">
- <span className="text-[10px] font-black text-primary uppercase tracking-widest">{account.region}</span>
+ <span className="text-[10px] font-black text-white  tracking-normal">{account.region}</span>
  <span className="w-1 h-1 bg-white/20 rounded-full"></span>
- <span className="text-[10px] font-black text-white/40 uppercase tracking-widest">{account.server}</span>
+ <span className="text-[10px] font-black text-white  tracking-normal">{account.server}</span>
  </div>
  
- <h3 className="text-lg font-black text-white uppercase tracking-tight mb-4 group-hover:text-primary transition-colors line-clamp-2 leading-tight">
+ <h3 className="text-lg font-black text-white  tracking-tight mb-4 group-hover:text-white transition-colors line-clamp-2 leading-tight">
  {account.title}
  </h3>
 
  <div className="grid grid-cols-2 gap-2 mb-6">
  <div className="bg-white/[0.03] border border-white/[0.05] rounded-xl p-2.5 flex items-center gap-2.5">
- <Award className="w-4 h-4 text-primary/60" />
+ <Award className="w-4 h-4 text-white/60" />
  <div className="min-w-0">
- <p className="text-[8px] font-black text-white/20 uppercase tracking-widest leading-none mb-1">Rank</p>
- <p className="text-[10px] font-black text-white uppercase truncate">{account.rank || 'N/A'}</p>
+ <p className="text-[8px] font-black text-white  tracking-normal leading-none mb-1">Rank</p>
+ <p className="text-[10px] font-black text-white  truncate">{account.rank || 'N/A'}</p>
  </div>
  </div>
  <div className="bg-white/[0.03] border border-white/[0.05] rounded-xl p-2.5 flex items-center gap-2.5">
- <Layers className="w-4 h-4 text-primary/60" />
+ <Layers className="w-4 h-4 text-white/60" />
  <div className="min-w-0">
- <p className="text-[8px] font-black text-white/20 uppercase tracking-widest leading-none mb-1">Skins</p>
- <p className="text-[10px] font-black text-white uppercase truncate">{account.specifications?.skinsCount || 0}</p>
+ <p className="text-[8px] font-black text-white  tracking-normal leading-none mb-1">Skins</p>
+ <p className="text-[10px] font-black text-white  truncate">{account.specifications?.skinsCount || 0}</p>
  </div>
  </div>
  </div>
@@ -112,19 +112,19 @@ const CompactAccountCard = ({ account, onBuyNow }) => {
  {/* Tags */}
  <div className="flex flex-wrap gap-1.5 mb-6">
  {account.highlights?.slice(0, 3).map((tag, i) => (
- <span key={i} className="px-2 py-1 bg-white/[0.04] border border-white/[0.06] rounded-md text-[8px] font-bold text-white/40 uppercase tracking-widest truncate max-w-full">{tag}</span>
+ <span key={i} className="px-2 py-1 bg-white/[0.04] border border-white/[0.06] rounded-md text-[8px] font-bold text-white  tracking-normal truncate max-w-full">{tag}</span>
  ))}
  </div>
 
  {/* Price and Action */}
  <div className="mt-auto pt-6 border-t border-white/[0.05] flex items-center justify-between gap-4">
  <div className="flex flex-col">
- <span className="text-[9px] font-black text-white/20 uppercase tracking-widest mb-0.5">One-time payment</span>
+ <span className="text-[9px] font-black text-white  tracking-normal mb-0.5">One-time payment</span>
  <span className="text-2xl font-black text-white tracking-tighter ">{formatPrice(account.price)}</span>
  </div>
             <button 
                 onClick={(e) => { e.preventDefault(); e.stopPropagation(); onBuyNow(account); }}
-                className="bg-primary text-black px-7 h-12 rounded-2xl flex items-center justify-center font-black text-[11px] uppercase tracking-[0.1em] shadow-[0_10px_25px_rgba(19,193,0,0.3)] hover:scale-105 active:scale-95 transition-all border-none"
+                className="bg-primary text-black px-7 h-12 rounded-2xl flex items-center justify-center font-black text-[11px]  tracking-[0.1em] shadow-[0_10px_25px_rgba(19,193,0,0.3)] hover:scale-105 active:scale-95 transition-all border-none"
             >
                 Buy Now
             </button>
@@ -188,25 +188,25 @@ const CompactServiceCard = ({ service, onBuyNow }) => {
  {/* Content */}
  <div className="p-5 flex flex-col flex-grow">
  <div className="flex items-center justify-between mb-2">
- <span className="text-[9px] font-black uppercase tracking-widest text-primary/70">{service.category || "Boosting"}</span>
- <div className="flex items-center gap-1 text-[8px] font-bold text-white/20">
+ <span className="text-[9px] font-black  tracking-normal text-white">{service.category || "Boosting"}</span>
+ <div className="flex items-center gap-1 text-[8px] font-bold text-white">
  <Clock className="w-2.5 h-2.5" />
  {startTime}
  </div>
  </div>
 
- <h3 className="text-sm font-black text-white mb-4 line-clamp-2 leading-tight group-hover:text-primary transition-colors">
+ <h3 className="text-sm font-black text-white mb-4 line-clamp-2 leading-tight group-hover:text-white transition-colors">
  {service.title}
  </h3>
 
  <div className="flex items-center gap-2 mb-6">
  <div className="flex items-center gap-1.5 py-1 px-2.5 rounded-lg bg-white/[0.03] border border-white/[0.05]">
- <Shield className="w-3 h-3 text-white/30" />
- <span className="text-[9px] font-bold text-white/40 uppercase">Verified</span>
+ <Shield className="w-3 h-3 text-white" />
+ <span className="text-[9px] font-bold text-white ">Verified</span>
  </div>
  <div className="flex items-center gap-1.5 py-1 px-2.5 rounded-lg bg-white/[0.03] border border-white/[0.05]">
- <Clock className="w-3 h-3 text-white/30" />
- <span className="text-[9px] font-bold text-white/40 uppercase">{deliveryTime}</span>
+ <Clock className="w-3 h-3 text-white" />
+ <span className="text-[9px] font-bold text-white ">{deliveryTime}</span>
  </div>
  </div>
 
@@ -214,16 +214,16 @@ const CompactServiceCard = ({ service, onBuyNow }) => {
  <div>
  {showPrice ? (
  <div className="flex flex-col">
- <span className="text-[8px] font-black text-white/20 uppercase tracking-widest leading-none mb-1 text-left">Starting at</span>
+ <span className="text-[8px] font-black text-white  tracking-normal leading-none mb-1 text-left">Starting at</span>
  <span className="text-xl font-black text-white tracking-tighter leading-none">{formatPrice(price)}</span>
  </div>
  ) : (
- <span className="text-[10px] font-black text-primary/70 uppercase tracking-wide">View Options</span>
+ <span className="text-[10px] font-black text-white  tracking-wide">View Options</span>
  )}
  </div>
                 <button 
                     onClick={(e) => { e.preventDefault(); e.stopPropagation(); onBuyNow(service); }}
-                    className="bg-primary text-black h-11 px-6 rounded-2xl flex items-center justify-center font-black text-[11px] uppercase tracking-[0.1em] shadow-[0_10px_25px_rgba(19,193,0,0.3)] hover:scale-105 active:scale-95 transition-all border-none"
+                    className="bg-primary text-black h-11 px-6 rounded-2xl flex items-center justify-center font-black text-[11px]  tracking-[0.1em] shadow-[0_10px_25px_rgba(19,193,0,0.3)] hover:scale-105 active:scale-95 transition-all border-none"
                 >
                     Buy Now
                 </button>
@@ -426,9 +426,9 @@ const GameHub = () => {
  if (!game) {
  return (
  <div className="min-h-screen bg-[#070707] flex flex-col items-center justify-center p-6 text-white text-center">
- <Gamepad2 className="w-20 h-20 text-white/10 mb-5" />
- <h1 className="text-3xl font-black mb-4 uppercase tracking-tighter">Game Not Found</h1>
- <Link to="/" className="px-7 py-3.5 bg-primary text-black font-black uppercase text-xs rounded-full hover:bg-white transition-all">Back to Home</Link>
+ <Gamepad2 className="w-20 h-20 text-white mb-5" />
+ <h1 className="text-3xl font-black mb-4  tracking-tighter">Game Not Found</h1>
+ <Link to="/" className="px-7 py-3.5 bg-primary text-black font-black  text-xs rounded-full hover:bg-white transition-all">Back to Home</Link>
  </div>
  );
  }
@@ -488,10 +488,10 @@ const GameHub = () => {
  {/* Content */}
  <div className="relative z-10 h-full max-w-[1400px] mx-auto px-6 flex flex-col justify-end pb-6">
  {/* Breadcrumb */}
- <div className="flex items-center gap-2 text-[9px] font-black uppercase tracking-[0.2em] text-white/35 mb-3">
- <span className="hover:text-primary transition-colors cursor-pointer" onClick={() => navigate('/')}>Home</span>
- <ChevronRight className="w-3 h-3 text-white/20" />
- <span className="text-white/60">{game.name}</span>
+ <div className="flex items-center gap-2 text-[9px] font-black  tracking-normal text-white mb-3">
+ <span className="hover:text-white transition-colors cursor-pointer" onClick={() => navigate('/')}>Home</span>
+ <ChevronRight className="w-3 h-3 text-white" />
+ <span className="text-white">{game.name}</span>
  </div>
 
  <div className="flex items-end justify-between gap-4">
@@ -499,18 +499,18 @@ const GameHub = () => {
  {/* Live badge */}
  <div className="inline-flex items-center gap-2 px-2.5 py-1 bg-black/50 backdrop-blur-md border border-white/10 rounded-full mb-2.5">
  <div className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse shadow-[0_0_6px_rgba(162,230,62,0.9)]" />
- <span className="text-[8px] font-black uppercase tracking-widest text-white/60"><span className="text-white">50+</span> PROs Online</span>
+ <span className="text-[8px] font-black  tracking-normal text-white"><span className="text-white">50+</span> PROs Online</span>
  </div>
 
  {/* Title */}
- <h1 className="text-3xl md:text-4xl lg:text-5xl font-black text-white tracking-tighter leading-[0.9] mb-3 uppercase ">
+ <h1 className="text-3xl md:text-4xl lg:text-5xl font-black text-white tracking-tighter leading-[0.9] mb-3  ">
  {game.name}&nbsp;
- <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary p-3 to-[#5eead4]">
- {isAccountMode ? 'ACCOUNTS' : 'BOOSTING'}
+ <span className="text-white">
+ {isAccountMode ? 'Accounts' : 'Boosting'}
  </span>
  </h1>
 
- <p className="text-white/40 text-xs font-medium max-w-lg leading-relaxed">
+ <p className="text-white text-xs font-medium max-w-lg leading-relaxed">
  {game.description || `Elite boosting services for ${game.name} — fast, safe & reliable.`}
  </p>
  </div>
@@ -519,7 +519,7 @@ const GameHub = () => {
  <div className="hidden md:flex items-center gap-3 flex-shrink-0">
  <div className="flex flex-col items-center px-5 py-3 bg-white/[0.03] backdrop-blur-xl border border-white/10 rounded-2xl">
  <span className="text-2xl font-black text-white leading-none mb-1">{isAccountMode ? accounts.length : services.length}</span>
- <span className="text-[8px] font-black uppercase text-white/30 tracking-widest leading-none">{isAccountMode ? 'Accounts' : 'Services'}</span>
+ <span className="text-[8px] font-black  text-white tracking-normal leading-none">{isAccountMode ? 'Accounts' : 'Services'}</span>
  </div>
 
  </div>
@@ -541,21 +541,21 @@ const GameHub = () => {
  <img src={getImageUrl(game.icon || game.image)} className="w-15 h-15 rounded-lg object-cover" alt={game.name} />
  ) : (
  <div className="w-7 h-7 rounded-lg bg-primary/10 border border-primary/20 flex items-center justify-center">
- <Gamepad2 className="w-3.5 h-3.5 text-primary" />
+ <Gamepad2 className="w-3.5 h-3.5 text-white" />
  </div>
  )}
- <span className="text-[11px] font-black uppercase tracking-wide text-white/70">{game.name}</span>
+ <span className="text-[11px] font-black  tracking-wide text-white">{game.name}</span>
  </div>
 
  {/* Search */}
  <div className="relative group">
- <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-white/20 group-focus-within:text-primary transition-colors" />
+ <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-white group-focus-within:text-white transition-colors" />
  <input
  type="text"
  placeholder={isAccountMode ? "Search accounts..." : "Search services..."}
  value={searchQuery}
  onChange={(e) => setSearchQuery(e.target.value)}
- className="w-full bg-white/[0.03] border border-white/[0.08] rounded-2xl py-3.5 pl-10 pr-4 text-[11px] font-black uppercase text-white placeholder:text-white/20 outline-none focus:border-primary/40 transition-all shadow-inner"
+ className="w-full bg-white/[0.03] border border-white/[0.08] rounded-2xl py-3.5 pl-10 pr-4 text-[11px] font-black  text-white placeholder:text-white outline-none focus:border-primary/40 transition-all shadow-inner"
  />
  </div>
 
@@ -563,20 +563,20 @@ const GameHub = () => {
  {!isAccountMode ? (
  <div className="rounded-2xl bg-[#0A0A0A] border border-white/[0.06] overflow-hidden">
  <div className="p-3">
- <p className="text-[9px] font-black uppercase text-white/25 tracking-[0.18em]">Categories</p>
+ <p className="text-[9px] font-black  text-white tracking-[0.18em]">Categories</p>
  </div>
  <div className="p-3 space-y-0.5">
  {/* All */}
  <button
  onClick={() => handleCategoryChange('all')}
- className={`w-full flex items-center gap-2 px-3 py-2 rounded-xl text-[11px] font-bold uppercase tracking-wide transition-all duration-200
+ className={`w-full flex items-center gap-2 px-3 py-2 rounded-xl text-[11px] font-bold  tracking-wide transition-all duration-200
  ${selectedCategory === 'all'
  ? 'text-black bg-primary shadow-[0_0_12px_rgba(162,230,62,0.2)]'
- : 'text-white/40 hover:text-white hover:bg-white/5'}`}
+ : 'text-white hover:text-white hover:bg-white/5'}`}
  >
  <LayoutGrid className="w-3 h-3 flex-shrink-0" />
  <span className="flex-1 text-left">All Services</span>
- <span className={`text-[9px] font-black px-1.5 py-0.5 rounded-md ${selectedCategory === 'all' ? 'bg-black/20 text-black' : 'bg-white/5 text-white/30'}`}>
+ <span className={`text-[9px] font-black px-1.5 py-0.5 rounded-md ${selectedCategory === 'all' ? 'bg-black/20 text-black' : 'bg-white/5 text-white'}`}>
  {services.length}
  </span>
  </button>
@@ -592,12 +592,12 @@ const GameHub = () => {
  <button
  key={cat._id}
  onClick={() => handleCategoryChange(cat.slug)}
- className={`w-full flex items-center gap-2 px-3 py-2 rounded-xl text-[11px] font-bold uppercase tracking-wide transition-all duration-200
- ${isActive ? 'text-white bg-white/8 border border-white/10' : 'text-white/40 hover:text-white hover:bg-white/5'}`}
+ className={`w-full flex items-center gap-2 px-3 py-2 rounded-xl text-[11px] font-bold  tracking-wide transition-all duration-200
+ ${isActive ? 'text-white bg-white/8 border border-white/10' : 'text-white hover:text-white hover:bg-white/5'}`}
  >
- <Flame className={`w-3 h-3 flex-shrink-0 ${isActive ? 'text-orange-400' : cat.isFeatured ? 'text-primary' : 'opacity-0'}`} />
+ <Flame className={`w-3 h-3 flex-shrink-0 ${isActive ? 'text-orange-400' : cat.isFeatured ? 'text-white' : 'opacity-0'}`} />
  <span className="flex-1 text-left truncate">{cat.name}</span>
- <span className={`text-[9px] font-black px-1.5 py-0.5 rounded-md ${isActive ? 'bg-white/10 text-white/50' : 'bg-white/5 text-white/20'}`}>
+ <span className={`text-[9px] font-black px-1.5 py-0.5 rounded-md ${isActive ? 'bg-white/10 text-white' : 'bg-white/5 text-white'}`}>
  {count}
  </span>
  </button>
@@ -609,11 +609,11 @@ const GameHub = () => {
  <div className="space-y-3">
  {/* Rank Filter */}
  <div className="bg-[#0A0A0A] border border-white/[0.06] rounded-2xl p-4">
- <p className="text-[9px] font-black uppercase text-white/25 tracking-[0.18em] mb-3">Rank / Tier</p>
+ <p className="text-[9px] font-black  text-white tracking-[0.18em] mb-3">Rank / Tier</p>
  <select 
  value={accountFilters.rank}
  onChange={(e) => setAccountFilters(p => ({ ...p, rank: e.target.value }))}
- className="w-full bg-white/[0.03] border border-white/10 rounded-xl px-4 py-2.5 text-[11px] font-black text-white uppercase outline-none focus:border-primary/40 appearance-none"
+ className="w-full bg-white/[0.03] border border-white/10 rounded-xl px-4 py-2.5 text-[11px] font-black text-white  outline-none focus:border-primary/40 appearance-none"
  >
  <option value="all" className="bg-[#0f0f0f]">Any Rank</option>
  {filterOptions.ranks.map(r => <option key={r} value={r} className="bg-[#0f0f0f]">{r}</option>)}
@@ -622,11 +622,11 @@ const GameHub = () => {
 
  {/* Region Filter */}
  <div className="bg-[#0A0A0A] border border-white/[0.06] rounded-2xl p-4">
- <p className="text-[9px] font-black uppercase text-white/25 tracking-[0.18em] mb-3">Region</p>
+ <p className="text-[9px] font-black  text-white tracking-[0.18em] mb-3">Region</p>
  <select 
  value={accountFilters.region}
  onChange={(e) => setAccountFilters(p => ({ ...p, region: e.target.value }))}
- className="w-full bg-white/[0.03] border border-white/10 rounded-xl px-4 py-2.5 text-[11px] font-black text-white uppercase outline-none focus:border-primary/40 appearance-none"
+ className="w-full bg-white/[0.03] border border-white/10 rounded-xl px-4 py-2.5 text-[11px] font-black text-white  outline-none focus:border-primary/40 appearance-none"
  >
  <option value="all" className="bg-[#0f0f0f]">Any Region</option>
  {filterOptions.regions.map(r => <option key={r} value={r} className="bg-[#0f0f0f]">{r}</option>)}
@@ -635,11 +635,11 @@ const GameHub = () => {
 
  {/* Price Range */}
  <div className="bg-[#0A0A0A] border border-white/[0.06] rounded-2xl p-4">
- <p className="text-[9px] font-black uppercase text-white/25 tracking-[0.18em] mb-3">Price Range</p>
+ <p className="text-[9px] font-black  text-white tracking-[0.18em] mb-3">Price Range</p>
  <select 
  value={accountFilters.priceRange}
  onChange={(e) => setAccountFilters(p => ({ ...p, priceRange: e.target.value }))}
- className="w-full bg-white/[0.03] border border-white/10 rounded-xl px-4 py-2.5 text-[11px] font-black text-white uppercase outline-none focus:border-primary/40 appearance-none"
+ className="w-full bg-white/[0.03] border border-white/10 rounded-xl px-4 py-2.5 text-[11px] font-black text-white  outline-none focus:border-primary/40 appearance-none"
  >
  <option value="all" className="bg-[#0f0f0f]">Any Price</option>
  <option value="0-50" className="bg-[#0f0f0f]">Under $50</option>
@@ -658,12 +658,12 @@ const GameHub = () => {
  </div>
  <div className="flex items-center gap-2 mb-2">
  <div className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse shadow-[0_0_8px_rgba(162,230,62,1)]" />
- <span className="text-[9px] font-black uppercase tracking-widest text-primary">Secure Transfer</span>
+ <span className="text-[9px] font-black  tracking-normal text-white">Secure Transfer</span>
  </div>
- <p className="text-[10px] text-white/40 leading-relaxed mb-4 font-bold uppercase tracking-tight">Need help choosing? Our experts are here 24/7.</p>
+ <p className="text-[10px] text-white leading-relaxed mb-4 font-bold  tracking-tight">Need help choosing? Our experts are here 24/7.</p>
  <button
  onClick={() => window.dispatchEvent(new CustomEvent('openSupportChat'))}
- className="w-full py-2.5 bg-primary text-black rounded-xl text-[10px] font-black uppercase tracking-[0.2em] transition-all hover:scale-105 shadow-lg shadow-primary/20"
+ className="w-full py-2.5 bg-primary text-black rounded-xl text-[10px] font-black  tracking-normal transition-all hover:scale-105 shadow-lg shadow-primary/20"
  >Live Support</button>
  </div>
  </div>
@@ -675,12 +675,12 @@ const GameHub = () => {
  {/* Section header */}
  <div className="flex items-center justify-between mb-8">
  <div>
- <h2 className="text-2xl font-black text-white tracking-tighter uppercase ">
+ <h2 className="text-2xl font-black text-white tracking-tighter  ">
  {isAccountMode ? 'Verified Accounts' : (selectedCategory === 'all'
  ? 'All Boosting Services'
  : (categories.find(c => c.slug === selectedCategory)?.name || selectedCategory))}
  </h2>
- <p className="text-white/25 text-[10px] font-black uppercase tracking-[0.2em] mt-1">
+ <p className="text-white text-[10px] font-black  tracking-normal mt-1">
  {isAccountMode ? filteredAccounts.length : filteredServices.length} {((isAccountMode ? filteredAccounts.length : filteredServices.length) === 1) ? (isAccountMode ? 'account' : 'service') : (isAccountMode ? 'accounts' : 'services')} found
  {searchQuery && ` matching "${searchQuery}"`}
  </p>
@@ -711,7 +711,7 @@ const GameHub = () => {
  <button
  onClick={() => { setCurrentPage(p => Math.max(1, p - 1)); window.scrollTo({ top: 400, behavior: 'smooth' }); }}
  disabled={currentPage === 1}
- className={`w-12 h-12 rounded-2xl flex items-center justify-center border transition-all ${currentPage === 1 ? 'border-white/5 text-white/10' : 'border-white/10 text-white hover:bg-white/5 hover:border-primary/40'}`}
+ className={`w-12 h-12 rounded-2xl flex items-center justify-center border transition-all ${currentPage === 1 ? 'border-white/5 text-white' : 'border-white/10 text-white hover:bg-white/5 hover:border-primary/40'}`}
  >
  <ArrowRight className="w-5 h-5 rotate-180" />
  </button>
@@ -721,7 +721,7 @@ const GameHub = () => {
  <button
  key={i}
  onClick={() => { setCurrentPage(i + 1); window.scrollTo({ top: 400, behavior: 'smooth' }); }}
- className={`w-12 h-12 rounded-2xl flex items-center justify-center text-xs font-black transition-all ${currentPage === i + 1 ? 'bg-primary text-black' : 'bg-white/5 text-white/40 hover:bg-white/10'}`}
+ className={`w-12 h-12 rounded-2xl flex items-center justify-center text-xs font-black transition-all ${currentPage === i + 1 ? 'bg-primary text-black' : 'bg-white/5 text-white hover:bg-white/10'}`}
  >
  {i + 1}
  </button>
@@ -731,7 +731,7 @@ const GameHub = () => {
  <button
  onClick={() => { setCurrentPage(p => Math.min(totalPages, p + 1)); window.scrollTo({ top: 400, behavior: 'smooth' }); }}
  disabled={currentPage === totalPages}
- className={`w-12 h-12 rounded-2xl flex items-center justify-center border transition-all ${currentPage === totalPages ? 'border-white/5 text-white/10' : 'border-white/10 text-white hover:bg-white/5 hover:border-primary/40'}`}
+ className={`w-12 h-12 rounded-2xl flex items-center justify-center border transition-all ${currentPage === totalPages ? 'border-white/5 text-white' : 'border-white/10 text-white hover:bg-white/5 hover:border-primary/40'}`}
  >
  <ArrowRight className="w-5 h-5" />
  </button>
@@ -741,11 +741,11 @@ const GameHub = () => {
  ) : (
  <div className="py-24 flex flex-col items-center justify-center bg-white/[0.01] border border-dashed border-white/10 rounded-[3rem]">
  <div className="w-16 h-16 bg-white/[0.03] rounded-full flex items-center justify-center mb-5 border border-white/5">
- <Users className="w-8 h-8 text-white/10" />
+ <Users className="w-8 h-8 text-white" />
  </div>
- <h3 className="text-xl font-black text-white uppercase tracking-tight mb-2">No Accounts Found</h3>
- <p className="text-white/30 font-medium text-xs max-w-xs text-center">We couldn't find any accounts matching your search or filters. Try adjusting them.</p>
- <button onClick={() => setAccountFilters({ rank: 'all', region: 'all', priceRange: 'all' })} className="mt-8 px-8 py-3 bg-white/5 hover:bg-white/10 text-white text-[10px] font-black uppercase tracking-widest rounded-2xl transition-all border border-white/10">
+ <h3 className="text-xl font-black text-white  tracking-tight mb-2">No Accounts Found</h3>
+ <p className="text-white font-medium text-xs max-w-xs text-center">We couldn't find any accounts matching your search or filters. Try adjusting them.</p>
+ <button onClick={() => setAccountFilters({ rank: 'all', region: 'all', priceRange: 'all' })} className="mt-8 px-8 py-3 bg-white/5 hover:bg-white/10 text-white text-[10px] font-black  tracking-normal rounded-2xl transition-all border border-white/10">
  Reset Filters
  </button>
  </div>
@@ -766,10 +766,10 @@ const GameHub = () => {
  ) : (
  <div className="py-16 flex flex-col items-center justify-center bg-white/[0.02] border border-white/5 rounded-3xl">
  <div className="w-14 h-14 bg-white/5 rounded-full border border-white/10 flex items-center justify-center mb-3">
- <Search className="w-6 h-6 text-white/20" />
+ <Search className="w-6 h-6 text-white" />
  </div>
- <h3 className="text-base font-black text-white uppercase tracking-tight mb-1">No Results</h3>
- <p className="text-white/30 font-medium text-xs">Try adjusting your filters or search.</p>
+ <h3 className="text-base font-black text-white  tracking-tight mb-1">No Results</h3>
+ <p className="text-white font-medium text-xs">Try adjusting your filters or search.</p>
  <button onClick={() => { handleCategoryChange('all'); setSearchQuery(''); }} className="mt-5 px-5 py-2 bg-white/10 hover:bg-white/20 text-white text-xs font-bold rounded-full transition-colors">
  Clear Filters
  </button>
@@ -790,13 +790,13 @@ const GameHub = () => {
       <div className="text-center mb-24">
         <div className="flex items-center justify-center gap-6 mb-6">
           <div className="h-px bg-gradient-to-r from-transparent via-white/10 to-transparent flex-1 hidden md:block"></div>
-          <span className="text-primary font-black text-[10px] uppercase tracking-[0.4em]">Efficiency First</span>
+          <span className="text-white font-black text-[10px]  tracking-[0.4em]">Efficiency First</span>
           <div className="h-px bg-gradient-to-l from-transparent via-white/10 to-transparent flex-1 hidden md:block"></div>
         </div>
-        <h2 className="text-3xl md:text-5xl font-black text-white tracking-tighter uppercase mb-6 leading-none">
+        <h2 className="text-3xl md:text-5xl font-black text-white tracking-tighter  mb-6 leading-none">
           Optimize Your Time With <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-[#5eead4]">BoostGG</span>
         </h2>
-        <p className="text-white/40 font-medium text-sm max-w-2xl mx-auto uppercase tracking-[0.2em] leading-relaxed">
+        <p className="text-white font-medium text-sm max-w-2xl mx-auto  tracking-normal leading-relaxed">
           Over 10 years in gaming, we know exactly what elite players need to stay at the top.
         </p>
       </div>
@@ -842,10 +842,10 @@ const GameHub = () => {
             </div>
 
             {/* Text Content */}
-            <h3 className="text-xl font-black text-white uppercase tracking-tight mb-4 group-hover:text-primary transition-colors duration-300">
+            <h3 className="text-xl font-black text-white  tracking-tight mb-4 group-hover:text-white transition-colors duration-300">
               {title}
             </h3>
-            <p className="text-white/40 font-medium leading-relaxed text-sm mb-10">
+            <p className="text-white font-medium leading-relaxed text-sm mb-10">
               {desc}
             </p>
 
@@ -853,7 +853,7 @@ const GameHub = () => {
            
 
             {/* Subtle index number */}
-            <span className="absolute top-8 right-10 text-5xl font-black text-white/[0.02] pointer-events-none group-hover:text-primary/[0.05] transition-colors duration-700">
+            <span className="absolute top-8 right-10 text-5xl font-black text-white/[0.02] pointer-events-none group-hover:text-white/[0.05] transition-colors duration-700">
               0{i + 1}
             </span>
           </div>
@@ -885,3 +885,6 @@ const GameHub = () => {
 };
 
 export default GameHub;
+
+
+

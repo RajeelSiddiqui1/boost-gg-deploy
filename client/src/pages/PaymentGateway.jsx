@@ -97,7 +97,7 @@ const PaymentGateway = () => {
         <div className="min-h-screen bg-[#f6f9fc] flex flex-col items-center justify-center font-sans p-4">
             <div className="bg-white rounded-xl shadow-lg p-8 w-full max-w-[400px]">
                 <div className="text-center mb-6">
-                    <h2 className="text-xl font-bold text-gray-800 uppercase tracking-wide">
+                    <h2 className="text-xl font-bold text-gray-800  tracking-wide">
                         {selectedPaymentMethod} Checkout
                     </h2>
                     <p className="text-gray-500 text-sm mt-2">Complete your secure payment</p>
@@ -127,3 +127,4 @@ const PaymentGateway = () => {
 };
 
 export default PaymentGateway;
+

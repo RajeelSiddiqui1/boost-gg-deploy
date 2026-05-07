@@ -27,7 +27,7 @@ const GameDiscovery = () => {
  </button>
  ))}
  </div>
- <button className="mt-20 flex items-center gap-3 mx-auto px-12 py-5 rounded-full text-sm font-black uppercase tracking-[0.25em] transition-all border shadow-2xl active:scale-95 bg-[#111111] hover:bg-[#1a1a1a] text-white border-white/10">
+ <button className="mt-20 flex items-center gap-3 mx-auto px-12 py-5 rounded-full text-sm font-black  tracking-[0.25em] transition-all border shadow-2xl active:scale-95 bg-[#111111] hover:bg-[#1a1a1a] text-white border-white/10">
  <span>Show all games</span>
  <ChevronDown className="w-6 h-6" />
  </button>
@@ -37,3 +37,4 @@ const GameDiscovery = () => {
 };
 
 export default GameDiscovery;
+

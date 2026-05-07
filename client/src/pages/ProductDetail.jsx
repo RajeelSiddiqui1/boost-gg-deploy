@@ -332,15 +332,15 @@ const ProductDetail = () => {
                                         }`}>
                                             {isSelected && <div className="w-2 h-2 rounded-full bg-primary"></div>}
                                         </div>
-                                        <span className="text-xs font-bold uppercase">{opt.label}</span>
+                                        <span className="text-xs font-bold ">{opt.label}</span>
                                         {opt.badge && (
-                                            <span className="px-2 py-0.5 bg-primary/20 rounded-full text-[8px] font-black text-primary uppercase">
+                                            <span className="px-2 py-0.5 bg-primary/20 rounded-full text-[8px] font-black text-white ">
                                                 {opt.badge}
                                             </span>
                                         )}
                                         {opt.showInfo && opt.tooltip && (
                                             <div className="relative group">
-                                                <Info className="w-3 h-3 text-white/30 cursor-help" />
+                                                <Info className="w-3 h-3 text-white cursor-help" />
                                                 <div className="absolute bottom-full left-0 mb-2 px-2 py-1 bg-black/90 text-[8px] text-white rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
                                                     {opt.tooltip}
                                                 </div>
@@ -348,7 +348,7 @@ const ProductDetail = () => {
                                         )}
                                     </div>
                                     {opt.priceModifier > 0 && (
-                                        <span className="text-[10px] font-bold text-primary">+${opt.priceModifier}</span>
+                                        <span className="text-[10px] font-bold text-white">+${opt.priceModifier}</span>
                                     )}
                                 </button>
                             );
@@ -386,15 +386,15 @@ const ProductDetail = () => {
                                         }`}>
                                             {isSelected && <CheckCircle2 className="w-3 h-3 text-black" />}
                                         </div>
-                                        <span className="text-xs font-bold uppercase">{opt.label}</span>
+                                        <span className="text-xs font-bold ">{opt.label}</span>
                                         {opt.badge && (
-                                            <span className="px-2 py-0.5 bg-primary/20 rounded-full text-[8px] font-black text-primary uppercase">
+                                            <span className="px-2 py-0.5 bg-primary/20 rounded-full text-[8px] font-black text-white ">
                                                 {opt.badge}
                                             </span>
                                         )}
                                         {opt.showInfo && opt.tooltip && (
                                             <div className="relative group">
-                                                <Info className="w-3 h-3 text-white/30 cursor-help" />
+                                                <Info className="w-3 h-3 text-white cursor-help" />
                                                 <div className="absolute bottom-full left-0 mb-2 px-2 py-1 bg-black/90 text-[8px] text-white rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
                                                     {opt.tooltip}
                                                 </div>
@@ -402,7 +402,7 @@ const ProductDetail = () => {
                                         )}
                                     </div>
                                     {opt.priceModifier > 0 && (
-                                        <span className="text-[10px] font-bold text-primary">+${opt.priceModifier}</span>
+                                        <span className="text-[10px] font-bold text-white">+${opt.priceModifier}</span>
                                     )}
                                 </button>
                             );
@@ -416,7 +416,7 @@ const ProductDetail = () => {
                         <select
                             value={value || ''}
                             onChange={(e) => setSelectedOptions(prev => ({ ...prev, [section.id]: e.target.value }))}
-                            className="w-full bg-white/5 border border-white/10 rounded-xl p-4 text-white text-xs font-bold uppercase appearance-none cursor-pointer focus:outline-none focus:border-primary/50"
+                            className="w-full bg-white/5 border border-white/10 rounded-xl p-4 text-white text-xs font-bold  appearance-none cursor-pointer focus:outline-none focus:border-primary/50"
                         >
                             {section.options?.map(opt => (
                                 <option key={opt.id} value={opt.label} className="bg-black">
@@ -424,7 +424,7 @@ const ProductDetail = () => {
                                 </option>
                             ))}
                         </select>
-                        <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/40 pointer-events-none" />
+                        <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white pointer-events-none" />
                     </div>
                 );
 
@@ -451,7 +451,7 @@ const ProductDetail = () => {
                             <div className="text-center">
                                 <span className="font-black text-xl text-white">{currentValue}</span>
                                 {unitLabel && (
-                                    <span className="text-[10px] font-bold text-white/40 ml-1">{unitLabel}</span>
+                                    <span className="text-[10px] font-bold text-white ml-1">{unitLabel}</span>
                                 )}
                             </div>
                             <button
@@ -465,13 +465,13 @@ const ProductDetail = () => {
                             </button>
                         </div>
                         {pricePerUnit > 0 && (
-                            <p className="text-[9px] font-bold text-white/30 text-center">
+                            <p className="text-[9px] font-bold text-white text-center">
                                 ${pricePerUnit} per {unitLabel.toLowerCase() || 'unit'}
                             </p>
                         )}
                         {bulkDiscount && currentValue >= bulkDiscount.threshold && (
                             <div className="bg-green-500/20 border border-green-500/30 rounded-lg p-2 text-center">
-                                <p className="text-[9px] font-black text-green-400 uppercase">{bulkDiscount.bannerText || `${bulkDiscount.discountPercent}% BULK DISCOUNT APPLIED!`}</p>
+                                <p className="text-[9px] font-black text-green-400 ">{bulkDiscount.bannerText || `${bulkDiscount.discountPercent}% BULK DISCOUNT APPLIED!`}</p>
                             </div>
                         )}
                     </div>
@@ -504,13 +504,13 @@ const ProductDetail = () => {
                                 }}
                             />
                         </div>
-                        <div className="flex justify-between text-[9px] font-bold text-white/30">
+                        <div className="flex justify-between text-[9px] font-bold text-white">
                             <span>{rangeMin}{rangeUnit}</span>
-                            <span className="text-white/60">{rangeValue}{rangeUnit}</span>
+                            <span className="text-white">{rangeValue}{rangeUnit}</span>
                             <span>{rangeMax}{rangeUnit}</span>
                         </div>
                         {rangePricePerUnit > 0 && (
-                            <p className="text-[10px] font-bold text-white/40 text-center">
+                            <p className="text-[10px] font-bold text-white text-center">
                                 Total: ${(rangeValue * rangePricePerUnit).toFixed(2)}
                             </p>
                         )}
@@ -524,7 +524,7 @@ const ProductDetail = () => {
                         value={value || ''}
                         onChange={(e) => setSelectedOptions(prev => ({ ...prev, [section.id]: e.target.value }))}
                         placeholder={section.placeholder || "Enter details..."}
-                        className="w-full bg-white/5 border border-white/10 rounded-xl p-4 text-white text-sm placeholder:text-white/20 focus:outline-none focus:border-primary/50"
+                        className="w-full bg-white/5 border border-white/10 rounded-xl p-4 text-white text-sm placeholder:text-white focus:outline-none focus:border-primary/50"
                     />
                 );
 
@@ -545,11 +545,11 @@ const ProductDetail = () => {
     );
 
     if (error || !service) return (
-        <div className="min-h-screen bg-black flex flex-col items-center justify-center text-white/40 space-y-6 px-4">
+        <div className="min-h-screen bg-black flex flex-col items-center justify-center text-white space-y-6 px-4">
             <Gamepad2 className="w-20 h-20 opacity-20" />
-            <h2 className="text-3xl md:text-4xl font-black uppercase tracking-tighter text-center">{error || "Service Not Found"}</h2>
-            <p className="text-white/20 text-center max-w-md">The service you're looking for doesn't exist or has been removed.</p>
-            <button onClick={() => navigate('/')} className="bg-primary text-black px-8 py-3 rounded-full font-black uppercase tracking-widest text-xs hover:bg-primary/80 transition-all">Return Home</button>
+            <h2 className="text-3xl md:text-4xl font-black  tracking-tighter text-center">{error || "Service Not Found"}</h2>
+            <p className="text-white text-center max-w-md">The service you're looking for doesn't exist or has been removed.</p>
+            <button onClick={() => navigate('/')} className="bg-primary text-black px-8 py-3 rounded-full font-black  tracking-normal text-xs hover:bg-primary/80 transition-all">Return Home</button>
         </div>
     );
 
@@ -565,18 +565,18 @@ const ProductDetail = () => {
             <div className="max-w-[1400px] mx-auto px-4 md:px-6 relative z-10">
                 
                 {/* Breadcrumbs */}
-                <nav className="flex items-center gap-2 mb-8 text-[10px] font-black uppercase tracking-widest text-white/20 overflow-x-auto pb-2 no-scrollbar">
-                    <Link to="/" className="hover:text-primary transition-colors">HOME</Link>
+                <nav className="flex items-center gap-2 mb-8 text-[10px] font-black  tracking-normal text-white overflow-x-auto pb-2 no-scrollbar">
+                    <Link to="/" className="hover:text-white transition-colors">Home</Link>
                     <ChevronRight className="w-3 h-3" />
-                    <Link to="/games" className="hover:text-primary transition-colors">GAMES</Link>
+                    <Link to="/games" className="hover:text-white transition-colors">Games</Link>
                     <ChevronRight className="w-3 h-3" />
                     {service.gameId && (
                         <>
-                            <Link to={`/game/${service.gameId.slug}`} className="hover:text-primary transition-colors">{service.gameId.name}</Link>
+                            <Link to={`/game/${service.gameId.slug}`} className="hover:text-white transition-colors">{service.gameId.name}</Link>
                             <ChevronRight className="w-3 h-3" />
                         </>
                     )}
-                    <span className="text-white/60 truncate">{service.title}</span>
+                    <span className="text-white truncate">{service.title}</span>
                 </nav>
 
                 {/* Header Section */}
@@ -586,18 +586,18 @@ const ProductDetail = () => {
                         <div>
                             <div className="flex items-center gap-3 mb-3 flex-wrap">
                                 {service.isFeatured && (
-                                    <span className="px-3 py-1 bg-primary/20 border border-primary/30 rounded-full text-[9px] font-black text-primary uppercase tracking-wider">🔥 FEATURED</span>
+                                    <span className="px-3 py-1 bg-primary/20 border border-primary/30 rounded-full text-[9px] font-black text-white  tracking-wider">🔥 FEATURED</span>
                                 )}
                                 {service.is_hot_offer && (
-                                    <span className="px-3 py-1 bg-red-500/20 border border-red-500/30 rounded-full text-[9px] font-black text-red-400 uppercase tracking-wider">⚡ HOT OFFER</span>
+                                    <span className="px-3 py-1 bg-red-500/20 border border-red-500/30 rounded-full text-[9px] font-black text-red-400  tracking-wider">⚡ HOT OFFER</span>
                                 )}
                                 {service.cashbackPercent > 0 && (
-                                    <span className="px-3 py-1 bg-green-500/20 border border-green-500/30 rounded-full text-[9px] font-black text-green-400 uppercase tracking-wider">💰 {service.cashbackPercent}% CASHBACK</span>
+                                    <span className="px-3 py-1 bg-green-500/20 border border-green-500/30 rounded-full text-[9px] font-black text-green-400  tracking-wider">💰 {service.cashbackPercent}% CASHBACK</span>
                                 )}
                             </div>
-                            <h1 className="text-4xl md:text-6xl lg:text-7xl font-black uppercase tracking-tighter leading-[1.1]">{service.title}</h1>
+                            <h1 className="text-4xl md:text-6xl lg:text-7xl font-black  tracking-tighter leading-[1.1]">{service.title}</h1>
                             {service.shortDescription && (
-                                <p className="text-white/40 text-sm md:text-base font-medium mt-4 max-w-2xl">{service.shortDescription}</p>
+                                <p className="text-white text-sm md:text-base font-medium mt-4 max-w-2xl">{service.shortDescription}</p>
                             )}
                         </div>
                     </div>
@@ -606,14 +606,14 @@ const ProductDetail = () => {
                             onClick={handleToggleFavorite}
                             className={`p-3 rounded-full border transition-all ${
                                 isFavorite 
-                                    ? 'bg-primary/20 border-primary text-primary' 
-                                    : 'bg-white/5 border-white/10 text-white/60 hover:bg-white/10 hover:text-white'
+                                    ? 'bg-primary/20 border-primary text-white' 
+                                    : 'bg-white/5 border-white/10 text-white hover:bg-white/10 hover:text-white'
                             }`}
                         >
                             <Heart className={`w-5 h-5 ${isFavorite ? 'fill-current' : ''}`} />
                         </button>
                         <button className="p-3 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 transition-colors">
-                            <Share2 className="w-5 h-5 text-white/60" />
+                            <Share2 className="w-5 h-5 text-white" />
                         </button>
                     </div>
 
@@ -651,23 +651,23 @@ const ProductDetail = () => {
                                 <div className="flex gap-4">
                                     {service.estimatedStartTime && (
                                         <div className="flex items-center gap-2 bg-black/50 backdrop-blur-md rounded-full px-4 py-2 border border-white/10">
-                                            <Clock className="w-4 h-4 text-primary" />
-                                            <span className="text-[10px] font-black uppercase">{service.estimatedStartTime} start</span>
+                                            <Clock className="w-4 h-4 text-white" />
+                                            <span className="text-[10px] font-black ">{service.estimatedStartTime} start</span>
                                         </div>
                                     )}
                                     {service.orders_count > 0 && (
                                         <div className="flex items-center gap-2 bg-black/50 backdrop-blur-md rounded-full px-4 py-2 border border-white/10">
-                                            <Trophy className="w-4 h-4 text-primary" />
-                                            <span className="text-[10px] font-black uppercase">{service.orders_count}+ orders</span>
+                                            <Trophy className="w-4 h-4 text-white" />
+                                            <span className="text-[10px] font-black ">{service.orders_count}+ orders</span>
                                         </div>
                                     )}
                                 </div>
                                 {service.reviewsCount > 0 && (
                                     <div className="flex items-center gap-1">
                                         {[...Array(5)].map((_, i) => (
-                                            <Star key={i} className={`w-4 h-4 ${service.rating && i < Math.floor(service.rating) ? 'text-primary fill-primary' : 'text-white/20'}`} />
+                                            <Star key={i} className={`w-4 h-4 ${service.rating && i < Math.floor(service.rating) ? 'text-white fill-primary' : 'text-white'}`} />
                                         ))}
-                                        <span className="text-[10px] font-bold text-white/40 ml-2">({service.reviewsCount})</span>
+                                        <span className="text-[10px] font-bold text-white ml-2">({service.reviewsCount})</span>
                                     </div>
                                 )}
                             </div>
@@ -678,16 +678,16 @@ const ProductDetail = () => {
                             <div className="grid grid-cols-2 gap-4">
                                 {service.platforms?.length > 0 && (
                                     <div className="space-y-3">
-                                        <h4 className="text-[10px] font-black uppercase tracking-widest text-white/40 flex items-center gap-2"><Monitor className="w-3 h-3" /> Platform</h4>
+                                        <h4 className="text-[10px] font-black  tracking-normal text-white flex items-center gap-2"><Monitor className="w-3 h-3" /> Platform</h4>
                                         <div className="flex gap-2 flex-wrap">
                                             {service.platforms.map(platform => (
                                                 <button
                                                     key={platform}
                                                     onClick={() => setSelectedPlatform(platform)}
-                                                    className={`px-4 py-2 rounded-xl text-xs font-bold uppercase transition-all ${
+                                                    className={`px-4 py-2 rounded-xl text-xs font-bold  transition-all ${
                                                         selectedPlatform === platform 
                                                             ? 'bg-primary text-black' 
-                                                            : 'bg-white/5 text-white/60 hover:bg-white/10'
+                                                            : 'bg-white/5 text-white hover:bg-white/10'
                                                     }`}
                                                 >
                                                     {platform}
@@ -698,16 +698,16 @@ const ProductDetail = () => {
                                 )}
                                 {service.regions?.length > 0 && (
                                     <div className="space-y-3">
-                                        <h4 className="text-[10px] font-black uppercase tracking-widest text-white/40 flex items-center gap-2"><Globe className="w-3 h-3" /> Region</h4>
+                                        <h4 className="text-[10px] font-black  tracking-normal text-white flex items-center gap-2"><Globe className="w-3 h-3" /> Region</h4>
                                         <div className="flex gap-2 flex-wrap">
                                             {service.regions.map(region => (
                                                 <button
                                                     key={region}
                                                     onClick={() => setSelectedRegion(region)}
-                                                    className={`px-4 py-2 rounded-xl text-xs font-bold uppercase transition-all ${
+                                                    className={`px-4 py-2 rounded-xl text-xs font-bold  transition-all ${
                                                         selectedRegion === region 
                                                             ? 'bg-primary text-black' 
-                                                            : 'bg-white/5 text-white/60 hover:bg-white/10'
+                                                            : 'bg-white/5 text-white hover:bg-white/10'
                                                     }`}
                                                 >
                                                     {region}
@@ -726,10 +726,10 @@ const ProductDetail = () => {
                                     <button
                                         key={tab}
                                         onClick={() => setActiveTab(tab)}
-                                        className={`px-6 py-3 text-[11px] font-black uppercase tracking-widest transition-all ${
+                                        className={`px-6 py-3 text-[11px] font-black  tracking-normal transition-all ${
                                             activeTab === tab 
-                                                ? 'text-primary border-b-2 border-primary' 
-                                                : 'text-white/30 hover:text-white/60'
+                                                ? 'text-white border-b-2 border-primary' 
+                                                : 'text-white hover:text-white'
                                         }`}
                                     >
                                         {tab}
@@ -740,12 +740,12 @@ const ProductDetail = () => {
                             <div className="min-h-[200px]">
                                 {activeTab === 'overview' && (
                                     <div className="space-y-6">
-                                        <div dangerouslySetInnerHTML={{ __html: service.description }} className="text-white/40 font-medium leading-relaxed" />
+                                        <div dangerouslySetInnerHTML={{ __html: service.description }} className="text-white font-medium leading-relaxed" />
                                         {service.deliveryTime && (
                                             <div className="flex items-center gap-4 p-4 bg-white/5 rounded-2xl">
-                                                <Clock className="w-8 h-8 text-primary/60" />
+                                                <Clock className="w-8 h-8 text-white/60" />
                                                 <div>
-                                                    <p className="text-[10px] font-black text-white/40 uppercase">Delivery Time</p>
+                                                    <p className="text-[10px] font-black text-white ">Delivery Time</p>
                                                     <p className="text-lg font-bold text-white">{service.deliveryTime} hours</p>
                                                 </div>
                                             </div>
@@ -758,14 +758,14 @@ const ProductDetail = () => {
                                         {service.requirements?.length > 0 ? (
                                             <ul className="space-y-3">
                                                 {service.requirements.map((req, i) => (
-                                                    <li key={i} className="flex items-center gap-3 text-white/60 font-medium">
-                                                        <ShieldCheck className="w-4 h-4 text-primary" />
+                                                    <li key={i} className="flex items-center gap-3 text-white font-medium">
+                                                        <ShieldCheck className="w-4 h-4 text-white" />
                                                         {req}
                                                     </li>
                                                 ))}
                                             </ul>
                                         ) : (
-                                            <p className="text-white/40">No specific requirements. Just your game account ready to go!</p>
+                                            <p className="text-white">No specific requirements. Just your game account ready to go!</p>
                                         )}
                                     </div>
                                 )}
@@ -775,27 +775,27 @@ const ProductDetail = () => {
                                         {service.features?.length > 0 ? (
                                             service.features.map((feature, i) => (
                                                 <div key={i} className="flex items-center gap-3 p-3 bg-white/5 rounded-xl">
-                                                    <CheckCircle2 className="w-4 h-4 text-primary" />
-                                                    <span className="text-sm text-white/80">{feature}</span>
+                                                    <CheckCircle2 className="w-4 h-4 text-white" />
+                                                    <span className="text-sm text-white">{feature}</span>
                                                 </div>
                                             ))
                                         ) : (
                                             <>
                                                 <div className="flex items-center gap-3 p-3 bg-white/5 rounded-xl">
-                                                    <CheckCircle2 className="w-4 h-4 text-primary" />
-                                                    <span className="text-sm text-white/80">100% Secure & Safe</span>
+                                                    <CheckCircle2 className="w-4 h-4 text-white" />
+                                                    <span className="text-sm text-white">100% Secure & Safe</span>
                                                 </div>
                                                 <div className="flex items-center gap-3 p-3 bg-white/5 rounded-xl">
-                                                    <CheckCircle2 className="w-4 h-4 text-primary" />
-                                                    <span className="text-sm text-white/80">24/7 Customer Support</span>
+                                                    <CheckCircle2 className="w-4 h-4 text-white" />
+                                                    <span className="text-sm text-white">24/7 Customer Support</span>
                                                 </div>
                                                 <div className="flex items-center gap-3 p-3 bg-white/5 rounded-xl">
-                                                    <CheckCircle2 className="w-4 h-4 text-primary" />
-                                                    <span className="text-sm text-white/80">Professional Players</span>
+                                                    <CheckCircle2 className="w-4 h-4 text-white" />
+                                                    <span className="text-sm text-white">Professional Players</span>
                                                 </div>
                                                 <div className="flex items-center gap-3 p-3 bg-white/5 rounded-xl">
-                                                    <CheckCircle2 className="w-4 h-4 text-primary" />
-                                                    <span className="text-sm text-white/80">Money-Back Guarantee</span>
+                                                    <CheckCircle2 className="w-4 h-4 text-white" />
+                                                    <span className="text-sm text-white">Money-Back Guarantee</span>
                                                 </div>
                                             </>
                                         )}
@@ -816,8 +816,8 @@ const ProductDetail = () => {
                             if (sections && Array.isArray(sections) && sections.length > 0) {
                                 return (
                                     <div className="bg-[#0A0A0A] rounded-[32px] border border-white/10 p-6 space-y-8 max-h-[650px] overflow-y-auto custom-scrollbar">
-                                        <h3 className="text-lg font-black uppercase tracking-tighter flex items-center gap-2">
-                                            <Package className="w-5 h-5 text-primary" />
+                                        <h3 className="text-lg font-black  tracking-tighter flex items-center gap-2">
+                                            <Package className="w-5 h-5 text-white" />
                                             Customize Your Order
                                         </h3>
                                         
@@ -826,9 +826,9 @@ const ProductDetail = () => {
                                             .map((section) => (
                                                 <div key={section.id || section.fieldId || section._id} className="space-y-4">
                                                     <div className="flex justify-between items-center">
-                                                        <h4 className="text-[11px] font-black uppercase tracking-widest text-white/40">
+                                                        <h4 className="text-[11px] font-black  tracking-normal text-white">
                                                             {section.heading || section.label || section.name}
-                                                            {section.required && <span className="text-primary ml-1">*</span>}
+                                                            {section.required && <span className="text-white ml-1">*</span>}
                                                         </h4>
                                                     </div>
                                                     {renderFormField(section)}
@@ -840,9 +840,9 @@ const ProductDetail = () => {
 
                             return (
                                 <div className="bg-[#0A0A0A] rounded-[32px] border border-white/10 p-8 text-center">
-                                    <Package className="w-12 h-12 text-white/20 mx-auto mb-4" />
-                                    <p className="text-white/40 text-sm">No customization options available</p>
-                                    <p className="text-white/20 text-xs mt-1">Standard service will be delivered</p>
+                                    <Package className="w-12 h-12 text-white mx-auto mb-4" />
+                                    <p className="text-white text-sm">No customization options available</p>
+                                    <p className="text-white text-xs mt-1">Standard service will be delivered</p>
                                 </div>
                             );
                         })()}
@@ -854,7 +854,7 @@ const ProductDetail = () => {
                             <div className="p-6 space-y-6">
                                 {/* Price Display */}
                                 <div className="text-center pb-4 border-b border-white/10">
-                                    <p className="text-[10px] font-black text-white/40 uppercase tracking-widest mb-2">Total Price</p>
+                                    <p className="text-[10px] font-black text-white  tracking-normal mb-2">Total Price</p>
                                     <div className="flex items-baseline justify-center gap-1">
                                         <span className="text-5xl md:text-6xl font-black text-white">{totalPrice}</span>
                                         <span className="text-2xl font-black text-white">$</span>
@@ -868,7 +868,7 @@ const ProductDetail = () => {
 
                                 {/* Quantity Selector */}
                                 <div className="space-y-3">
-                                    <label className="text-[10px] font-black uppercase tracking-widest text-white/40 flex items-center gap-2">
+                                    <label className="text-[10px] font-black  tracking-normal text-white flex items-center gap-2">
                                         <ArrowUpDown className="w-3 h-3" /> Quantity
                                     </label>
                                     <div className="flex items-center justify-between bg-white/5 rounded-xl p-2 border border-white/10">
@@ -896,7 +896,7 @@ const ProductDetail = () => {
                                 {/* Speed Options */}
                                 {(service.speedOptions?.express?.enabled || service.speedOptions?.superExpress?.enabled) && (
                                     <div className="space-y-3">
-                                        <label className="text-[10px] font-black uppercase tracking-widest text-white/40 flex items-center gap-2">
+                                        <label className="text-[10px] font-black  tracking-normal text-white flex items-center gap-2">
                                             <Zap className="w-3 h-3" /> Speed Priority
                                         </label>
                                         <div className="space-y-2">
@@ -910,9 +910,9 @@ const ProductDetail = () => {
                                             >
                                                 <div className="flex items-center gap-2">
                                                     <div className={`w-3 h-3 rounded-full ${speed === "normal" ? 'bg-primary' : 'bg-white/20'}`}></div>
-                                                    <span className="text-xs font-bold uppercase">Normal</span>
+                                                    <span className="text-xs font-bold ">Normal</span>
                                                 </div>
-                                                <span className="text-[10px] font-bold text-white/40">Included</span>
+                                                <span className="text-[10px] font-bold text-white">Included</span>
                                             </button>
                                             {service.speedOptions?.express?.enabled && (
                                                 <button
@@ -925,17 +925,17 @@ const ProductDetail = () => {
                                                 >
                                                     <div className="flex items-center gap-2">
                                                         <div className={`w-3 h-3 rounded-full ${speed === "express" ? 'bg-primary' : 'bg-white/20'}`}></div>
-                                                        <span className="text-xs font-bold uppercase">Express</span>
+                                                        <span className="text-xs font-bold ">Express</span>
                                                         {service.speedOptions.express.tooltip && (
                                                             <div className="relative group">
-                                                                <Info className="w-3 h-3 text-white/30 cursor-help" />
+                                                                <Info className="w-3 h-3 text-white cursor-help" />
                                                                 <div className="absolute bottom-full left-0 mb-2 px-2 py-1 bg-black/90 text-[8px] text-white rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
                                                                     {service.speedOptions.express.tooltip}
                                                                 </div>
                                                             </div>
                                                         )}
                                                     </div>
-                                                    <span className="text-[10px] font-bold text-primary">+${service.speedOptions.express.priceModifier || 0}</span>
+                                                    <span className="text-[10px] font-bold text-white">+${service.speedOptions.express.priceModifier || 0}</span>
                                                 </button>
                                             )}
                                             {service.speedOptions?.superExpress?.enabled && (
@@ -949,17 +949,17 @@ const ProductDetail = () => {
                                                 >
                                                     <div className="flex items-center gap-2">
                                                         <div className={`w-3 h-3 rounded-full ${speed === "superExpress" ? 'bg-primary' : 'bg-white/20'}`}></div>
-                                                        <span className="text-xs font-bold uppercase">Super Express</span>
+                                                        <span className="text-xs font-bold ">Super Express</span>
                                                         {service.speedOptions.superExpress.tooltip && (
                                                             <div className="relative group">
-                                                                <Info className="w-3 h-3 text-white/30 cursor-help" />
+                                                                <Info className="w-3 h-3 text-white cursor-help" />
                                                                 <div className="absolute bottom-full left-0 mb-2 px-2 py-1 bg-black/90 text-[8px] text-white rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
                                                                     {service.speedOptions.superExpress.tooltip}
                                                                 </div>
                                                             </div>
                                                         )}
                                                     </div>
-                                                    <span className="text-[10px] font-bold text-primary">+${service.speedOptions.superExpress.priceModifier || 0}</span>
+                                                    <span className="text-[10px] font-bold text-white">+${service.speedOptions.superExpress.priceModifier || 0}</span>
                                                 </button>
                                             )}
                                         </div>
@@ -970,12 +970,12 @@ const ProductDetail = () => {
                                 <div className="pt-2">
                                     <button 
                                         onClick={handleBuyNow}
-                                        className="w-full bg-primary text-black font-black uppercase tracking-[0.2em] py-5 rounded-2xl transition-all shadow-[0_15px_40px_rgba(19,193,0,0.4)] flex items-center justify-center gap-3 active:scale-95 group border-none"
+                                        className="w-full bg-primary text-black font-black  tracking-normal py-5 rounded-2xl transition-all shadow-[0_15px_40px_rgba(19,193,0,0.4)] flex items-center justify-center gap-3 active:scale-95 group border-none"
                                     >
                                         Buy Now <ShieldCheck className="w-5 h-5 group-hover:scale-110 transition-transform" />
                                     </button>
                                 </div>
-                                    <button className="w-full bg-transparent hover:bg-white/5 text-white/60 font-bold uppercase tracking-widest py-3 rounded-xl transition-all text-[10px] flex items-center justify-center gap-2">
+                                    <button className="w-full bg-transparent hover:bg-white/5 text-white font-bold  tracking-normal py-3 rounded-xl transition-all text-[10px] flex items-center justify-center gap-2">
                                         <MessageSquare className="w-3 h-3" /> Contact Support
                                     </button>
                                 </div>
@@ -984,20 +984,20 @@ const ProductDetail = () => {
                                 <div className="pt-4 border-t border-white/10">
                                     <div className="grid grid-cols-2 gap-3 text-center">
                                         <div className="flex flex-col items-center gap-1">
-                                            <Shield className="w-4 h-4 text-primary/60" />
-                                            <span className="text-[8px] font-black text-white/30 uppercase">Secure Payment</span>
+                                            <Shield className="w-4 h-4 text-white/60" />
+                                            <span className="text-[8px] font-black text-white ">Secure Payment</span>
                                         </div>
                                         <div className="flex flex-col items-center gap-1">
-                                            <Clock className="w-4 h-4 text-primary/60" />
-                                            <span className="text-[8px] font-black text-white/30 uppercase">24/7 Support</span>
+                                            <Clock className="w-4 h-4 text-white/60" />
+                                            <span className="text-[8px] font-black text-white ">24/7 Support</span>
                                         </div>
                                         <div className="flex flex-col items-center gap-1">
-                                            <Users className="w-4 h-4 text-primary/60" />
-                                            <span className="text-[8px] font-black text-white/30 uppercase">Pro Players</span>
+                                            <Users className="w-4 h-4 text-white/60" />
+                                            <span className="text-[8px] font-black text-white ">Pro Players</span>
                                         </div>
                                         <div className="flex flex-col items-center gap-1">
-                                            <Award className="w-4 h-4 text-primary/60" />
-                                            <span className="text-[8px] font-black text-white/30 uppercase">Money Back</span>
+                                            <Award className="w-4 h-4 text-white/60" />
+                                            <span className="text-[8px] font-black text-white ">Money Back</span>
                                         </div>
                                     </div>
                                 </div>
@@ -1010,8 +1010,8 @@ const ProductDetail = () => {
                 {relatedServices.length > 0 && (
                     <div className="mt-20 pt-8 border-t border-white/10">
                         <div className="flex items-center justify-between mb-8">
-                            <h2 className="text-3xl md:text-4xl font-black uppercase tracking-tighter">You May Also Like</h2>
-                            <Link to={`/game/${service.gameId?.slug}`} className="text-[10px] font-black text-primary uppercase tracking-widest flex items-center gap-1 hover:gap-2 transition-all">
+                            <h2 className="text-3xl md:text-4xl font-black  tracking-tighter">You May Also Like</h2>
+                            <Link to={`/game/${service.gameId?.slug}`} className="text-[10px] font-black text-white  tracking-normal flex items-center gap-1 hover:gap-2 transition-all">
                                 View All <ArrowRight className="w-3 h-3" />
                             </Link>
                         </div>
@@ -1042,10 +1042,10 @@ const ProductDetail = () => {
                                     )}
                                     
                                     <div className="absolute bottom-0 left-0 right-0 p-5">
-                                        <h4 className="text-sm font-black text-white uppercase group-hover:text-primary transition-colors line-clamp-1">
+                                        <h4 className="text-sm font-black text-white  group-hover:text-white transition-colors line-clamp-1">
                                             {rel.title}
                                         </h4>
-                                        <p className="text-[10px] font-black text-white/40 uppercase mt-1">
+                                        <p className="text-[10px] font-black text-white  mt-1">
                                             From ${rel.price || rel.pricing?.basePrice || 0}
                                         </p>
                                     </div>
@@ -1110,3 +1110,6 @@ const ProductDetail = () => {
 };
 
 export default ProductDetail;
+
+
+

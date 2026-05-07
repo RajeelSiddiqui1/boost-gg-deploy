@@ -56,20 +56,20 @@ const WowCustomOffer = ({ gameId }) => {
  <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-transparent pointer-events-none" />
 
  <div className="relative z-10 max-w-xl text-center md:text-left">
- <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-white/40 text-[10px] font-black uppercase tracking-widest mb-6">
+ <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-white text-[10px] font-black  tracking-widest mb-6">
  <Sparkles className="w-3 h-3 text-primary fill-current" />
  Tailored For You
  </div>
- <h2 className="text-4xl md:text-5xl font-black uppercase text-white mb-6">
+ <h2 className="text-4xl md:text-5xl font-black  text-white mb-6">
  Don't see what <br />
- <span className="text-primary">you need?</span>
+ <span className="text-white">you need?</span>
  </h2>
- <p className="text-white/40 text-lg mb-8">
+ <p className="text-white text-lg mb-8">
  Desire a specific achievement, mount, or custom powerleveling route? Our ELITE boosters can handle ANY request. Describe it, and we'll send you a quote.
  </p>
  <button
  onClick={() => setIsOpen(true)}
- className="bg-primary hover:bg-[#a2e63e] text-black px-10 py-5 rounded-2xl font-black uppercase tracking-widest text-[14px] transition-all transform hover:scale-105 active:scale-95 shadow-xl shadow-primary/20"
+ className="bg-primary hover:bg-[#a2e63e] text-black px-10 py-5 rounded-2xl font-black  tracking-widest text-[14px] transition-all transform hover:scale-105 active:scale-95 shadow-xl shadow-primary/20"
  >
  Create Custom Request
  </button>
@@ -96,11 +96,11 @@ const WowCustomOffer = ({ gameId }) => {
  </button>
 
  <div className="mb-8">
- <h3 className="text-2xl font-black uppercase text-white flex items-center gap-3">
+ <h3 className="text-2xl font-black  text-white flex items-center gap-3">
  <Send className="w-6 h-6 text-primary" />
  Custom Request
  </h3>
- <p className="text-white/40 text-sm mt-2 font-medium">Briefly describe your requirements to receive a price quote from our managers.</p>
+ <p className="text-white text-sm mt-2 font-medium">Briefly describe your requirements to receive a price quote from our managers.</p>
  </div>
 
  {success ? (
@@ -108,13 +108,13 @@ const WowCustomOffer = ({ gameId }) => {
  <div className="w-20 h-20 bg-primary/20 rounded-full flex items-center justify-center mx-auto mb-6">
  <Sparkles className="w-10 h-10 text-primary animate-bounce" />
  </div>
- <h4 className="text-xl font-black uppercase text-white mb-2">Request Sent!</h4>
- <p className="text-white/40 text-sm">Our team will review your request and contact you shortly.</p>
+ <h4 className="text-xl font-black  text-white mb-2">Request Sent!</h4>
+ <p className="text-white text-sm">Our team will review your request and contact you shortly.</p>
  </div>
  ) : (
  <form onSubmit={handleSubmit} className="space-y-6">
  <div className="space-y-2">
- <label className="text-[10px] font-black uppercase tracking-widest text-white/30 ml-2">What do you want us to do?</label>
+ <label className="text-[10px] font-black  tracking-widest text-white ml-2">What do you want us to do?</label>
  <textarea
  required
  rows={4}
@@ -126,7 +126,7 @@ const WowCustomOffer = ({ gameId }) => {
  </div>
 
  <div className="space-y-2">
- <label className="text-[10px] font-black uppercase tracking-widest text-white/30 ml-2">Approximate Budget ({symbols[currency]}) - Optional</label>
+ <label className="text-[10px] font-black  tracking-widest text-white ml-2">Approximate Budget ({symbols[currency]}) - Optional</label>
  <input
  type="number"
  value={budget}
@@ -136,16 +136,16 @@ const WowCustomOffer = ({ gameId }) => {
  />
  </div>
 
- {error && <p className="text-red-500 text-xs font-bold text-center ">{error}</p>}
+ {error && <p className="text-white text-xs font-bold text-center ">{error}</p>}
 
  <button
  disabled={loading}
- className="w-full bg-primary hover:bg-[#a2e63e] disabled:opacity-50 disabled:cursor-not-allowed text-black py-4 rounded-2xl font-black uppercase tracking-widest text-[14px] transition-all transform active:scale-95 shadow-lg shadow-primary/10"
+ className="w-full bg-primary hover:bg-[#a2e63e] disabled:opacity-50 disabled:cursor-not-allowed text-black py-4 rounded-2xl font-black  tracking-widest text-[14px] transition-all transform active:scale-95 shadow-lg shadow-primary/10"
  >
  {loading ? 'Submitting...' : 'Send Request'}
  </button>
 
- <p className="text-[10px] text-center text-white/20 font-medium px-8 ">
+ <p className="text-[10px] text-center text-white font-medium px-8 ">
  Responses are typically sent within 15-30 minutes through your account notification center or email.
  </p>
  </form>
@@ -158,3 +158,4 @@ const WowCustomOffer = ({ gameId }) => {
 };
 
 export default WowCustomOffer;
+

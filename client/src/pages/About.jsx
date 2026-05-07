@@ -16,7 +16,7 @@ const About = () => {
  {/* Hero Section */}
  <section className="relative pt-32 pb-20 overflow-hidden">
  <div className="max-w-[1400px] mx-auto text-center relative z-10 px-6">
- <h1 className="text-[12px] font-black uppercase tracking-[0.3em] text-primary mb-6 animate-in fade-in slide-in-from-bottom-4 duration-700">
+ <h1 className="text-[12px] font-black  tracking-normal text-white mb-6 animate-in fade-in slide-in-from-bottom-4 duration-700">
  About BoostGG
  </h1>
  <h2 className="text-4xl md:text-7xl font-black tracking-tighter leading-[0.95] mb-8 max-w-4xl mx-auto animate-in fade-in slide-in-from-bottom-6 duration-1000">
@@ -41,12 +41,12 @@ const About = () => {
 
  {/* Watermark/Text at Bottom Center */}
  <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex flex-col items-center">
- <span className="text-4xl md:text-6xl font-black text-white/50 tracking-tighter uppercase select-none drop-shadow-2xl mix-blend-overlay">BoostGG</span>
+ <span className="text-4xl md:text-6xl font-black text-white tracking-tighter  select-none drop-shadow-2xl mix-blend-overlay">BoostGG</span>
  </div>
 
  {/* Philosophy Text (Floating) */}
  <div className="absolute bottom-10 left-10 text-left pointer-events-none">
- <p className="text-xs font-black uppercase tracking-widest text-primary mb-1">
+ <p className="text-xs font-black  tracking-normal text-white mb-1">
  Premium Experience
  </p>
  <h3 className="text-xl md:text-3xl font-black text-white drop-shadow-lg">OUR PHILOSOPHY</h3>
@@ -99,10 +99,10 @@ const About = () => {
  >
  <item.icon className="w-6 h-6" />
  </div>
- <h3 className="text-xl font-black mb-4 leading-tight uppercase">
+ <h3 className="text-xl font-black mb-4 leading-tight ">
  {item.title}
  </h3>
- <p className="text-white/40 font-bold leading-relaxed">
+ <p className="text-white font-bold leading-relaxed">
  {item.desc}
  </p>
  </div>
@@ -118,7 +118,7 @@ const About = () => {
  WHAT BOOSTS YOU, <br />
  MAKES US
  </h2>
- <div className="space-y-6 text-lg font-bold text-white/50 leading-relaxed">
+ <div className="space-y-6 text-lg font-bold text-white leading-relaxed">
  <p>
  Since 2020, BoostGG has brought together seasoned professionals
  and like-minded gamers to help you enjoy every moment of your
@@ -142,7 +142,7 @@ const About = () => {
  pushing the boundaries of what's possible in gaming.
  </p>
  </div>
- <button className="mt-12 flex items-center gap-3 bg-primary text-white px-10 py-5 rounded-[24px] font-black uppercase tracking-widest text-sm hover:scale-105 transition-all shadow-xl shadow-primary/20">
+ <button className="mt-12 flex items-center gap-3 bg-primary text-white px-10 py-5 rounded-[24px] font-black  tracking-normal text-sm hover:scale-105 transition-all shadow-xl shadow-primary/20">
  Join BoostGG Family
  <ChevronRight className="w-5 h-5" />
  </button>
@@ -152,7 +152,7 @@ const About = () => {
  <div className="relative aspect-square bg-[#111] border border-white/5 rounded-[64px] overflow-hidden group">
  <div className="absolute inset-0 bg-gradient-to-tr from-primary/10 to-transparent"></div>
  <div className="absolute inset-0 flex items-center justify-center p-12">
- <div className="w-full h-full border-2 border-dashed border-white/10 rounded-[48px] flex items-center justify-center text-white/10 font-black text-2xl uppercase tracking-widest ">
+ <div className="w-full h-full border-2 border-dashed border-white/10 rounded-[48px] flex items-center justify-center text-white font-black text-2xl  tracking-normal ">
  Team Image Placeholder
  </div>
  </div>
@@ -169,3 +169,4 @@ const About = () => {
 };
 
 export default About;
+

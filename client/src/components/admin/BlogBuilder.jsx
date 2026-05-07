@@ -108,7 +108,7 @@ const BlockEditor = ({ block, onUpdate, onDelete, isSelected, onSelect }) => {
  fontSize: block.type === 'heading1' ? '2.5rem' : block.type === 'heading2' ? '1.75rem' : '1.25rem',
  fontWeight: '900',
  fontStyle: '',
- textTransform: 'uppercase'
+ textTransform: ''
  }}
  placeholder="Enter heading..."
  />
@@ -138,7 +138,7 @@ const BlockEditor = ({ block, onUpdate, onDelete, isSelected, onSelect }) => {
  <label className="block cursor-pointer">
  <div className="border-2 border-dashed border-white/20 rounded-lg p-4 text-center hover:border-primary/50 transition-colors">
  <Upload className="w-6 h-6 mx-auto mb-2 text-white/40" />
- <span className="text-white/40 text-sm">Click to upload image</span>
+ <span className="text-white text-sm">Click to upload image</span>
  <input type="file" accept="image/*" className="hidden" />
  </div>
  </label>
@@ -264,7 +264,7 @@ const BlockEditor = ({ block, onUpdate, onDelete, isSelected, onSelect }) => {
 
  case 'divider':
  return (
- <p className="text-white/30 text-sm">Divider block - adds a horizontal line</p>
+ <p className="text-white text-sm">Divider block - adds a horizontal line</p>
  );
 
  default:
@@ -275,13 +275,13 @@ const BlockEditor = ({ block, onUpdate, onDelete, isSelected, onSelect }) => {
  const renderPreview = () => {
  switch (block.type) {
  case 'heading1':
- return <h1 className="text-4xl md:text-5xl font-black uppercase tracking-tighter">{block.content}</h1>;
+ return <h1 className="text-4xl md:text-5xl font-black  tracking-tighter">{block.content}</h1>;
  case 'heading2':
- return <h2 className="text-2xl md:text-3xl font-black uppercase tracking-tight">{block.content}</h2>;
+ return <h2 className="text-2xl md:text-3xl font-black  tracking-tight">{block.content}</h2>;
  case 'heading3':
- return <h3 className="text-xl font-black uppercase">{block.content}</h3>;
+ return <h3 className="text-xl font-black ">{block.content}</h3>;
  case 'paragraph':
- return <p className="text-white/70 text-lg leading-relaxed">{block.content}</p>;
+ return <p className="text-white text-lg leading-relaxed">{block.content}</p>;
  case 'image':
  return block.src ? (
  <figure className="my-4">
@@ -304,14 +304,14 @@ const BlockEditor = ({ block, onUpdate, onDelete, isSelected, onSelect }) => {
  </div>
  ) : (
  <div className="aspect-video bg-white/5 rounded-2xl flex items-center justify-center">
- <Play className="w-8 h-8 text-white/20" />
+ <Play className="w-8 h-8 text-white" />
  </div>
  );
  case 'quote':
  return (
  <blockquote className="border-l-4 border-primary pl-4 my-4">
- <p className="text-xl font-black text-white/90 mb-1">"{block.content}"</p>
- {block.author && <cite className="text-primary text-xs font-black uppercase tracking-widest">— {block.author}</cite>}
+ <p className="text-xl font-black text-white mb-1">"{block.content}"</p>
+ {block.author && <cite className="text-primary text-xs font-black  tracking-widest">— {block.author}</cite>}
  </blockquote>
  );
  case 'code':
@@ -356,7 +356,7 @@ const BlockEditor = ({ block, onUpdate, onDelete, isSelected, onSelect }) => {
  return (
  <div className="space-y-4">
  <div className="flex items-center gap-4 mb-4">
- <label className="text-white/60 text-sm font-medium">Left Width:</label>
+ <label className="text-white text-sm font-medium">Left Width:</label>
  <input
  type="range"
  min="20"
@@ -388,17 +388,17 @@ const BlockEditor = ({ block, onUpdate, onDelete, isSelected, onSelect }) => {
  case 'columns3':
  return (
  <div className="space-y-3">
- <p className="text-white/50 text-sm">Nested columns with blocks - configure in advanced mode</p>
+ <p className="text-white text-sm">Nested columns with blocks - configure in advanced mode</p>
  <div className="grid gap-2" style={{ gridTemplateColumns: block.type === 'columns3' ? '1fr 1fr 1fr' : '1fr 1fr' }}>
  <div className="p-3 bg-white/5 rounded-lg border border-white/10 text-center">
- <p className="text-white/40 text-xs">Column 1</p>
+ <p className="text-white text-xs">Column 1</p>
  </div>
  <div className="p-3 bg-white/5 rounded-lg border border-white/10 text-center">
- <p className="text-white/40 text-xs">Column 2</p>
+ <p className="text-white text-xs">Column 2</p>
  </div>
  {block.type === 'columns3' && (
  <div className="p-3 bg-white/5 rounded-lg border border-white/10 text-center">
- <p className="text-white/40 text-xs">Column 3</p>
+ <p className="text-white text-xs">Column 3</p>
  </div>
  )}
  </div>
@@ -439,7 +439,7 @@ const BlockEditor = ({ block, onUpdate, onDelete, isSelected, onSelect }) => {
  </div>
 
  {/* Block Type Badge */}
- <div className="absolute top-2 left-3 text-white/20 text-[8px] font-black uppercase tracking-widest">
+ <div className="absolute top-2 left-3 text-white text-[8px] font-black  tracking-widest">
  {block.type}
  </div>
 
@@ -527,7 +527,7 @@ const BlogBuilder = ({ value, onChange, blogTitle, blogImage }) => {
  const renderPreviewContent = () => {
  if (blocks.length === 0) {
  return (
- <div className="text-center py-16 text-white/30">
+ <div className="text-center py-16 text-white">
  <p className="text-lg font-bold">No content yet</p>
  <p className="text-sm">Add blocks from the left panel</p>
  </div>
@@ -537,13 +537,13 @@ const BlogBuilder = ({ value, onChange, blogTitle, blogImage }) => {
  return blocks.map((block, index) => {
  switch (block.type) {
  case 'heading1':
- return <h1 key={index} className="text-4xl md:text-5xl font-black uppercase tracking-tighter mb-6 mt-8">{block.content}</h1>;
+ return <h1 key={index} className="text-4xl md:text-5xl font-black  tracking-tighter mb-6 mt-8">{block.content}</h1>;
  case 'heading2':
- return <h2 key={index} className="text-2xl md:text-3xl font-black uppercase tracking-tight mb-4 mt-6">{block.content}</h2>;
+ return <h2 key={index} className="text-2xl md:text-3xl font-black  tracking-tight mb-4 mt-6">{block.content}</h2>;
  case 'heading3':
- return <h3 key={index} className="text-xl font-black uppercase mb-3 mt-4">{block.content}</h3>;
+ return <h3 key={index} className="text-xl font-black  mb-3 mt-4">{block.content}</h3>;
  case 'paragraph':
- return <p key={index} className="text-white/70 text-lg leading-relaxed mb-4">{block.content}</p>;
+ return <p key={index} className="text-white text-lg leading-relaxed mb-4">{block.content}</p>;
  case 'image':
  return block.src ? (
  <figure key={index} className="my-6">
@@ -564,8 +564,8 @@ const BlogBuilder = ({ value, onChange, blogTitle, blogImage }) => {
  case 'quote':
  return (
  <blockquote key={index} className="border-l-4 border-primary pl-6 my-6 py-2">
- <p className="text-xl font-black text-white/90 mb-2">"{block.content}"</p>
- {block.author && <cite className="text-primary text-sm font-black uppercase tracking-widest">— {block.author}</cite>}
+ <p className="text-xl font-black text-white mb-2">"{block.content}"</p>
+ {block.author && <cite className="text-primary text-sm font-black  tracking-widest">— {block.author}</cite>}
  </blockquote>
  );
  case 'code':
@@ -617,7 +617,7 @@ const BlogBuilder = ({ value, onChange, blogTitle, blogImage }) => {
  const tocItems = block.content.split('\n').filter(i => i.trim());
  return (
  <div key={index} className="bg-white/5 border border-white/10 rounded-xl p-6 my-6">
- <h4 className="text-sm font-black uppercase tracking-widest text-primary mb-4">Table of Contents</h4>
+ <h4 className="text-sm font-black  tracking-widest text-white mb-4">Table of Contents</h4>
  <ul className="space-y-2">
  {tocItems.map((item, i) => (
  <li key={i} className="text-white/60 text-sm hover:text-primary cursor-pointer transition-colors">{item}</li>
@@ -631,8 +631,8 @@ const BlogBuilder = ({ value, onChange, blogTitle, blogImage }) => {
  <div className="flex items-start gap-3">
  <Info className="w-5 h-5 text-blue-500 mt-0.5" />
  <div>
- <h5 className="text-blue-400 font-black uppercase text-sm mb-2">{block.title || 'Info'}</h5>
- <p className="text-white/70 text-sm">{block.content}</p>
+ <h5 className="text-blue-400 font-black  text-sm mb-2">{block.title || 'Info'}</h5>
+ <p className="text-white text-sm">{block.content}</p>
  </div>
  </div>
  </div>
@@ -646,7 +646,7 @@ const BlogBuilder = ({ value, onChange, blogTitle, blogImage }) => {
  <div className="w-5 h-5 rounded border border-white/20 flex items-center justify-center">
  <CheckCircle className="w-3 h-3 text-primary" />
  </div>
- <span className="text-white/70">{item}</span>
+ <span className="text-white">{item}</span>
  </div>
  ))}
  </div>
@@ -659,7 +659,7 @@ const BlogBuilder = ({ value, onChange, blogTitle, blogImage }) => {
  <thead>
  <tr className="bg-white/5">
  {tableRows[0]?.split('|').map((header, i) => (
- <th key={i} className="px-4 py-3 text-left text-xs font-black uppercase tracking-widest text-white/60 border-b border-white/10">{header.trim()}</th>
+ <th key={i} className="px-4 py-3 text-left text-xs font-black  tracking-widest text-white/60 border-b border-white/10">{header.trim()}</th>
  ))}
  </tr>
  </thead>
@@ -681,10 +681,10 @@ const BlogBuilder = ({ value, onChange, blogTitle, blogImage }) => {
  return (
  <div key={index} className="grid gap-4 my-6" style={{ gridTemplateColumns: `${leftW}% ${rightW}%` }}>
  <div className="p-4 bg-white/5 rounded-xl border border-white/10">
- <p className="text-white/80 text-sm">{block.leftContent || 'Left column content...'}</p>
+ <p className="text-white text-sm">{block.leftContent || 'Left column content...'}</p>
  </div>
  <div className="p-4 bg-white/5 rounded-xl border border-white/10">
- <p className="text-white/80 text-sm">{block.rightContent || 'Right column content...'}</p>
+ <p className="text-white text-sm">{block.rightContent || 'Right column content...'}</p>
  </div>
  </div>
  );
@@ -694,12 +694,12 @@ const BlogBuilder = ({ value, onChange, blogTitle, blogImage }) => {
  return (
  <div key={index} className="grid gap-4 my-6" style={{ gridTemplateColumns: `${col2LeftW}% ${col2RightW}%` }}>
  <div className="p-4 bg-white/5 rounded-xl border border-white/10">
- <p className="text-white/40 text-xs text-center">Left Column - {col2LeftW}%</p>
- <p className="text-white/30 text-xs text-center mt-2">Use nested blocks</p>
+ <p className="text-white text-xs text-center">Left Column - {col2LeftW}%</p>
+ <p className="text-white text-xs text-center mt-2">Use nested blocks</p>
  </div>
  <div className="p-4 bg-white/5 rounded-xl border border-white/10">
- <p className="text-white/40 text-xs text-center">Right Column - {col2RightW}%</p>
- <p className="text-white/30 text-xs text-center mt-2">Use nested blocks</p>
+ <p className="text-white text-xs text-center">Right Column - {col2RightW}%</p>
+ <p className="text-white text-xs text-center mt-2">Use nested blocks</p>
  </div>
  </div>
  );
@@ -710,13 +710,13 @@ const BlogBuilder = ({ value, onChange, blogTitle, blogImage }) => {
  return (
  <div key={index} className="grid gap-4 my-6" style={{ gridTemplateColumns: `${col3LeftW}% ${col3MiddleW}% ${col3RightW}%` }}>
  <div className="p-4 bg-white/5 rounded-xl border border-white/10">
- <p className="text-white/40 text-xs text-center">Left - {col3LeftW}%</p>
+ <p className="text-white text-xs text-center">Left - {col3LeftW}%</p>
  </div>
  <div className="p-4 bg-white/5 rounded-xl border border-white/10">
- <p className="text-white/40 text-xs text-center">Middle - {col3MiddleW}%</p>
+ <p className="text-white text-xs text-center">Middle - {col3MiddleW}%</p>
  </div>
  <div className="p-4 bg-white/5 rounded-xl border border-white/10">
- <p className="text-white/40 text-xs text-center">Right - {col3RightW}%</p>
+ <p className="text-white text-xs text-center">Right - {col3RightW}%</p>
  </div>
  </div>
  );
@@ -734,14 +734,14 @@ const BlogBuilder = ({ value, onChange, blogTitle, blogImage }) => {
  <div className="flex border-b border-white/10">
  <button
  onClick={() => setActiveTab('blocks')}
- className={`flex-1 py-3 text-xs font-black uppercase tracking-widest transition-colors ${activeTab === 'blocks' ? 'text-primary bg-primary/10' : 'text-white/40 hover:text-white'}`}
+ className={`flex-1 py-3 text-xs font-black  tracking-widest transition-colors ${activeTab === 'blocks' ? 'text-primary bg-primary/10' : 'text-white/40 hover:text-white'}`}
  >
  <PanelLeft className="w-4 h-4 mx-auto mb-1" />
  Blocks
  </button>
  <button
  onClick={() => setActiveTab('preview')}
- className={`flex-1 py-3 text-xs font-black uppercase tracking-widest transition-colors ${activeTab === 'preview' ? 'text-primary bg-primary/10' : 'text-white/40 hover:text-white'}`}
+ className={`flex-1 py-3 text-xs font-black  tracking-widest transition-colors ${activeTab === 'preview' ? 'text-primary bg-primary/10' : 'text-white/40 hover:text-white'}`}
  >
  <Monitor className="w-4 h-4 mx-auto mb-1" />
  Preview
@@ -754,7 +754,7 @@ const BlogBuilder = ({ value, onChange, blogTitle, blogImage }) => {
  <div className="p-3 border-b border-white/10">
  <button
  onClick={() => setShowBlockMenu(!showBlockMenu)}
- className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-primary hover:bg-primary/90 text-white rounded-xl font-black uppercase text-xs tracking-widest transition-all"
+ className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-primary hover:bg-primary/90 text-white rounded-xl font-black  text-xs tracking-widest transition-all"
  >
  <Plus className="w-4 h-4" />
  Add Block
@@ -786,8 +786,8 @@ const BlogBuilder = ({ value, onChange, blogTitle, blogImage }) => {
  <div className="flex-1 overflow-y-auto p-3 space-y-2 custom-scrollbar">
  {blocks.length === 0 ? (
  <div className="text-center py-8">
- <p className="text-white/30 text-sm">No blocks added</p>
- <p className="text-white/20 text-xs mt-1">Click "Add Block" to start</p>
+ <p className="text-white text-sm">No blocks added</p>
+ <p className="text-white text-xs mt-1">Click "Add Block" to start</p>
  </div>
  ) : (
  blocks.map((block, index) => (
@@ -816,7 +816,7 @@ const BlogBuilder = ({ value, onChange, blogTitle, blogImage }) => {
  // Preview Panel
  <div className="flex-1 overflow-y-auto p-4 bg-black/50">
  <div className="text-center mb-4">
- <p className="text-white/30 text-xs font-black uppercase tracking-widest">Live Preview</p>
+ <p className="text-white text-xs font-black  tracking-widest">Live Preview</p>
  </div>
  <div className="bg-[#0A0A0A] rounded-xl p-4 border border-white/5">
  {renderPreviewContent()}
@@ -829,11 +829,11 @@ const BlogBuilder = ({ value, onChange, blogTitle, blogImage }) => {
  <div className="flex-1 bg-[#050505] overflow-y-auto">
  {/* Preview Header */}
  <div className="sticky top-0 bg-[#0A0A0A]/80 backdrop-blur-md border-b border-white/5 px-4 py-2 flex items-center justify-between">
- <div className="flex items-center gap-2 text-white/40 text-xs font-black uppercase tracking-widest">
+ <div className="flex items-center gap-2 text-white text-xs font-black  tracking-widest">
  <Eye className="w-3 h-3" />
  Live Preview
  </div>
- <div className="text-white/20 text-xs">
+ <div className="text-white text-xs">
  {blocks.length} block{blocks.length !== 1 ? 's' : ''}
  </div>
  </div>
@@ -842,7 +842,7 @@ const BlogBuilder = ({ value, onChange, blogTitle, blogImage }) => {
  <div className="p-8 max-w-2xl mx-auto">
  {/* Blog Title Preview */}
  {blogTitle && (
- <h1 className="text-4xl md:text-5xl font-black uppercase tracking-tighter mb-6 text-white">
+ <h1 className="text-4xl md:text-5xl font-black  tracking-tighter mb-6 text-white">
  {blogTitle}
  </h1>
  )}
@@ -854,8 +854,8 @@ const BlogBuilder = ({ value, onChange, blogTitle, blogImage }) => {
 
  {blocks.length === 0 && (
  <div className="text-center py-12 border-2 border-dashed border-white/10 rounded-2xl">
- <Plus className="w-8 h-8 text-white/20 mx-auto mb-2" />
- <p className="text-white/30 text-sm">Add blocks to see preview</p>
+ <Plus className="w-8 h-8 text-white mx-auto mb-2" />
+ <p className="text-white text-sm">Add blocks to see preview</p>
  </div>
  )}
  </div>
@@ -865,3 +865,4 @@ const BlogBuilder = ({ value, onChange, blogTitle, blogImage }) => {
 };
 
 export default BlogBuilder;
+

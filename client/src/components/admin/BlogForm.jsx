@@ -195,10 +195,10 @@ const BlogForm = ({ blog, onClose }) => {
  {/* Header */}
  <div className="flex items-center justify-between mb-10">
  <div className="flex items-center gap-4">
- <div className="w-12 h-12 rounded-2xl bg-primary/20 flex items-center justify-center text-primary">
+ <div className="w-12 h-12 rounded-2xl bg-primary/20 flex items-center justify-center text-white">
  <Zap className="w-6 h-6" />
  </div>
- <h2 className="text-3xl font-black uppercase tracking-tighter text-white">
+ <h2 className="text-3xl font-black  tracking-tighter text-white">
  {blog ? 'Edit Article' : 'New Article'}
  </h2>
  </div>
@@ -208,14 +208,14 @@ const BlogForm = ({ blog, onClose }) => {
  </div>
 
  {error && (
- <div className="mb-8 p-4 bg-red-500/10 border border-red-500/20 rounded-2xl text-red-500 text-sm font-bold ">
+ <div className="mb-8 p-4 bg-red-500/10 border border-red-500/20 rounded-2xl text-white text-sm font-bold ">
  {error}
  </div>
  )}
 
  {/* Editor Mode Toggle */}
  <div className="mb-8 flex items-center gap-4 p-4 bg-white/5 rounded-2xl">
- <span className="text-white/40 text-xs font-black uppercase tracking-widest">Editor Mode:</span>
+ <span className="text-white text-xs font-black  tracking-widest">Editor Mode:</span>
  <button
  onClick={() => setUseBuilder(true)}
  className={`flex items-center gap-2 px-4 py-2 rounded-xl font-bold text-sm transition-all ${useBuilder ? 'bg-primary text-white' : 'bg-white/5 text-white/40 hover:text-white'}`}
@@ -242,7 +242,7 @@ const BlogForm = ({ blog, onClose }) => {
  {/* Left Column: Details */}
  <div className="space-y-6">
  <div>
- <label className="block text-[10px] font-black uppercase tracking-[0.2em] text-white/30 mb-3">Article Title *</label>
+ <label className="block text-[10px] font-black  tracking-[0.2em] text-white mb-3">Article Title *</label>
  <input
  type="text"
  name="title"
@@ -256,7 +256,7 @@ const BlogForm = ({ blog, onClose }) => {
 
  <div className="grid grid-cols-2 gap-6">
  <div>
- <label className="block text-[10px] font-black uppercase tracking-[0.2em] text-white/30 mb-3">Category (Game) *</label>
+ <label className="block text-[10px] font-black  tracking-[0.2em] text-white mb-3">Category (Game) *</label>
  <select
  name="category"
  value={formData.category}
@@ -271,7 +271,7 @@ const BlogForm = ({ blog, onClose }) => {
  </select>
  </div>
  <div>
- <label className="block text-[10px] font-black uppercase tracking-[0.2em] text-white/30 mb-3">Is Featured?</label>
+ <label className="block text-[10px] font-black  tracking-[0.2em] text-white mb-3">Is Featured?</label>
  <select
  name="isFeatured"
  value={formData.isFeatured}
@@ -285,7 +285,7 @@ const BlogForm = ({ blog, onClose }) => {
  </div>
 
  <div>
- <label className="block text-[10px] font-black uppercase tracking-[0.2em] text-white/30 mb-3">Short Excerpt *</label>
+ <label className="block text-[10px] font-black  tracking-[0.2em] text-white mb-3">Short Excerpt *</label>
  <textarea
  name="shortDescription"
  value={formData.shortDescription}
@@ -298,7 +298,7 @@ const BlogForm = ({ blog, onClose }) => {
  </div>
 
  <div>
- <label className="block text-[10px] font-black uppercase tracking-[0.2em] text-white/30 mb-3">Author</label>
+ <label className="block text-[10px] font-black  tracking-[0.2em] text-white mb-3">Author</label>
  <input
  type="text"
  name="author"
@@ -312,7 +312,7 @@ const BlogForm = ({ blog, onClose }) => {
  {/* Right Column: Media & Content */}
  <div className="space-y-6">
  <div>
- <label className="block text-[10px] font-black uppercase tracking-[0.2em] text-white/30 mb-3">Cover Image *</label>
+ <label className="block text-[10px] font-black  tracking-[0.2em] text-white mb-3">Cover Image *</label>
  <div className="relative group cursor-pointer">
  <label className="block">
  <div className={`aspect-video rounded-[32px] border-2 border-dashed transition-all flex flex-col items-center justify-center p-4 bg-white/[0.02] ${imagePreview ? 'border-primary/50' : 'border-white/10 hover:border-primary/40'}`}>
@@ -326,7 +326,7 @@ const BlogForm = ({ blog, onClose }) => {
  ) : (
  <>
  <ImageIcon className="w-12 h-12 text-white/10 mb-4" />
- <p className="text-white/30 text-xs font-black uppercase tracking-widest text-center">Click to upload cover image<br /><span className="text-[10px] opacity-50">(1920x1080 recommended)</span></p>
+ <p className="text-white text-xs font-black  tracking-widest text-center">Click to upload cover image<br /><span className="text-[10px] opacity-50">(1920x1080 recommended)</span></p>
  </>
  )}
  </div>
@@ -337,7 +337,7 @@ const BlogForm = ({ blog, onClose }) => {
 
  {/* Content Editor */}
  <div>
- <label className="block text-[10px] font-black uppercase tracking-[0.2em] text-white/30 mb-3">
+ <label className="block text-[10px] font-black  tracking-[0.2em] text-white mb-3">
  {useBuilder ? 'Content (Drag & Drop)' : 'Main Content (HTML Support) *'}
  </label>
  
@@ -367,14 +367,14 @@ const BlogForm = ({ blog, onClose }) => {
  <button
  type="button"
  onClick={onClose}
- className="flex-1 px-8 py-5 bg-white/5 hover:bg-white/10 text-white rounded-[24px] font-black uppercase tracking-widest text-xs transition-all border border-white/5"
+ className="flex-1 px-8 py-5 bg-white/5 hover:bg-white/10 text-white rounded-[24px] font-black  tracking-widest text-xs transition-all border border-white/5"
  >
  Cancel
  </button>
  <button
  type="submit"
  disabled={loading}
- className="flex-[2] px-8 py-5 bg-primary hover:bg-primary/90 text-white rounded-[24px] font-black uppercase tracking-widest text-xs transition-all shadow-xl shadow-primary/30 flex items-center justify-center gap-3 disabled:opacity-50"
+ className="flex-[2] px-8 py-5 bg-primary hover:bg-primary/90 text-white rounded-[24px] font-black  tracking-widest text-xs transition-all shadow-xl shadow-primary/30 flex items-center justify-center gap-3 disabled:opacity-50"
  >
  {loading ? 'Saving...' : (
  <>
@@ -392,3 +392,4 @@ const BlogForm = ({ blog, onClose }) => {
 };
 
 export default BlogForm;
+

@@ -59,9 +59,9 @@ export function SidebarPreview({ state }) {
  <div className="rounded-2xl overflow-hidden border border-[#2a2a2a] bg-[#141414] shadow-2xl">
  {state.sidebarSections.map((s, i) => (
  <div key={s.id} className={`p-5 ${i < state.sidebarSections.length - 1 ? 'border-b border-[#222]' : ''}`}>
- <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-[#555] mb-4 flex items-center justify-between">
+ <h4 className="text-[10px] font-black  tracking-[0.2em] text-[#555] mb-4 flex items-center justify-between">
  {s.heading}
- {s.required && <span className="text-[8px] text-purple-500 bg-purple-500/10 px-1.5 py-0.5 rounded border border-purple-500/20">Req</span>}
+ {s.required && <span className="text-[8px] text-white bg-purple-500/10 px-1.5 py-0.5 rounded border border-purple-500/20">Req</span>}
  </h4>
 
  {s.fieldType === 'radio' && (
@@ -123,7 +123,7 @@ export function SidebarPreview({ state }) {
  >
  {s.options?.map(o => <option key={o.id} value={o.label}>{o.label}</option>)}
  </select>
- <div className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none group-focus-within:text-purple-500 transition-colors">
+ <div className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none group-focus-within:text-white transition-colors">
  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="m6 9 6 6 6-6" /></svg>
  </div>
  </div>
@@ -131,7 +131,7 @@ export function SidebarPreview({ state }) {
 
  {s.fieldType === 'stepper' && (
  <div className="flex items-center justify-between bg-[#0d0d0d] p-3 rounded-2xl border border-[#222]">
- <span className="text-xs font-black text-gray-400 ml-2 uppercase tracking-widest">{s.stepperConfig?.unitLabel || "Quantity"}</span>
+ <span className="text-xs font-black text-gray-400 ml-2  tracking-widest">{s.stepperConfig?.unitLabel || "Quantity"}</span>
  <div className="flex items-center gap-5">
  <button onClick={() => setQuantity(q => Math.max(1, q - 1))} className="w-8 h-8 rounded-full bg-[#1a1a1a] border border-[#333] flex items-center justify-center hover:bg-purple-600 hover:border-purple-500 text-gray-400 hover:text-white transition-all shadow-lg active:scale-95"><span>−</span></button>
  <span className="text-xl font-black text-white tracking-tighter w-4 text-center">{quantity}</span>
@@ -154,7 +154,7 @@ export function SidebarPreview({ state }) {
 
  {/* Speed Option */}
  <div className="p-5 border-t border-[#222] bg-[#0d0d0d]/50">
- <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-[#555] mb-4">COMPLETION SPEED</h4>
+ <h4 className="text-[10px] font-black  tracking-[0.2em] text-[#555] mb-4">COMPLETION SPEED</h4>
  <div className="grid grid-cols-2 gap-3">
  {state.speedOptions.express.enabled && (
  <button
@@ -162,7 +162,7 @@ export function SidebarPreview({ state }) {
  className={`flex flex-col items-center gap-2 p-3 rounded-2xl border transition-all ${activeSpeed === "express" ? "bg-purple-600/10 border-purple-500 shadow-[0_0_20px_rgba(147,51,234,0.1)]" : "bg-[#1a1a1a] border-transparent hover:border-[#333]"}`}
  >
  <Zap size={16} className={activeSpeed === "express" ? "text-purple-400" : "text-gray-600"} />
- <span className={`text-[10px] font-black uppercase tracking-widest ${activeSpeed === "express" ? "text-white" : "text-gray-500"}`}>{state.speedOptions.express.label}</span>
+ <span className={`text-[10px] font-black  tracking-widest ${activeSpeed === "express" ? "text-white" : "text-gray-500"}`}>{state.speedOptions.express.label}</span>
  </button>
  )}
  {state.speedOptions.superExpress.enabled && (
@@ -171,7 +171,7 @@ export function SidebarPreview({ state }) {
  className={`flex flex-col items-center gap-2 p-3 rounded-2xl border transition-all ${activeSpeed === "super" ? "bg-purple-600 shadow-[0_10px_20px_rgba(147,51,234,0.3)] border-purple-400" : "bg-[#1a1a1a] border-transparent hover:border-[#333]"}`}
  >
  <Zap size={16} className={activeSpeed === "super" ? "text-white" : "text-gray-600"} />
- <span className={`text-[10px] font-black uppercase tracking-widest ${activeSpeed === "super" ? "text-white font-black" : "text-gray-500"}`}>{state.speedOptions.superExpress.label}</span>
+ <span className={`text-[10px] font-black  tracking-widest ${activeSpeed === "super" ? "text-white font-black" : "text-gray-500"}`}>{state.speedOptions.superExpress.label}</span>
  </button>
  )}
  </div>
@@ -183,10 +183,10 @@ export function SidebarPreview({ state }) {
  <div className="p-6 space-y-4">
  <div className="flex items-center justify-between">
  <div className="flex flex-col">
- <span className="text-[10px] font-black uppercase tracking-[0.3em] text-[#555] mb-1">Estimated Total</span>
+ <span className="text-[10px] font-black  tracking-[0.3em] text-[#555] mb-1">Estimated Total</span>
  <div className="flex items-baseline gap-1">
  <span className="text-4xl font-black text-white tracking-tighter leading-none">${total}</span>
- {state.showVAT && <span className="text-[9px] text-[#444] font-black uppercase tracking-widest leading-none mb-1">incl. VAT</span>}
+ {state.showVAT && <span className="text-[9px] text-[#444] font-black  tracking-widest leading-none mb-1">incl. VAT</span>}
  </div>
  </div>
  <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-purple-500 to-purple-800 flex items-center justify-center shadow-lg group-hover/checkout:scale-110 transition-all">
@@ -198,16 +198,16 @@ export function SidebarPreview({ state }) {
  <div className="flex items-center justify-between">
  <div className="flex items-center gap-2">
  <Zap size={12} className="text-purple-400" />
- <span className="text-[9px] font-black uppercase tracking-widest text-gray-500">Starting In</span>
+ <span className="text-[9px] font-black  tracking-widest text-gray-500">Starting In</span>
  </div>
- <span className="text-[10px] font-bold text-white uppercase ">{state.estimatedStartTime || "15 min"}</span>
+ <span className="text-[10px] font-bold text-white  ">{state.estimatedStartTime || "15 min"}</span>
  </div>
  <div className="flex items-center justify-between">
  <div className="flex items-center gap-2">
  <Clock size={12} className="text-purple-400" />
- <span className="text-[9px] font-black uppercase tracking-widest text-gray-500">Est. Completion</span>
+ <span className="text-[9px] font-black  tracking-widest text-gray-500">Est. Completion</span>
  </div>
- <span className="text-[10px] font-bold text-white uppercase ">{state.estimatedCompletionTime || "Flexible"}</span>
+ <span className="text-[10px] font-bold text-white  ">{state.estimatedCompletionTime || "Flexible"}</span>
  </div>
  </div>
 
@@ -216,20 +216,20 @@ export function SidebarPreview({ state }) {
  <div className="w-6 h-6 rounded-lg bg-green-500/20 flex items-center justify-center">
  <Shield size={14} className="text-green-500" />
  </div>
- <span className="text-[11px] font-bold text-green-500">Secure Checkout</span>
+ <span className="text-[11px] font-bold text-white">Secure Checkout</span>
  </div>
  <div className="flex flex-col items-end">
- <span className="text-[9px] font-black uppercase tracking-widest text-[#444] mb-0.5">Cashback</span>
- <span className="text-xs font-black text-green-500">+${cashback}</span>
+ <span className="text-[9px] font-black  tracking-widest text-[#444] mb-0.5">Cashback</span>
+ <span className="text-xs font-black text-white">+${cashback}</span>
  </div>
  </div>
 
- <button className="w-full py-5 bg-gradient-to-r from-purple-600 via-purple-700 to-purple-900 rounded-2xl text-white font-black uppercase tracking-[0.2em] text-xs shadow-[0_15px_40px_rgba(147,51,234,0.4)] hover:shadow-[0_20px_50px_rgba(147,51,234,0.6)] hover:scale-[1.02] active:scale-[0.98] transition-all relative overflow-hidden group/btn">
+ <button className="w-full py-5 bg-gradient-to-r from-purple-600 via-purple-700 to-purple-900 rounded-2xl text-white font-black  tracking-[0.2em] text-xs shadow-[0_15px_40px_rgba(147,51,234,0.4)] hover:shadow-[0_20px_50px_rgba(147,51,234,0.6)] hover:scale-[1.02] active:scale-[0.98] transition-all relative overflow-hidden group/btn">
  <div className="absolute inset-0 bg-white/10 translate-x-[-100%] group-hover/btn:translate-x-[100%] transition-transform duration-700 skew-x-12" />
  Buy This Service Now
  </button>
 
- <p className="text-[9px] text-[#444] font-bold uppercase tracking-[0.1em] text-center leading-relaxed">
+ <p className="text-[9px] text-[#444] font-bold  tracking-[0.1em] text-center leading-relaxed">
  Instant start • 24/7 Support • Moneyback Guarantee
  </p>
  </div>
@@ -237,3 +237,4 @@ export function SidebarPreview({ state }) {
  </div>
  );
 }
+

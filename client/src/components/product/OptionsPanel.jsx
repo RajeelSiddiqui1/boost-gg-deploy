@@ -106,14 +106,14 @@ const OptionsPanel = ({
  {/* Boost Type Toggle */}
  {boostTypeAllowed !== "none" && (
  <div className="space-y-4">
- <label className="block text-sky-text-secondary text-[10px] font-black uppercase tracking-widest px-1">Boost Method</label>
+ <label className="block text-sky-text-secondary text-[10px] font-black  tracking-widest px-1">Boost Method</label>
  <div className="flex gap-2 p-1.5 bg-white/[0.02] border border-white/5 rounded-[20px] backdrop-blur-md">
  {["piloted", "self-play"].map((type) => (
  (boostTypeAllowed === "both" || boostTypeAllowed === type) && (
  <button
  key={type}
  onClick={() => setSelectedBoostType(type)}
- className={`flex-1 py-3 px-4 rounded-[14px] text-[11px] font-black uppercase tracking-wider transition-all duration-300 ${selectedBoostType === type ? "bg-primary text-black shadow-lg scale-[1.02]" : "text-white/20 hover:text-white/40 hover:bg-white/5"
+ className={`flex-1 py-3 px-4 rounded-[14px] text-[11px] font-black  tracking-wider transition-all duration-300 ${selectedBoostType === type ? "bg-primary text-black shadow-lg scale-[1.02]" : "text-white/20 hover:text-white/40 hover:bg-white/5"
  }`}
  >
  {type}
@@ -129,7 +129,7 @@ const OptionsPanel = ({
  <div className="space-y-8">
  {serviceOptions.map((option, idx) => (
  <div key={idx} className="space-y-4">
- <label className="block text-[10px] font-black uppercase tracking-[0.2em] text-white/30 px-1">{option.name}</label>
+ <label className="block text-[10px] font-black  tracking-[0.2em] text-white px-1">{option.name}</label>
 
  {option.type === 'rank-range' ? (
  <RankSlider
@@ -173,13 +173,13 @@ const OptionsPanel = ({
  {choice.label}
  </p>
  {choice.description && (
- <p className="text-[10px] text-white/40 mt-1 font-stolzl">{choice.description}</p>
+ <p className="text-[10px] text-white mt-1 font-stolzl">{choice.description}</p>
  )}
  </div>
  </div>
  {choice.addPrice > 0 && (
  <div className="flex flex-col items-end">
- <span className={`text-[11px] font-black tracking-tighter transition-colors ${isSelected ? "text-primary" : "text-white/20"}`}>
+ <span className={`text-[11px] font-black tracking-tighter transition-colors ${isSelected ? "text-primary" : "text-white"}`}>
  + {choice.addPrice} €
  </span>
  </div>
@@ -195,7 +195,7 @@ const OptionsPanel = ({
 
  {serviceOptions.length === 0 && (
  <div className="bg-white/[0.02] border border-white/5 border-dashed rounded-[28px] p-12 text-center">
- <p className="text-white/20 text-[10px] font-black uppercase tracking-[0.2em] ">No additional options available</p>
+ <p className="text-white text-[10px] font-black  tracking-[0.2em] ">No additional options available</p>
  </div>
  )}
  </div>
@@ -205,3 +205,4 @@ const OptionsPanel = ({
 };
 
 export default OptionsPanel;
+

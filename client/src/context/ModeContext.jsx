@@ -57,3 +57,4 @@ export const ModeProvider = ({ children }) => {
  </ModeContext.Provider>
  );
 };
+

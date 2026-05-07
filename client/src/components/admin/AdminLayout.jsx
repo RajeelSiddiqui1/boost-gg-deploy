@@ -123,14 +123,14 @@ const AdminLayout = ({ children }) => {
  <div className="h-full flex flex-col p-6">
  {/* Logo */}
  <Link to="/admin" className="flex items-center gap-2 mb-10 px-2" onClick={() => setIsSidebarOpen(false)}>
- <span className="text-2xl font-black tracking-tighter text-white uppercase">
- BOOSTGG <span className="text-primary text-xs not- tracking-widest ml-1">ADMIN</span>
+ <span className="text-2xl font-black tracking-tighter text-white ">
+ BOOSTGG <span className="text-white text-xs not- tracking-widest ml-1">ADMIN</span>
  </span>
  </Link>
 
  {/* Navigation */}
  <div className="bg-white/[0.02] border border-white/5 rounded-[32px] p-4 flex-1 overflow-y-auto custom-scrollbar relative">
- <h2 className="text-[10px] font-black uppercase tracking-[0.2em] text-white/20 mb-6 px-4">Management</h2>
+ <h2 className="text-[10px] font-black  tracking-[0.2em] text-white mb-6 px-4">Management</h2>
  <nav className="space-y-2">
  {menuItems.map((item, i) => {
  const isActive = location.pathname === item.path;
@@ -159,17 +159,17 @@ const AdminLayout = ({ children }) => {
  {/* Footer / User Area */}
  <div className="mt-6 pt-6 border-t border-white/5 space-y-4 px-2">
  <div className="flex items-center gap-3 mb-4">
- <div className="w-10 h-10 rounded-full bg-primary/20 border border-primary/30 flex items-center justify-center text-primary font-black">
+ <div className="w-10 h-10 rounded-full bg-primary/20 border border-primary/30 flex items-center justify-center text-white font-black">
  {user?.name?.[0] || 'A'}
  </div>
  <div>
  <p className="text-sm font-black ">{user?.name || 'Admin'}</p>
- <p className="text-[10px] font-bold text-white/40 uppercase tracking-widest">Administrator</p>
+ <p className="text-[10px] font-bold text-white  tracking-widest">Administrator</p>
  </div>
  </div>
  <button
  onClick={logout}
- className="w-full flex items-center gap-4 p-4 rounded-2xl bg-red-500/10 hover:bg-red-500/20 text-red-500 border border-red-500/10 transition-all font-black uppercase tracking-widest text-[10px]"
+ className="w-full flex items-center gap-4 p-4 rounded-2xl bg-red-500/10 hover:bg-red-500/20 text-red-500 border border-red-500/10 transition-all font-black  tracking-widest text-[10px]"
  >
  <LogOut className="w-4 h-4" />
  Sign Out
@@ -190,9 +190,9 @@ const AdminLayout = ({ children }) => {
  <Menu className="w-6 h-6" />
  </button>
  <div>
- <h2 className="text-sm font-black uppercase tracking-tighter text-white/40">BoostGG Central Control</h2>
+ <h2 className="text-sm font-black  tracking-tighter text-white">BoostGG Central Control</h2>
  <div className="flex items-center gap-6 mt-1">
- <p className="text-xl font-black text-white uppercase leading-none">
+ <p className="text-xl font-black text-white  leading-none">
  {menuItems.find(item => item.path === location.pathname)?.label || 'Admin Panel'}
  </p>
 
@@ -201,19 +201,19 @@ const AdminLayout = ({ children }) => {
  <div className="hidden md:flex items-center bg-white/[0.03] border border-white/5 rounded-full p-1 ml-4">
  <Link
  to="/admin/services"
- className={`px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest transition-all ${location.pathname === '/admin/services' ? 'bg-primary text-white shadow-lg shadow-primary/20' : 'text-white/30 hover:text-white'}`}
+ className={`px-4 py-1.5 rounded-full text-[10px] font-black  tracking-widest transition-all ${location.pathname === '/admin/services' ? 'bg-primary text-white shadow-lg shadow-primary/20' : 'text-white/30 hover:text-white'}`}
  >
  Services
  </Link>
  <Link
  to="/admin/currency"
- className={`px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest transition-all ${location.pathname === '/admin/currency' ? 'bg-primary text-white shadow-lg shadow-primary/20' : 'text-white/30 hover:text-white'}`}
+ className={`px-4 py-1.5 rounded-full text-[10px] font-black  tracking-widest transition-all ${location.pathname === '/admin/currency' ? 'bg-primary text-white shadow-lg shadow-primary/20' : 'text-white/30 hover:text-white'}`}
  >
  Currency
  </Link>
  <Link
  to="/admin/accounts"
- className={`px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest transition-all ${location.pathname === '/admin/accounts' ? 'bg-primary text-white shadow-lg shadow-primary/20' : 'text-white/30 hover:text-white'}`}
+ className={`px-4 py-1.5 rounded-full text-[10px] font-black  tracking-widest transition-all ${location.pathname === '/admin/accounts' ? 'bg-primary text-white shadow-lg shadow-primary/20' : 'text-white/30 hover:text-white'}`}
  >
  Accounts
  </Link>
@@ -249,13 +249,13 @@ const AdminLayout = ({ children }) => {
  <div className="w-10 h-10 rounded-xl bg-primary/20 flex items-center justify-center border border-primary/20">
  <hoveredItem.icon className="w-5 h-5 text-primary" />
  </div>
- <h4 className="text-sm font-black uppercase tracking-tighter text-white">{hoveredItem.label}</h4>
+ <h4 className="text-sm font-black  tracking-tighter text-white">{hoveredItem.label}</h4>
  </div>
- <p className="text-[11px] font-bold text-white/40 uppercase tracking-widest mb-3">Module Description</p>
- <p className="text-xs text-white/70 leading-relaxed ">"{hoveredItem.desc}"</p>
+ <p className="text-[11px] font-bold text-white  tracking-widest mb-3">Module Description</p>
+ <p className="text-xs text-white leading-relaxed ">"{hoveredItem.desc}"</p>
  <div className="mt-6 flex items-center gap-2">
  <div className="w-1 h-1 rounded-full bg-primary animate-pulse" />
- <span className="text-[9px] font-black uppercase tracking-widest text-primary/60">System Ready</span>
+ <span className="text-[9px] font-black  tracking-widest text-white/60">System Ready</span>
  </div>
  </div>
  )}
@@ -272,7 +272,7 @@ const AdminLayout = ({ children }) => {
  </div>
  <div className="flex-1 min-w-0">
  <div className="flex items-center justify-between gap-2 mb-1">
- <span className="text-[10px] font-black uppercase tracking-widest text-primary">New Message</span>
+ <span className="text-[10px] font-black  tracking-widest text-white">New Message</span>
  <button
  onClick={(e) => { e.stopPropagation(); setChatNotif(null); }}
  className="text-white/30 hover:text-white transition-colors"
@@ -281,8 +281,8 @@ const AdminLayout = ({ children }) => {
  </button>
  </div>
  <p className="text-xs font-black text-white truncate">{chatNotif.senderName}</p>
- <p className="text-[11px] text-white/50 mt-0.5 line-clamp-2">{chatNotif.text}</p>
- <p className="text-[9px] text-primary/70 font-bold mt-1 uppercase tracking-widest">Click to open chat →</p>
+ <p className="text-[11px] text-white mt-0.5 line-clamp-2">{chatNotif.text}</p>
+ <p className="text-[9px] text-white/70 font-bold mt-1  tracking-widest">Click to open chat →</p>
  </div>
  </div>
  )}
@@ -314,3 +314,4 @@ const AdminLayout = ({ children }) => {
 };
 
 export default AdminLayout;
+

@@ -33,13 +33,13 @@ const NotFound = () => {
 
  {/* Main Heading */}
  <div className="text-center mb-12">
- <h1 className="text-[120px] md:text-[200px] font-black uppercase tracking-tighter leading-none mb-4 text-white drop-shadow-[0_0_50px_rgba(255,255,255,0.1)]">
+ <h1 className="text-[120px] md:text-[200px] font-black  tracking-tighter leading-none mb-4 text-white drop-shadow-[0_0_50px_rgba(255,255,255,0.1)]">
  404
  </h1>
- <h2 className="text-3xl md:text-5xl font-black uppercase tracking-tighter mb-6">
- Mission <span className="text-primary ">Failed</span>
+ <h2 className="text-3xl md:text-5xl font-black  tracking-tighter mb-6">
+ Mission <span className="text-white ">Failed</span>
  </h2>
- <p className="text-lg text-white/40 font-bold leading-relaxed max-w-md mx-auto">
+ <p className="text-lg text-white font-bold leading-relaxed max-w-md mx-auto">
  Looks like you've ventured into uncharted territory. This page doesn't exist in our gaming universe.
  </p>
  </div>
@@ -62,14 +62,14 @@ const NotFound = () => {
  <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto items-center">
  <button
  onClick={() => navigate('/')}
- className="w-full sm:w-auto bg-primary hover:bg-primary-light text-white px-10 py-4 rounded-2xl font-black uppercase text-[12px] tracking-widest transition-all hover:scale-105 active:scale-95 shadow-xl shadow-primary/40 flex items-center justify-center gap-3"
+ className="w-full sm:w-auto bg-primary hover:bg-primary-light text-white px-10 py-4 rounded-2xl font-black  text-[12px] tracking-widest transition-all hover:scale-105 active:scale-95 shadow-xl shadow-primary/40 flex items-center justify-center gap-3"
  >
  <Home className="w-4 h-4" />
  Back to Base
  </button>
  <button
  onClick={() => navigate(-1)}
- className="w-full sm:w-auto bg-white/5 hover:bg-white/10 text-white px-10 py-4 rounded-2xl font-black uppercase text-[12px] tracking-widest transition-all border border-white/10 flex items-center justify-center gap-3"
+ className="w-full sm:w-auto bg-white/5 hover:bg-white/10 text-white px-10 py-4 rounded-2xl font-black  text-[12px] tracking-widest transition-all border border-white/10 flex items-center justify-center gap-3"
  >
  <ChevronLeft className="w-4 h-4" />
  Retreat
@@ -77,7 +77,7 @@ const NotFound = () => {
  </div>
 
  {/* Secondary Links */}
- <div className="mt-16 pt-8 border-t border-white/5 w-full flex justify-center gap-12 text-[10px] font-black uppercase tracking-widest text-white/30">
+ <div className="mt-16 pt-8 border-t border-white/5 w-full flex justify-center gap-12 text-[10px] font-black  tracking-widest text-white">
  <Link to="/about" className="hover:text-primary transition-colors">About Us</Link>
  <Link to="/blog" className="hover:text-primary transition-colors">Latest News</Link>
  <Link to="/contact" className="hover:text-primary transition-colors">Get Support</Link>
@@ -106,3 +106,4 @@ const NotFound = () => {
 };
 
 export default NotFound;
+

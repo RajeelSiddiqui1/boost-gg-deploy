@@ -13,23 +13,23 @@ const BrandBanner = () => {
  What boosts you,<br />makes us
  </h2>
  <div className="space-y-6 mb-12">
- <p className="text-white/60 text-[16px] leading-relaxed max-w-md">
+ <p className="text-white text-[16px] leading-relaxed max-w-md">
  Whether you're a casual player or a hardcore gamer, we're here to help you achieve your goals and enjoy your gaming experience.
  </p>
- <p className="text-white/40 text-[14px] leading-relaxed max-w-sm">
+ <p className="text-white text-[14px] leading-relaxed max-w-sm">
  Our team of professionals is dedicated to providing you with the best services, safest methods, and fastest results in the industry.
  </p>
  </div>
  <div className="flex gap-4">
  <Link 
  to="/about"
- className="bg-white hover:bg-white/90 text-black px-10 py-4 rounded-2xl font-black text-[14px] uppercase tracking-widest transition-all inline-block"
+ className="bg-white hover:bg-white/90 text-black px-10 py-4 rounded-2xl font-black text-[14px]  tracking-widest transition-all inline-block"
  >
  About us
  </Link>
  <button 
  onClick={() => window.dispatchEvent(new CustomEvent('openSupportChat'))}
- className="border border-white/10 hover:bg-white/5 text-white px-10 py-4 rounded-2xl font-black text-[14px] uppercase tracking-widest transition-all"
+ className="border border-white/10 hover:bg-white/5 text-white px-10 py-4 rounded-2xl font-black text-[14px]  tracking-widest transition-all"
  >
  Support
  </button>
@@ -58,3 +58,4 @@ const BrandBanner = () => {
 };
 
 export default BrandBanner;
+

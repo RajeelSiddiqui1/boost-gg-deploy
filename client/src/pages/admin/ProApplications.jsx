@@ -80,8 +80,8 @@ const AdminProApplications = () => {
  {/* Header */}
  <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
  <div>
- <h1 className="text-3xl font-black uppercase tracking-tighter">Pro Applications</h1>
- <p className="text-white/40 text-[10px] font-bold uppercase tracking-[0.2em] mt-1">Review and manage professional applications</p>
+ <h1 className="text-3xl font-black  tracking-tighter">Pro Applications</h1>
+ <p className="text-white text-[10px] font-bold  tracking-[0.2em] mt-1">Review and manage professional applications</p>
  </div>
 
  <div className="flex items-center gap-3">
@@ -100,7 +100,7 @@ const AdminProApplications = () => {
  <button
  key={s}
  onClick={() => setFilter(s)}
- className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${filter === s ? 'bg-primary text-black' : 'text-white/40 hover:text-white'}`}
+ className={`px-4 py-2 rounded-xl text-[10px] font-black  tracking-widest transition-all ${filter === s ? 'bg-primary text-black' : 'text-white/40 hover:text-white'}`}
  >
  {s}
  </button>
@@ -115,12 +115,12 @@ const AdminProApplications = () => {
  <table className="w-full text-left">
  <thead>
  <tr className="border-b border-white/5 bg-white/[0.02]">
- <th className="px-8 py-5 text-[10px] font-black uppercase tracking-[0.2em] text-white/30 text-center">Icon</th>
- <th className="px-8 py-5 text-[10px] font-black uppercase tracking-[0.2em] text-white/30">Candidate</th>
- <th className="px-8 py-5 text-[10px] font-black uppercase tracking-[0.2em] text-white/30">Role</th>
- <th className="px-8 py-5 text-[10px] font-black uppercase tracking-[0.2em] text-white/30">Contact</th>
- <th className="px-8 py-5 text-[10px] font-black uppercase tracking-[0.2em] text-white/30">Status</th>
- <th className="px-8 py-5 text-[10px] font-black uppercase tracking-[0.2em] text-white/30 text-right">Actions</th>
+ <th className="px-8 py-5 text-[10px] font-black  tracking-[0.2em] text-white/30 text-center">Icon</th>
+ <th className="px-8 py-5 text-[10px] font-black  tracking-[0.2em] text-white/30">Candidate</th>
+ <th className="px-8 py-5 text-[10px] font-black  tracking-[0.2em] text-white/30">Role</th>
+ <th className="px-8 py-5 text-[10px] font-black  tracking-[0.2em] text-white/30">Contact</th>
+ <th className="px-8 py-5 text-[10px] font-black  tracking-[0.2em] text-white/30">Status</th>
+ <th className="px-8 py-5 text-[10px] font-black  tracking-[0.2em] text-white/30 text-right">Actions</th>
  </tr>
  </thead>
  <tbody className="divide-y divide-white/5">
@@ -128,12 +128,12 @@ const AdminProApplications = () => {
  <tr>
  <td colSpan="6" className="px-8 py-20 text-center">
  <Loader2 className="w-8 h-8 text-primary animate-spin mx-auto mb-4" />
- <p className="text-white/20 text-[10px] font-black uppercase tracking-widest">Loading applications...</p>
+ <p className="text-white text-[10px] font-black  tracking-widest">Loading applications...</p>
  </td>
  </tr>
  ) : filteredApplications.length === 0 ? (
  <tr>
- <td colSpan="6" className="px-8 py-20 text-center text-white/20 text-[10px] font-black uppercase tracking-widest">
+ <td colSpan="6" className="px-8 py-20 text-center text-white/20 text-[10px] font-black  tracking-widest">
  No applications found
  </td>
  </tr>
@@ -151,34 +151,34 @@ const AdminProApplications = () => {
  {app.userId?.avatar ? (
  <img src={app.userId.avatar} alt="" className="w-full h-full object-cover" />
  ) : (
- <span className="text-xs font-black text-primary">{(app.userId?.name || 'G').charAt(0)}</span>
+ <span className="text-xs font-black text-white">{(app.userId?.name || 'G').charAt(0)}</span>
  )}
  </div>
  <div>
- <div className="font-black uppercase text-sm tracking-tight">{app.userId?.name || 'Guest Candidate'}</div>
- <div className="text-[10px] text-white/20 font-bold uppercase tracking-widest">{app.email}</div>
+ <div className="font-black  text-sm tracking-tight">{app.userId?.name || 'Guest Candidate'}</div>
+ <div className="text-[10px] text-white font-bold  tracking-widest">{app.email}</div>
  </div>
  </div>
  </td>
  <td className="px-8 py-6">
- <div className="inline-flex items-center px-3 py-1 rounded-full bg-white/[0.03] border border-white/5 text-[9px] font-black uppercase tracking-widest text-primary">
+ <div className="inline-flex items-center px-3 py-1 rounded-full bg-white/[0.03] border border-white/5 text-[9px] font-black  tracking-widest text-white">
  {app.proType?.replace('_', ' ')}
  </div>
  </td>
  <td className="px-8 py-6">
  <div className="space-y-1">
- <div className="flex items-center gap-2 text-[10px] font-bold text-white/40 uppercase tracking-widest">
+ <div className="flex items-center gap-2 text-[10px] font-bold text-white  tracking-widest">
  <MessageSquare className="w-3 h-3 text-primary" /> {app.discord}
  </div>
  {app.telegram && (
- <div className="flex items-center gap-2 text-[10px] font-bold text-white/40 uppercase tracking-widest">
+ <div className="flex items-center gap-2 text-[10px] font-bold text-white  tracking-widest">
  <Send className="w-3 h-3 text-blue-400" /> {app.telegram}
  </div>
  )}
  </div>
  </td>
  <td className="px-8 py-6">
- <div className={`text-[10px] font-black uppercase tracking-widest ${app.status === 'approved' ? 'text-green-400' :
+ <div className={`text-[10px] font-black  tracking-widest ${app.status === 'approved' ? 'text-green-400' :
  app.status === 'rejected' ? 'text-red-400' : 'text-yellow-400'
  }`}>
  {app.status}
@@ -218,14 +218,14 @@ const AdminProApplications = () => {
               {React.createElement(getRoleIcon(selectedApp.proType), { className: "w-10 h-10 text-primary" })}
             </div>
             <div>
-              <h2 className="text-3xl font-black uppercase tracking-tighter">Review Application</h2>
-              <p className="text-white/40 text-xs font-bold uppercase tracking-widest mt-1">Submitted {new Date(selectedApp.createdAt).toLocaleDateString()}</p>
+              <h2 className="text-3xl font-black  tracking-tighter">Review Application</h2>
+              <p className="text-white text-xs font-bold  tracking-widest mt-1">Submitted {new Date(selectedApp.createdAt).toLocaleDateString()}</p>
             </div>
           </div>
 
           <div className="grid grid-cols-2 gap-8">
             <div className="space-y-4 p-6 bg-white/[0.03] border border-white/5 rounded-3xl">
-              <h4 className="text-[10px] font-black uppercase tracking-widest text-primary">Contact Info</h4>
+              <h4 className="text-[10px] font-black  tracking-widest text-white">Contact Info</h4>
               <div className="space-y-3">
                 <div className="text-sm font-bold flex items-center gap-3"><Mail className="w-4 h-4 text-white/20" /> {selectedApp.email}</div>
                 <div className="text-sm font-bold flex items-center gap-3"><MessageSquare className="w-4 h-4 text-white/20" /> {selectedApp.discord}</div>
@@ -235,17 +235,17 @@ const AdminProApplications = () => {
               </div>
             </div>
             <div className="space-y-4 p-6 bg-white/[0.03] border border-white/5 rounded-3xl">
-              <h4 className="text-[10px] font-black uppercase tracking-widest text-primary">Details</h4>
+              <h4 className="text-[10px] font-black  tracking-widest text-white">Details</h4>
               <div className="space-y-3">
                 <div className="text-sm font-bold flex items-center gap-3"><Clock className="w-4 h-4 text-white/20" /> Availability: {selectedApp.hoursPerDay}</div>
                 <div className="text-sm font-bold flex items-start gap-3">
                   <Gamepad2 className="w-4 h-4 text-white/20 mt-1" /> 
                   <div className="flex flex-wrap gap-1">
                     {selectedApp.games?.map((game, idx) => (
-                      <span key={idx} className="px-2 py-0.5 bg-primary/10 border border-primary/20 rounded text-[9px] font-bold text-primary">
+                      <span key={idx} className="px-2 py-0.5 bg-primary/10 border border-primary/20 rounded text-[9px] font-bold text-white">
                         {typeof game === 'string' ? game : (game.title || game.name)}
                       </span>
-                    )) || <span className="text-white/20">None selected</span>}
+                    )) || <span className="text-white">None selected</span>}
                   </div>
                 </div>
               </div>
@@ -254,7 +254,7 @@ const AdminProApplications = () => {
 
           {selectedApp.screenshotUrl && (
             <div className="space-y-4 p-8 bg-white/[0.03] border border-white/5 rounded-[32px]">
-              <h4 className="text-[10px] font-black uppercase tracking-widest text-primary">Verification Screenshot</h4>
+              <h4 className="text-[10px] font-black  tracking-widest text-white">Verification Screenshot</h4>
               <img 
                 src={`${API_URL}${selectedApp.screenshotUrl}`} 
                 alt="Verification" 
@@ -265,8 +265,8 @@ const AdminProApplications = () => {
           )}
 
           <div className="space-y-4 p-8 bg-white/[0.03] border border-white/5 rounded-[32px]">
-            <h4 className="text-[10px] font-black uppercase tracking-widest text-primary">Experience & Achievements</h4>
-            <p className="text-sm text-white/60 leading-relaxed ">{selectedApp.experienceText || selectedApp.personalStatement}</p>
+            <h4 className="text-[10px] font-black  tracking-widest text-white">Experience & Achievements</h4>
+            <p className="text-sm text-white leading-relaxed ">{selectedApp.experienceText || selectedApp.personalStatement}</p>
           </div>
 
           {selectedApp.status === 'pending' && (
@@ -274,14 +274,14 @@ const AdminProApplications = () => {
               <button
                 disabled={actionLoading}
                 onClick={() => handleReview(selectedApp._id, 'rejected', 'Does not meet our current requirements.')}
-                className="flex-1 py-5 rounded-3xl bg-red-500/10 border border-red-500/20 text-red-400 font-black text-xs uppercase tracking-widest hover:bg-red-500/20 transition-all flex items-center justify-center gap-3"
+                className="flex-1 py-5 rounded-3xl bg-red-500/10 border border-red-500/20 text-red-400 font-black text-xs  tracking-widest hover:bg-red-500/20 transition-all flex items-center justify-center gap-3"
               >
                 <X className="w-4 h-4" /> Reject Application
               </button>
               <button
                 disabled={actionLoading}
                 onClick={() => handleReview(selectedApp._id, 'approved', 'Welcome to the team!')}
-                className="flex-1 py-5 rounded-3xl bg-primary text-black font-black text-xs uppercase tracking-widest hover:bg-primary/90 transition-all flex items-center justify-center gap-3 shadow-2xl shadow-primary/20"
+                className="flex-1 py-5 rounded-3xl bg-primary text-black font-black text-xs  tracking-widest hover:bg-primary/90 transition-all flex items-center justify-center gap-3 shadow-2xl shadow-primary/20"
               >
                 {actionLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Check className="w-4 h-4" />} Approve Candidate
               </button>
@@ -296,3 +296,4 @@ const AdminProApplications = () => {
 };
 
 export default AdminProApplications;
+

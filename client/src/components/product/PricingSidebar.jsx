@@ -28,10 +28,10 @@ const PricingSidebar = ({
  <div className="flex items-center justify-between mb-8 relative z-10">
  <div className="flex items-center gap-2">
  <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse shadow-[0_0_10px_rgba(34,197,94,0.5)]" />
- <span className="text-[10px] font-black uppercase tracking-widest text-white/60 font-stolzl">{onlineBoosters} Boosters Online</span>
+ <span className="text-[10px] font-black  tracking-widest text-white font-stolzl">{onlineBoosters} Boosters Online</span>
  </div>
  <div className="px-3 py-1 bg-white/10 rounded-full border border-white/10">
- <span className="text-[10px] font-black uppercase text-white/80 font-stolzl">ID: 6926</span>
+ <span className="text-[10px] font-black  text-white font-stolzl">ID: 6926</span>
  </div>
  </div>
 
@@ -40,13 +40,13 @@ const PricingSidebar = ({
  <div className="flex items-baseline gap-3 mb-1">
  <span className="text-4xl font-black text-white font-skycoach">{price} €</span>
  {originalPrice && (
- <span className="text-lg font-bold text-white/30 line-through decoration-red-500/50">{originalPrice} €</span>
+ <span className="text-lg font-bold text-white line-through decoration-red-500/50">{originalPrice} €</span>
  )}
  </div>
  <div className="flex items-center gap-2">
- <span className="text-[10px] font-black uppercase tracking-widest text-white/40 font-stolzl ">excl. VAT</span>
+ <span className="text-[10px] font-black  tracking-widest text-white font-stolzl ">excl. VAT</span>
  {discount && (
- <span className="px-2 py-0.5 bg-red-500 text-white text-[9px] font-black rounded uppercase tracking-wider">-{discount}% OFF</span>
+ <span className="px-2 py-0.5 bg-red-500 text-white text-[9px] font-black rounded  tracking-wider">-{discount}% OFF</span>
  )}
  </div>
  </div>
@@ -54,7 +54,7 @@ const PricingSidebar = ({
  {/* Quantity & Email Section */}
  <div className="space-y-4 mb-8 relative z-10">
  <div className="flex flex-col gap-2">
- <label className="text-[10px] font-black uppercase tracking-widest text-white/40 font-stolzl ml-1">Quantity</label>
+ <label className="text-[10px] font-black  tracking-widest text-white font-stolzl ml-1">Quantity</label>
  <div className="flex items-center bg-black/20 rounded-xl p-1.5 border border-white/5 group/qty hover:border-white/20 transition-all">
  <button
  onClick={() => setQuantity(Math.max(1, quantity - 1))}
@@ -69,9 +69,9 @@ const PricingSidebar = ({
  </div>
 
  <div className="flex flex-col gap-2">
- <label className="text-[10px] font-black uppercase tracking-widest text-white/40 font-stolzl ml-1">Contact Email</label>
+ <label className="text-[10px] font-black  tracking-widest text-white font-stolzl ml-1">Contact Email</label>
  <div className="relative group/input">
- <div className="absolute left-4 top-1/2 -translate-y-1/2 text-white/20 group-focus-within/input:text-white/60 transition-colors">
+ <div className="absolute left-4 top-1/2 -translate-y-1/2 text-white/20 group-focus-within/input:text-white transition-colors">
  <Mail size={16} />
  </div>
  <input
@@ -92,7 +92,7 @@ const PricingSidebar = ({
  >
  <div className="absolute inset-0 bg-white/20 translate-y-full group-hover/btn:translate-y-0 transition-transform duration-500" />
  <div className="flex items-center justify-center gap-3 relative z-10">
- <span className="text-xl font-black uppercase tracking-tighter text-black">Buy now</span>
+ <span className="text-xl font-black  tracking-tighter text-black">Buy Now</span>
  <ShieldCheck className="w-6 h-6 text-black fill-black/20" />
  </div>
  </button>
@@ -104,7 +104,7 @@ const PricingSidebar = ({
  <Zap size={16} fill="currentColor" />
  </div>
  <div>
- <p className="text-[8px] font-black uppercase tracking-widest text-white/30 font-stolzl">You will get</p>
+ <p className="text-[8px] font-black  tracking-widest text-white font-stolzl">You will get</p>
  <p className="text-xs font-black text-white ">+{cashback} € Cashback</p>
  </div>
  </div>
@@ -116,11 +116,11 @@ const PricingSidebar = ({
  <div className="grid grid-cols-2 gap-3 animate-in fade-in slide-in-from-bottom-4 duration-1000 delay-300">
  <button className="flex flex-col items-center justify-center gap-2 p-5 bg-white/[0.02] border border-white/5 rounded-[20px] hover:bg-white/5 transition-all group/sub">
  <MessageSquare size={20} className="text-white/40 group-hover/sub:text-primary transition-colors" />
- <span className="text-[9px] font-black uppercase tracking-widest text-white/40 font-stolzl">Chat now</span>
+ <span className="text-[9px] font-black  tracking-widest text-white font-stolzl">Chat now</span>
  </button>
  <button className="flex flex-col items-center justify-center gap-2 p-5 bg-white/[0.02] border border-white/5 rounded-[20px] hover:bg-white/5 transition-all group/sub">
  <ShoppingCart size={20} className="text-white/40 group-hover/sub:text-primary transition-colors" />
- <span className="text-[9px] font-black uppercase tracking-widest text-white/40 font-stolzl">Add to cart</span>
+ <span className="text-[9px] font-black  tracking-widest text-white font-stolzl">Add to Cart</span>
  </button>
  </div>
 
@@ -136,3 +136,4 @@ const PricingSidebar = ({
 };
 
 export default PricingSidebar;
+

@@ -131,14 +131,14 @@ const AdminOffers = () => {
  {/* Header Actions */}
  <div className="flex flex-col md:flex-row items-center justify-between gap-6">
  <div>
- <h1 className="text-2xl font-black text-white uppercase tracking-tighter">Services Inventory</h1>
- <p className="text-white/40 text-xs font-bold uppercase tracking-widest leading-relaxed">Manage your boosting offers and calculations</p>
+ <h1 className="text-2xl font-black text-white  tracking-tighter">Services Inventory</h1>
+ <p className="text-white text-xs font-bold  tracking-widest leading-relaxed">Manage your boosting offers and calculations</p>
  </div>
  <div className="flex flex-col md:flex-row gap-4 w-full md:w-auto">
  {selectedIds.length > 0 && (
  <button
  onClick={() => setBulkDeleteConfirm(true)}
- className="flex items-center justify-center gap-2 bg-red-500 hover:bg-red-600 text-white px-8 py-4 rounded-2xl font-black uppercase tracking-widest text-xs transition-all shadow-lg shadow-red-500/20"
+ className="flex items-center justify-center gap-2 bg-red-500 hover:bg-red-600 text-white px-8 py-4 rounded-2xl font-black  tracking-widest text-xs transition-all shadow-lg shadow-red-500/20"
  >
  <Trash2 className="w-5 h-5" />
  Delete Selected ({selectedIds.length})
@@ -146,7 +146,7 @@ const AdminOffers = () => {
  )}
  <button
  onClick={() => setShowForm(true)}
- className="flex items-center justify-center gap-2 bg-primary hover:bg-primary/90 text-white px-8 py-4 rounded-2xl font-black uppercase tracking-widest text-xs transition-all shadow-lg shadow-primary/20"
+ className="flex items-center justify-center gap-2 bg-primary hover:bg-primary/90 text-white px-8 py-4 rounded-2xl font-black  tracking-widest text-xs transition-all shadow-lg shadow-primary/20"
  >
  <Plus className="w-5 h-5" />
  Create New service
@@ -187,10 +187,10 @@ const AdminOffers = () => {
  <div className="w-20 h-20 bg-white/5 rounded-full flex items-center justify-center mx-auto mb-6">
  <ShoppingCart className="w-10 h-10 text-white/10" />
  </div>
- <h3 className="text-xl font-black text-white/20 uppercase mb-8">No services found</h3>
+ <h3 className="text-xl font-black text-white  mb-8">No services found</h3>
  <button
  onClick={() => setShowForm(true)}
- className="bg-white/5 hover:bg-white/10 text-white px-8 py-4 rounded-2xl font-black uppercase tracking-widest text-xs transition-all border border-white/5"
+ className="bg-white/5 hover:bg-white/10 text-white px-8 py-4 rounded-2xl font-black  tracking-widest text-xs transition-all border border-white/5"
  >
  Add New Service
  </button>
@@ -211,12 +211,12 @@ const AdminOffers = () => {
  />
  </div>
  </th>
- <th className="px-8 py-6 text-[10px] font-black uppercase tracking-[0.2em] text-white/30">Service</th>
- <th className="px-8 py-6 text-[10px] font-black uppercase tracking-[0.2em] text-white/30">Game</th>
- <th className="px-8 py-6 text-[10px] font-black uppercase tracking-[0.2em] text-white/30">Price</th>
- <th className="px-8 py-6 text-[10px] font-black uppercase tracking-[0.2em] text-white/30">Hot</th>
- <th className="px-8 py-6 text-[10px] font-black uppercase tracking-[0.2em] text-white/30">Status</th>
- <th className="px-8 py-6 text-[10px] font-black uppercase tracking-[0.2em] text-white/30 text-right">Actions</th>
+ <th className="px-8 py-6 text-[10px] font-black  tracking-[0.2em] text-white/30">Service</th>
+ <th className="px-8 py-6 text-[10px] font-black  tracking-[0.2em] text-white/30">Game</th>
+ <th className="px-8 py-6 text-[10px] font-black  tracking-[0.2em] text-white/30">Price</th>
+ <th className="px-8 py-6 text-[10px] font-black  tracking-[0.2em] text-white/30">Hot</th>
+ <th className="px-8 py-6 text-[10px] font-black  tracking-[0.2em] text-white/30">Status</th>
+ <th className="px-8 py-6 text-[10px] font-black  tracking-[0.2em] text-white/30 text-right">Actions</th>
  </tr>
  </thead>
  <tbody className="divide-y divide-white/5">
@@ -242,34 +242,34 @@ const AdminOffers = () => {
  />
  </div>
  <div className="min-w-0">
- <div className="text-sm font-black uppercase text-white group-hover:text-primary transition-colors truncate">{offer.title}</div>
- <div className="text-[10px] font-bold text-white/20 uppercase tracking-widest">{offer.category}</div>
+ <div className="text-sm font-black  text-white group-hover:text-white transition-colors truncate">{offer.title}</div>
+ <div className="text-[10px] font-bold text-white  tracking-widest">{offer.category}</div>
  </div>
  </div>
  </td>
  <td className="px-8 py-6">
- <span className="text-[10px] font-black uppercase tracking-widest text-white/60 bg-white/5 px-3 py-1.5 rounded-lg border border-white/5">
+ <span className="text-[10px] font-black  tracking-widest text-white bg-white/5 px-3 py-1.5 rounded-lg border border-white/5">
  {offer.game}
  </span>
  </td>
  <td className="px-8 py-6">
  <div className="text-sm font-black text-white">{formatPrice(offer.price)}</div>
  {offer.oldPrice && (
- <div className="text-[9px] font-bold text-white/20 line-through">{formatPrice(offer.oldPrice)}</div>
+ <div className="text-[9px] font-bold text-white line-through">{formatPrice(offer.oldPrice)}</div>
  )}
  </td>
  <td className="px-8 py-6">
  {offer.isHot ? (
- <span className="px-2 py-1 bg-orange-500/10 text-orange-500 text-[8px] font-black uppercase tracking-widest border border-orange-500/20 rounded-md">HOT</span>
+ <span className="px-2 py-1 bg-orange-500/10 text-orange-500 text-[8px] font-black  tracking-widest border border-orange-500/20 rounded-md">HOT</span>
  ) : (
- <span className="px-2 py-1 bg-white/5 text-white/20 text-[8px] font-black uppercase tracking-widest border border-white/5 rounded-md">REGULAR</span>
+ <span className="px-2 py-1 bg-white/5 text-white text-[8px] font-black  tracking-widest border border-white/5 rounded-md">REGULAR</span>
  )}
  </td>
  <td className="px-8 py-6">
  <span
- className={`inline-flex px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border ${offer.isActive
+ className={`inline-flex px-3 py-1 rounded-full text-[10px] font-black  tracking-widest border ${offer.isActive
  ? 'bg-green-500/10 text-green-500 border-green-500/20'
- : 'bg-red-500/10 text-red-500 border-red-500/20'
+ : 'bg-red-500/10 text-white border-red-500/20'
  }`}
  >
  {offer.isActive ? 'Active' : 'Inactive'}
@@ -324,21 +324,21 @@ const AdminOffers = () => {
  {bulkDeleteConfirm && (
  <div className="fixed inset-0 bg-black/90 backdrop-blur-md flex items-center justify-center z-[200] p-6">
  <div className="bg-[#0A0A0A] border border-white/10 rounded-[40px] p-10 max-w-md w-full text-center">
- <div className="w-20 h-20 rounded-full bg-red-500/20 flex items-center justify-center text-red-500 mx-auto mb-6">
+ <div className="w-20 h-20 rounded-full bg-red-500/20 flex items-center justify-center text-white mx-auto mb-6">
  <Trash2 className="w-10 h-10" />
  </div>
- <h3 className="text-3xl font-black uppercase tracking-tighter text-white mb-4">Delete Selected?</h3>
- <p className="text-white/40 font-bold mb-10 "> Are you sure you want to delete <span className="text-white">{selectedIds.length}</span> services? This action cannot be undone.</p>
+ <h3 className="text-3xl font-black  tracking-tighter text-white mb-4">Delete Selected?</h3>
+ <p className="text-white font-bold mb-10 "> Are you sure you want to delete <span className="text-white">{selectedIds.length}</span> services? This action cannot be undone.</p>
  <div className="flex gap-4">
  <button
  onClick={() => setBulkDeleteConfirm(false)}
- className="flex-1 px-8 py-4 bg-white/5 hover:bg-white/10 rounded-2xl font-black uppercase tracking-widest text-xs transition-all"
+ className="flex-1 px-8 py-4 bg-white/5 hover:bg-white/10 rounded-2xl font-black  tracking-widest text-xs transition-all"
  >
  Cancel
  </button>
  <button
  onClick={handleBulkDelete}
- className="flex-1 px-8 py-4 bg-red-500 hover:bg-red-600 rounded-2xl font-black uppercase tracking-widest text-xs transition-all shadow-lg shadow-red-500/20"
+ className="flex-1 px-8 py-4 bg-red-500 hover:bg-red-600 rounded-2xl font-black  tracking-widest text-xs transition-all shadow-lg shadow-red-500/20"
  >
  Delete All
  </button>
@@ -351,21 +351,21 @@ const AdminOffers = () => {
  {deleteConfirm && (
  <div className="fixed inset-0 bg-black/90 backdrop-blur-md flex items-center justify-center z-[200] p-6">
  <div className="bg-[#0A0A0A] border border-white/10 rounded-[40px] p-10 max-w-md w-full text-center">
- <div className="w-20 h-20 rounded-full bg-red-500/20 flex items-center justify-center text-red-500 mx-auto mb-6">
+ <div className="w-20 h-20 rounded-full bg-red-500/20 flex items-center justify-center text-white mx-auto mb-6">
  <Trash2 className="w-10 h-10" />
  </div>
- <h3 className="text-3xl font-black uppercase tracking-tighter text-white mb-4">Delete Service?</h3>
- <p className="text-white/40 font-bold mb-10 "> Are you sure you want to delete <span className="text-white">"{deleteConfirm.title}"</span>?</p>
+ <h3 className="text-3xl font-black  tracking-tighter text-white mb-4">Delete Service?</h3>
+ <p className="text-white font-bold mb-10 "> Are you sure you want to delete <span className="text-white">"{deleteConfirm.title}"</span>?</p>
  <div className="flex gap-4">
  <button
  onClick={() => setDeleteConfirm(null)}
- className="flex-1 px-8 py-4 bg-white/5 hover:bg-white/10 rounded-2xl font-black uppercase tracking-widest text-xs transition-all"
+ className="flex-1 px-8 py-4 bg-white/5 hover:bg-white/10 rounded-2xl font-black  tracking-widest text-xs transition-all"
  >
  Cancel
  </button>
  <button
  onClick={() => handleDelete(deleteConfirm._id)}
- className="flex-1 px-8 py-4 bg-red-500 hover:bg-red-600 rounded-2xl font-black uppercase tracking-widest text-xs transition-all shadow-lg shadow-red-500/20"
+ className="flex-1 px-8 py-4 bg-red-500 hover:bg-red-600 rounded-2xl font-black  tracking-widest text-xs transition-all shadow-lg shadow-red-500/20"
  >
  Delete
  </button>
@@ -379,3 +379,4 @@ const AdminOffers = () => {
 };
 
 export default AdminOffers;
+

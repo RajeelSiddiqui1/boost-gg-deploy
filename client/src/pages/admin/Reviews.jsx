@@ -291,10 +291,10 @@ const Reviews = () => {
  <div className="p-6">
  <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8">
  <div>
- <h1 className="text-3xl font-black text-white uppercase tracking-tighter">
+ <h1 className="text-3xl font-black text-white  tracking-tighter">
  Reviews Management
  </h1>
- <p className="text-white/40 text-xs font-bold uppercase tracking-widest mt-1">
+ <p className="text-white text-xs font-bold  tracking-widest mt-1">
  Create, edit and manage site reviews
  </p>
  </div>
@@ -304,7 +304,7 @@ const Reviews = () => {
  resetForm();
  setShowModal(true);
  }}
- className="px-6 py-3 bg-primary text-black font-black uppercase tracking-widest text-[13px] rounded-xl hover:scale-[1.02] transition-all flex items-center gap-2"
+ className="px-6 py-3 bg-primary text-black font-black  tracking-widest text-[13px] rounded-xl hover:scale-[1.02] transition-all flex items-center gap-2"
  >
  <Plus className="w-4 h-4" />
  Add Review
@@ -327,10 +327,10 @@ const Reviews = () => {
 
  {/* Notification */}
  {notification && (
- <div className={`mb-6 p-4 rounded-2xl text-xs font-bold uppercase tracking-wider ${
+ <div className={`mb-6 p-4 rounded-2xl text-xs font-bold  tracking-wider ${
  notification.type === 'success' 
  ? 'bg-green-500/10 border border-green-500/20 text-green-500' 
- : 'bg-red-500/10 border border-red-500/20 text-red-500'
+ : 'bg-red-500/10 border border-red-500/20 text-white'
  }`}>
  {notification.message}
  </div>
@@ -344,7 +344,7 @@ const Reviews = () => {
  <div className="text-center py-24">
  <Star className="w-16 h-16 text-white/20 mx-auto mb-4" />
  <h3 className="text-white font-bold text-xl mb-2">No reviews found</h3>
- <p className="text-white/40">Start by adding a manual review</p>
+ <p className="text-white">Start by adding a manual review</p>
  </div>
  ) : (
  <div className="grid grid-cols-1 gap-4">
@@ -381,23 +381,23 @@ const Reviews = () => {
  />
  ))}
  </div>
- <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest ${
+ <span className={`px-3 py-1 rounded-full text-[10px] font-black  tracking-widest ${
  review.isPublished 
  ? 'bg-green-500/20 text-green-400' 
- : 'bg-white/10 text-white/40'
+ : 'bg-white/10 text-white'
  }`}>
  {review.isPublished ? 'Published' : 'Unpublished'}
  </span>
- <span className="text-white/20 text-[11px] font-bold uppercase tracking-widest">
+ <span className="text-white text-[11px] font-bold  tracking-widest">
  {getTimeAgo(review.createdAt)}
  </span>
  </div>
  
  <h4 className="text-white font-bold text-lg mb-1">{review.title || 'No Title'}</h4>
- <p className="text-white/60 text-sm mb-4 line-clamp-2">{review.description}</p>
+ <p className="text-white text-sm mb-4 line-clamp-2">{review.description}</p>
  
- <div className="flex items-center gap-4 text-white/40 text-[12px] font-bold uppercase tracking-widest">
- <span className="text-white/80">{review.reviewerName}</span>
+ <div className="flex items-center gap-4 text-white text-[12px] font-bold  tracking-widest">
+ <span className="text-white">{review.reviewerName}</span>
  {review.countryName && (
  <span className="flex items-center gap-1.5">
  <Globe className="w-3.5 h-3.5" />
@@ -445,7 +445,7 @@ const Reviews = () => {
  <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
  <div className="bg-[#0A0A0A] border border-white/10 w-full max-w-2xl rounded-[32px] overflow-hidden animate-in zoom-in-95 duration-200">
  <div className="p-8 border-b border-white/10 flex items-center justify-between">
- <h2 className="text-2xl font-black text-white uppercase tracking-tighter">
+ <h2 className="text-2xl font-black text-white  tracking-tighter">
  {editingReview ? 'Edit Review' : 'Add New Review'}
  </h2>
  <button 
@@ -459,7 +459,7 @@ const Reviews = () => {
  <form onSubmit={handleSubmit} className="p-8 space-y-6 max-h-[70vh] overflow-y-auto custom-scrollbar">
  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
  <div className="space-y-2">
- <label className="text-[10px] font-black uppercase tracking-widest text-white/40 ml-1">Reviewer Name</label>
+ <label className="text-[10px] font-black  tracking-widest text-white ml-1">Reviewer Name</label>
  <input
  required
  type="text"
@@ -470,7 +470,7 @@ const Reviews = () => {
  />
  </div>
  <div className="space-y-2">
- <label className="text-[10px] font-black uppercase tracking-widest text-white/40 ml-1">Review Title</label>
+ <label className="text-[10px] font-black  tracking-widest text-white ml-1">Review Title</label>
  <input
  type="text"
  value={formData.title}
@@ -482,7 +482,7 @@ const Reviews = () => {
  </div>
 
  <div className="space-y-2">
- <label className="text-[10px] font-black uppercase tracking-widest text-white/40 ml-1">Description</label>
+ <label className="text-[10px] font-black  tracking-widest text-white ml-1">Description</label>
  <textarea
  required
  rows={4}
@@ -495,7 +495,7 @@ const Reviews = () => {
 
  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
  <div className="space-y-2">
- <label className="text-[10px] font-black uppercase tracking-widest text-white/40 ml-1">Stars (1-5)</label>
+ <label className="text-[10px] font-black  tracking-widest text-white ml-1">Stars (1-5)</label>
  <select
  value={formData.stars}
  onChange={(e) => setFormData({ ...formData, stars: parseInt(e.target.value) })}
@@ -511,7 +511,7 @@ const Reviews = () => {
 
  {/* Searchable Country Dropdown */}
  <div className="space-y-2 relative" ref={countryDropdownRef}>
- <label className="text-[10px] font-black uppercase tracking-widest text-white/40 ml-1">Country</label>
+ <label className="text-[10px] font-black  tracking-widest text-white ml-1">Country</label>
  <div 
  className="relative cursor-pointer"
  onClick={() => setShowCountryDropdown(!showCountryDropdown)}
@@ -521,7 +521,7 @@ const Reviews = () => {
  {formData.countryImage && (
  <img src={getImageUrl(formData.countryImage)} alt="" className="w-5 object-contain" />
  )}
- <span className={formData.countryName ? 'text-white' : 'text-white/20'}>
+ <span className={formData.countryName ? 'text-white' : 'text-white'}>
  {formData.countryName || 'Select Country'}
  </span>
  </div>
@@ -553,11 +553,11 @@ const Reviews = () => {
  className="flex items-center gap-3 px-4 py-3 hover:bg-white/5 cursor-pointer transition-colors group"
  >
  <img src={`https://flagcdn.com/w20/${country.code}.png`} alt="" className="w-5 object-contain opacity-60 group-hover:opacity-100" />
- <span className="text-sm text-white/60 group-hover:text-white">{country.name}</span>
+ <span className="text-sm text-white group-hover:text-white">{country.name}</span>
  </div>
  ))}
  {filteredCountries.length === 0 && (
- <div className="px-4 py-8 text-center text-xs text-white/20 uppercase font-bold tracking-widest">
+ <div className="px-4 py-8 text-center text-xs text-white  font-bold tracking-widest">
  No countries found
  </div>
  )}
@@ -568,7 +568,7 @@ const Reviews = () => {
  </div>
 
  <div className="space-y-4">
- <label className="text-[10px] font-black uppercase tracking-widest text-white/40 ml-1">Review Content Image (PNG)</label>
+ <label className="text-[10px] font-black  tracking-widest text-white ml-1">Review Content Image (PNG)</label>
  <div className="relative group">
  <input
  type="file"
@@ -581,22 +581,22 @@ const Reviews = () => {
  <>
  <img src={URL.createObjectURL(selectedFiles.reviewImage)} alt="Preview" className="w-full h-full object-contain p-4" />
  <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
- <span className="text-[10px] font-black text-white uppercase tracking-widest">Click to Change</span>
+ <span className="text-[10px] font-black text-white  tracking-widest">Click to Change</span>
  </div>
  </>
  ) : formData.reviewImage ? (
  <>
  <img src={getImageUrl(formData.reviewImage)} alt="Preview" className="w-full h-full object-contain p-4" />
  <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
- <span className="text-[10px] font-black text-white uppercase tracking-widest">Click to Change</span>
+ <span className="text-[10px] font-black text-white  tracking-widest">Click to Change</span>
  </div>
  </>
  ) : (
  <>
  <ImageIcon className="w-10 h-10 text-white/20" />
  <div className="text-center">
- <p className="text-[10px] font-bold text-white/40 uppercase tracking-widest">Drop PNG review image here</p>
- <p className="text-[9px] text-white/20 uppercase mt-1">Recommended size: 1200x800px</p>
+ <p className="text-[10px] font-bold text-white  tracking-widest">Drop PNG review image here</p>
+ <p className="text-[9px] text-white  mt-1">Recommended size: 1200x800px</p>
  </div>
  </>
  )}
@@ -606,8 +606,8 @@ const Reviews = () => {
 
  <div className="flex items-center justify-between p-4 bg-white/[0.02] border border-white/5 rounded-2xl">
  <div>
- <h5 className="text-[11px] font-black text-white uppercase tracking-widest">Publish Status</h5>
- <p className="text-[10px] text-white/40 uppercase tracking-widest">Make review visible on site</p>
+ <h5 className="text-[11px] font-black text-white  tracking-widest">Publish Status</h5>
+ <p className="text-[10px] text-white  tracking-widest">Make review visible on site</p>
  </div>
  <button
  type="button"
@@ -623,7 +623,7 @@ const Reviews = () => {
  <button 
  type="button"
  onClick={() => setShowModal(false)}
- className="flex-1 py-4 bg-white/5 text-white font-black uppercase tracking-widest text-[13px] rounded-xl hover:bg-white/10 transition-all"
+ className="flex-1 py-4 bg-white/5 text-white font-black  tracking-widest text-[13px] rounded-xl hover:bg-white/10 transition-all"
  >
  Cancel
  </button>
@@ -631,7 +631,7 @@ const Reviews = () => {
  type="submit"
  onClick={handleSubmit}
  disabled={isSubmitting}
- className="flex-1 py-4 bg-primary text-black font-black uppercase tracking-widest text-[13px] rounded-xl hover:scale-[1.02] transition-all disabled:opacity-50 disabled:scale-100 flex items-center justify-center gap-2"
+ className="flex-1 py-4 bg-primary text-black font-black  tracking-widest text-[13px] rounded-xl hover:scale-[1.02] transition-all disabled:opacity-50 disabled:scale-100 flex items-center justify-center gap-2"
  >
  {isSubmitting && <Loader2 className="w-4 h-4 animate-spin" />}
  {editingReview ? 'Update Review' : 'Create Review'}
@@ -646,3 +646,4 @@ const Reviews = () => {
 };
 
 export default Reviews;
+

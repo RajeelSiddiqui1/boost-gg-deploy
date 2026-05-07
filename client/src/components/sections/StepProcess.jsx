@@ -56,8 +56,8 @@ const StepProcess = () => {
 
  <div className="max-w-[1400px] mx-auto px-6 relative z-10">
  <div className="text-center mb-24">
- <h2 className="text-4xl md:text-6xl font-black text-white uppercase tracking-tighter mb-4 ">How It <span className="text-primary">Works</span></h2>
- <p className="text-white/40 font-bold uppercase tracking-[0.3em] text-[12px]">Simple. Secure. Professional.</p>
+ <h2 className="text-4xl md:text-6xl font-black text-white  tracking-tighter mb-4 ">How It <span className="text-white">Works</span></h2>
+ <p className="text-white font-bold  tracking-[0.3em] text-[12px]">Simple. Secure. Professional.</p>
  </div>
 
  <div className="relative">
@@ -80,7 +80,7 @@ const StepProcess = () => {
  className={`w-24 h-24 rounded-full flex items-center justify-center text-3xl font-black shadow-[0_0_40px_rgba(162,230,62,0.4)] transition-all duration-700 relative z-10 ${
  i <= activeStep 
  ? 'bg-primary text-black scale-110 shadow-[0_0_60px_rgba(162,230,62,0.7)]' 
- : 'bg-[#1a1a1a] text-white/30 scale-100 shadow-none'
+ : 'bg-[#1a1a1a] text-white scale-100 shadow-none'
  }`}
  >
  {step.number}
@@ -98,16 +98,16 @@ const StepProcess = () => {
  </div>
 
  <h3 
- className={`text-2xl font-black uppercase tracking-tight mb-4 transition-all duration-700 ${
+ className={`text-2xl font-black  tracking-tight mb-4 transition-all duration-700 ${
  i <= activeStep ? 'text-white' : 'text-white/30'
- } ${i === activeStep ? 'text-primary scale-105' : ''}`}
+ } ${i === activeStep ? 'text-white scale-105' : ''}`}
  >
  {step.title}
  </h3>
  <p 
- className={`text-sm font-medium leading-relaxed max-w-[250px] uppercase tracking-tight transition-all duration-700 ${
+ className={`text-sm font-medium leading-relaxed max-w-[250px]  tracking-tight transition-all duration-700 ${
  i <= activeStep ? 'text-white/50' : 'text-white/20'
- } ${i === activeStep ? 'text-white/70' : ''}`}
+ } ${i === activeStep ? 'text-white' : ''}`}
  >
  {step.desc}
  </p>
@@ -147,3 +147,4 @@ const StepProcess = () => {
 };
 
 export default StepProcess;
+

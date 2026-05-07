@@ -58,11 +58,11 @@ const Signup = () => {
  <div className="w-20 h-20 bg-primary/20 rounded-full flex items-center justify-center border border-primary/30 mx-auto mb-8">
  <Mail className="w-10 h-10 text-primary" />
  </div>
- <h2 className="text-3xl font-black text-white uppercase mb-4">Check your Email</h2>
- <p className="text-white/40 text-sm font-bold uppercase tracking-widest leading-relaxed mb-8">
+ <h2 className="text-3xl font-black text-white  mb-4">Check your Email</h2>
+ <p className="text-white text-sm font-bold  tracking-widest leading-relaxed mb-8">
  We've sent a verification link to <span className="text-white">{formData.email}</span>. Please verify your account to proceed.
  </p>
- <Link to="/login" className="text-primary hover:text-white font-black text-xs uppercase tracking-widest transition-colors flex items-center justify-center gap-2">
+ <Link to="/login" className="text-primary hover:text-white font-black text-xs  tracking-widest transition-colors flex items-center justify-center gap-2">
  Back to Login <ArrowRight className="w-4 h-4" />
  </Link>
  </div>
@@ -90,21 +90,21 @@ const Signup = () => {
  </div>
 
  <div className="max-w-md">
- <h2 className="text-6xl font-black uppercase leading-[0.85] tracking-tighter mb-6 text-white">
- The Future of <br /> <span className="text-primary">Gaming Rewards</span>
+ <h2 className="text-6xl font-black  leading-[0.85] tracking-tighter mb-6 text-white">
+ The Future of <br /> <span className="text-white">Gaming Rewards</span>
  </h2>
- <p className="text-white/60 font-medium text-lg leading-relaxed">
+ <p className="text-white font-medium text-lg leading-relaxed">
  Join the elite marketplace. Earn cashback, access premium services, and grow your gaming potential with our pro community.
  </p>
  </div>
 
- <div className="flex items-center gap-4 text-white/40">
- <div className="flex items-center gap-2 text-primary">
+ <div className="flex items-center gap-4 text-white">
+ <div className="flex items-center gap-2 text-white">
  <ShieldCheck className="w-5 h-5" />
- <span className="text-[10px] font-black uppercase tracking-widest">Verified Marketplace</span>
+ <span className="text-[10px] font-black  tracking-widest">Verified Marketplace</span>
  </div>
  <div className="w-px h-4 bg-white/10"></div>
- <p className="text-[10px] font-black uppercase tracking-widest">100% Secure</p>
+ <p className="text-[10px] font-black  tracking-widest">100% Secure</p>
  </div>
  </div>
  </div>
@@ -121,8 +121,8 @@ const Signup = () => {
  <div className="lg:hidden inline-flex items-center gap-2 mb-8">
  <img src={logo} alt="BOOSTGG" className="h-10 w-auto object-contain" />
  </div>
- <h1 className="text-3xl md:text-4xl font-black tracking-tight text-white mb-4 uppercase leading-none">Join BoostGG</h1>
- <p className="text-white/40 text-[11px] font-bold uppercase tracking-[0.2em]">Join the Elite Marketplace</p>
+ <h1 className="text-3xl md:text-4xl font-black tracking-tight text-white mb-4  leading-none">Join BoostGG</h1>
+ <p className="text-white text-[11px] font-bold  tracking-[0.2em]">Join the Elite Marketplace</p>
  </div>
 
 
@@ -132,7 +132,7 @@ const Signup = () => {
  {/* Form */}
  <form onSubmit={handleSubmit} className="space-y-6">
  <div className="relative group">
- <label className="absolute -top-2.5 left-5 px-2 bg-[#0A0A0A] text-[10px] font-black uppercase tracking-[0.2em] text-white/20 z-10 group-focus-within:text-primary transition-colors">Full Name</label>
+ <label className="absolute -top-2.5 left-5 px-2 bg-[#0A0A0A] text-[10px] font-black  tracking-[0.2em] text-white/20 z-10 group-focus-within:text-white transition-colors">Full Name</label>
  <input
  name="name"
  type="text"
@@ -145,7 +145,7 @@ const Signup = () => {
  </div>
 
  <div className="relative group">
- <label className="absolute -top-2.5 left-5 px-2 bg-[#0A0A0A] text-[10px] font-black uppercase tracking-[0.2em] text-white/20 z-10 group-focus-within:text-primary transition-colors">Email</label>
+ <label className="absolute -top-2.5 left-5 px-2 bg-[#0A0A0A] text-[10px] font-black  tracking-[0.2em] text-white/20 z-10 group-focus-within:text-white transition-colors">Email</label>
  <input
  name="email"
  type="email"
@@ -158,7 +158,7 @@ const Signup = () => {
  </div>
 
  <div className="relative group">
- <label className="absolute -top-2.5 left-5 px-2 bg-[#0A0A0A] text-[10px] font-black uppercase tracking-[0.2em] text-white/20 z-10 group-focus-within:text-primary transition-colors">Password</label>
+ <label className="absolute -top-2.5 left-5 px-2 bg-[#0A0A0A] text-[10px] font-black  tracking-[0.2em] text-white/20 z-10 group-focus-within:text-white transition-colors">Password</label>
  <input
  name="password"
  type="password"
@@ -171,7 +171,7 @@ const Signup = () => {
  </div>
 
  <div className="relative group">
- <label className="absolute -top-2.5 left-5 px-2 bg-[#0A0A0A] text-[10px] font-black uppercase tracking-[0.2em] text-white/20 z-10 group-focus-within:text-primary transition-colors">Confirm Password</label>
+ <label className="absolute -top-2.5 left-5 px-2 bg-[#0A0A0A] text-[10px] font-black  tracking-[0.2em] text-white/20 z-10 group-focus-within:text-white transition-colors">Confirm Password</label>
  <input
  name="confirmPassword"
  type="password"
@@ -196,7 +196,7 @@ const Signup = () => {
  <div className="w-5 h-5 border-2 border-white/10 rounded-lg group-hover/check:border-primary/50 peer-checked:bg-primary peer-checked:border-primary transition-all"></div>
  <ShieldCheck className="absolute w-3 h-3 text-white opacity-0 peer-checked:opacity-100 transition-opacity" />
  </div>
- <span className="text-[10px] font-bold text-white/30 group-hover/check:text-white/60 transition-colors uppercase tracking-tight">
+ <span className="text-[10px] font-bold text-white/30 group-hover/check:text-white transition-colors  tracking-tight">
  I Want to receive promo codes and special deals
  </span>
  </label>
@@ -204,7 +204,7 @@ const Signup = () => {
  <button
  type="submit"
  disabled={loading}
- className="w-full bg-primary hover:bg-[#722AEE] text-white py-4.5 rounded-2xl font-black text-xs uppercase tracking-[0.2em] flex items-center justify-center gap-3 transition-all active:scale-95 shadow-xl shadow-primary/30 disabled:opacity-50 group/btn"
+ className="w-full bg-primary hover:bg-[#722AEE] text-white py-4.5 rounded-2xl font-black text-xs  tracking-[0.2em] flex items-center justify-center gap-3 transition-all active:scale-95 shadow-xl shadow-primary/30 disabled:opacity-50 group/btn"
  >
  {loading ? (
  <Loader2 className="w-5 h-5 animate-spin" />
@@ -219,7 +219,7 @@ const Signup = () => {
 
  {/* Footer */}
  <div className="mt-10 pt-8 border-t border-white/5 text-center">
- <p className="text-white/40 text-[11px] font-bold uppercase tracking-[0.1em]">
+ <p className="text-white text-[11px] font-bold  tracking-[0.1em]">
  Already have an account? {' '}
  <Link to="/login" className="text-primary hover:text-white ml-2 transition-colors border-b border-primary/20 hover:border-white">Login now</Link>
  </p>
@@ -228,9 +228,9 @@ const Signup = () => {
 
  {/* Additional Links */}
  <div className="mt-10 flex items-center justify-center gap-8 opacity-20 hover:opacity-100 transition-opacity">
- <Link to="/terms" className="text-[10px] font-black uppercase tracking-widest text-white hover:text-primary">Terms</Link>
- <Link to="/privacy" className="text-[10px] font-black uppercase tracking-widest text-white hover:text-primary">Privacy</Link>
- <Link to="/contact" className="text-[10px] font-black uppercase tracking-widest text-white hover:text-primary">Support</Link>
+ <Link to="/terms" className="text-[10px] font-black  tracking-widest text-white hover:text-primary">Terms</Link>
+ <Link to="/privacy" className="text-[10px] font-black  tracking-widest text-white hover:text-primary">Privacy</Link>
+ <Link to="/contact" className="text-[10px] font-black  tracking-widest text-white hover:text-primary">Support</Link>
  </div>
  </div>
  </div>
@@ -257,3 +257,4 @@ const Signup = () => {
 };
 
 export default Signup;
+

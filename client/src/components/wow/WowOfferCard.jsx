@@ -47,24 +47,24 @@ const WowOfferCard = ({ service }) => {
  {/* Badges */}
  <div className="absolute top-4 left-4 flex flex-col gap-2">
  {isFeatured && (
- <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary text-black text-[10px] font-black uppercase tracking-widest shadow-lg shadow-primary/20">
+ <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary text-black text-[10px] font-black  tracking-widest shadow-lg shadow-primary/20">
  <Flame className="w-3 h-3 fill-current" />
  Popular
  </div>
  )}
- <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-black/60 backdrop-blur-md border border-white/10 text-white text-[10px] font-black uppercase tracking-widest">
+ <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-black/60 backdrop-blur-md border border-white/10 text-white text-[10px] font-black  tracking-widest">
  <Zap className="w-3 h-3 text-primary fill-current" />
  Live
  </div>
  </div>
 
  <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between">
- <div className="flex items-center gap-1.5 text-white/60 text-[10px] font-bold uppercase tracking-widest bg-black/40 backdrop-blur-sm px-2 py-1 rounded-full">
+ <div className="flex items-center gap-1.5 text-white text-[10px] font-bold  tracking-widest bg-black/40 backdrop-blur-sm px-2 py-1 rounded-full">
  <ShieldCheck className="w-3 h-3 text-primary" />
  Verified PRO
  </div>
  {ordersCount > 0 && (
- <div className="text-white/40 text-[9px] font-medium ">
+ <div className="text-white text-[9px] font-medium ">
  {ordersCount}+ orders completed
  </div>
  )}
@@ -73,29 +73,29 @@ const WowOfferCard = ({ service }) => {
 
  {/* Content */}
  <div className="p-6 flex flex-col flex-1">
- <h3 className="text-xl font-black uppercase text-white mb-2 group-hover:text-primary transition-colors leading-tight">
+ <h3 className="text-xl font-black  text-white mb-2 group-hover:text-white transition-colors leading-tight">
  {name}
  </h3>
- <p className="text-sm text-white/40 mb-6 line-clamp-2">
+ <p className="text-sm text-white mb-6 line-clamp-2">
  {shortDescription || 'Professional boosting services for World of Warcraft players.'}
  </p>
 
  <div className="mt-auto space-y-4">
  <div className="flex items-center justify-between">
- <div className="flex items-center gap-2 text-white/40">
+ <div className="flex items-center gap-2 text-white">
  <Clock className="w-3.5 h-3.5" />
- <span className="text-xs font-bold uppercase tracking-tight">{deliveryTimeText || '24h Delivery'}</span>
+ <span className="text-xs font-bold  tracking-tight">{deliveryTimeText || '24h Delivery'}</span>
  </div>
  </div>
 
  <div className="flex items-center justify-between gap-4 pt-4 border-t border-white/5">
  <div className="flex flex-col">
- <span className="text-[10px] font-black uppercase tracking-widest text-white/30">Starting at</span>
+ <span className="text-[10px] font-black  tracking-widest text-white">Starting at</span>
  <div className="text-2xl font-black text-white ">
  {formatPrice(price)}
  </div>
  </div>
- <button className="flex-1 bg-white/[0.03] border border-white/5 hover:bg-primary hover:text-black hover:border-primary px-6 py-3 rounded-2xl font-black uppercase tracking-widest text-[12px] transition-all transform active:scale-95">
+ <button className="flex-1 bg-white/[0.03] border border-white/5 hover:bg-primary hover:text-black hover:border-primary px-6 py-3 rounded-2xl font-black  tracking-widest text-[12px] transition-all transform active:scale-95">
  Buy Now
  </button>
  </div>
@@ -106,3 +106,4 @@ const WowOfferCard = ({ service }) => {
 };
 
 export default WowOfferCard;
+

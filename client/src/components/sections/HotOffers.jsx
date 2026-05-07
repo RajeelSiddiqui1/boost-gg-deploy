@@ -220,7 +220,7 @@ const HotOffers = () => {
  <button
  onClick={handleShuffle}
  disabled={loading}
- className={`flex items-center gap-2 bg-primary hover:bg-[#8cc63e] text-black px-4 py-2 rounded-xl text-[10px] font-bold uppercase tracking-[0.1em] transition-all shadow-lg shadow-primary/20 ${loading ? "opacity-50" : "active:scale-95"}`}
+ className={`flex items-center gap-2 bg-primary hover:bg-[#8cc63e] text-black px-4 py-2 rounded-xl text-[10px] font-bold  tracking-[0.1em] transition-all shadow-lg shadow-primary/20 ${loading ? "opacity-50" : "active:scale-95"}`}
  >
  <span>Next</span>
  {loading ? (
@@ -237,10 +237,10 @@ const HotOffers = () => {
  <div className="w-16 h-16 bg-orange-500/20 rounded-full flex items-center justify-center mb-4">
  <RefreshCw className="w-8 h-8 text-orange-500 animate-spin-slow" />
  </div>
- <h3 className="text-white/60 font-bold text-lg mb-2">
+ <h3 className="text-white font-bold text-lg mb-2">
  No Hot Offers Yet
  </h3>
- <p className="text-white/30 text-sm max-w-xs text-center">
+ <p className="text-white text-sm max-w-xs text-center">
  Mark items as "Hot right now" in the Admin Panel to see them
  appear here!
  </p>
@@ -292,7 +292,7 @@ const HotOffers = () => {
  />
  </div>
  )}
- <span className="text-[8px] font-black text-white uppercase tracking-widest mt-1.5 truncate pr-2">
+ <span className="text-[8px] font-black text-white  tracking-widest mt-1.5 truncate pr-2">
  {offer.logoName}
  </span>
  </div>
@@ -319,11 +319,11 @@ const HotOffers = () => {
  <div className="flex items-start">
  {offer.type === "game" ? (
  <div className="flex items-start">
- <span className="text-[24px] font-black text-white leading-none tracking-tighter uppercase">
+ <span className="text-[24px] font-black text-white leading-none tracking-tighter ">
  View
  </span>
  <div className="flex flex-col ml-1 origin-top-left">
- <span className="text-[11px] font-black text-primary leading-tight uppercase">
+ <span className="text-[11px] font-black text-white leading-tight ">
  All
  </span>
  </div>
@@ -337,14 +337,14 @@ const HotOffers = () => {
  <span className="text-[11px] font-black text-white leading-tight opacity-90">
  {(convertPrice(offer.price) % 1).toFixed(2).split(".")[1] || "00"}
  </span>
- <span className="text-[11px] font-black text-white leading-tight opacity-90 uppercase">
+ <span className="text-[11px] font-black text-white leading-tight opacity-90 ">
  {symbols[currency]}
  </span>
  </div>
  </div>
  )}
  </div>
- <button className="bg-primary hover:bg-[#8cc63e] text-black px-5 py-2 rounded-xl font-black text-[10px] uppercase tracking-wide transition-all active:scale-95 shadow-xl shadow-primary/20">
+ <button className="bg-primary hover:bg-[#8cc63e] text-black px-5 py-2 rounded-xl font-black text-[10px]  tracking-wide transition-all active:scale-95 shadow-xl shadow-primary/20">
  {offer.type === "game" ? "Explore" : "Buy now"}
  </button>
  </div>
@@ -376,3 +376,4 @@ const HotOffers = () => {
 };
 
 export default HotOffers;
+

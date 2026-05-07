@@ -85,11 +85,11 @@ const WowBoost = () => {
  <section className="py-12 bg-black/20">
  <div className="container mx-auto px-6">
  <div className="flex items-center justify-between mb-8">
- <h2 className="text-3xl font-black uppercase text-white flex items-center gap-4">
+ <h2 className="text-3xl font-black  text-white flex items-center gap-4">
  <span className="w-8 h-1 bg-primary rounded-full" />
  {activeCategory === 'all' ? 'All Offers' : `${activeCategory} Offers`}
  </h2>
- <div className="text-xs font-bold uppercase tracking-widest text-white/20">
+ <div className="text-xs font-bold  tracking-widest text-white">
  Showing {services.length} of {pagination.total || 0} services
  </div>
  </div>
@@ -122,3 +122,4 @@ const WowBoost = () => {
 };
 
 export default WowBoost;
+

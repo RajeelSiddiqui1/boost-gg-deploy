@@ -89,21 +89,21 @@ const AdminCurrency = () => {
  <AdminLayout>
  <div className="space-y-8 relative">
  {notification && (
- <div className={`fixed top-10 right-10 z-[9999] flex items-center gap-3 px-6 py-4 rounded-2xl border shadow-2xl animate-fade-in ${notification.type === 'success' ? 'bg-green-500/10 border-green-500/20 text-green-500' : 'bg-red-500/10 border-red-500/20 text-red-500'
+ <div className={`fixed top-10 right-10 z-[9999] flex items-center gap-3 px-6 py-4 rounded-2xl border shadow-2xl animate-fade-in ${notification.type === 'success' ? 'bg-green-500/10 border-green-500/20 text-green-500' : 'bg-red-500/10 border-red-500/20 text-white'
  }`}>
  {notification.type === 'success' ? <CheckCircle2 className="w-5 h-5" /> : <AlertCircle className="w-5 h-5" />}
- <span className="text-xs font-black uppercase tracking-widest">{notification.message}</span>
+ <span className="text-xs font-black  tracking-widest">{notification.message}</span>
  </div>
  )}
 
  <div className="flex flex-col md:flex-row items-center justify-between gap-4">
  <div>
- <h1 className="text-2xl font-black text-white uppercase tracking-tighter text-sky-primary">Currency Management</h1>
- <p className="text-white/40 text-xs font-bold uppercase tracking-widest leading-relaxed">Manage game currency prices and delivery</p>
+ <h1 className="text-2xl font-black text-white  tracking-tighter text-sky-primary">Currency Management</h1>
+ <p className="text-white text-xs font-bold  tracking-widest leading-relaxed">Manage game currency prices and delivery</p>
  </div>
  <button
  onClick={() => { setEditingListing(null); setShowForm(true); }}
- className="flex items-center gap-2 px-6 py-3 bg-primary hover:bg-[#722AEE] text-white rounded-xl font-black uppercase tracking-tighter text-xs transition-all shadow-lg shadow-primary/20"
+ className="flex items-center gap-2 px-6 py-3 bg-primary hover:bg-[#722AEE] text-white rounded-xl font-black  tracking-tighter text-xs transition-all shadow-lg shadow-primary/20"
  >
  <Plus className="w-4 h-4" />
  Add New Listing
@@ -123,12 +123,12 @@ const AdminCurrency = () => {
  <table className="w-full text-left">
  <thead className="bg-white/[0.02] border-b border-white/5">
  <tr>
- <th className="px-8 py-6 text-[10px] font-black uppercase tracking-widest text-white/30">Game</th>
- <th className="px-8 py-6 text-[10px] font-black uppercase tracking-widest text-white/30">Type / Server</th>
- <th className="px-8 py-6 text-[10px] font-black uppercase tracking-widest text-white/30">Region</th>
- <th className="px-8 py-6 text-[10px] font-black uppercase tracking-widest text-white/30">Price/Unit</th>
- <th className="px-8 py-6 text-[10px] font-black uppercase tracking-widest text-white/30">Delivery</th>
- <th className="px-8 py-6 text-[10px] font-black uppercase tracking-widest text-white/30 text-right">Actions</th>
+ <th className="px-8 py-6 text-[10px] font-black  tracking-widest text-white/30">Game</th>
+ <th className="px-8 py-6 text-[10px] font-black  tracking-widest text-white/30">Type / Server</th>
+ <th className="px-8 py-6 text-[10px] font-black  tracking-widest text-white/30">Region</th>
+ <th className="px-8 py-6 text-[10px] font-black  tracking-widest text-white/30">Price/Unit</th>
+ <th className="px-8 py-6 text-[10px] font-black  tracking-widest text-white/30">Delivery</th>
+ <th className="px-8 py-6 text-[10px] font-black  tracking-widest text-white/30 text-right">Actions</th>
  </tr>
  </thead>
  <tbody className="divide-y divide-white/[0.02]">
@@ -137,14 +137,14 @@ const AdminCurrency = () => {
  <td className="px-8 py-6 font-black text-white">{item.gameId?.title || 'Game'}</td>
  <td className="px-8 py-6">
  <div className="text-[13px] font-bold text-white">{item.currencyType}</div>
- <div className="text-[10px] text-white/30 uppercase font-black">{item.server || 'All Servers'}</div>
+ <div className="text-[10px] text-white  font-black">{item.server || 'All Servers'}</div>
  </td>
  <td className="px-8 py-6">
- <span className="px-2 py-1 bg-white/5 border border-white/5 rounded-md text-[10px] font-black text-white/60">{item.region}</span>
+ <span className="px-2 py-1 bg-white/5 border border-white/5 rounded-md text-[10px] font-black text-white">{item.region}</span>
  </td>
  <td className="px-8 py-6 font-black text-primary">${item.pricePerUnit}</td>
  <td className="px-8 py-6">
- <div className="flex items-center gap-2 text-[10px] font-black text-white/40 uppercase">
+ <div className="flex items-center gap-2 text-[10px] font-black text-white ">
  <Truck className="w-3 h-3" /> {item.defaultDeliveryMethod?.replace('-', ' ') || 'Mail'}
  </div>
  </td>
@@ -165,3 +165,4 @@ const AdminCurrency = () => {
 };
 
 export default AdminCurrency;
+

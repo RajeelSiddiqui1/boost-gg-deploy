@@ -162,10 +162,10 @@ const SupportWidget = () => {
  <ShieldCheck className="w-5 h-5" />
  </div>
  <div>
- <h3 className="text-sm font-black uppercase text-white tracking-widest">Support</h3>
+ <h3 className="text-sm font-black  text-white tracking-widest">Support</h3>
  <div className="flex items-center gap-1.5 mt-0.5">
  <div className="w-1.5 h-1.5 bg-primary rounded-full animate-pulse"></div>
- <span className="text-[10px] font-bold text-white/50 uppercase tracking-[0.2em]">Online 24/7</span>
+ <span className="text-[10px] font-bold text-white  tracking-[0.2em]">Online 24/7</span>
  </div>
  </div>
  </div>
@@ -183,8 +183,8 @@ const SupportWidget = () => {
  <div className="inline-flex items-center justify-center w-12 h-12 bg-white/5 rounded-2xl border border-white/5 mb-4">
  <Zap className="w-6 h-6 text-primary drop-shadow-[0_0_10px_rgba(162,230,62,0.5)]" />
  </div>
- <h4 className="text-sm font-black uppercase text-white">BoostGG Support</h4>
- <p className="text-[10px] font-bold text-white/40 uppercase tracking-widest mt-2 px-4 leading-relaxed">
+ <h4 className="text-sm font-black  text-white">BoostGG Support</h4>
+ <p className="text-[10px] font-bold text-white  tracking-widest mt-2 px-4 leading-relaxed">
  Our support team typically replies in under 5 minutes.
  </p>
  </div>
@@ -205,10 +205,10 @@ const SupportWidget = () => {
  <div className={`space-y-1 ${isMe ? 'items-end flex flex-col' : ''}`}>
  {!isMe && (
  <div className="flex items-center gap-2 mb-1 px-2">
- <span className={`text-[9px] font-black uppercase tracking-widest ${isAdmin ? 'text-primary' : 'text-white/40'}`}>
+ <span className={`text-[9px] font-black  tracking-widest ${isAdmin ? 'text-primary' : 'text-white'}`}>
  {isAdmin ? 'Support Team' : msg.sender?.name}
  </span>
- <span className="text-[8px] font-bold text-white/20">
+ <span className="text-[8px] font-bold text-white">
  {format(new Date(msg.createdAt), 'HH:mm')}
  </span>
  </div>
@@ -252,3 +252,4 @@ const SupportWidget = () => {
 };
 
 export default SupportWidget;
+

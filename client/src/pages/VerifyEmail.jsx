@@ -43,8 +43,8 @@ const VerifyEmail = () => {
  <div className="flex justify-center">
  <Loader2 className="w-16 h-16 text-primary animate-spin" />
  </div>
- <h2 className="text-2xl font-black text-white uppercase">Verifying Email...</h2>
- <p className="text-white/40 text-sm font-bold uppercase tracking-widest">Please wait while we secure your account</p>
+ <h2 className="text-2xl font-black text-white ">Verifying Email...</h2>
+ <p className="text-white text-sm font-bold  tracking-widest">Please wait while we secure your account</p>
  </div>
  )}
 
@@ -55,13 +55,13 @@ const VerifyEmail = () => {
  <ShieldCheck className="w-10 h-10 text-green-500" />
  </div>
  </div>
- <h2 className="text-2xl font-black text-white uppercase">Verified!</h2>
- <p className="text-white/40 text-sm font-bold uppercase tracking-widest leading-relaxed">
+ <h2 className="text-2xl font-black text-white ">Verified!</h2>
+ <p className="text-white text-sm font-bold  tracking-widest leading-relaxed">
  {message}
  </p>
  <Link
  to="/login"
- className="inline-flex items-center gap-2 bg-primary hover:bg-[#722AEE] text-white px-8 py-4 rounded-2xl font-black text-sm uppercase tracking-widest transition-all active:scale-95 shadow-xl shadow-primary/20 mt-4"
+ className="inline-flex items-center gap-2 bg-primary hover:bg-[#722AEE] text-white px-8 py-4 rounded-2xl font-black text-sm  tracking-widest transition-all active:scale-95 shadow-xl shadow-primary/20 mt-4"
  >
  Proceed to Login <ArrowRight className="w-5 h-5" />
  </Link>
@@ -75,13 +75,13 @@ const VerifyEmail = () => {
  <XCircle className="w-10 h-10 text-red-500" />
  </div>
  </div>
- <h2 className="text-2xl font-black text-white uppercase">Verification Failed</h2>
- <p className="text-white/40 text-sm font-bold uppercase tracking-widest leading-relaxed">
+ <h2 className="text-2xl font-black text-white ">Verification Failed</h2>
+ <p className="text-white text-sm font-bold  tracking-widest leading-relaxed">
  {message}
  </p>
  <Link
  to="/signup"
- className="inline-flex items-center gap-2 bg-white/5 hover:bg-white/10 text-white px-8 py-4 rounded-2xl font-black text-sm uppercase tracking-widest border border-white/5 transition-all mt-4"
+ className="inline-flex items-center gap-2 bg-white/5 hover:bg-white/10 text-white px-8 py-4 rounded-2xl font-black text-sm  tracking-widest border border-white/5 transition-all mt-4"
  >
  Back to Signup
  </Link>
@@ -104,3 +104,4 @@ const VerifyEmail = () => {
 };
 
 export default VerifyEmail;
+

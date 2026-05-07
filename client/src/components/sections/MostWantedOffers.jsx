@@ -30,7 +30,7 @@ const MostWantedOffers = () => {
  return (
  <section className="py-12 px-6 bg-[#050505] border-y border-white/5 font-['Outfit']">
  <div className="max-w-[1400px] mx-auto">
- <h2 className="text-[12px] font-black uppercase tracking-[0.4em] text-white/30 text-center mb-16 underline decoration-primary underline-offset-[12px]">
+ <h2 className="text-[12px] font-black  tracking-[0.4em] text-white text-center mb-16 underline decoration-primary underline-offset-[12px]">
  Most wanted offers
  </h2>
  <div className="grid grid-cols-4 sm:grid-cols-6 lg:grid-cols-10 gap-3">
@@ -39,7 +39,7 @@ const MostWantedOffers = () => {
  <div className="aspect-square rounded-2xl overflow-hidden relative border border-white/5 bg-[#0A0A0A] mb-2">
  <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-transparent"></div>
  <div className="absolute inset-0 flex items-center justify-center p-4">
- <div className="w-full h-full bg-white/5 rounded-lg border border-white/5 flex items-center justify-center text-[10px] font-black text-white/20 uppercase tracking-tighter text-center">
+ <div className="w-full h-full bg-white/5 rounded-lg border border-white/5 flex items-center justify-center text-[10px] font-black text-white  tracking-tighter text-center">
  {item.title}
  </div>
  </div>
@@ -57,3 +57,4 @@ const MostWantedOffers = () => {
 };
 
 export default MostWantedOffers;
+

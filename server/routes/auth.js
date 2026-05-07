@@ -1,5 +1,5 @@
 const express = require('express');
-const { signup, login, logout, getMe, verifyEmail, resendVerification, forgotPassword, resetPassword, updatePassword, checkStatus } = require('../controllers/authController');
+const { signup, login, logout, getMe, verifyEmail, resendVerification, forgotPassword, resetPassword, updatePassword, checkStatus, updateDetails } = require('../controllers/authController');
 const { protect } = require('../middleware/auth');
 const { ROLES, PRO_TYPES, AFFILIATE_TYPES } = require('../models/User');
 
@@ -27,6 +27,7 @@ router.post('/forgot-password', forgotPassword);
 router.post('/forget-password', forgotPassword);
 router.post('/reset-password/:token', resetPassword);
 router.get('/status', checkStatus);
-router.put('/updatepassword', protect, updatePassword); // Add protect middleware
+router.put('/updatepassword', protect, updatePassword);
+router.put('/updatedetails', protect, updateDetails);
 
 module.exports = router;

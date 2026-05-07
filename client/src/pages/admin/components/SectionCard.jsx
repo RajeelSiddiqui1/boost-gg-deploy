@@ -35,7 +35,7 @@ function SortableOptionRow({ option, fieldType, onUpdate, onDelete }) {
  style={style}
  className="group flex items-center gap-3 p-3 bg-[#1e1e1e] border border-[#2a2a2a] rounded-lg mb-2 shadow-sm hover:border-[#333] transition-all"
  >
- <div {...attributes} {...listeners} className="cursor-grab hover:text-purple-500 transition-colors text-gray-600">
+ <div {...attributes} {...listeners} className="cursor-grab hover:text-white transition-colors text-gray-600">
  <GripVertical size={18} />
  </div>
 
@@ -105,7 +105,7 @@ function SortableOptionRow({ option, fieldType, onUpdate, onDelete }) {
  className="hidden"
  />
  </div>
- <span className={`text-[10px] uppercase font-black tracking-widest transition-colors ${option.isDefault ? 'text-purple-400' : 'text-gray-600'}`}>Default</span>
+ <span className={`text-[10px]  font-black tracking-widest transition-colors ${option.isDefault ? 'text-purple-400' : 'text-gray-600'}`}>Default</span>
  </label>
  <button
  onClick={() => onDelete(option.id)}
@@ -168,7 +168,7 @@ export function SectionCard({
  {/* Header */}
  <div className="flex items-center justify-between p-5 bg-[#1a1a1a] border-b border-[#222]">
  <div className="flex items-center gap-4 flex-1 min-w-0">
- <div {...attributes} {...listeners} className="cursor-grab text-gray-600 hover:text-purple-500 transition-all p-1 hover:bg-purple-500/10 rounded flex-shrink-0">
+ <div {...attributes} {...listeners} className="cursor-grab text-gray-600 hover:text-white transition-all p-1 hover:bg-purple-500/10 rounded flex-shrink-0">
  <GripVertical size={20} />
  </div>
  <div className="flex flex-col min-w-0 flex-1">
@@ -177,14 +177,14 @@ export function SectionCard({
  value={section.heading}
  onChange={(e) => onUpdate(section.id, { heading: e.target.value })}
  placeholder="Section Heading (e.g. Difficulty)"
- className="bg-transparent border-none text-white font-black text-xl uppercase tracking-tighter outline-none focus:ring-0 placeholder:text-gray-700 w-full"
+ className="bg-transparent border-none text-white font-black text-xl  tracking-tighter outline-none focus:ring-0 placeholder:text-gray-700 w-full"
  />
  <div className="flex items-center gap-2 mt-1">
- <span className="px-2 py-0.5 rounded text-[9px] uppercase font-black tracking-[0.2em] bg-purple-600/20 text-purple-400 border border-purple-500/20 shadow-[0_0_10px_rgba(147,51,234,0.1)]">
+ <span className="px-2 py-0.5 rounded text-[9px]  font-black tracking-[0.2em] bg-purple-600/20 text-purple-400 border border-purple-500/20 shadow-[0_0_10px_rgba(147,51,234,0.1)]">
  {section.fieldType.replace("_", " ")}
  </span>
  {section.required && (
- <span className="px-2 py-0.5 rounded text-[9px] uppercase font-black tracking-[0.2em] bg-red-600/10 text-red-500 border border-red-500/20">
+ <span className="px-2 py-0.5 rounded text-[9px]  font-black tracking-[0.2em] bg-red-600/10 text-white border border-red-500/20">
  Required
  </span>
  )}
@@ -194,7 +194,7 @@ export function SectionCard({
 
  <div className="flex items-center gap-3 flex-shrink-0">
  <div className="flex items-center gap-3 bg-[#0d0d0d] px-4 py-2 rounded-xl border border-[#222]">
- <span className="text-[10px] text-gray-500 uppercase font-black tracking-widest leading-none">Mark Required</span>
+ <span className="text-[10px] text-gray-500  font-black tracking-widest leading-none">Mark Required</span>
  <button
  onClick={() => onUpdate(section.id, { required: !section.required })}
  className={`w-9 h-5 rounded-full transition-all relative ${section.required ? 'bg-purple-600 shadow-[0_0_10px_rgba(147,51,234,0.4)]' : 'bg-[#222]'}`}
@@ -216,13 +216,13 @@ export function SectionCard({
  <div className="p-6 bg-[#111] space-y-8 animate-in fade-in slide-in-from-top-2 duration-300">
  {/* Field Type Selector */}
  <div>
- <label className="block text-[10px] uppercase font-black text-gray-500 tracking-[0.2em] mb-3 ml-1 opacity-50">Component Type</label>
+ <label className="block text-[10px]  font-black text-gray-500 tracking-[0.2em] mb-3 ml-1 opacity-50">Component Type</label>
  <div className="flex flex-wrap gap-2">
  {["radio", "checkbox", "dropdown", "stepper", "text_input"].map((type) => (
  <button
  key={type}
  onClick={() => onUpdate(section.id, { fieldType: type })}
- className={`px-5 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all border ${section.fieldType === type
+ className={`px-5 py-2.5 rounded-xl text-[10px] font-black  tracking-widest transition-all border ${section.fieldType === type
  ? "bg-gradient-to-br from-purple-600 to-purple-800 border-purple-500 text-white shadow-[0_10px_20px_rgba(147,51,234,0.3)] scale-105"
  : "bg-[#181818] border-[#222] text-gray-500 hover:border-gray-600 hover:text-gray-300"
  }`}
@@ -237,8 +237,8 @@ export function SectionCard({
  {["radio", "checkbox", "dropdown"].includes(section.fieldType) && (
  <div>
  <div className="flex items-center justify-between mb-4 px-1">
- <label className="block text-[10px] uppercase font-black text-gray-500 tracking-[0.2em] opacity-50">Configuration Options</label>
- <span className="text-[10px] font-bold text-purple-500 bg-purple-500/10 px-2 py-0.5 rounded">{section.options?.length || 0} Items</span>
+ <label className="block text-[10px]  font-black text-gray-500 tracking-[0.2em] opacity-50">Configuration Options</label>
+ <span className="text-[10px] font-bold text-white bg-purple-500/10 px-2 py-0.5 rounded">{section.options?.length || 0} Items</span>
  </div>
  <DndContext
  sensors={sensors}
@@ -265,9 +265,9 @@ export function SectionCard({
  className="w-full mt-4 py-4 border-2 border-dashed border-[#222] rounded-2xl flex items-center justify-center gap-3 text-gray-500 hover:border-purple-600 hover:text-purple-400 transition-all bg-[#0d0d0d] group"
  >
  <div className="p-1.5 rounded-lg bg-purple-600/10 group-hover:bg-purple-600/20 transition-all">
- <Plus size={18} className="text-purple-500" />
+ <Plus size={18} className="text-white" />
  </div>
- <span className="text-xs font-black uppercase tracking-[0.15em]">Insert New Option</span>
+ <span className="text-xs font-black  tracking-[0.15em]">Insert New Option</span>
  </button>
  </div>
  )}
@@ -277,7 +277,7 @@ export function SectionCard({
  <div className="grid grid-cols-2 gap-6 bg-[#0d0d0d] p-6 rounded-2xl border border-[#222] shadow-inner">
  <div className="space-y-4">
  <div>
- <label className="block text-[10px] uppercase font-black text-gray-500 tracking-widest mb-2 opacity-70">Unit Label (e.g. Days)</label>
+ <label className="block text-[10px]  font-black text-gray-500 tracking-widest mb-2 opacity-70">Unit Label (e.g. Days)</label>
  <input
  type="text"
  value={section.stepperConfig?.unitLabel || ""}
@@ -289,7 +289,7 @@ export function SectionCard({
  />
  </div>
  <div>
- <label className="block text-[10px] uppercase font-black text-gray-500 tracking-widest mb-2 opacity-70">Price per Unit</label>
+ <label className="block text-[10px]  font-black text-gray-500 tracking-widest mb-2 opacity-70">Price per Unit</label>
  <div className="relative">
  <span className="absolute left-4 top-2.5 text-gray-500 font-bold">$</span>
  <input
@@ -306,7 +306,7 @@ export function SectionCard({
  <div className="space-y-4">
  <div className="grid grid-cols-2 gap-4">
  <div>
- <label className="block text-[10px] uppercase font-black text-gray-500 tracking-widest mb-2 opacity-70">Minimum</label>
+ <label className="block text-[10px]  font-black text-gray-500 tracking-widest mb-2 opacity-70">Minimum</label>
  <input
  type="number"
  value={section.stepperConfig?.min || 1}
@@ -317,7 +317,7 @@ export function SectionCard({
  />
  </div>
  <div>
- <label className="block text-[10px] uppercase font-black text-gray-500 tracking-widest mb-2 opacity-70">Default</label>
+ <label className="block text-[10px]  font-black text-gray-500 tracking-widest mb-2 opacity-70">Default</label>
  <input
  type="number"
  value={section.stepperConfig?.default || 1}
@@ -329,7 +329,7 @@ export function SectionCard({
  </div>
  </div>
  <div>
- <label className="block text-[10px] uppercase font-black text-gray-500 tracking-widest mb-2 opacity-70">Max (Optional)</label>
+ <label className="block text-[10px]  font-black text-gray-500 tracking-widest mb-2 opacity-70">Max (Optional)</label>
  <input
  type="number"
  placeholder="Unlimited"
@@ -347,7 +347,7 @@ export function SectionCard({
  {/* Text Input Config */}
  {section.fieldType === "text_input" && (
  <div className="bg-[#0d0d0d] p-6 rounded-2xl border border-[#222]">
- <label className="block text-[10px] uppercase font-black text-gray-500 tracking-widest mb-2 opacity-70">Helper Placeholder</label>
+ <label className="block text-[10px]  font-black text-gray-500 tracking-widest mb-2 opacity-70">Helper Placeholder</label>
  <input
  type="text"
  value={section.placeholder || ""}
@@ -362,3 +362,4 @@ export function SectionCard({
  </div>
  );
 }
+

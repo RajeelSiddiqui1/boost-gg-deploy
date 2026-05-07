@@ -73,7 +73,7 @@ const BoostingMode = () => {
  </div>
  ) : (
  <div className="py-24 text-center">
- <p className="text-white/20 font-black uppercase tracking-widest ">No {activeCategory.replace('-', ' ')} services available right now.</p>
+ <p className="text-white font-black  tracking-widest ">No {activeCategory.replace('-', ' ')} services available right now.</p>
  </div>
  )}
  </div>

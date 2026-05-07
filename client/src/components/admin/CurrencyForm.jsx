@@ -86,10 +86,10 @@ const CurrencyForm = ({ listing, games, onClose, onSuccess }) => {
  <div className="bg-[#0A0A0A] border border-white/10 rounded-[32px] p-8 md:p-10 max-w-4xl w-full my-4 md:my-10 relative">
  <div className="flex items-center justify-between mb-8">
  <div>
- <h2 className="text-2xl md:text-3xl font-black text-white uppercase tracking-tighter">
+ <h2 className="text-2xl md:text-3xl font-black text-white  tracking-tighter">
  {listing ? 'Edit Currency' : 'Add New Currency'}
  </h2>
- <p className="text-white/40 text-[10px] font-bold uppercase tracking-widest mt-1">Configure game currency listings</p>
+ <p className="text-white text-[10px] font-bold  tracking-widest mt-1">Configure game currency listings</p>
  </div>
  <button onClick={onClose} className="p-3 hover:bg-white/5 border border-white/5 rounded-2xl transition-all text-white/40 hover:text-white">
  <X className="w-6 h-6" />
@@ -97,14 +97,14 @@ const CurrencyForm = ({ listing, games, onClose, onSuccess }) => {
  </div>
 
  {error && (
- <div className="mb-6 p-4 bg-red-500/10 border border-red-500/20 rounded-2xl text-red-500 text-xs font-bold uppercase tracking-wider">
+ <div className="mb-6 p-4 bg-red-500/10 border border-red-500/20 rounded-2xl text-white text-xs font-bold  tracking-wider">
  {error}
  </div>
  )}
 
  <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-6">
  <div className="md:col-span-1">
- <label className="block text-white/40 text-[10px] font-black uppercase tracking-widest mb-3 px-1">Select Game *</label>
+ <label className="block text-white text-[10px] font-black  tracking-widest mb-3 px-1">Select Game *</label>
  <select
  name="gameId"
  value={formData.gameId}
@@ -120,7 +120,7 @@ const CurrencyForm = ({ listing, games, onClose, onSuccess }) => {
  </div>
 
  <div className="md:col-span-1">
- <label className="block text-white/40 text-[10px] font-black uppercase tracking-widest mb-3 px-1">Currency Name (Type)</label>
+ <label className="block text-white text-[10px] font-black  tracking-widest mb-3 px-1">Currency Name (Type)</label>
  <input
  type="text"
  name="currencyType"
@@ -133,7 +133,7 @@ const CurrencyForm = ({ listing, games, onClose, onSuccess }) => {
  </div>
 
  <div className="md:col-span-1">
- <label className="block text-white/40 text-[10px] font-black uppercase tracking-widest mb-3 px-1">Region</label>
+ <label className="block text-white text-[10px] font-black  tracking-widest mb-3 px-1">Region</label>
  <select
  name="region"
  value={formData.region}
@@ -145,7 +145,7 @@ const CurrencyForm = ({ listing, games, onClose, onSuccess }) => {
  </div>
 
  <div className="md:col-span-1">
- <label className="block text-white/40 text-[10px] font-black uppercase tracking-widest mb-3 px-1">Server Name</label>
+ <label className="block text-white text-[10px] font-black  tracking-widest mb-3 px-1">Server Name</label>
  <input
  type="text"
  name="server"
@@ -157,7 +157,7 @@ const CurrencyForm = ({ listing, games, onClose, onSuccess }) => {
  </div>
 
  <div className="md:col-span-1">
- <label className="block text-white/40 text-[10px] font-black uppercase tracking-widest mb-3 px-1">Price Per Unit ($)</label>
+ <label className="block text-white text-[10px] font-black  tracking-widest mb-3 px-1">Price Per Unit ($)</label>
  <div className="relative">
  <DollarSign className="absolute left-6 top-1/2 -translate-y-1/2 w-4 h-4 text-primary" />
  <input
@@ -173,7 +173,7 @@ const CurrencyForm = ({ listing, games, onClose, onSuccess }) => {
  </div>
 
  <div className="md:col-span-1">
- <label className="block text-white/40 text-[10px] font-black uppercase tracking-widest mb-3 px-1">Delivery Method</label>
+ <label className="block text-white text-[10px] font-black  tracking-widest mb-3 px-1">Delivery Method</label>
  <select
  name="defaultDeliveryMethod"
  value={formData.defaultDeliveryMethod}
@@ -185,7 +185,7 @@ const CurrencyForm = ({ listing, games, onClose, onSuccess }) => {
  </div>
 
  <div className="md:col-span-1">
- <label className="block text-white/40 text-[10px] font-black uppercase tracking-widest mb-3 px-1">Min Quantity</label>
+ <label className="block text-white text-[10px] font-black  tracking-widest mb-3 px-1">Min Quantity</label>
  <input
  type="number"
  name="minQuantity"
@@ -196,7 +196,7 @@ const CurrencyForm = ({ listing, games, onClose, onSuccess }) => {
  </div>
 
  <div className="md:col-span-1">
- <label className="block text-white/40 text-[10px] font-black uppercase tracking-widest mb-3 px-1">Max Quantity</label>
+ <label className="block text-white text-[10px] font-black  tracking-widest mb-3 px-1">Max Quantity</label>
  <input
  type="number"
  name="maxQuantity"
@@ -207,7 +207,7 @@ const CurrencyForm = ({ listing, games, onClose, onSuccess }) => {
  </div>
 
  <div className="md:col-span-1">
- <label className="block text-white/40 text-[10px] font-black uppercase tracking-widest mb-3 px-1">ETA (Hours)</label>
+ <label className="block text-white text-[10px] font-black  tracking-widest mb-3 px-1">ETA (Hours)</label>
  <div className="relative">
  <Clock className="absolute left-6 top-1/2 -translate-y-1/2 w-4 h-4 text-primary" />
  <input
@@ -221,7 +221,7 @@ const CurrencyForm = ({ listing, games, onClose, onSuccess }) => {
  </div>
 
  <div className="md:col-span-1">
- <label className="block text-white/40 text-[10px] font-black uppercase tracking-widest mb-3 px-1">ETA Text</label>
+ <label className="block text-white text-[10px] font-black  tracking-widest mb-3 px-1">ETA Text</label>
  <input
  type="text"
  name="deliveryTimeText"
@@ -236,7 +236,7 @@ const CurrencyForm = ({ listing, games, onClose, onSuccess }) => {
  <button
  type="submit"
  disabled={loading}
- className="flex-1 md:flex-none px-12 py-5 bg-primary hover:bg-primary/90 text-white rounded-2xl font-black uppercase tracking-widest text-xs transition-all shadow-xl shadow-primary/20 flex items-center justify-center gap-2"
+ className="flex-1 md:flex-none px-12 py-5 bg-primary hover:bg-primary/90 text-white rounded-2xl font-black  tracking-widest text-xs transition-all shadow-xl shadow-primary/20 flex items-center justify-center gap-2"
  >
  <Save className="w-4 h-4" />
  {loading ? 'SAVING...' : (listing ? 'UPDATE LISTING' : 'CREATE LISTING')}
@@ -244,7 +244,7 @@ const CurrencyForm = ({ listing, games, onClose, onSuccess }) => {
  <button
  type="button"
  onClick={onClose}
- className="flex-1 md:flex-none px-12 py-5 bg-white/5 hover:bg-white/10 text-white/40 hover:text-white rounded-2xl font-black uppercase tracking-widest text-xs transition-all border border-white/5"
+ className="flex-1 md:flex-none px-12 py-5 bg-white/5 hover:bg-white/10 text-white/40 hover:text-white rounded-2xl font-black  tracking-widest text-xs transition-all border border-white/5"
  >
  CANCEL
  </button>
@@ -256,3 +256,4 @@ const CurrencyForm = ({ listing, games, onClose, onSuccess }) => {
 };
 
 export default CurrencyForm;
+

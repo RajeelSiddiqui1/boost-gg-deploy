@@ -76,7 +76,7 @@ const AdminDashboard = () => {
 
  if (loading) return (
  <AdminLayout>
- <div className="p-10 text-white/20 font-black animate-pulse text-center">Calibrating Nexus...</div>
+ <div className="p-10 text-white font-black animate-pulse text-center">Calibrating Nexus...</div>
  </AdminLayout>
  );
 
@@ -91,11 +91,11 @@ const AdminDashboard = () => {
  <div className={`w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center ${stat.color}`}>
  <stat.icon className="w-6 h-6" />
  </div>
- <span className="text-[10px] font-black px-2 py-1 rounded-lg bg-green-500/10 text-green-500">
+ <span className="text-[10px] font-black px-2 py-1 rounded-lg bg-green-500/10 text-white">
  {stat.trend}
  </span>
  </div>
- <h3 className="text-[10px] font-black uppercase tracking-widest text-white/20 mb-1">{stat.label}</h3>
+ <h3 className="text-[10px] font-black  tracking-widest text-white mb-1">{stat.label}</h3>
  <p className="text-2xl font-black tracking-tighter text-white">{stat.value}</p>
  </div>
  ))}
@@ -106,7 +106,7 @@ const AdminDashboard = () => {
  {/* Platform Overview Chart */}
  <div className="bg-[#0A0A0A] border border-white/5 p-8 rounded-[48px] h-96 relative flex flex-col">
  <div className="flex items-center justify-between mb-6">
- <h2 className="text-xl font-black uppercase tracking-tighter">Platform Overview</h2>
+ <h2 className="text-xl font-black  tracking-tighter">Platform Overview</h2>
  </div>
  <div className="flex-1 w-full relative">
  <ResponsiveContainer width="100%" height="100%">
@@ -140,7 +140,7 @@ const AdminDashboard = () => {
  {/* Revenue Growth Chart */}
  <div className="bg-[#0A0A0A] border border-white/5 p-8 rounded-[48px] h-96 relative flex flex-col">
  <div className="flex items-center justify-between mb-6">
- <h2 className="text-xl font-black uppercase tracking-tighter">Revenue Growth</h2>
+ <h2 className="text-xl font-black  tracking-tighter">Revenue Growth</h2>
  </div>
  <div className="flex-1 w-full relative">
  <ResponsiveContainer width="100%" height="100%">
@@ -181,37 +181,37 @@ const AdminDashboard = () => {
  <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
  <div className="bg-[#0A0A0A] border border-white/5 p-8 rounded-[48px]">
  <div className="flex items-center justify-between mb-8">
- <h2 className="text-xl font-black uppercase tracking-tighter">System Health</h2>
+ <h2 className="text-xl font-black  tracking-tighter">System Health</h2>
  <div className="flex items-center gap-2">
  <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
- <span className="text-[10px] font-black uppercase text-green-500/60">All Systems Operational</span>
+ <span className="text-[10px] font-black  text-white/60">All Systems Operational</span>
  </div>
  </div>
  <div className="space-y-4">
  <div className="p-5 bg-white/[0.02] border border-white/5 rounded-3xl">
- <p className="text-[10px] font-black uppercase text-white/20 mb-2">Active Sessions</p>
- <p className="text-2xl font-black ">42 <span className="text-xs font-bold text-white/40 not-">Players Online</span></p>
+ <p className="text-[10px] font-black  text-white mb-2">Active Sessions</p>
+ <p className="text-2xl font-black ">42 <span className="text-xs font-bold text-white not-">Players Online</span></p>
  </div>
  <div className="p-5 bg-white/[0.02] border border-white/5 rounded-3xl">
- <p className="text-[10px] font-black uppercase text-white/20 mb-2">Pending Approvals</p>
- <p className="text-2xl font-black text-yellow-500">12 <span className="text-xs font-bold text-white/40 not-">Queue Positions</span></p>
+ <p className="text-[10px] font-black  text-white mb-2">Pending Approvals</p>
+ <p className="text-2xl font-black text-white">12 <span className="text-xs font-bold text-white not-">Queue Positions</span></p>
  </div>
  </div>
  </div>
 
  <div className="bg-[#0A0A0A] border border-white/5 p-8 rounded-[48px]">
  <div className="flex items-center gap-3 mb-8">
- <div className="w-10 h-10 rounded-xl bg-red-500/10 flex items-center justify-center text-red-500">
+ <div className="w-10 h-10 rounded-xl bg-red-500/10 flex items-center justify-center text-white">
  <ShieldAlert className="w-5 h-5" />
  </div>
- <h2 className="text-xl font-black tracking-tighter uppercase">High Priority Alerts</h2>
+ <h2 className="text-xl font-black tracking-tighter ">High Priority Alerts</h2>
  </div>
  <div className="space-y-4">
  <div className="p-5 bg-red-500/5 border border-red-500/10 rounded-3xl flex items-start gap-4">
  <ShieldAlert className="w-4 h-4 text-red-500 mt-1" />
  <div>
- <h4 className="font-black text-xs uppercase text-red-500 mb-1">Pro ID Verification Pending</h4>
- <p className="text-[10px] text-red-500/60 leading-relaxed font-bold uppercase">5 new pro applications require manual credential verification.</p>
+ <h4 className="font-black text-xs  text-white mb-1">Pro ID Verification Pending</h4>
+ <p className="text-[10px] text-white/60 leading-relaxed font-bold ">5 new pro applications require manual credential verification.</p>
  </div>
  </div>
  </div>
@@ -223,3 +223,4 @@ const AdminDashboard = () => {
 };
 
 export default AdminDashboard;
+

@@ -95,7 +95,7 @@ const Settings = () => {
  <div className="flex items-center justify-between bg-white/[0.02] p-4 rounded-2xl border border-white/5">
  <div>
  <label className="block text-sm font-bold text-white mb-1">{setting.label}</label>
- <p className="text-xs text-white/40">{setting.description || 'Enable or disable this feature'}</p>
+ <p className="text-xs text-white">{setting.description || 'Enable or disable this feature'}</p>
  </div>
  <button
  onClick={() => handleInputChange(setting.key, !formData[setting.key])}
@@ -108,7 +108,7 @@ const Settings = () => {
  case 'number':
  return (
  <div className="space-y-2">
- <label className="block text-xs font-black uppercase tracking-widest text-white/40">{setting.label}</label>
+ <label className="block text-xs font-black  tracking-widest text-white">{setting.label}</label>
  <input
  type="number"
  value={formData[setting.key] || ''}
@@ -120,7 +120,7 @@ const Settings = () => {
  default:
  return (
  <div className="space-y-2">
- <label className="block text-xs font-black uppercase tracking-widest text-white/40">{setting.label}</label>
+ <label className="block text-xs font-black  tracking-widest text-white">{setting.label}</label>
  <input
  type="text"
  value={formData[setting.key] || ''}
@@ -139,13 +139,13 @@ const Settings = () => {
  <div className="space-y-8 max-w-5xl mx-auto">
  <div className="flex items-center justify-between">
  <div>
- <h1 className="text-3xl font-black uppercase tracking-tighter text-white">System Settings</h1>
- <p className="text-white/40 text-xs font-bold uppercase tracking-widest mt-1">Configure global application preferences</p>
+ <h1 className="text-3xl font-black  tracking-tighter text-white">System Settings</h1>
+ <p className="text-white text-xs font-bold  tracking-widest mt-1">Configure global application preferences</p>
  </div>
  <button
  onClick={handleSave}
  disabled={saving}
- className="flex items-center gap-2 bg-primary hover:bg-[#8cc63e] text-black px-8 py-3 rounded-xl text-xs font-black uppercase tracking-widest transition-all shadow-lg shadow-primary/20 disabled:opacity-50"
+ className="flex items-center gap-2 bg-primary hover:bg-[#8cc63e] text-black px-8 py-3 rounded-xl text-xs font-black  tracking-widest transition-all shadow-lg shadow-primary/20 disabled:opacity-50"
  >
  {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
  Save Changes
@@ -159,7 +159,7 @@ const Settings = () => {
  <button
  key={tab.id}
  onClick={() => setActiveTab(tab.id)}
- className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-black uppercase tracking-widest transition-all ${activeTab === tab.id
+ className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-black  tracking-widest transition-all ${activeTab === tab.id
  ? 'bg-white text-black shadow-lg'
  : 'text-white/40 hover:text-white hover:bg-white/5'
  }`}
@@ -178,20 +178,20 @@ const Settings = () => {
  <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
  {/* Base Currency */}
  <div className="space-y-4 p-6 bg-white/[0.02] border border-white/5 rounded-3xl">
- <label className="block text-xs font-black uppercase tracking-widest text-white/40">Base Currency (Basline for rates)</label>
+ <label className="block text-xs font-black  tracking-widest text-white">Base Currency (Basline for rates)</label>
  <input
  type="text"
  value={formData.currencies.base || ''}
  onChange={(e) => handleInputChange('currencies', { ...formData.currencies, base: e.target.value.toUpperCase() })}
- className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-primary/50 font-black uppercase"
+ className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-primary/50 font-black "
  placeholder="USD"
  />
- <p className="text-[10px] text-white/20 font-bold uppercase">All product prices in database are assumed to be in this currency.</p>
+ <p className="text-[10px] text-white font-bold ">All product prices in database are assumed to be in this currency.</p>
  </div>
 
  {/* Supported Currencies */}
  <div className="space-y-4 p-6 bg-white/[0.02] border border-white/5 rounded-3xl">
- <label className="block text-xs font-black uppercase tracking-widest text-white/40">Supported (Comma separated)</label>
+ <label className="block text-xs font-black  tracking-widest text-white">Supported (Comma separated)</label>
  <input
  type="text"
  value={formData.currencies.supported?.join(', ') || ''}
@@ -204,7 +204,7 @@ const Settings = () => {
 
  {/* Rates Management */}
  <div className="p-8 bg-white/[0.02] border border-white/5 rounded-[2.5rem] space-y-6">
- <h3 className="text-sm font-black uppercase tracking-widest text-white flex items-center gap-2">
+ <h3 className="text-sm font-black  tracking-widest text-white flex items-center gap-2">
  <span className="w-2 h-2 rounded-full bg-primary shadow-[0_0_8px_rgba(162,230,62,0.6)]"></span>
  Exchange Rates & Symbols
  </h3>
@@ -212,11 +212,11 @@ const Settings = () => {
  {formData.currencies.supported?.map(curr => (
  <div key={curr} className="p-6 bg-black/40 border border-white/5 rounded-2xl space-y-4">
  <div className="flex items-center justify-between">
- <span className="text-xs font-black text-primary">{curr}</span>
+ <span className="text-xs font-black text-white">{curr}</span>
  </div>
  <div className="space-y-3">
  <div>
- <p className="text-[9px] font-black text-white/20 uppercase mb-1">Rate (1 {formData.currencies.base} = ?)</p>
+ <p className="text-[9px] font-black text-white  mb-1">Rate (1 {formData.currencies.base} = ?)</p>
  <input
  type="number"
  step="0.0001"
@@ -229,7 +229,7 @@ const Settings = () => {
  />
  </div>
  <div>
- <p className="text-[9px] font-black text-white/20 uppercase mb-1">Symbol</p>
+ <p className="text-[9px] font-black text-white  mb-1">Symbol</p>
  <input
  type="text"
  value={formData.currencies.symbols?.[curr] || ''}
@@ -256,24 +256,24 @@ const Settings = () => {
  ))
  ) : (
  activeTab !== 'currency' && (
- <div className="text-center py-12 text-white/20">
+ <div className="text-center py-12 text-white">
  <AlertTriangle className="w-12 h-12 mx-auto mb-4 opacity-20" />
- <p className="text-xs font-black uppercase tracking-widest">No settings in this group</p>
+ <p className="text-xs font-black  tracking-widest">No settings in this group</p>
  </div>
  )
  )}
 
  {activeTab === 'security' && (
  <div className="mt-8 pt-8 border-t border-white/5">
- <h3 className="text-lg font-black uppercase tracking-tight text-white mb-6">Admin Password</h3>
+ <h3 className="text-lg font-black  tracking-tight text-white mb-6">Admin Password</h3>
  <div className="bg-red-500/5 border border-red-500/10 rounded-2xl p-6">
  <div className="flex items-start gap-4">
- <div className="p-3 bg-red-500/10 rounded-xl text-red-500">
+ <div className="p-3 bg-red-500/10 rounded-xl text-white">
  <Lock className="w-5 h-5" />
  </div>
  <div className="flex-1">
  <h4 className="font-bold text-white mb-1">Change Password</h4>
- <p className="text-xs text-white/50 mb-4 leading-relaxed">
+ <p className="text-xs text-white mb-4 leading-relaxed">
  Ensure your account is secure. Use a strong password. You will remain logged in after changing your password.
  </p>
 
@@ -308,7 +308,7 @@ const Settings = () => {
  placeholder="New Password"
  className="w-full bg-black/20 border border-white/10 rounded-xl px-4 py-2 text-xs text-white focus:outline-none focus:border-red-500/50 transition-all font-bold placeholder:text-white/20"
  />
- <button type="submit" className="bg-red-500 hover:bg-red-600 text-white px-6 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all shadow-lg shadow-red-500/20">
+ <button type="submit" className="bg-red-500 hover:bg-red-600 text-white px-6 py-2 rounded-xl text-[10px] font-black  tracking-widest transition-all shadow-lg shadow-red-500/20">
  Update Password
  </button>
  </form>
@@ -326,3 +326,4 @@ const Settings = () => {
 };
 
 export default Settings;
+

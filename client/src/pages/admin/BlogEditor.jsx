@@ -287,9 +287,9 @@ const BlogEditor = () => {
  };
 
  switch (block.type) {
- case 'heading1': return <input type="text" value={block.content} onChange={(e) => { blocks.forEach(b => { if (b.leftBlocks) { const found = b.leftBlocks.find(cb => cb.id === block.id); if (found) { updateColumnBlock(b.id, 'leftBlocks', block.id, { content: e.target.value }); return; } } if (b.rightBlocks) { const found = b.rightBlocks.find(cb => cb.id === block.id); if (found) { updateColumnBlock(b.id, 'rightBlocks', block.id, { content: e.target.value }); return; } } if (b.middleBlocks) { const found = b.middleBlocks.find(cb => cb.id === block.id); if (found) { updateColumnBlock(b.id, 'middleBlocks', block.id, { content: e.target.value }); return; } } }); }} className={`${getHeadingSize('heading1', block.fontSize)} font-black uppercase bg-transparent border-none outline-none w-full`} style={{ color: block.color }} placeholder="Heading 1" />;
- case 'heading2': return <input type="text" value={block.content} onChange={(e) => { blocks.forEach(b => { if (b.leftBlocks) { const found = b.leftBlocks.find(cb => cb.id === block.id); if (found) { updateColumnBlock(b.id, 'leftBlocks', block.id, { content: e.target.value }); return; } } if (b.rightBlocks) { const found = b.rightBlocks.find(cb => cb.id === block.id); if (found) { updateColumnBlock(b.id, 'rightBlocks', block.id, { content: e.target.value }); return; } } if (b.middleBlocks) { const found = b.middleBlocks.find(cb => cb.id === block.id); if (found) { updateColumnBlock(b.id, 'middleBlocks', block.id, { content: e.target.value }); return; } } }); }} className={`${getHeadingSize('heading2', block.fontSize)} font-black uppercase bg-transparent border-none outline-none w-full`} style={{ color: block.color }} placeholder="Heading 2" />;
- case 'heading3': return <input type="text" value={block.content} onChange={(e) => { blocks.forEach(b => { if (b.leftBlocks) { const found = b.leftBlocks.find(cb => cb.id === block.id); if (found) { updateColumnBlock(b.id, 'leftBlocks', block.id, { content: e.target.value }); return; } } if (b.rightBlocks) { const found = b.rightBlocks.find(cb => cb.id === block.id); if (found) { updateColumnBlock(b.id, 'rightBlocks', block.id, { content: e.target.value }); return; } } if (b.middleBlocks) { const found = b.middleBlocks.find(cb => cb.id === block.id); if (found) { updateColumnBlock(b.id, 'middleBlocks', block.id, { content: e.target.value }); return; } } }); }} className={`${getHeadingSize('heading3', block.fontSize)} font-black uppercase bg-transparent border-none outline-none w-full`} style={{ color: block.color }} placeholder="Heading 3" />;
+ case 'heading1': return <input type="text" value={block.content} onChange={(e) => { blocks.forEach(b => { if (b.leftBlocks) { const found = b.leftBlocks.find(cb => cb.id === block.id); if (found) { updateColumnBlock(b.id, 'leftBlocks', block.id, { content: e.target.value }); return; } } if (b.rightBlocks) { const found = b.rightBlocks.find(cb => cb.id === block.id); if (found) { updateColumnBlock(b.id, 'rightBlocks', block.id, { content: e.target.value }); return; } } if (b.middleBlocks) { const found = b.middleBlocks.find(cb => cb.id === block.id); if (found) { updateColumnBlock(b.id, 'middleBlocks', block.id, { content: e.target.value }); return; } } }); }} className={`${getHeadingSize('heading1', block.fontSize)} font-black  bg-transparent border-none outline-none w-full`} style={{ color: block.color }} placeholder="Heading 1" />;
+ case 'heading2': return <input type="text" value={block.content} onChange={(e) => { blocks.forEach(b => { if (b.leftBlocks) { const found = b.leftBlocks.find(cb => cb.id === block.id); if (found) { updateColumnBlock(b.id, 'leftBlocks', block.id, { content: e.target.value }); return; } } if (b.rightBlocks) { const found = b.rightBlocks.find(cb => cb.id === block.id); if (found) { updateColumnBlock(b.id, 'rightBlocks', block.id, { content: e.target.value }); return; } } if (b.middleBlocks) { const found = b.middleBlocks.find(cb => cb.id === block.id); if (found) { updateColumnBlock(b.id, 'middleBlocks', block.id, { content: e.target.value }); return; } } }); }} className={`${getHeadingSize('heading2', block.fontSize)} font-black  bg-transparent border-none outline-none w-full`} style={{ color: block.color }} placeholder="Heading 2" />;
+ case 'heading3': return <input type="text" value={block.content} onChange={(e) => { blocks.forEach(b => { if (b.leftBlocks) { const found = b.leftBlocks.find(cb => cb.id === block.id); if (found) { updateColumnBlock(b.id, 'leftBlocks', block.id, { content: e.target.value }); return; } } if (b.rightBlocks) { const found = b.rightBlocks.find(cb => cb.id === block.id); if (found) { updateColumnBlock(b.id, 'rightBlocks', block.id, { content: e.target.value }); return; } } if (b.middleBlocks) { const found = b.middleBlocks.find(cb => cb.id === block.id); if (found) { updateColumnBlock(b.id, 'middleBlocks', block.id, { content: e.target.value }); return; } } }); }} className={`${getHeadingSize('heading3', block.fontSize)} font-black  bg-transparent border-none outline-none w-full`} style={{ color: block.color }} placeholder="Heading 3" />;
  case 'paragraph': return <textarea value={block.content} onChange={(e) => { blocks.forEach(b => { if (b.leftBlocks) { const found = b.leftBlocks.find(cb => cb.id === block.id); if (found) { updateColumnBlock(b.id, 'leftBlocks', block.id, { content: e.target.value }); return; } } if (b.rightBlocks) { const found = b.rightBlocks.find(cb => cb.id === block.id); if (found) { updateColumnBlock(b.id, 'rightBlocks', block.id, { content: e.target.value }); return; } } if (b.middleBlocks) { const found = b.middleBlocks.find(cb => cb.id === block.id); if (found) { updateColumnBlock(b.id, 'middleBlocks', block.id, { content: e.target.value }); return; } } }); }} className="w-full bg-transparent border border-white/10 rounded-lg px-3 py-2 text-white/70 text-lg outline-none focus:border-primary" rows={3} placeholder="Write your text here..." />;
  case 'image': return (
  <div className="relative group">
@@ -317,7 +317,7 @@ const BlogEditor = () => {
  </>
  ) : (
  <div className="space-y-2">
- <label className="cursor-pointer block w-full"><div className="aspect-video bg-white/5 rounded-xl flex items-center justify-center hover:bg-white/10"><Video className="w-10 h-10 text-white/20" /><span className="ml-2 text-white/40 text-xs">Upload Video</span></div><input type="file" accept="video/*" className="hidden" onChange={(e) => { const file = e.target.files[0]; if (file) { const reader = new FileReader(); reader.onload = () => { blocks.forEach(b => { if (b.leftBlocks) { const found = b.leftBlocks.find(cb => cb.id === block.id); if (found) { updateColumnBlock(b.id, 'leftBlocks', block.id, { src: reader.result }); return; } } if (b.rightBlocks) { const found = b.rightBlocks.find(cb => cb.id === block.id); if (found) { updateColumnBlock(b.id, 'rightBlocks', block.id, { src: reader.result }); return; } } if (b.middleBlocks) { const found = b.middleBlocks.find(cb => cb.id === block.id); if (found) { updateColumnBlock(b.id, 'middleBlocks', block.id, { src: reader.result }); return; } } }); }; reader.readAsDataURL(file); } }} /></label>
+ <label className="cursor-pointer block w-full"><div className="aspect-video bg-white/5 rounded-xl flex items-center justify-center hover:bg-white/10"><Video className="w-10 h-10 text-white/20" /><span className="ml-2 text-white text-xs">Upload Video</span></div><input type="file" accept="video/*" className="hidden" onChange={(e) => { const file = e.target.files[0]; if (file) { const reader = new FileReader(); reader.onload = () => { blocks.forEach(b => { if (b.leftBlocks) { const found = b.leftBlocks.find(cb => cb.id === block.id); if (found) { updateColumnBlock(b.id, 'leftBlocks', block.id, { src: reader.result }); return; } } if (b.rightBlocks) { const found = b.rightBlocks.find(cb => cb.id === block.id); if (found) { updateColumnBlock(b.id, 'rightBlocks', block.id, { src: reader.result }); return; } } if (b.middleBlocks) { const found = b.middleBlocks.find(cb => cb.id === block.id); if (found) { updateColumnBlock(b.id, 'middleBlocks', block.id, { src: reader.result }); return; } } }); }; reader.readAsDataURL(file); } }} /></label>
  </div>
  )}
  </div>
@@ -337,7 +337,7 @@ const BlogEditor = () => {
  case 'toc': return (
  <div className="space-y-2">
  <textarea value={block.content} onChange={(e) => { blocks.forEach(b => { if (b.leftBlocks) { const found = b.leftBlocks.find(cb => cb.id === block.id); if (found) { updateColumnBlock(b.id, 'leftBlocks', block.id, { content: e.target.value }); return; } } if (b.rightBlocks) { const found = b.rightBlocks.find(cb => cb.id === block.id); if (found) { updateColumnBlock(b.id, 'rightBlocks', block.id, { content: e.target.value }); return; } } if (b.middleBlocks) { const found = b.middleBlocks.find(cb => cb.id === block.id); if (found) { updateColumnBlock(b.id, 'middleBlocks', block.id, { content: e.target.value }); return; } } }); }} className="w-full bg-transparent border border-white/10 rounded-lg px-3 py-2 text-white/70 outline-none focus:border-primary" rows={4} placeholder="Introduction&#10;Getting Started&#10;Advanced Tips" />
- <p className="text-white/30 text-xs">Enter each item on a new line</p>
+ <p className="text-white text-xs">Enter each item on a new line</p>
  </div>
  );
  case 'infoBox': return (
@@ -349,13 +349,13 @@ const BlogEditor = () => {
  case 'checklist': return (
  <div className="space-y-2">
  <textarea value={block.content} onChange={(e) => { blocks.forEach(b => { if (b.leftBlocks) { const found = b.leftBlocks.find(cb => cb.id === block.id); if (found) { updateColumnBlock(b.id, 'leftBlocks', block.id, { content: e.target.value }); return; } } if (b.rightBlocks) { const found = b.rightBlocks.find(cb => cb.id === block.id); if (found) { updateColumnBlock(b.id, 'rightBlocks', block.id, { content: e.target.value }); return; } } if (b.middleBlocks) { const found = b.middleBlocks.find(cb => cb.id === block.id); if (found) { updateColumnBlock(b.id, 'middleBlocks', block.id, { content: e.target.value }); return; } } }); }} className="w-full bg-transparent border border-white/10 rounded-lg px-3 py-2 text-white/70 outline-none focus:border-primary" rows={4} placeholder="Item 1&#10;Item 2&#10;Item 3" />
- <p className="text-white/30 text-xs">Enter each item on a new line</p>
+ <p className="text-white text-xs">Enter each item on a new line</p>
  </div>
  );
  case 'table': return (
  <div className="space-y-2">
  <textarea value={block.content} onChange={(e) => { blocks.forEach(b => { if (b.leftBlocks) { const found = b.leftBlocks.find(cb => cb.id === block.id); if (found) { updateColumnBlock(b.id, 'leftBlocks', block.id, { content: e.target.value }); return; } } if (b.rightBlocks) { const found = b.rightBlocks.find(cb => cb.id === block.id); if (found) { updateColumnBlock(b.id, 'rightBlocks', block.id, { content: e.target.value }); return; } } if (b.middleBlocks) { const found = b.middleBlocks.find(cb => cb.id === block.id); if (found) { updateColumnBlock(b.id, 'middleBlocks', block.id, { content: e.target.value }); return; } } }); }} className="w-full bg-transparent border border-white/10 rounded-lg px-3 py-2 text-white/70 outline-none focus:border-primary font-mono text-xs" rows={5} placeholder="Header1 | Header2 | Header3&#10;Cell1 | Cell2 | Cell3&#10;Cell4 | Cell5 | Cell6" />
- <p className="text-white/30 text-xs">Use | to separate columns</p>
+ <p className="text-white text-xs">Use | to separate columns</p>
  </div>
  );
  case 'button': return (
@@ -465,11 +465,11 @@ const BlogEditor = () => {
  </select>
  <div className="grid grid-cols-2 gap-2">
  <div>
- <label className="text-white/50 text-xs mb-1 block">Size</label>
+ <label className="text-white text-xs mb-1 block">Size</label>
  <input type="number" value={block.iconSize || 48} onChange={(e) => { blocks.forEach(b => { if (b.leftBlocks) { const found = b.leftBlocks.find(cb => cb.id === block.id); if (found) { updateColumnBlock(b.id, 'leftBlocks', block.id, { iconSize: parseInt(e.target.value) }); return; } } if (b.rightBlocks) { const found = b.rightBlocks.find(cb => cb.id === block.id); if (found) { updateColumnBlock(b.id, 'rightBlocks', block.id, { iconSize: parseInt(e.target.value) }); return; } } if (b.middleBlocks) { const found = b.middleBlocks.find(cb => cb.id === block.id); if (found) { updateColumnBlock(b.id, 'middleBlocks', block.id, { iconSize: parseInt(e.target.value) }); return; } } }); }} className="w-full bg-transparent border border-white/10 rounded-lg px-3 py-2 text-white outline-none focus:border-primary" />
  </div>
  <div>
- <label className="text-white/50 text-xs mb-1 block">Color</label>
+ <label className="text-white text-xs mb-1 block">Color</label>
  <input type="color" value={block.iconColor || '#FFD700'} onChange={(e) => { blocks.forEach(b => { if (b.leftBlocks) { const found = b.leftBlocks.find(cb => cb.id === block.id); if (found) { updateColumnBlock(b.id, 'leftBlocks', block.id, { iconColor: e.target.value }); return; } } if (b.rightBlocks) { const found = b.rightBlocks.find(cb => cb.id === block.id); if (found) { updateColumnBlock(b.id, 'rightBlocks', block.id, { iconColor: e.target.value }); return; } } if (b.middleBlocks) { const found = b.middleBlocks.find(cb => cb.id === block.id); if (found) { updateColumnBlock(b.id, 'middleBlocks', block.id, { iconColor: e.target.value }); return; } } }); }} className="w-full h-10 bg-transparent border border-white/10 rounded-lg" />
  </div>
  </div>
@@ -522,7 +522,7 @@ const BlogEditor = () => {
  <div key={idx} className="bg-white/5 rounded-xl p-4 min-h-[100px]">
  <div className="space-y-2">{block[colKey].map((b, i) => <div key={i}>{renderColumnBlock(b)}</div>)}</div>
  <div className="relative mt-2">
- <p className="text-white/30 text-xs text-center mb-2">{idx === 0 ? 'Left' : 'Right'} Column</p>
+ <p className="text-white text-xs text-center mb-2">{idx === 0 ? 'Left' : 'Right'} Column</p>
  <div className="flex justify-center">
  <button onClick={() => setColumnMenu(block.id + '-' + colKey)} className="p-2 bg-primary/20 hover:bg-primary/30 rounded-lg text-primary text-xs flex items-center gap-1"><Plus className="w-3 h-3" /> Add</button>
  </div>
@@ -547,7 +547,7 @@ const BlogEditor = () => {
  <div key={idx} className="bg-white/5 rounded-xl p-4 min-h-[100px]">
  <div className="space-y-2">{block[colKey].map((b, i) => <div key={i}>{renderColumnBlock(b)}</div>)}</div>
  <div className="relative mt-2">
- <p className="text-white/30 text-xs text-center mb-2">{idx === 0 ? 'Left' : idx === 1 ? 'Middle' : 'Right'}</p>
+ <p className="text-white text-xs text-center mb-2">{idx === 0 ? 'Left' : idx === 1 ? 'Middle' : 'Right'}</p>
  <div className="flex justify-center">
  <button onClick={() => setColumnMenu(block.id + '-' + colKey)} className="p-2 bg-primary/20 hover:bg-primary/30 rounded-lg text-primary text-xs"><Plus className="w-3 h-3" /></button>
  </div>
@@ -566,14 +566,14 @@ const BlogEditor = () => {
  if (block.type === 'toc') {
  return (
  <div className="bg-white/5 border border-white/10 rounded-xl p-4 my-4">
- <div className="text-white/60 text-xs uppercase mb-3 font-bold tracking-wider">Table of Contents</div>
+ <div className="text-white text-xs  mb-3 font-bold tracking-wider">Table of Contents</div>
  <div className="space-y-1">
  {block.content?.split('\n').filter(i => i.trim()).map((item, i) => (
- <div key={i} className="flex items-center gap-2 text-white/50 text-sm hover:text-primary cursor-pointer">
+ <div key={i} className="flex items-center gap-2 text-white/50 text-sm hover:text-white cursor-pointer">
  <span className="w-1.5 h-1.5 rounded-full bg-primary/50"></span>
  {item}
  </div>
- )) || <div className="text-white/30 text-sm">Add items to generate TOC...</div>}
+ )) || <div className="text-white text-sm">Add items to generate TOC...</div>}
  </div>
  </div>
  );
@@ -587,22 +587,22 @@ const BlogEditor = () => {
  </div>
  <div className="text-blue-400 text-sm font-bold">{block.title || 'Information'}</div>
  </div>
- <div className="text-white/70 text-sm">{block.content || 'Add your information here...'}</div>
+ <div className="text-white text-sm">{block.content || 'Add your information here...'}</div>
  </div>
  );
  }
  if (block.type === 'checklist') {
  return (
  <div className="my-4 space-y-2">
- <div className="text-white/60 text-xs uppercase mb-2 font-bold tracking-wider">Checklist</div>
+ <div className="text-white text-xs  mb-2 font-bold tracking-wider">Checklist</div>
  <div className="space-y-2">
  {block.content?.split('\n').filter(i => i.trim()).map((item, i) => (
  <div key={i} className="flex items-center gap-3 bg-white/5 rounded-lg p-3">
  <div className="w-5 h-5 rounded border-2 border-white/20 flex items-center justify-center">
  </div>
- <span className="text-white/70 text-sm">{item}</span>
+ <span className="text-white text-sm">{item}</span>
  </div>
- )) || <div className="text-white/30 text-sm">Add items to create checklist...</div>}
+ )) || <div className="text-white text-sm">Add items to create checklist...</div>}
  </div>
  </div>
  );
@@ -665,7 +665,7 @@ const BlogEditor = () => {
  <ChevronDown className={`w-4 h-4 text-white/50 transition-transform ${isExpanded ? 'rotate-180' : ''}`} />
  </div>
  {isExpanded && (
- <div className="p-4 text-white/70 text-sm bg-black/20">
+ <div className="p-4 text-white text-sm bg-black/20">
  {item.content || 'Accordion content...'}
  </div>
  )}
@@ -712,7 +712,7 @@ const BlogEditor = () => {
  allowFullScreen
  />
  ) : (
- <div className="text-white/30 text-center">
+ <div className="text-white text-center">
  <Video className="w-12 h-12 mx-auto mb-2 opacity-50" />
  <p className="text-sm">Add video URL</p>
  </div>
@@ -730,41 +730,41 @@ const BlogEditor = () => {
  <header className="bg-[#0A0A0A] border-b border-white/10 px-6 py-4 flex items-center justify-between z-[60] relative">
  <div className="flex items-center gap-4">
  <button onClick={() => navigate('/admin/blogs')} className="p-2 hover:bg-white/5 rounded-lg"><ArrowLeft className="w-5 h-5" /></button>
- <h1 className="text-xl font-black uppercase">{id ? 'Edit Article' : 'New Article'}</h1>
+ <h1 className="text-xl font-black ">{id ? 'Edit Article' : 'New Article'}</h1>
  </div>
  </header>
- {error && <div className="mx-6 mt-4 p-4 bg-red-500/20 text-red-500 rounded-xl">{String(error)}</div>}
+ {error && <div className="mx-6 mt-4 p-4 bg-red-500/20 text-white rounded-xl">{String(error)}</div>}
  <div className="flex flex-1">
  <aside className={`w-64 bg-[#0A0A0A] border-r border-white/10 p-4 overflow-y-auto transition-all ${selectedBlock ? 'hidden' : 'block'}`}>
- <h3 className="text-xs font-black uppercase text-white/40 mb-4">Settings</h3>
+ <h3 className="text-xs font-black  text-white mb-4">Settings</h3>
  <div className="space-y-4">
- <div><label className="text-white/40 text-xs block mb-1">Title *</label><input type="text" value={blogData.title} onChange={(e) => setBlogData({ ...blogData, title: e.target.value })} className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white" /></div>
- <div><label className="text-white/40 text-xs block mb-1">Category *</label><select value={blogData.category} onChange={(e) => setBlogData({ ...blogData, category: e.target.value })} className="w-full bg-[#1a1a1a] border border-white/10 rounded-lg px-3 py-2 text-white" style={{ colorScheme: 'dark' }}><option value="" style={{ background: '#1a1a1a', color: '#fff' }}>Select a category</option>{categories.map(c => <option key={c._id} value={c.name || c.title} style={{ background: '#1a1a1a', color: '#fff' }}>{c.name || c.title}</option>)}</select></div>
- <div><label className="text-white/40 text-xs block mb-1">Excerpt</label><textarea value={blogData.shortDescription} onChange={(e) => setBlogData({ ...blogData, shortDescription: e.target.value })} rows={2} className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white" /></div>
- <div><label className="text-white/40 text-xs block mb-1">Author</label><input type="text" value={blogData.author} onChange={(e) => setBlogData({ ...blogData, author: e.target.value })} className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white" /></div>
- <div className="flex items-center justify-between"><span className="text-white/40 text-xs">Featured</span><button onClick={() => setBlogData({ ...blogData, isFeatured: !blogData.isFeatured })}>{blogData.isFeatured ? <ToggleRight className="w-6 h-6 text-primary" /> : <ToggleLeft className="w-6 h-6 text-white/30" />}</button></div>
- <div><label className="text-white/40 text-xs block mb-1">Status</label><select value={blogData.status || 'draft'} onChange={(e) => setBlogData({ ...blogData, status: e.target.value })} className="w-full bg-[#1a1a1a] border border-white/10 rounded-lg px-3 py-2 text-white text-sm" style={{ colorScheme: 'dark' }}><option value="draft" style={{ background: '#1a1a1a', color: '#fff' }}>Draft</option><option value="published" style={{ background: '#1a1a1a', color: '#fff' }}>Published</option></select></div>
- <button onClick={() => handleSave(true)} disabled={saving} className="w-full py-3 bg-green-600 hover:bg-green-700 rounded-xl font-black uppercase text-xs">Publish Now</button>
- <div><label className="text-white/40 text-xs block mb-1">Cover Image *</label><label className="cursor-pointer block"><div className={`aspect-video rounded-lg border-2 border-dashed ${coverImagePreview ? 'border-primary' : 'border-white/10'} flex items-center justify-center`}>{coverImagePreview ? <img src={coverImagePreview} alt="" className="w-full h-full object-cover rounded-lg" /> : <><ImageIcon className="w-8 h-8 text-white/20" /><span className="text-white/30 text-xs ml-2">Click</span></>}</div><input type="file" accept="image/*" onChange={handleImageChange} className="hidden" /></label></div>
+ <div><label className="text-white text-xs block mb-1">Title *</label><input type="text" value={blogData.title} onChange={(e) => setBlogData({ ...blogData, title: e.target.value })} className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white" /></div>
+ <div><label className="text-white text-xs block mb-1">Category *</label><select value={blogData.category} onChange={(e) => setBlogData({ ...blogData, category: e.target.value })} className="w-full bg-[#1a1a1a] border border-white/10 rounded-lg px-3 py-2 text-white" style={{ colorScheme: 'dark' }}><option value="" style={{ background: '#1a1a1a', color: '#fff' }}>Select a category</option>{categories.map(c => <option key={c._id} value={c.name || c.title} style={{ background: '#1a1a1a', color: '#fff' }}>{c.name || c.title}</option>)}</select></div>
+ <div><label className="text-white text-xs block mb-1">Excerpt</label><textarea value={blogData.shortDescription} onChange={(e) => setBlogData({ ...blogData, shortDescription: e.target.value })} rows={2} className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white" /></div>
+ <div><label className="text-white text-xs block mb-1">Author</label><input type="text" value={blogData.author} onChange={(e) => setBlogData({ ...blogData, author: e.target.value })} className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white" /></div>
+ <div className="flex items-center justify-between"><span className="text-white text-xs">Featured</span><button onClick={() => setBlogData({ ...blogData, isFeatured: !blogData.isFeatured })}>{blogData.isFeatured ? <ToggleRight className="w-6 h-6 text-primary" /> : <ToggleLeft className="w-6 h-6 text-white/30" />}</button></div>
+ <div><label className="text-white text-xs block mb-1">Status</label><select value={blogData.status || 'draft'} onChange={(e) => setBlogData({ ...blogData, status: e.target.value })} className="w-full bg-[#1a1a1a] border border-white/10 rounded-lg px-3 py-2 text-white text-sm" style={{ colorScheme: 'dark' }}><option value="draft" style={{ background: '#1a1a1a', color: '#fff' }}>Draft</option><option value="published" style={{ background: '#1a1a1a', color: '#fff' }}>Published</option></select></div>
+ <button onClick={() => handleSave(true)} disabled={saving} className="w-full py-3 bg-green-600 hover:bg-green-700 rounded-xl font-black  text-xs">Publish Now</button>
+ <div><label className="text-white text-xs block mb-1">Cover Image *</label><label className="cursor-pointer block"><div className={`aspect-video rounded-lg border-2 border-dashed ${coverImagePreview ? 'border-primary' : 'border-white/10'} flex items-center justify-center`}>{coverImagePreview ? <img src={coverImagePreview} alt="" className="w-full h-full object-cover rounded-lg" /> : <><ImageIcon className="w-8 h-8 text-white/20" /><span className="text-white text-xs ml-2">Click</span></>}</div><input type="file" accept="image/*" onChange={handleImageChange} className="hidden" /></label></div>
  </div>
  <div className="mt-8 pt-8 border-t border-white/10">
- <h3 className="text-xs font-black uppercase text-white/40 mb-4">Add Blocks</h3>
+ <h3 className="text-xs font-black  text-white mb-4">Add Blocks</h3>
  <div className="space-y-2">{BLOCK_TYPES.map(t => { const Icon = t.icon; return <button key={t.type} onClick={() => addBlock(t)} className="w-full flex items-center gap-3 p-3 bg-white/5 hover:bg-white/10 rounded-xl text-white/70 hover:text-white"><Icon className="w-5 h-5 text-primary" /><span className="text-sm font-bold">{t.label}</span></button>; })}</div>
  </div>
  </aside>
  <main className="flex-1 overflow-y-auto p-8 bg-[#050505]">
  <div className={`mx-auto transition-all ${selectedBlock ? 'max-w-6xl' : 'max-w-3xl'}`}>
- <div className="text-center mb-8"><span className="text-white/30 text-xs font-black uppercase">Preview</span></div>
+ <div className="text-center mb-8"><span className="text-white text-xs font-black ">Preview</span></div>
  <div className="flex gap-3 mb-6">
- <button onClick={() => handleSave(false)} disabled={saving} className="flex-1 flex items-center justify-center gap-2 py-3 bg-white/10 hover:bg-white/20 rounded-xl font-black uppercase text-xs"><span>💾</span>{saving ? 'Saving...' : 'Save Draft'}</button>
- <button onClick={() => handleSave(true)} disabled={saving} className="flex-1 flex items-center justify-center gap-2 py-3 bg-green-600 hover:bg-green-700 rounded-xl font-black uppercase text-xs"><span>✅</span>{saving ? 'Publishing...' : 'Publish'}</button>
+ <button onClick={() => handleSave(false)} disabled={saving} className="flex-1 flex items-center justify-center gap-2 py-3 bg-white/10 hover:bg-white/20 rounded-xl font-black  text-xs"><span>💾</span>{saving ? 'Saving...' : 'Save Draft'}</button>
+ <button onClick={() => handleSave(true)} disabled={saving} className="flex-1 flex items-center justify-center gap-2 py-3 bg-green-600 hover:bg-green-700 rounded-xl font-black  text-xs"><span>✅</span>{saving ? 'Publishing...' : 'Publish'}</button>
  </div>
  <div className="bg-[#0A0A0A] rounded-[32px] border border-white/5 overflow-hidden">
  {coverImagePreview && <div className="aspect-[2/1]"><img src={coverImagePreview} alt="" className="w-full h-full object-cover" /></div>}
  <div className="p-8">
- <h1 className="text-4xl font-black uppercase mb-4">{blogData.title || 'Your Title'}</h1>
- <div className="flex items-center gap-4 text-white/30 text-xs font-black uppercase mb-8 pb-8 border-b border-white/10"><span><Calendar className="w-3 h-3 inline" /> {new Date().toLocaleDateString()}</span><span><User className="w-3 h-3 inline" /> {blogData.author}</span>{blogData.category && <span className="text-primary">{blogData.category}</span>}</div>
- {blocks.length === 0 ? <div className="text-center py-16 border-2 border-dashed border-white/10 rounded-xl"><Plus className="w-10 h-10 text-white/20 mx-auto mb-3" /><p className="text-white/40">Click blocks on left to add</p></div> : <div className="space-y-2">{blocks.map(b => <div key={b.id} className={`relative group rounded-xl p-2 -mx-2 ${selectedBlock === b.id ? 'ring-2 ring-primary bg-primary/5' : 'hover:bg-white/5'}`}>
+ <h1 className="text-4xl font-black  mb-4">{blogData.title || 'Your Title'}</h1>
+ <div className="flex items-center gap-4 text-white text-xs font-black  mb-8 pb-8 border-b border-white/10"><span><Calendar className="w-3 h-3 inline" /> {new Date().toLocaleDateString()}</span><span><User className="w-3 h-3 inline" /> {blogData.author}</span>{blogData.category && <span className="text-white">{blogData.category}</span>}</div>
+ {blocks.length === 0 ? <div className="text-center py-16 border-2 border-dashed border-white/10 rounded-xl"><Plus className="w-10 h-10 text-white mx-auto mb-3" /><p className="text-white">Click blocks on left to add</p></div> : <div className="space-y-2">{blocks.map(b => <div key={b.id} className={`relative group rounded-xl p-2 -mx-2 ${selectedBlock === b.id ? 'ring-2 ring-primary bg-primary/5' : 'hover:bg-white/5'}`}>
  {/* Block Toolbar */}
  <div className="flex items-center justify-between mb-2 opacity-100">
  <button className="p-1.5 rounded-lg bg-white/5 hover:bg-white/10 cursor-grab"><GripVertical className="w-4 h-4 text-white/50" /></button>
@@ -779,7 +779,7 @@ const BlogEditor = () => {
  {selectedBlock && (() => {
  const block = blocks.find(b => b.id === selectedBlock); if (!block) return null; return (
  <aside className="w-72 bg-[#0A0A0A] border-l border-white/10 p-4 overflow-y-auto">
- <div className="flex items-center justify-between mb-4"><h3 className="text-xs font-black uppercase text-white/40">Edit {block.type}</h3><button onClick={() => setSelectedBlock(null)}><X className="w-4 h-4 text-white/30" /></button></div>
+ <div className="flex items-center justify-between mb-4"><h3 className="text-xs font-black  text-white">Edit {block.type}</h3><button onClick={() => setSelectedBlock(null)}><X className="w-4 h-4 text-white/30" /></button></div>
  <div className="space-y-4">
  {/* Layout Options */}
  {block.type === 'columns2' && (
@@ -789,7 +789,7 @@ const BlogEditor = () => {
  <span className="text-white text-xs font-bold">2 Column Layout</span>
  </div>
  <div>
- <label className="text-white/50 text-xs block mb-1">Left Column Width</label>
+ <label className="text-white text-xs block mb-1">Left Column Width</label>
  <input
  type="range"
  min="20"
@@ -798,7 +798,7 @@ const BlogEditor = () => {
  onChange={(e) => updateBlock(block.id, { leftWidth: parseInt(e.target.value) })}
  className="w-full accent-primary"
  />
- <div className="flex justify-between text-xs text-white/40 mt-1">
+ <div className="flex justify-between text-xs text-white mt-1">
  <span>Left: {block.leftWidth || 50}%</span>
  <span>Right: {100 - (block.leftWidth || 50)}%</span>
  </div>
@@ -812,7 +812,7 @@ const BlogEditor = () => {
  <span className="text-white text-xs font-bold">3 Column Layout</span>
  </div>
  <div>
- <label className="text-white/50 text-xs block mb-1">Left Column Width</label>
+ <label className="text-white text-xs block mb-1">Left Column Width</label>
  <input
  type="range"
  min="15"
@@ -821,10 +821,10 @@ const BlogEditor = () => {
  onChange={(e) => updateBlock(block.id, { leftWidth: parseInt(e.target.value) })}
  className="w-full accent-primary"
  />
- <div className="text-xs text-white/40 text-right">{block.leftWidth || 33}%</div>
+ <div className="text-xs text-white text-right">{block.leftWidth || 33}%</div>
  </div>
  <div>
- <label className="text-white/50 text-xs block mb-1">Middle Column Width</label>
+ <label className="text-white text-xs block mb-1">Middle Column Width</label>
  <input
  type="range"
  min="15"
@@ -833,10 +833,10 @@ const BlogEditor = () => {
  onChange={(e) => updateBlock(block.id, { middleWidth: parseInt(e.target.value) })}
  className="w-full accent-primary"
  />
- <div className="text-xs text-white/40 text-right">{block.middleWidth || 33}%</div>
+ <div className="text-xs text-white text-right">{block.middleWidth || 33}%</div>
  </div>
  <div className="pt-2 border-t border-white/10">
- <div className="flex justify-between text-xs font-bold text-white/70">
+ <div className="flex justify-between text-xs font-bold text-white">
  <span>Left: {block.leftWidth || 33}%</span>
  <span>Middle: {block.middleWidth || 33}%</span>
  <span>Right: {100 - ((block.leftWidth || 33) + (block.middleWidth || 33))}%</span>
@@ -844,38 +844,38 @@ const BlogEditor = () => {
  </div>
  </div>
  )}
- {block.type === 'spacer' && <div><label className="text-white/40 text-xs block mb-1">Height (px)</label><input type="number" value={block.height} onChange={(e) => updateBlock(block.id, { height: parseInt(e.target.value) })} className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white" /></div>}
+ {block.type === 'spacer' && <div><label className="text-white text-xs block mb-1">Height (px)</label><input type="number" value={block.height} onChange={(e) => updateBlock(block.id, { height: parseInt(e.target.value) })} className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white" /></div>}
 
  {/* Text Content Blocks */}
- {['heading1', 'heading2', 'heading3', 'paragraph', 'quote', 'code', 'alert', 'list', 'orderedList', 'callout', 'toc', 'infoBox', 'checklist'].includes(block.type) && <div><label className="text-white/40 text-xs block mb-1">Content</label><textarea value={block.content || ''} onChange={(e) => updateBlock(block.id, { content: e.target.value })} rows={4} className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm" /></div>}
+ {['heading1', 'heading2', 'heading3', 'paragraph', 'quote', 'code', 'alert', 'list', 'orderedList', 'callout', 'toc', 'infoBox', 'checklist'].includes(block.type) && <div><label className="text-white text-xs block mb-1">Content</label><textarea value={block.content || ''} onChange={(e) => updateBlock(block.id, { content: e.target.value })} rows={4} className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm" /></div>}
 
  {/* Table Block */}
- {block.type === 'table' && <div><label className="text-white/40 text-xs block mb-1">Table Content (use | to separate columns)</label><textarea value={block.content || ''} onChange={(e) => updateBlock(block.id, { content: e.target.value })} rows={6} className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm font-mono" placeholder="Header 1|Header 2|Header 3" /></div>}
+ {block.type === 'table' && <div><label className="text-white text-xs block mb-1">Table Content (use | to separate columns)</label><textarea value={block.content || ''} onChange={(e) => updateBlock(block.id, { content: e.target.value })} rows={6} className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm font-mono" placeholder="Header 1|Header 2|Header 3" /></div>}
 
  {/* Button Block */}
  {block.type === 'button' && <>
- <div><label className="text-white/40 text-xs block mb-1">Button Text</label><input type="text" value={block.text || ''} onChange={(e) => updateBlock(block.id, { text: e.target.value })} className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm" /></div>
- <div><label className="text-white/40 text-xs block mb-1">Link URL</label><input type="text" value={block.url || ''} onChange={(e) => updateBlock(block.id, { url: e.target.value })} className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm" placeholder="https://" /></div>
- <div><label className="text-white/40 text-xs block mb-1">Button Style</label><select value={block.buttonStyle || 'primary'} onChange={(e) => updateBlock(block.id, { buttonStyle: e.target.value })} className="w-full bg-[#1a1a1a] border border-white/10 rounded-lg px-3 py-2 text-white text-sm"><option value="primary">Primary</option><option value="secondary">Secondary</option><option value="outline">Outline</option><option value="ghost">Ghost</option></select></div>
+ <div><label className="text-white text-xs block mb-1">Button Text</label><input type="text" value={block.text || ''} onChange={(e) => updateBlock(block.id, { text: e.target.value })} className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm" /></div>
+ <div><label className="text-white text-xs block mb-1">Link URL</label><input type="text" value={block.url || ''} onChange={(e) => updateBlock(block.id, { url: e.target.value })} className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm" placeholder="https://" /></div>
+ <div><label className="text-white text-xs block mb-1">Button Style</label><select value={block.buttonStyle || 'primary'} onChange={(e) => updateBlock(block.id, { buttonStyle: e.target.value })} className="w-full bg-[#1a1a1a] border border-white/10 rounded-lg px-3 py-2 text-white text-sm"><option value="primary">Primary</option><option value="secondary">Secondary</option><option value="outline">Outline</option><option value="ghost">Ghost</option></select></div>
  </>}
  {['heading1', 'heading2', 'heading3'].includes(block.type) && <>
- <div><label className="text-white/40 text-xs block mb-1">Text Color</label><div className="flex gap-2"><input type="color" value={block.color || '#ffffff'} onChange={(e) => updateBlock(block.id, { color: e.target.value })} className="w-10 h-10 rounded cursor-pointer" /><input type="text" value={block.color || '#ffffff'} onChange={(e) => updateBlock(block.id, { color: e.target.value })} className="flex-1 bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm" /></div></div>
- <div><label className="text-white/40 text-xs block mb-1">Font Size</label><select value={block.fontSize || 'default'} onChange={(e) => updateBlock(block.id, { fontSize: e.target.value })} className="w-full bg-[#1a1a1a] border border-white/10 rounded-lg px-3 py-2 text-white text-sm"><option value="small">Small</option><option value="default">Default</option><option value="large">Large</option><option value="xlarge">Extra Large</option></select></div>
+ <div><label className="text-white text-xs block mb-1">Text Color</label><div className="flex gap-2"><input type="color" value={block.color || '#ffffff'} onChange={(e) => updateBlock(block.id, { color: e.target.value })} className="w-10 h-10 rounded cursor-pointer" /><input type="text" value={block.color || '#ffffff'} onChange={(e) => updateBlock(block.id, { color: e.target.value })} className="flex-1 bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm" /></div></div>
+ <div><label className="text-white text-xs block mb-1">Font Size</label><select value={block.fontSize || 'default'} onChange={(e) => updateBlock(block.id, { fontSize: e.target.value })} className="w-full bg-[#1a1a1a] border border-white/10 rounded-lg px-3 py-2 text-white text-sm"><option value="small">Small</option><option value="default">Default</option><option value="large">Large</option><option value="xlarge">Extra Large</option></select></div>
  </>}
- {block.type === 'quote' && <div><label className="text-white/40 text-xs block mb-1">Author</label><input type="text" value={block.author || ''} onChange={(e) => updateBlock(block.id, { author: e.target.value })} className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm" /></div>}
- {block.type === 'alert' && <div><label className="text-white/40 text-xs block mb-1">Type</label><select value={block.alertType || 'info'} onChange={(e) => updateBlock(block.id, { alertType: e.target.value })} className="w-full bg-[#1a1a1a] border border-white/10 rounded-lg px-3 py-2 text-white text-sm"><option value="info">Info</option><option value="warning">Warning</option><option value="success">Success</option><option value="error">Error</option></select></div>}
- {block.type === 'callout' && <div><label className="text-white/40 text-xs block mb-1">Type</label><select value={block.calloutType || 'highlight'} onChange={(e) => updateBlock(block.id, { calloutType: e.target.value })} className="w-full bg-[#1a1a1a] border border-white/10 rounded-lg px-3 py-2 text-white text-sm"><option value="highlight">Highlight</option><option value="tip">Tip</option><option value="note">Note</option></select></div>}
+ {block.type === 'quote' && <div><label className="text-white text-xs block mb-1">Author</label><input type="text" value={block.author || ''} onChange={(e) => updateBlock(block.id, { author: e.target.value })} className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm" /></div>}
+ {block.type === 'alert' && <div><label className="text-white text-xs block mb-1">Type</label><select value={block.alertType || 'info'} onChange={(e) => updateBlock(block.id, { alertType: e.target.value })} className="w-full bg-[#1a1a1a] border border-white/10 rounded-lg px-3 py-2 text-white text-sm"><option value="info">Info</option><option value="warning">Warning</option><option value="success">Success</option><option value="error">Error</option></select></div>}
+ {block.type === 'callout' && <div><label className="text-white text-xs block mb-1">Type</label><select value={block.calloutType || 'highlight'} onChange={(e) => updateBlock(block.id, { calloutType: e.target.value })} className="w-full bg-[#1a1a1a] border border-white/10 rounded-lg px-3 py-2 text-white text-sm"><option value="highlight">Highlight</option><option value="tip">Tip</option><option value="note">Note</option></select></div>}
  {block.type === 'image' && <>
- <div><label className="text-white/40 text-xs block mb-1">Image</label><label className="cursor-pointer block"><div className="aspect-video rounded-lg border-2 border-dashed border-white/10 flex items-center justify-center bg-white/5 hover:bg-white/10">{block.src ? <img src={block.src.startsWith('data:') ? block.src : getImageUrl(block.src)} alt="" className="w-full h-full object-cover rounded-lg" /> : <><ImageIcon className="w-8 h-8 text-white/20" /><span className="text-white/30 text-xs ml-2">Click to upload</span></>}</div><input type="file" accept="image/*" className="hidden" onChange={(e) => { const file = e.target.files[0]; if (file) { const reader = new FileReader(); reader.onload = () => { updateBlock(block.id, { src: reader.result }); }; reader.readAsDataURL(file); } }} /></label></div>
- <div><label className="text-white/40 text-xs block mb-1">Alt Text</label><input type="text" value={block.alt || ''} onChange={(e) => updateBlock(block.id, { alt: e.target.value })} className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm" placeholder="Image description" /></div>
- <div><label className="text-white/40 text-xs block mb-1">Caption</label><input type="text" value={block.caption || ''} onChange={(e) => updateBlock(block.id, { caption: e.target.value })} className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm" placeholder="Optional caption" /></div>
- <div><label className="text-white/40 text-xs block mb-1">Width (%)</label><input type="number" value={block.width || 100} onChange={(e) => updateBlock(block.id, { width: e.target.value })} className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm" min="10" max="100" /></div>
- <div><label className="text-white/40 text-xs block mb-1">Height (px)</label><input type="number" value={block.height || 400} onChange={(e) => updateBlock(block.id, { height: e.target.value })} className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm" /></div>
+ <div><label className="text-white text-xs block mb-1">Image</label><label className="cursor-pointer block"><div className="aspect-video rounded-lg border-2 border-dashed border-white/10 flex items-center justify-center bg-white/5 hover:bg-white/10">{block.src ? <img src={block.src.startsWith('data:') ? block.src : getImageUrl(block.src)} alt="" className="w-full h-full object-cover rounded-lg" /> : <><ImageIcon className="w-8 h-8 text-white/20" /><span className="text-white text-xs ml-2">Click to upload</span></>}</div><input type="file" accept="image/*" className="hidden" onChange={(e) => { const file = e.target.files[0]; if (file) { const reader = new FileReader(); reader.onload = () => { updateBlock(block.id, { src: reader.result }); }; reader.readAsDataURL(file); } }} /></label></div>
+ <div><label className="text-white text-xs block mb-1">Alt Text</label><input type="text" value={block.alt || ''} onChange={(e) => updateBlock(block.id, { alt: e.target.value })} className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm" placeholder="Image description" /></div>
+ <div><label className="text-white text-xs block mb-1">Caption</label><input type="text" value={block.caption || ''} onChange={(e) => updateBlock(block.id, { caption: e.target.value })} className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm" placeholder="Optional caption" /></div>
+ <div><label className="text-white text-xs block mb-1">Width (%)</label><input type="number" value={block.width || 100} onChange={(e) => updateBlock(block.id, { width: e.target.value })} className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm" min="10" max="100" /></div>
+ <div><label className="text-white text-xs block mb-1">Height (px)</label><input type="number" value={block.height || 400} onChange={(e) => updateBlock(block.id, { height: e.target.value })} className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm" /></div>
  </>}
- {block.type === 'video' && <div><label className="text-white/40 text-xs block mb-1">YouTube URL</label><input type="text" value={block.src || ''} onChange={(e) => updateBlock(block.id, { src: e.target.value })} className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm" placeholder="https://youtube.com/watch?v=..." /></div>}
+ {block.type === 'video' && <div><label className="text-white text-xs block mb-1">YouTube URL</label><input type="text" value={block.src || ''} onChange={(e) => updateBlock(block.id, { src: e.target.value })} className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm" placeholder="https://youtube.com/watch?v=..." /></div>}
 
  {/* InfoBox Options */}
- {block.type === 'infoBox' && <div><label className="text-white/40 text-xs block mb-1">Title</label><input type="text" value={block.title || ''} onChange={(e) => updateBlock(block.id, { title: e.target.value })} className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm" placeholder="Info box title" /></div>}
+ {block.type === 'infoBox' && <div><label className="text-white text-xs block mb-1">Title</label><input type="text" value={block.title || ''} onChange={(e) => updateBlock(block.id, { title: e.target.value })} className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm" placeholder="Info box title" /></div>}
 
  {/* Accordion in Columns - need separate expand state */}
 
@@ -883,7 +883,7 @@ const BlogEditor = () => {
  {block.type === 'accordion' && (
  <div className="space-y-4">
  <div className="flex items-center justify-between">
- <label className="text-white/40 text-xs">Accordion Items</label>
+ <label className="text-white text-xs">Accordion Items</label>
  <button
  onClick={() => updateBlock(block.id, { items: [...(block.items || []), { id: generateId(), title: '', content: '' }] })}
  className="text-xs text-primary hover:text-primary/80 flex items-center gap-1"
@@ -894,7 +894,7 @@ const BlogEditor = () => {
  {(block.items || []).map((item, idx) => (
  <div key={item.id} className="p-3 bg-white/5 rounded-xl space-y-2">
  <div className="flex items-center justify-between">
- <span className="text-white/50 text-xs">Item {idx + 1}</span>
+ <span className="text-white text-xs">Item {idx + 1}</span>
  {(block.items || []).length > 1 && (
  <button
  onClick={() => updateBlock(block.id, { items: (block.items || []).filter((_, i) => i !== idx) })}
@@ -940,3 +940,4 @@ const BlogEditor = () => {
 };
 
 export default BlogEditor;
+

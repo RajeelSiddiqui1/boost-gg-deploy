@@ -16,7 +16,7 @@ const TrustBadges = () => {
  {trustItems.map((item) => (
  <div key={item.label} className="flex items-center gap-3 px-4 py-2 bg-white/[0.02] border border-white/5 rounded-xl transition-all hover:bg-white/[0.05]">
  <item.icon size={16} className="text-primary" />
- <span className="text-[10px] font-black uppercase tracking-widest text-white/60">{item.label}</span>
+ <span className="text-[10px] font-black  tracking-widest text-white">{item.label}</span>
  </div>
  ))}
  </div>
@@ -24,3 +24,4 @@ const TrustBadges = () => {
 };
 
 export default TrustBadges;
+

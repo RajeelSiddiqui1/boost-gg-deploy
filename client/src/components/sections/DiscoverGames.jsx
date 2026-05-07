@@ -75,7 +75,7 @@ const DiscoverGames = () => {
  <div className="mt-10 flex justify-start">
  <button 
  onClick={() => setExpanded(!expanded)}
- className="px-6 py-3 bg-white/5 border border-white/10 rounded-2xl text-white/60 text-[12px] font-black uppercase tracking-widest hover:bg-white/10 hover:text-white transition-all flex items-center gap-2"
+ className="px-6 py-3 bg-white/5 border border-white/10 rounded-2xl text-white/60 text-[12px] font-black  tracking-widest hover:bg-white/10 hover:text-white transition-all flex items-center gap-2"
  >
  {expanded ? (
  <>Show less <ChevronUp className="w-4 h-4" /></>
@@ -104,4 +104,5 @@ const DiscoverGames = () => {
 };
 
 export default DiscoverGames;
+
 

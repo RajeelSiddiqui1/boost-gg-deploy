@@ -175,7 +175,7 @@ const ChatHub = () => {
                         <img src={getImageUrl(attachment.url)} className="max-w-full h-auto cursor-pointer hover:scale-105 transition-transform duration-500" alt={attachment.name} onClick={() => window.open(getImageUrl(attachment.url), '_blank')} />
                     </div>
                     <div className="flex items-center justify-between px-2">
-                        <span className="text-[10px] font-bold text-white/40 truncate max-w-[150px]">{attachment.name}</span>
+                        <span className="text-[10px] font-bold text-white truncate max-w-[150px]">{attachment.name}</span>
                         <a href={getImageUrl(attachment.url)} download className="text-primary hover:text-white transition-colors"><Download size={14}/></a>
                     </div>
                 </div>
@@ -192,8 +192,8 @@ const ChatHub = () => {
                     </div>
                     <div className="flex items-center justify-between px-2">
                         <div className="flex items-center gap-2">
-                            <Play size={12} className="text-primary" />
-                            <span className="text-[10px] font-bold text-white/40 truncate max-w-[150px]">{attachment.name}</span>
+                            <Play size={12} className="text-white" />
+                            <span className="text-[10px] font-bold text-white truncate max-w-[150px]">{attachment.name}</span>
                         </div>
                         <a href={getImageUrl(attachment.url)} download className="text-primary hover:text-white transition-colors"><Download size={14}/></a>
                     </div>
@@ -204,12 +204,12 @@ const ChatHub = () => {
         if (msg.type === 'pdf') {
             return (
                 <div className="flex items-center gap-4 p-5 bg-black/40 rounded-2xl border border-white/10 hover:border-primary/40 transition-all group">
-                    <div className="w-12 h-12 rounded-xl bg-red-500/10 flex items-center justify-center text-red-500 shrink-0">
+                    <div className="w-12 h-12 rounded-xl bg-red-500/10 flex items-center justify-center text-white shrink-0">
                         <FileText size={24} />
                     </div>
                     <div className="min-w-0 flex-1">
                         <p className="text-sm font-black text-white truncate">{attachment.name}</p>
-                        <p className="text-[10px] font-bold text-white/20 uppercase tracking-widest">{(attachment.size / 1024 / 1024).toFixed(2)} MB • PDF Document</p>
+                        <p className="text-[10px] font-bold text-white  tracking-widest">{(attachment.size / 1024 / 1024).toFixed(2)} MB • PDF Document</p>
                     </div>
                     <a 
                         href={getImageUrl(attachment.url)} 
@@ -238,20 +238,20 @@ const ChatHub = () => {
                         <ArrowLeft className="w-5 h-5" />
                     </button>
                     <div>
-                        <h2 className="text-sm font-black uppercase text-white tracking-[0.2em] flex items-center gap-3">
-                            <span className="text-primary"><ShieldCheck size={16} /></span>
+                        <h2 className="text-sm font-black  text-white tracking-[0.2em] flex items-center gap-3">
+                            <span className="text-white"><ShieldCheck size={16} /></span>
                             Operational Comms
                         </h2>
-                        <p className="text-[9px] font-bold text-white/20 uppercase tracking-widest mt-0.5">Secure Encryption • End-to-End</p>
+                        <p className="text-[9px] font-bold text-white  tracking-widest mt-0.5">Secure Encryption • End-to-End</p>
                     </div>
                 </div>
 
                 <div className="flex items-center gap-4">
                     <div className="hidden md:flex flex-col text-right">
-                        <span className="text-[10px] font-black text-white/40 uppercase">{user?.name}</span>
-                        <span className="text-[8px] font-bold text-primary uppercase tracking-widest">{user?.role} ACCESS ENABLED</span>
+                        <span className="text-[10px] font-black text-white ">{user?.name}</span>
+                        <span className="text-[8px] font-bold text-white  tracking-widest">{user?.role} ACCESS ENABLED</span>
                     </div>
-                    <div className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center font-black text-primary uppercase">
+                    <div className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center font-black text-white ">
                         {user?.name?.charAt(0)}
                     </div>
                 </div>
@@ -279,12 +279,12 @@ const ChatHub = () => {
                         {loading ? (
                             <div className="p-10 text-center space-y-4">
                                 <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin mx-auto"></div>
-                                <p className="text-[10px] font-black uppercase text-white/20 tracking-widest">Scanning Registry...</p>
+                                <p className="text-[10px] font-black  text-white tracking-widest">Scanning Registry...</p>
                             </div>
                         ) : filteredOrders.length === 0 ? (
                             <div className="p-12 text-center opacity-10">
                                 <MessageSquare className="w-12 h-12 mx-auto mb-4" />
-                                <p className="text-[10px] font-black uppercase tracking-widest">No active channels</p>
+                                <p className="text-[10px] font-black  tracking-widest">No active channels</p>
                             </div>
                         ) : (
                             <div className="p-3 space-y-1" style={{ scrollbarGutter: 'stable' }}>
@@ -309,7 +309,7 @@ const ChatHub = () => {
                                             </div>
                                             <div className="min-w-0 flex-1">
                                                 <div className="flex items-center justify-between mb-0.5">
-                                                    <p className="text-[11px] font-black uppercase tracking-tighter truncate">{contactName}</p>
+                                                    <p className="text-[11px] font-black  tracking-tighter truncate">{contactName}</p>
                                                     {lastMsg && <span className={`text-[8px] font-bold opacity-30`}>{format(new Date(lastMsg.timestamp), 'HH:mm')}</span>}
                                                 </div>
                                                 <p className={`text-[10px] font-bold truncate opacity-50`}>
@@ -332,12 +332,12 @@ const ChatHub = () => {
                         <div className="flex-1 flex flex-col items-center justify-center p-20 text-center">
                             <div className="relative mb-10">
                                 <div className="absolute inset-0 bg-primary/20 blur-[100px] rounded-full animate-pulse"></div>
-                                <div className="relative w-32 h-32 rounded-[40px] bg-white/5 border border-white/10 flex items-center justify-center text-primary">
+                                <div className="relative w-32 h-32 rounded-[40px] bg-white/5 border border-white/10 flex items-center justify-center text-white">
                                     <MessageSquare size={56} />
                                 </div>
                             </div>
-                            <h3 className="text-3xl font-black uppercase text-white tracking-tighter mb-4">Select a Transmission</h3>
-                            <p className="text-[10px] font-bold text-white/20 uppercase tracking-[0.4em] max-w-xs leading-relaxed">
+                            <h3 className="text-3xl font-black  text-white tracking-tighter mb-4">Select a Transmission</h3>
+                            <p className="text-[10px] font-bold text-white  tracking-[0.4em] max-w-xs leading-relaxed">
                                 Initialize a secure link to begin mission communication
                             </p>
                         </div>
@@ -357,14 +357,14 @@ const ChatHub = () => {
                                     </div>
                                     <div>
                                         <div className="flex items-center gap-3">
-                                            <h3 className="text-base font-black uppercase text-white tracking-tight">
+                                            <h3 className="text-base font-black  text-white tracking-tight">
                                                 {isPro ? activeOrder.userId?.name : (activeOrder.pro?.name || 'Awaiting Specialist')}
                                             </h3>
-                                            <span className="px-2 py-0.5 bg-primary/10 border border-primary/20 rounded-md text-[8px] font-black text-primary uppercase tracking-widest">
+                                            <span className="px-2 py-0.5 bg-primary/10 border border-primary/20 rounded-md text-[8px] font-black text-white  tracking-widest">
                                                 {activeOrder.status}
                                             </span>
                                         </div>
-                                        <div className="flex items-center gap-4 text-[9px] font-bold text-white/20 uppercase tracking-widest mt-0.5">
+                                        <div className="flex items-center gap-4 text-[9px] font-bold text-white  tracking-widest mt-0.5">
                                             <span className="flex items-center gap-1.5"><Zap size={12} className="text-primary" /> {(activeOrder.serviceId || activeOrder.offer)?.title}</span>
                                             <span className="opacity-40">•</span>
                                             <span className="flex items-center gap-1.5"><Monitor size={12} /> {activeOrder.platform}</span>
@@ -386,7 +386,7 @@ const ChatHub = () => {
                                 {messages.length === 0 ? (
                                     <div className="h-full flex flex-col items-center justify-center opacity-10 grayscale py-20">
                                         <Zap size={64} className="mb-6 animate-pulse" />
-                                        <p className="text-[10px] font-black uppercase tracking-[0.4em]">Awaiting First Transmission</p>
+                                        <p className="text-[10px] font-black  tracking-[0.4em]">Awaiting First Transmission</p>
                                     </div>
                                 ) : (
                                     <div className="space-y-12">
@@ -397,16 +397,16 @@ const ChatHub = () => {
                                                     <div className={`max-w-[65%] group relative`}>
                                                         <div className={`px-7 py-5 rounded-[28px] text-[15px] font-medium leading-relaxed ${isMe
                                                             ? 'bg-primary text-black rounded-tr-none shadow-[0_15px_40px_rgba(162,230,62,0.15)]'
-                                                            : 'bg-[#151515] text-white/90 border border-white/5 rounded-tl-none'
+                                                            : 'bg-[#151515] text-white border border-white/5 rounded-tl-none'
                                                         }`}>
                                                             {renderMessageContent(msg)}
                                                         </div>
                                                         <div className={`mt-2 flex items-center gap-3 opacity-0 group-hover:opacity-100 transition-opacity ${isMe ? 'flex-row-reverse' : ''}`}>
-                                                            <span className="text-[9px] font-black uppercase tracking-widest text-white/20">
+                                                            <span className="text-[9px] font-black  tracking-widest text-white">
                                                                 {isMe ? 'Operator' : (isPro ? 'Client' : 'Specialist')}
                                                             </span>
-                                                            <span className="text-[8px] font-bold text-white/10">•</span>
-                                                            <span className="text-[9px] font-black tracking-widest text-white/20">
+                                                            <span className="text-[8px] font-bold text-white">•</span>
+                                                            <span className="text-[9px] font-black tracking-widest text-white">
                                                                 {format(new Date(msg.timestamp), 'HH:mm')}
                                                             </span>
                                                         </div>
@@ -476,7 +476,7 @@ const ChatHub = () => {
                                         </button>
                                     </div>
                                 </form>
-                                <div className="mt-6 flex items-center justify-center gap-8 text-[8px] font-black text-white/10 uppercase tracking-[0.5em]">
+                                <div className="mt-6 flex items-center justify-center gap-8 text-[8px] font-black text-white  tracking-[0.5em]">
                                     <span className="flex items-center gap-2"><ShieldCheck size={12} className="text-primary/40"/> E2E ENCRYPTED</span>
                                     <span className="flex items-center gap-2"><Check size={12}/> DELIVERED</span>
                                     <span>AUTHORIZED COMMS ONLY</span>
@@ -507,3 +507,4 @@ const ChatHub = () => {
 };
 
 export default ChatHub;
+

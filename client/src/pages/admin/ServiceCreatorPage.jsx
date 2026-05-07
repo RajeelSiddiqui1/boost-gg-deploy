@@ -371,7 +371,7 @@ export default function ServiceCreatorPage() {
  return (
  <div className="min-h-screen bg-[#0f0f0f] flex flex-col items-center justify-center gap-4">
  <Loader2 className="w-12 h-12 text-purple-500 animate-spin" />
- <p className="text-gray-500 font-bold uppercase tracking-widest text-xs">Loading service data...</p>
+ <p className="text-gray-500 font-bold  tracking-widest text-xs">Loading service data...</p>
  </div>
  );
  }
@@ -390,17 +390,17 @@ export default function ServiceCreatorPage() {
  <ArrowLeft size={18} className="group-hover:-translate-x-0.5 transition-transform" />
  </button>
  <div className="flex flex-col">
- <h1 className="text-xl font-black uppercase tracking-tighter flex items-center gap-3 text-white">
+ <h1 className="text-xl font-black  tracking-tighter flex items-center gap-3 text-white">
  {id ? "Edit Service" : "Service Creator"}
  {state.isActive && (
  <span className="flex items-center gap-1.5 px-2 py-0.5 bg-green-500/10 border border-green-500/20 rounded-full">
  <span className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse" />
- <span className="text-[8px] text-green-500 font-black tracking-widest uppercase">Live</span>
+ <span className="text-[8px] text-white font-black tracking-widest ">Live</span>
  </span>
  )}
  </h1>
  <div className="flex items-center gap-3 mt-0.5">
- <span className="text-[9px] text-gray-600 font-black uppercase tracking-widest">ID: {id || state.serviceId.substring(0, 8)}</span>
+ <span className="text-[9px] text-gray-600 font-black  tracking-widest">ID: {id || state.serviceId.substring(0, 8)}</span>
  </div>
  </div>
  </div>
@@ -408,14 +408,14 @@ export default function ServiceCreatorPage() {
  <div className="flex items-center gap-3">
  {lastSaved && (
  <div className="hidden xl:flex flex-col items-end mr-4 group">
- <span className="text-[8px] text-gray-500 font-black uppercase tracking-widest">Cloud Sync Active</span>
- <span className="text-[9px] text-gray-600 font-bold uppercase tracking-widest">Updated {lastSaved}</span>
+ <span className="text-[8px] text-gray-500 font-black  tracking-widest">Cloud Sync Active</span>
+ <span className="text-[9px] text-gray-600 font-bold  tracking-widest">Updated {lastSaved}</span>
  </div>
  )}
 
  <button
  onClick={() => setIsExporting(true)}
- className="flex items-center gap-2 px-5 py-2.5 bg-[#1a1a1a] hover:bg-[#222] text-gray-400 hover:text-white rounded-xl text-[10px] font-black uppercase tracking-widest transition-all border border-[#2a2a2a]"
+ className="flex items-center gap-2 px-5 py-2.5 bg-[#1a1a1a] hover:bg-[#222] text-gray-400 hover:text-white rounded-xl text-[10px] font-black  tracking-widest transition-all border border-[#2a2a2a]"
  >
  <Copy size={14} /> Export JSON
  </button>
@@ -423,7 +423,7 @@ export default function ServiceCreatorPage() {
  <button
  onClick={handleSave}
  disabled={loading}
- className="flex items-center gap-2 px-8 py-2.5 bg-gradient-to-br from-purple-600 to-purple-800 hover:from-purple-500 hover:to-purple-700 text-white rounded-xl text-[10px] font-black uppercase tracking-widest transition-all shadow-lg disabled:opacity-50 min-w-[120px] justify-center group"
+ className="flex items-center gap-2 px-8 py-2.5 bg-gradient-to-br from-purple-600 to-purple-800 hover:from-purple-500 hover:to-purple-700 text-white rounded-xl text-[10px] font-black  tracking-widest transition-all shadow-lg disabled:opacity-50 min-w-[120px] justify-center group"
  >
  {loading ? <Loader2 size={16} className="animate-spin" /> : <Save size={16} className="group-hover:scale-110 transition-transform" />}
  {id ? "Sync Data" : "Publish"}
@@ -443,13 +443,13 @@ export default function ServiceCreatorPage() {
  <div className="flex-[3] overflow-y-auto px-10 py-10 custom-scrollbar bg-[#0f0f0f]">
  <div className="max-w-[1000px] mx-auto space-y-12 pb-20">
  <section className="bg-[#141414] border border-[#222] rounded-2xl p-6 shadow-lg">
- <h2 className="text-xs uppercase font-black tracking-[0.2em] text-gray-500 mb-6 flex items-center gap-2">
+ <h2 className="text-xs  font-black tracking-[0.2em] text-gray-500 mb-6 flex items-center gap-2">
  <span className="w-1.5 h-1.5 bg-purple-500 rounded-full" /> Part 1: Service Identity
  </h2>
 
  <div className="grid grid-cols-2 gap-8 mb-8 border-b border-white/5 pb-8">
  <div>
- <label className="block text-[10px] uppercase font-black text-gray-500 tracking-widest mb-3 px-1">Hero Background (JPG/JPEG)</label>
+ <label className="block text-[10px]  font-black text-gray-500 tracking-widest mb-3 px-1">Hero Background (JPG/JPEG)</label>
  <div className="w-full h-32 rounded-2xl overflow-hidden bg-[#0d0d0d] border border-[#2a2a2a] relative group">
  {imagePreview ? (
  <img src={imagePreview} className="w-full h-full object-cover opacity-60 group-hover:opacity-100 transition-opacity" alt="Preview" />
@@ -458,12 +458,12 @@ export default function ServiceCreatorPage() {
  )}
  <label className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 group-hover:opacity-100 transition-all cursor-pointer">
  <input type="file" className="hidden" accept="image/jpeg,image/jpg" onChange={handleImageChange} />
- <span className="px-4 py-2 bg-white text-black text-[10px] font-black uppercase tracking-widest rounded-lg">Change Image</span>
+ <span className="px-4 py-2 bg-white text-black text-[10px] font-black  tracking-widest rounded-lg">Change Image</span>
  </label>
  </div>
  </div>
  <div>
- <label className="block text-[10px] uppercase font-black text-gray-500 tracking-widest mb-3 px-1">Service Icon (PNG)</label>
+ <label className="block text-[10px]  font-black text-gray-500 tracking-widest mb-3 px-1">Service Icon (PNG)</label>
  <div className="w-full h-32 rounded-2xl overflow-hidden bg-[#0d0d0d] border border-[#2a2a2a] relative group flex items-center justify-center">
  {iconPreview ? (
  <img src={iconPreview} className="h-20 w-20 object-contain group-hover:scale-110 transition-transform" alt="Preview" />
@@ -472,7 +472,7 @@ export default function ServiceCreatorPage() {
  )}
  <label className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 group-hover:opacity-100 transition-all cursor-pointer">
  <input type="file" className="hidden" accept="image/png" onChange={handleIconChange} />
- <span className="px-4 py-2 bg-white text-black text-[10px] font-black uppercase tracking-widest rounded-lg">Change Icon</span>
+ <span className="px-4 py-2 bg-white text-black text-[10px] font-black  tracking-widest rounded-lg">Change Icon</span>
  </label>
  </div>
  </div>
@@ -528,7 +528,7 @@ export default function ServiceCreatorPage() {
  </section>
 
  <section className="bg-[#141414] border border-[#222] rounded-2xl p-6 shadow-lg">
- <h2 className="text-xs uppercase font-black tracking-[0.2em] text-gray-500 mb-6 flex items-center gap-2">
+ <h2 className="text-xs  font-black tracking-[0.2em] text-gray-500 mb-6 flex items-center gap-2">
  <span className="w-1.5 h-1.5 bg-purple-500 rounded-full" /> Part 2: Sidebar Sections
  </h2>
 
@@ -555,13 +555,13 @@ export default function ServiceCreatorPage() {
  onClick={addSection}
  className="w-full mt-6 py-6 border-2 border-dashed border-[#2a2a2a] rounded-2xl flex items-center justify-center gap-3 text-gray-400 hover:border-purple-600 hover:text-purple-500 transition-all bg-[#1a1a1a] group"
  >
- <Plus size={24} className="text-purple-500" />
- <span className="text-md font-black uppercase tracking-[0.1em]">Add Section</span>
+ <Plus size={24} className="text-white" />
+ <span className="text-md font-black  tracking-[0.1em]">Add Section</span>
  </button>
  </section>
 
  <section className="bg-[#141414] border border-[#222] rounded-2xl p-6 shadow-lg">
- <h2 className="text-xs uppercase font-black tracking-[0.2em] text-gray-500 mb-6 flex items-center gap-2">
+ <h2 className="text-xs  font-black tracking-[0.2em] text-gray-500 mb-6 flex items-center gap-2">
  <span className="w-1.5 h-1.5 bg-purple-500 rounded-full" /> Part 3: Pricing
  </h2>
  <div className="grid grid-cols-2 gap-8">
@@ -578,7 +578,7 @@ export default function ServiceCreatorPage() {
  <label className="block text-sm font-bold text-gray-400 mb-2">Status</label>
  <button
  onClick={() => setState(p => ({ ...p, isActive: !p.isActive }))}
- className={`w-full py-3 rounded-xl font-black uppercase text-xs transition-all ${state.isActive ? 'bg-green-600 text-white' : 'bg-gray-800 text-gray-500'}`}
+ className={`w-full py-3 rounded-xl font-black  text-xs transition-all ${state.isActive ? 'bg-green-600 text-white' : 'bg-gray-800 text-gray-500'}`}
  >
  {state.isActive ? 'Active' : 'Draft'}
  </button>
@@ -591,7 +591,7 @@ export default function ServiceCreatorPage() {
  {/* RIGHT: PREVIEW */}
  <div className="flex-[2] bg-[#141414] border-l border-[#222] flex flex-col overflow-hidden relative shadow-2xl">
  <div className="p-5 border-b border-[#222] bg-[#181818] flex items-center justify-between">
- <span className="text-xs font-black uppercase tracking-widest text-gray-400">Live Client Preview</span>
+ <span className="text-xs font-black  tracking-widest text-gray-400">Live Client Preview</span>
  </div>
 
  <div className="flex-1 overflow-y-auto p-12 flex justify-center bg-[#090909] custom-scrollbar">
@@ -608,7 +608,7 @@ export default function ServiceCreatorPage() {
  <div className="absolute inset-0 bg-black/80 backdrop-blur-xl" onClick={() => setIsExporting(false)}></div>
  <div className="relative w-full max-w-3xl bg-[#111] border border-white/10 rounded-[32px] overflow-hidden shadow-2xl flex flex-col max-h-[80vh]">
  <div className="flex items-center justify-between px-8 py-6 border-b border-white/5">
- <h3 className="text-xl font-black uppercase tracking-tighter text-white">Export Configuration</h3>
+ <h3 className="text-xl font-black  tracking-tighter text-white">Export Configuration</h3>
  <button onClick={() => setIsExporting(false)} className="text-gray-400 hover:text-white"><X size={20} /></button>
  </div>
  <div className="flex-1 overflow-auto p-8 bg-[#0d0d0d]">
@@ -617,13 +617,13 @@ export default function ServiceCreatorPage() {
  </pre>
  </div>
  <div className="p-6 border-t border-white/5 bg-[#161616] flex items-center justify-end gap-3">
- <button onClick={() => setIsExporting(false)} className="px-6 py-3 text-gray-400 font-black uppercase text-[10px]">Close</button>
+ <button onClick={() => setIsExporting(false)} className="px-6 py-3 text-gray-400 font-black  text-[10px]">Close</button>
  <button
  onClick={() => {
  navigator.clipboard.writeText(JSON.stringify(state, null, 2));
  toast.success("Copied to clipboard!");
  }}
- className="px-10 py-3 bg-purple-600 text-white rounded-2xl text-[10px] font-black uppercase tracking-widest"
+ className="px-10 py-3 bg-purple-600 text-white rounded-2xl text-[10px] font-black  tracking-widest"
  >
  Copy to Clipboard
  </button>
@@ -641,3 +641,4 @@ export default function ServiceCreatorPage() {
  </div>
  );
 }
+

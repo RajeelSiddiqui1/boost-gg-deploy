@@ -26,16 +26,16 @@ const PaymentMethodIcon = ({ id, selected }) => {
                 </div>
             );
         case 'skrill':
-            return <span className="text-[10px] font-bold uppercase tracking-tight text-[#821361]">Skrill</span>;
+            return <span className="text-[10px] font-bold  tracking-tight text-[#821361]">Skrill</span>;
         case 'neteller':
-            return <span className="text-[10px] font-bold uppercase tracking-widest text-[#73b640]">NETELLER</span>;
+            return <span className="text-[10px] font-bold  tracking-widest text-[#73b640]">NETELLER</span>;
         case 'crypto':
             return (
                 <div className="flex items-center gap-1">
                     <div className="w-4 h-4 rounded-full bg-white/10 flex items-center justify-center">
                         <span className="text-[8px]">₿</span>
                     </div>
-                    <span className="text-[8px] font-bold text-white/40 uppercase">Crypto</span>
+                    <span className="text-[8px] font-bold text-white ">Crypto</span>
                 </div>
             );
         case 'other':
@@ -101,11 +101,11 @@ const PaymentModal = ({ isOpen, onClose, total, onConfirm }) => {
                                         <PaymentMethodIcon id={method.id} selected={selectedPayment === method.id} />
                                     </div>
                                     <div className="text-left">
-                                        <p className="text-xs font-bold text-white/90">{method.name}</p>
+                                        <p className="text-xs font-bold text-white">{method.name}</p>
                                     </div>
                                 </div>
                                 <div>
-                                    <span className={`text-[10px] font-bold px-3 py-1.5 rounded-full ${method.isSpecial ? 'bg-[#6345ff] text-white' : 'bg-white/5 text-white/40'}`}>
+                                    <span className={`text-[10px] font-bold px-3 py-1.5 rounded-full ${method.isSpecial ? 'bg-[#6345ff] text-white' : 'bg-white/5 text-white'}`}>
                                         {method.fee}
                                     </span>
                                 </div>
@@ -118,15 +118,15 @@ const PaymentModal = ({ isOpen, onClose, total, onConfirm }) => {
                 <div className="w-full md:w-[380px] bg-[#0c0c0c]/50 p-8 md:p-12 flex flex-col relative border-l border-white/5">
                     <div className="flex flex-col gap-6 mb-12">
                         <div className="flex justify-between items-center">
-                            <span className="text-xs font-medium text-white/40">Offer's price</span>
+                            <span className="text-xs font-medium text-white">Offer's price</span>
                             <span className="text-sm font-bold text-white">{formatPrice(total)}</span>
                         </div>
                         <div className="flex justify-between items-center">
-                            <span className="text-xs font-medium text-white/40">VAT</span>
+                            <span className="text-xs font-medium text-white">VAT</span>
                             <span className="text-sm font-bold text-white">{formatPrice(vatAmount)}</span>
                         </div>
                         <div className="flex justify-between items-center">
-                            <span className="text-xs font-medium text-white/40">Payment commission</span>
+                            <span className="text-xs font-medium text-white">Payment commission</span>
                             <span className="text-sm font-bold text-white">{formatPrice(commissionAmount)}</span>
                         </div>
                         
@@ -148,11 +148,11 @@ const PaymentModal = ({ isOpen, onClose, total, onConfirm }) => {
                             <div className="flex items-center gap-3 opacity-30">
                                 <ShieldCheck className="w-10 h-10 text-white" strokeWidth={1} />
                                 <div className="flex flex-col">
-                                    <span className="text-[10px] font-bold text-white uppercase tracking-tighter leading-none">SECURE</span>
-                                    <span className="text-[8px] text-white uppercase tracking-widest leading-none">SSL ENCRYPTION</span>
+                                    <span className="text-[10px] font-bold text-white  tracking-tighter leading-none">SECURE</span>
+                                    <span className="text-[8px] text-white  tracking-widest leading-none">SSL ENCRYPTION</span>
                                 </div>
                             </div>
-                            <p className="text-[10px] text-white/30 font-medium leading-relaxed">
+                            <p className="text-[10px] text-white font-medium leading-relaxed">
                                 We protect your privacy with advanced encryption
                             </p>
                         </div>
@@ -171,3 +171,4 @@ const PaymentModal = ({ isOpen, onClose, total, onConfirm }) => {
 };
 
 export default PaymentModal;
+

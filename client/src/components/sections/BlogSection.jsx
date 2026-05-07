@@ -38,13 +38,13 @@ const BlogSection = () => {
                 <div className="flex items-center justify-between mb-16">
                     <div className="flex items-center gap-4">
                         <div className="w-2 h-10 bg-primary rounded-full"></div>
-                        <h2 className="text-4xl md:text-5xl font-black text-white uppercase tracking-tighter">
+                        <h2 className="text-4xl md:text-5xl font-black text-white  tracking-tighter">
                             Popular guides
                         </h2>
                     </div>
                     <button 
                         onClick={() => navigate('/blog')}
-                        className="hidden md:flex items-center gap-3 px-6 py-3 bg-white/5 border border-white/10 rounded-xl text-white/60 font-black uppercase tracking-widest text-[10px] hover:bg-white/10 hover:text-white transition-all group"
+                        className="hidden md:flex items-center gap-3 px-6 py-3 bg-white/5 border border-white/10 rounded-xl text-white/60 font-black  tracking-widest text-[10px] hover:bg-white/10 hover:text-white transition-all group"
                     >
                         View all articles
                         <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
@@ -73,14 +73,14 @@ const BlogSection = () => {
                                     <div className="w-8 h-8 rounded-lg bg-primary/20 backdrop-blur-md flex items-center justify-center border border-primary/20">
                                         <div className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></div>
                                     </div>
-                                    <span className="text-[10px] font-black text-white/60 uppercase tracking-[0.2em]">
+                                    <span className="text-[10px] font-black text-white  tracking-[0.2em]">
                                         {blog.category || 'Guides'}
                                     </span>
                                 </div>
-                                <h3 className="text-3xl font-black text-white uppercase leading-[1.1] mb-4 group-hover:text-primary transition-colors tracking-tighter">
+                                <h3 className="text-3xl font-black text-white  leading-[1.1] mb-4 group-hover:text-white transition-colors tracking-tighter">
                                     {blog.title}
                                 </h3>
-                                <p className="text-white/40 text-sm font-medium leading-relaxed line-clamp-2">
+                                <p className="text-white text-sm font-medium leading-relaxed line-clamp-2">
                                     {blog.shortDescription}
                                 </p>
                             </div>
@@ -106,7 +106,7 @@ const BlogSection = () => {
                                         <div className="w-6 h-6 rounded-md bg-white/10 backdrop-blur-md flex items-center justify-center mb-3 border border-white/10">
                                             <div className="w-1 h-1 rounded-full bg-white"></div>
                                         </div>
-                                        <h4 className="text-[11px] font-black text-white uppercase leading-tight line-clamp-3 group-hover:text-primary transition-colors">
+                                        <h4 className="text-[11px] font-black text-white  leading-tight line-clamp-3 group-hover:text-white transition-colors">
                                             {blog.title}
                                         </h4>
                                     </div>
@@ -124,8 +124,8 @@ const BlogSection = () => {
                             
                             <div className="relative z-10 flex items-end justify-between">
                                 <div className="space-y-2">
-                                    <span className="text-[10px] font-black text-white/80 uppercase tracking-[0.4em]">View more articles</span>
-                                    <h3 className="text-4xl font-black text-white uppercase tracking-tighter leading-none">Visit our<br/>blog</h3>
+                                    <span className="text-[10px] font-black text-white  tracking-[0.4em]">View more articles</span>
+                                    <h3 className="text-4xl font-black text-white  tracking-tighter leading-none">Visit our<br/>blog</h3>
                                 </div>
                                 <div className="w-14 h-14 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center group-hover:bg-white group-hover:scale-110 transition-all shadow-2xl">
                                     <ArrowRight className="w-7 h-7 text-white group-hover:text-primary transition-colors" />
@@ -140,3 +140,4 @@ const BlogSection = () => {
 };
 
 export default BlogSection;
+

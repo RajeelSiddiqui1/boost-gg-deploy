@@ -37,7 +37,7 @@ const Reviews = () => {
     return (
       <div className="min-h-[80vh] flex flex-col items-center justify-center">
         <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-        <p className="text-white/40">Loading reviews...</p>
+        <p className="text-white">Loading reviews...</p>
       </div>
     );
   }
@@ -56,13 +56,13 @@ const Reviews = () => {
     return (
       <div className="min-h-[80vh] flex flex-col items-center justify-center">
         <div className="text-center">
-          <div className="w-16 h-16 text-white/20 mx-auto mb-4">
+          <div className="w-16 h-16 text-white mx-auto mb-4">
             <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
             </svg>
           </div>
           <h3 className="text-white font-bold text-xl mb-2">No reviews yet</h3>
-          <p className="text-white/40">Be the first to leave a review!</p>
+          <p className="text-white">Be the first to leave a review!</p>
         </div>
       </div>
     );
@@ -75,10 +75,10 @@ const Reviews = () => {
       
       <div className="max-w-7xl mx-auto mt-10 px-4 sm:px-6 lg:px-8 py-12 relative z-10">
         <div className="mb-12 text-center">
-          <h2 className="text-4xl font-black text-white uppercase tracking-tighter">
+          <h2 className="text-4xl font-black text-white  tracking-tighter">
             What Our VIPs Are Saying
           </h2>
-          <p className="mt-4 text-white/40 text-xl">
+          <p className="mt-4 text-white text-xl">
             Hear from our satisfied customers about their boosting experience
           </p>
         </div>
@@ -98,7 +98,7 @@ const Reviews = () => {
                     className="w-24 h-24 object-contain opacity-80 hover:opacity-100 transition-opacity" 
                   />
                 ) : (
-                  <div className="w-24 h-24 flex items-center justify-center text-white/10">
+                  <div className="w-24 h-24 flex items-center justify-center text-white">
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16" fill="currentColor" viewBox="0 0 24 24">
                       <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />
                     </svg>
@@ -108,12 +108,12 @@ const Reviews = () => {
               
               {/* Right Content */}
               <div className="flex-1 text-center flex flex-col items-center justify-center">
-                <p className="text-white/80 text-lg md:text-xl font-medium mb-6 leading-relaxed">
+                <p className="text-white text-lg md:text-xl font-medium mb-6 leading-relaxed">
                   "{review.description}"
                 </p>
                 
                 <div className="flex flex-col items-center gap-2">
-                  <div className="flex items-center justify-center gap-2 text-white/50 text-sm">
+                  <div className="flex items-center justify-center gap-2 text-white text-sm">
                     {review.countryName && (
                       <img 
                         src={`https://flagcdn.com/w20/${getCountryCode(review.countryName)}.png`} 
@@ -128,7 +128,7 @@ const Reviews = () => {
                     {[...Array(5)].map((_, i) => (
                       <span 
                         key={i} 
-                        className={`text-xl ${i < review.stars ? 'text-[#ffb800]' : 'text-white/10'}`}
+                        className={`text-xl ${i < review.stars ? 'text-[#ffb800]' : 'text-white'}`}
                       >
                         ★
                       </span>
@@ -169,7 +169,7 @@ const Reviews = () => {
                       1
                     </button>
                     {currentPage > 4 && (
-                      <span className="px-4 py-3 text-white/40">
+                      <span className="px-4 py-3 text-white">
                         ...
                       </span>
                     )}
@@ -201,7 +201,7 @@ const Reviews = () => {
                 {currentPage < totalPages - 2 && (
                   <>
                     {currentPage < totalPages - 3 && (
-                      <span className="px-4 py-3 text-white/40">
+                      <span className="px-4 py-3 text-white">
                         ...
                       </span>
                     )}
@@ -232,7 +232,7 @@ const Reviews = () => {
         )}
 
         {/* Showing info */}
-        <div className="mt-8 text-center text-white/40 text-sm">
+        <div className="mt-8 text-center text-white text-sm">
           Showing {indexOfFirstReview + 1} - {Math.min(indexOfLastReview, reviews.length)} of {reviews.length} reviews
         </div>
       </div>

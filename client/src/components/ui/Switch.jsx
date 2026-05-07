@@ -5,7 +5,7 @@ const Switch = ({ label, active, onClick }) => {
  <div className="flex items-center gap-4">
  <span className={`text-[15px] font-bold transition-colors whitespace-nowrap tracking-wide ${active
  ? 'text-white'
- : 'text-white/40'
+ : 'text-white'
  }`}>
  {label}
  </span>
@@ -28,3 +28,4 @@ const Switch = ({ label, active, onClick }) => {
 };
 
 export default Switch;
+

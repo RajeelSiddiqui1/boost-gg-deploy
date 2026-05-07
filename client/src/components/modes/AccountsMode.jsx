@@ -77,7 +77,7 @@ const AccountsMode = () => {
  placeholder="SEARCH FOR A GAME UNIVERSE..."
  value={searchQuery}
  onChange={(e) => setSearchQuery(e.target.value)}
- className="w-full bg-[#0A0A0A] border border-white/5 rounded-[2rem] py-5 pl-14 pr-8 text-[10px] font-black uppercase tracking-widest text-white placeholder:text-white/10 outline-none focus:border-primary/30 transition-all shadow-2xl relative z-10"
+ className="w-full bg-[#0A0A0A] border border-white/5 rounded-[2rem] py-5 pl-14 pr-8 text-[10px] font-black  tracking-widest text-white placeholder:text-white/10 outline-none focus:border-primary/30 transition-all shadow-2xl relative z-10"
  />
  </div>
  </div>
@@ -113,7 +113,7 @@ const AccountsMode = () => {
  
  <div className="flex items-center gap-2 px-3 py-1.5 bg-white/5 backdrop-blur-md border border-white/10 rounded-full w-fit group-hover:bg-primary/20 transition-all">
  {game.name === 'Fortnite' ? <Sparkles className="w-3 h-3 text-primary" /> : <ShieldCheck className="w-3 h-3 text-primary" />}
- <span className="text-[10px] font-black text-white/80 uppercase tracking-widest whitespace-nowrap">
+ <span className="text-[10px] font-black text-white  tracking-widest whitespace-nowrap">
  {game.name === 'Fortnite' ? 'Rarest Skins' : 
  game.name === 'Clash of Clans' ? 'Premium Accounts' :
  game.name === 'Valorant' ? 'High Rank' : 'Active Offers'}
@@ -125,7 +125,7 @@ const AccountsMode = () => {
  <div className="self-end">
  <div className="px-4 py-1.5 bg-black/80 backdrop-blur-md border border-white/10 rounded-xl flex items-center gap-2 group-hover:border-primary/40 transition-all">
  <span className="text-xs font-black text-white tracking-tight">
- {getAccountCount(game._id)} <span className="text-[10px] text-white/40 uppercase tracking-widest ml-1">offers</span>
+ {getAccountCount(game._id)} <span className="text-[10px] text-white  tracking-widest ml-1">offers</span>
  </span>
  </div>
  </div>
@@ -140,9 +140,9 @@ const AccountsMode = () => {
  <div className="w-20 h-20 bg-white/5 rounded-full flex items-center justify-center mx-auto mb-6">
  <Gamepad2 className="w-10 h-10 text-white/10" />
  </div>
- <h3 className="text-2xl font-black text-white uppercase tracking-tighter mb-2">No Universes Found</h3>
- <p className="text-white/40 text-sm font-bold uppercase tracking-widest">Try searching for a different game or check back later.</p>
- <button onClick={() => setSearchQuery('')} className="mt-8 px-10 py-4 bg-primary text-black text-[11px] font-black uppercase tracking-widest rounded-2xl hover:scale-105 transition-all shadow-xl shadow-primary/20">Clear Search</button>
+ <h3 className="text-2xl font-black text-white  tracking-tighter mb-2">No Universes Found</h3>
+ <p className="text-white text-sm font-bold  tracking-widest">Try searching for a different game or check back later.</p>
+ <button onClick={() => setSearchQuery('')} className="mt-8 px-10 py-4 bg-primary text-black text-[11px] font-black  tracking-widest rounded-2xl hover:scale-105 transition-all shadow-xl shadow-primary/20">Clear Search</button>
  </div>
  )}
  </div>
@@ -156,8 +156,8 @@ const AccountsMode = () => {
  <ShieldCheck className="w-64 h-64 text-white" />
  </div>
  <div className="relative z-10 max-w-2xl">
- <h2 className="text-4xl font-black text-white uppercase tracking-tighter mb-6">Unmatched Account <span className="text-primary">Integrity</span></h2>
- <p className="text-white/40 font-bold leading-relaxed mb-10 uppercase tracking-tight text-sm">
+ <h2 className="text-4xl font-black text-white  tracking-tighter mb-6">Unmatched Account <span className="text-white">Integrity</span></h2>
+ <p className="text-white font-bold leading-relaxed mb-10  tracking-tight text-sm">
  Every account listed in our marketplace undergoes a rigorous 24-point security audit. We guarantee the origin of every asset and provide full ownership documentation with every purchase.
  </p>
  <div className="grid grid-cols-1 sm:grid-cols-3 gap-8">
@@ -169,9 +169,9 @@ const AccountsMode = () => {
  <div key={i} className="space-y-2">
  <div className="flex items-center gap-2">
  <CheckCircle2 className="w-4 h-4 text-primary" />
- <span className="text-[11px] font-black text-white uppercase tracking-widest">{item.title}</span>
+ <span className="text-[11px] font-black text-white  tracking-widest">{item.title}</span>
  </div>
- <p className="text-[10px] text-white/30 font-bold uppercase leading-tight">{item.desc}</p>
+ <p className="text-[10px] text-white font-bold  leading-tight">{item.desc}</p>
  </div>
  ))}
  </div>
@@ -182,3 +182,4 @@ const AccountsMode = () => {
 };
 
 export default AccountsMode;
+

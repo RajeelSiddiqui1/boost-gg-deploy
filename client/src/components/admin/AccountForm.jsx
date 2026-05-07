@@ -132,10 +132,10 @@ const AccountForm = ({ account, games, onClose, onSuccess }) => {
  <div className="bg-[#0A0A0A] border border-white/10 rounded-[32px] p-8 md:p-10 max-w-5xl w-full my-4 md:my-10 relative">
  <div className="flex items-center justify-between mb-8">
  <div>
- <h2 className="text-2xl md:text-3xl font-black text-white uppercase tracking-tighter">
+ <h2 className="text-2xl md:text-3xl font-black text-white  tracking-tighter">
  {account ? 'Edit Account' : 'Add New Account'}
  </h2>
- <p className="text-white/40 text-[10px] font-bold uppercase tracking-widest mt-1">Ready-made game accounts</p>
+ <p className="text-white text-[10px] font-bold  tracking-widest mt-1">Ready-made game accounts</p>
  </div>
  <button onClick={onClose} className="p-3 hover:bg-white/5 border border-white/5 rounded-2xl transition-all text-white/40 hover:text-white">
  <X className="w-6 h-6" />
@@ -143,7 +143,7 @@ const AccountForm = ({ account, games, onClose, onSuccess }) => {
  </div>
 
  {error && (
- <div className="mb-6 p-4 bg-red-500/10 border border-red-500/20 rounded-2xl text-red-500 text-xs font-bold uppercase tracking-wider flex items-center gap-2">
+ <div className="mb-6 p-4 bg-red-500/10 border border-red-500/20 rounded-2xl text-white text-xs font-bold  tracking-wider flex items-center gap-2">
  <AlertCircle className="w-4 h-4" />
  {error}
  </div>
@@ -152,7 +152,7 @@ const AccountForm = ({ account, games, onClose, onSuccess }) => {
  <form onSubmit={handleSubmit} className="space-y-8">
  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
  <div className="md:col-span-2">
- <label className="block text-white/40 text-[10px] font-black uppercase tracking-widest mb-3 px-1">Account Title *</label>
+ <label className="block text-white text-[10px] font-black  tracking-widest mb-3 px-1">Account Title *</label>
  <input
  type="text"
  name="title"
@@ -165,7 +165,7 @@ const AccountForm = ({ account, games, onClose, onSuccess }) => {
  </div>
 
  <div className="md:col-span-1">
- <label className="block text-white/40 text-[10px] font-black uppercase tracking-widest mb-3 px-1">Game *</label>
+ <label className="block text-white text-[10px] font-black  tracking-widest mb-3 px-1">Game *</label>
  <select
  name="gameId"
  value={formData.gameId}
@@ -181,7 +181,7 @@ const AccountForm = ({ account, games, onClose, onSuccess }) => {
  </div>
 
  <div className="md:col-span-1">
- <label className="block text-white/40 text-[10px] font-black uppercase tracking-widest mb-3 px-1">Rank / Level</label>
+ <label className="block text-white text-[10px] font-black  tracking-widest mb-3 px-1">Rank / Level</label>
  <input
  type="text"
  name="rank"
@@ -193,7 +193,7 @@ const AccountForm = ({ account, games, onClose, onSuccess }) => {
  </div>
 
  <div className="md:col-span-1">
- <label className="block text-white/40 text-[10px] font-black uppercase tracking-widest mb-3 px-1">Region</label>
+ <label className="block text-white text-[10px] font-black  tracking-widest mb-3 px-1">Region</label>
  <select
  name="region"
  value={formData.region}
@@ -205,7 +205,7 @@ const AccountForm = ({ account, games, onClose, onSuccess }) => {
  </div>
 
  <div className="md:col-span-1">
- <label className="block text-white/40 text-[10px] font-black uppercase tracking-widest mb-3 px-1">Price ($)</label>
+ <label className="block text-white text-[10px] font-black  tracking-widest mb-3 px-1">Price ($)</label>
  <div className="relative">
  <DollarSign className="absolute left-6 top-1/2 -translate-y-1/2 w-4 h-4 text-primary" />
  <input
@@ -222,7 +222,7 @@ const AccountForm = ({ account, games, onClose, onSuccess }) => {
 
  {/* Specifications */}
  <div className="md:col-span-1">
- <label className="block text-white/40 text-[10px] font-black uppercase tracking-widest mb-3 px-1">Skins Count</label>
+ <label className="block text-white text-[10px] font-black  tracking-widest mb-3 px-1">Skins Count</label>
  <input
  type="number"
  name="specifications.skins"
@@ -232,7 +232,7 @@ const AccountForm = ({ account, games, onClose, onSuccess }) => {
  />
  </div>
  <div className="md:col-span-1">
- <label className="block text-white/40 text-[10px] font-black uppercase tracking-widest mb-3 px-1">Champions / Heroes</label>
+ <label className="block text-white text-[10px] font-black  tracking-widest mb-3 px-1">Champions / Heroes</label>
  <input
  type="number"
  name="specifications.champions"
@@ -242,7 +242,7 @@ const AccountForm = ({ account, games, onClose, onSuccess }) => {
  />
  </div>
  <div className="md:col-span-1">
- <label className="block text-white/40 text-[10px] font-black uppercase tracking-widest mb-3 px-1">Rare Items</label>
+ <label className="block text-white text-[10px] font-black  tracking-widest mb-3 px-1">Rare Items</label>
  <input
  type="text"
  name="specifications.rareItems"
@@ -256,7 +256,7 @@ const AccountForm = ({ account, games, onClose, onSuccess }) => {
 
  {/* Screenshot Gallery */}
  <div className="space-y-4">
- <label className="block text-white/40 text-[10px] font-black uppercase tracking-widest px-1">Screenshot Gallery</label>
+ <label className="block text-white text-[10px] font-black  tracking-widest px-1">Screenshot Gallery</label>
  <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
  {previewImages.map((src, index) => (
  <div key={index} className="aspect-video bg-white/5 rounded-2xl border border-white/5 relative group overflow-hidden">
@@ -281,7 +281,7 @@ const AccountForm = ({ account, games, onClose, onSuccess }) => {
  ) : (
  <>
  <Camera className="w-6 h-6 text-white/20 group-hover:text-primary" />
- <span className="text-[8px] font-black uppercase tracking-widest text-white/20 group-hover:text-white">Upload Photos</span>
+ <span className="text-[8px] font-black  tracking-widest text-white group-hover:text-white">Upload Photos</span>
  </>
  )}
  </button>
@@ -298,7 +298,7 @@ const AccountForm = ({ account, games, onClose, onSuccess }) => {
 
  {/* Secure Transfer Info */}
  <div>
- <label className="block text-white/40 text-[10px] font-black uppercase tracking-widest mb-3 px-1">Secure Transfer Information</label>
+ <label className="block text-white text-[10px] font-black  tracking-widest mb-3 px-1">Secure Transfer Information</label>
  <textarea
  name="secureTransferInfo"
  value={formData.secureTransferInfo}
@@ -324,7 +324,7 @@ const AccountForm = ({ account, games, onClose, onSuccess }) => {
  </div>
  <div className="flex items-center gap-2">
  <Zap className={`w-3.5 h-3.5 ${formData.instantDelivery ? 'text-primary' : 'text-white/20'}`} />
- <span className="text-white/40 text-[10px] font-black uppercase tracking-widest group-hover:text-white transition-colors">Instant Delivery</span>
+ <span className="text-white text-[10px] font-black  tracking-widest group-hover:text-white transition-colors">Instant Delivery</span>
  </div>
  </label>
 
@@ -341,7 +341,7 @@ const AccountForm = ({ account, games, onClose, onSuccess }) => {
  </div>
  <div className="flex items-center gap-2">
  <Shield className={`w-3.5 h-3.5 ${formData.secureTransfer ? 'text-primary' : 'text-white/20'}`} />
- <span className="text-white/40 text-[10px] font-black uppercase tracking-widest group-hover:text-white transition-colors">Secure Transfer</span>
+ <span className="text-white text-[10px] font-black  tracking-widest group-hover:text-white transition-colors">Secure Transfer</span>
  </div>
  </label>
  </div>
@@ -350,7 +350,7 @@ const AccountForm = ({ account, games, onClose, onSuccess }) => {
  <button
  type="submit"
  disabled={loading}
- className="flex-1 md:flex-none px-12 py-5 bg-primary hover:bg-primary/90 text-white rounded-2xl font-black uppercase tracking-widest text-xs transition-all shadow-xl shadow-primary/20 flex items-center justify-center gap-2"
+ className="flex-1 md:flex-none px-12 py-5 bg-primary hover:bg-primary/90 text-white rounded-2xl font-black  tracking-widest text-xs transition-all shadow-xl shadow-primary/20 flex items-center justify-center gap-2"
  >
  <Save className="w-4 h-4" />
  {loading ? 'SAVING...' : (account ? 'UPDATE LISTING' : 'CREATE ACCOUNT LISTING')}
@@ -358,7 +358,7 @@ const AccountForm = ({ account, games, onClose, onSuccess }) => {
  <button
  type="button"
  onClick={onClose}
- className="flex-1 md:flex-none px-12 py-5 bg-white/5 hover:bg-white/10 text-white/40 hover:text-white rounded-2xl font-black uppercase tracking-widest text-xs transition-all border border-white/5"
+ className="flex-1 md:flex-none px-12 py-5 bg-white/5 hover:bg-white/10 text-white/40 hover:text-white rounded-2xl font-black  tracking-widest text-xs transition-all border border-white/5"
  >
  CANCEL
  </button>
@@ -370,3 +370,4 @@ const AccountForm = ({ account, games, onClose, onSuccess }) => {
 };
 
 export default AccountForm;
+

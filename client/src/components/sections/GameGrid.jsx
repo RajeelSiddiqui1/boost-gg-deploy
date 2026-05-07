@@ -62,12 +62,12 @@ const GameGrid = ({ onLoadMore }) => {
 
  {totalItems > 12 && (
  <div className="mt-12 flex flex-col items-center justify-center gap-4">
- <span className="text-white/40 text-[14px] font-[900] uppercase tracking-[0.2em]">
+ <span className="text-white text-[14px] font-[900]  tracking-[0.2em]">
  Showing 12 of {totalItems + 2} {experienceToggle === 'selection' ? 'games' : 'options'}
  </span>
  <button
  onClick={onLoadMore}
- className="group flex items-center gap-3 bg-primary hover:bg-primary/90 text-white px-10 py-4 rounded-2xl font-black text-[13px] uppercase tracking-widest transition-all shadow-lg shadow-primary/20 active:scale-95"
+ className="group flex items-center gap-3 bg-primary hover:bg-primary/90 text-white px-10 py-4 rounded-2xl font-black text-[13px]  tracking-widest transition-all shadow-lg shadow-primary/20 active:scale-95"
  >
  Load More {experienceToggle === 'selection' ? 'Games' : 'Options'}
  <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
@@ -82,3 +82,4 @@ const GameGrid = ({ onLoadMore }) => {
 };
 
 export default GameGrid;
+

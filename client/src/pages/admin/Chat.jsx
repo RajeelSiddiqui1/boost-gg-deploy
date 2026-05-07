@@ -160,8 +160,8 @@ const AdminChat = () => {
  <div className="w-[350px] border-r border-white/5 flex flex-col bg-black/20">
  <div className="p-6 border-b border-white/5 space-y-4">
  <div className="flex justify-between items-center">
- <h2 className="text-xl font-black uppercase">Messages</h2>
- <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center border border-primary/30 text-xs font-black text-primary">
+ <h2 className="text-xl font-black ">Messages</h2>
+ <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center border border-primary/30 text-xs font-black text-white">
  {conversations.length}
  </div>
  </div>
@@ -177,9 +177,9 @@ const AdminChat = () => {
 
  <div className="flex-1 overflow-y-auto custom-scrollbar">
  {loading ? (
- <div className="p-6 text-center text-white/40 text-xs uppercase font-bold tracking-widest">Loading...</div>
+ <div className="p-6 text-center text-white text-xs  font-bold tracking-widest">Loading...</div>
  ) : conversations.length === 0 ? (
- <div className="p-6 text-center text-white/40 text-[10px] uppercase font-bold tracking-widest">No conversations yet</div>
+ <div className="p-6 text-center text-white text-[10px]  font-bold tracking-widest">No conversations yet</div>
  ) : (
  conversations.map(conv => {
  const customer = getCustomer(conv);
@@ -205,14 +205,14 @@ const AdminChat = () => {
  </div>
  <div className="flex-1 min-w-0">
  <div className="flex justify-between items-start mb-1">
- <h4 className={`text-xs font-black uppercase truncate ${isSelected ? 'text-primary' : 'text-white'}`}>
+ <h4 className={`text-xs font-black  truncate ${isSelected ? 'text-white' : 'text-white'}`}>
  {customer?.name || 'Unknown User'}
  </h4>
- <span className="text-[9px] font-bold text-white/30 uppercase tracking-widest shrink-0">
+ <span className="text-[9px] font-bold text-white  tracking-widest shrink-0">
  {format(new Date(conv.updatedAt), 'HH:mm')}
  </span>
  </div>
- <p className="text-[10px] font-bold text-white/40 truncate tracking-wide">
+ <p className="text-[10px] font-bold text-white truncate tracking-wide">
  {conv.lastMessage || 'Started a conversation'}
  </p>
  </div>
@@ -234,11 +234,11 @@ const AdminChat = () => {
  <UserIcon className="w-6 h-6 text-white/40" />
  </div>
  <div>
- <h3 className="text-sm font-black uppercase tracking-wider">
+ <h3 className="text-sm font-black  tracking-wider">
  {getCustomer(selectedConversation)?.name || 'User'}
  </h3>
- <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-white/40 mt-1">
- <span className="flex items-center gap-1 text-green-500">
+ <div className="flex items-center gap-2 text-[10px] font-bold  tracking-widest text-white mt-1">
+ <span className="flex items-center gap-1 text-white">
  <span className="w-1.5 h-1.5 rounded-full bg-green-500"></span> Online
  </span>
  •
@@ -267,8 +267,8 @@ const AdminChat = () => {
  className="flex-1 overflow-y-auto p-8 space-y-6 custom-scrollbar"
  >
  <div className="text-center pb-8 border-b border-white/5 mb-8">
- <p className="text-[10px] font-black uppercase tracking-[0.3em] text-white/20">Chat Started</p>
- <p className="text-xs font-bold text-white/40 mt-2">{format(new Date(selectedConversation.createdAt), 'PPP')}</p>
+ <p className="text-[10px] font-black  tracking-[0.3em] text-white">Chat Started</p>
+ <p className="text-xs font-bold text-white mt-2">{format(new Date(selectedConversation.createdAt), 'PPP')}</p>
  </div>
 
  {messages.map((msg, i) => {
@@ -279,7 +279,7 @@ const AdminChat = () => {
  <div key={msg._id || i} className={`flex gap-4 max-w-[80%] ${isMe ? 'ml-auto flex-row-reverse' : ''}`}>
  {showAvatar ? (
  <div className="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center shrink-0 border border-white/5">
- <span className="text-xs font-black uppercase text-white/50">
+ <span className="text-xs font-black  text-white">
  {msg.sender?.name?.charAt(0) || msg.senderGuestId?.charAt(0) || '?'}
  </span>
  </div>
@@ -290,10 +290,10 @@ const AdminChat = () => {
  <div className={`space-y-1 ${isMe ? 'items-end flex flex-col' : ''}`}>
  {showAvatar && (
  <div className="flex items-center gap-2 mb-1 px-1">
- <span className="text-[10px] font-black uppercase tracking-wider text-white/60">
+ <span className="text-[10px] font-black  tracking-wider text-white">
  {msg.sender?.name || (msg.senderGuestId ? 'Guest User' : 'Unknown')}
  </span>
- <span className="text-[9px] font-bold text-white/20 uppercase tracking-widest">
+ <span className="text-[9px] font-bold text-white  tracking-widest">
  {format(new Date(msg.createdAt), 'HH:mm')}
  </span>
  </div>
@@ -301,7 +301,7 @@ const AdminChat = () => {
  <div className={`p-4 rounded-2xl text-sm font-bold tracking-wide leading-relaxed relative group
  ${isMe
  ? 'bg-primary text-black rounded-tr-sm'
- : 'bg-white/5 text-white/80 rounded-tl-sm border border-white/5'
+ : 'bg-white/5 text-white rounded-tl-sm border border-white/5'
  }
  `}>
  {msg.text}
@@ -322,7 +322,7 @@ const AdminChat = () => {
  onChange={(e) => setNewMessage(e.target.value)}
  onKeyPress={(e) => e.key === 'Enter' && handleSend(e)}
  placeholder="Type a message to the user..."
- className="w-full bg-white/[0.03] border border-white/5 hover:border-white/10 focus:border-primary/50 rounded-2xl py-4 pl-16 pr-6 text-sm font-bold text-white outline-none transition-all placeholder:text-white/20 placeholder:font-bold placeholder:uppercase placeholder:tracking-widest"
+ className="w-full bg-white/[0.03] border border-white/5 hover:border-white/10 focus:border-primary/50 rounded-2xl py-4 pl-16 pr-6 text-sm font-bold text-white outline-none transition-all placeholder:text-white/20 placeholder:font-bold placeholder: placeholder:tracking-widest"
  />
  </div>
  <button
@@ -339,8 +339,8 @@ const AdminChat = () => {
  <div className="w-24 h-24 bg-white/5 rounded-full flex items-center justify-center mb-6 border border-white/5">
  <MessageSquare className="w-10 h-10 text-white/20" />
  </div>
- <h2 className="text-2xl font-black uppercase text-white/60 mb-2">Select a Conversation</h2>
- <p className="text-white/30 text-xs font-bold uppercase tracking-widest max-w-[300px] leading-relaxed">
+ <h2 className="text-2xl font-black  text-white mb-2">Select a Conversation</h2>
+ <p className="text-white text-xs font-bold  tracking-widest max-w-[300px] leading-relaxed">
  Choose a user from the left sidebar to view their message history and reply to their support requests.
  </p>
  </div>
@@ -352,3 +352,4 @@ const AdminChat = () => {
 };
 
 export default AdminChat;
+

@@ -88,7 +88,7 @@ const Navbar = () => {
  alt="BOOSTGG"
  className="h-10 w-auto object-contain"
  />
- <span className="text-[30px] font-black tracking-tighter text-white uppercase flex items-center gap-0.5">
+ <span className="text-[30px] font-black tracking-tighter text-white  flex items-center gap-0.5">
  BOOSTGG
  </span>
  </Link>
@@ -97,7 +97,7 @@ const Navbar = () => {
  <div className="hidden md:flex items-center gap-6 flex-1 max-w-2xl ml-4">
                 <button
                     onClick={() => setIsMegaMenuOpen(!isMegaMenuOpen)}
-                    className={`flex-shrink-0 flex items-center gap-3 px-6 py-2.5 rounded-[18px] font-black text-[13px] uppercase tracking-wider transition-all active:scale-95 shadow-xl ${
+                    className={`flex-shrink-0 flex items-center gap-3 px-6 py-2.5 rounded-[18px] font-black text-[13px]  tracking-wider transition-all active:scale-95 shadow-xl ${
                         isMegaMenuOpen 
                         ? "bg-primary text-black shadow-[0_0_30px_rgba(19,193,0,0.6)]" 
                         : "bg-primary text-black hover:shadow-[0_10px_25px_rgba(19,193,0,0.3)] hover:scale-105"
@@ -116,12 +116,12 @@ const Navbar = () => {
  <input
  type="text"
  placeholder="Search for games, services or pros..."
- className="bg-transparent border-none outline-none focus:ring-0 focus:outline-none focus:border-none text-[14px] font-medium text-white placeholder:text-white/20 w-full"
+ className="bg-transparent border-none outline-none focus:ring-0 focus:outline-none focus:border-none text-[14px] font-medium text-white placeholder:text-white w-full"
  value={searchTerm}
  style={{ outline: "none", boxShadow: "none" }}
  onChange={(e) => setSearchTerm(e.target.value)}
  />
- <button className="text-white/40 hover:text-primary transition-colors p-1">
+ <button className="text-white hover:text-white transition-colors p-1">
  <Search className="w-5 h-5 stroke-[3px]" />
  </button>
  </div>
@@ -130,7 +130,7 @@ const Navbar = () => {
  {searchTerm && (
  <div className="absolute top-14 left-0 right-0 bg-[#0A0A0A] border border-white/10 rounded-2xl p-2 shadow-2xl z-[160] animate-in fade-in zoom-in-95 duration-200">
  <div className="p-2 border-b border-white/5 mb-2">
- <p className="text-[10px] font-black uppercase text-white/30 tracking-widest">
+ <p className="text-[10px] font-black  text-white tracking-normal">
  {searchResults.length > 0
  ? "Search Results"
  : "No Results Found"}
@@ -149,14 +149,14 @@ const Navbar = () => {
                                             {game.icon ? (
                                                 <img src={getImageUrl(game.icon)} className="w-6 h-6 object-contain" alt="" />
                                             ) : (
-                                                <Zap className="w-4 h-4 text-white/20 group-hover:text-primary transition-colors" />
+                                                <Zap className="w-4 h-4 text-white group-hover:text-white transition-colors" />
                                             )}
                                         </div>
                                         <div className="flex flex-col">
-                                            <span className="text-[13px] font-bold text-white group-hover:text-primary transition-colors">
+                                            <span className="text-[13px] font-bold text-white group-hover:text-white transition-colors">
                                                 {game.title || game.name}
                                             </span>
-                                            <span className="text-[9px] font-black uppercase tracking-widest text-white/20">
+                                            <span className="text-[9px] font-black  tracking-normal text-white">
                                                 {game.category || 'Game'}
                                             </span>
                                         </div>
@@ -165,7 +165,7 @@ const Navbar = () => {
  </div>
  ) : (
  <div className="p-4 text-center">
- <p className="text-xs font-medium text-white/20">
+ <p className="text-xs font-medium text-white">
  Try searching for another game...
  </p>
  </div>
@@ -185,10 +185,10 @@ const Navbar = () => {
  onClick={() => setIsCurrencyOpen(!isCurrencyOpen)}
  className="flex items-center gap-1.5 h-10 px-3 hover:bg-white/5 rounded-xl transition-all group"
  >
- <span className="text-[14px] font-black tracking-tight text-white/60 group-hover:text-primary transition-colors uppercase">
+ <span className="text-[14px] font-black tracking-tight text-white group-hover:text-white transition-colors ">
  {currency}
  </span>
- <ChevronDown className={`w-3.5 h-3.5 opacity-40 group-hover:opacity-100 transition-all ${isCurrencyOpen ? 'rotate-180 text-primary' : ''}`} />
+ <ChevronDown className={`w-3.5 h-3.5 opacity-40 group-hover:opacity-100 transition-all ${isCurrencyOpen ? 'rotate-180 text-white' : ''}`} />
  </button>
 
  {isCurrencyOpen && (
@@ -199,7 +199,7 @@ const Navbar = () => {
  />
  <div className="absolute top-[calc(100%+8px)] right-0 w-[140px] bg-[#0A0A0A] border border-white/10 rounded-2xl p-2 shadow-2xl animate-in fade-in zoom-in-95 duration-200 z-[160]">
  <div className="p-2 border-b border-white/5 mb-1">
- <p className="text-[10px] font-black uppercase text-white/30 tracking-widest">
+ <p className="text-[10px] font-black  text-white tracking-normal">
  Currency
  </p>
  </div>
@@ -211,7 +211,7 @@ const Navbar = () => {
  changeCurrency(cur);
  setIsCurrencyOpen(false);
  }}
- className={`w-full flex items-center justify-between px-3 py-2 rounded-xl transition-all group/item ${currency === cur ? 'bg-primary/20 text-primary' : 'hover:bg-white/5 text-white/60 hover:text-white'
+ className={`w-full flex items-center justify-between px-3 py-2 rounded-xl transition-all group/item ${currency === cur ? 'bg-primary/20 text-white' : 'hover:bg-white/5 text-white hover:text-white'
  }`}
  >
  <span className="text-xs font-bold">{cur}</span>
@@ -231,14 +231,14 @@ const Navbar = () => {
  <Link
  to={user.role === "admin" ? "/admin" : "/dashboard"}
  className={`flex items-center gap-2 h-10 px-4 rounded-xl transition-all border ${user.role === "admin"
- ? "bg-red-500/10 border-red-500/20 text-red-500"
+ ? "bg-red-500/10 border-red-500/20 text-white"
  : user.role === "pro"
- ? "bg-primary/20 border-primary/30 text-primary"
+ ? "bg-primary/20 border-primary/30 text-white"
  : "bg-white/5 border-white/10 text-white"
  } hover:scale-[1.02] active:scale-95`}
  >
  <User className="w-4 h-4" />
- <span className="text-[12px] font-bold uppercase tracking-widest hidden sm:inline">
+ <span className="text-[12px] font-bold  tracking-normal hidden sm:inline">
  {user.role === "admin"
  ? "Nexus"
  : user.role === "pro"
@@ -251,7 +251,7 @@ const Navbar = () => {
  {/* Role-Aware Dropdown Menu */}
  <div className="absolute top-[calc(100%+8px)] right-0 w-[220px] bg-[#0A0A0A] border border-white/10 rounded-2xl p-2 shadow-2xl opacity-0 translate-y-2 pointer-events-none group-hover/user-dropdown:opacity-100 group-hover/user-dropdown:translate-y-0 group-hover/user-dropdown:pointer-events-auto transition-all duration-300 z-[170]">
  <div className="p-3 border-b border-white/5 mb-1 text-center sm:text-left">
- <p className="text-[10px] font-black uppercase text-white/30 tracking-[0.2em] mb-1">
+ <p className="text-[10px] font-black  text-white tracking-normal mb-1">
  Signed in as
  </p>
  <p className="text-[12px] font-bold text-white truncate ">
@@ -268,8 +268,8 @@ const Navbar = () => {
  }
  className="flex items-center gap-3 py-2.5 px-3 rounded-xl hover:bg-white/5 transition-all group/item"
  >
- <LayoutGrid className="w-4 h-4 text-white/20 group-hover/item:text-primary transition-colors" />
- <span className="text-[11px] font-black uppercase tracking-widest text-white/60 group-hover/item:text-white">
+ <LayoutGrid className="w-4 h-4 text-white group-hover/item:text-white transition-colors" />
+ <span className="text-[11px] font-black  tracking-normal text-white group-hover/item:text-white">
  Dashboard
  </span>
  </Link>
@@ -284,8 +284,8 @@ const Navbar = () => {
  }
  className="flex items-center gap-3 py-2.5 px-3 rounded-xl hover:bg-white/5 transition-all group/item"
  >
- <ShoppingCart className="w-4 h-4 text-white/20 group-hover/item:text-primary transition-colors" />
- <span className="text-[11px] font-black uppercase tracking-widest text-white/60 group-hover/item:text-white">
+ <ShoppingCart className="w-4 h-4 text-white group-hover/item:text-white transition-colors" />
+ <span className="text-[11px] font-black  tracking-normal text-white group-hover/item:text-white">
  {user.role === "pro"
  ? "Active Tasks"
  : "My Orders"}
@@ -299,8 +299,8 @@ const Navbar = () => {
  }
  className="flex items-center gap-3 py-2.5 px-3 rounded-xl hover:bg-white/5 transition-all group/item"
  >
- <Wallet className="w-4 h-4 text-white/20 group-hover/item:text-primary transition-colors" />
- <span className="text-[11px] font-black uppercase tracking-widest text-white/60 group-hover/item:text-white">
+ <Wallet className="w-4 h-4 text-white group-hover/item:text-white transition-colors" />
+ <span className="text-[11px] font-black  tracking-normal text-white group-hover/item:text-white">
  {user.role === "pro" ? "Earnings" : "My Wallet"}
  </span>
  </Link>
@@ -309,10 +309,10 @@ const Navbar = () => {
 
  <button
  onClick={logout}
- className="w-full flex items-center gap-3 py-2.5 px-3 rounded-xl hover:bg-red-500/10 text-white/40 hover:text-red-500 transition-all group/item mt-1 pt-2 border-t border-white/5"
+ className="w-full flex items-center gap-3 py-2.5 px-3 rounded-xl hover:bg-red-500/10 text-white hover:text-white transition-all group/item mt-1 pt-2 border-t border-white/5"
  >
  <LogOut className="w-4 h-4" />
- <span className="text-[11px] font-black uppercase tracking-widest">
+ <span className="text-[11px] font-black  tracking-normal">
  Logout Session
  </span>
  </button>
@@ -323,7 +323,7 @@ const Navbar = () => {
  ) : (
  <Link
  to="/login"
- className="p-2 hover:text-primary transition-all group"
+ className="p-2 hover:text-white transition-all group"
  >
  <User className="w-[22px] h-[22px] stroke-[2.5px]" />
  </Link>
@@ -335,7 +335,7 @@ const Navbar = () => {
  <div className="hidden sm:block relative">
  <button
  onClick={() => setIsQuickLinksOpen(!isQuickLinksOpen)}
- className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all ${isQuickLinksOpen ? "bg-primary/20 text-primary" : "hover:bg-white/5 text-white"}`}
+ className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all ${isQuickLinksOpen ? "bg-primary/20 text-white" : "hover:bg-white/5 text-white"}`}
  >
  <LayoutGrid className="w-[22px] h-[22px] stroke-[2.5px]" />
  </button>
@@ -365,10 +365,10 @@ const Navbar = () => {
  <Link
  key={i}
  to={link.path}
- className="flex items-center gap-3 py-2 px-3 rounded-xl hover:bg-white/5 transition-all group text-white/60 hover:text-white"
+ className="flex items-center gap-3 py-2 px-3 rounded-xl hover:bg-white/5 transition-all group text-white hover:text-white"
  >
  <div className="w-6 h-6 rounded-lg bg-white/5 flex items-center justify-center group-hover:scale-110 transition-transform flex-shrink-0">
- <link.icon className="w-3.5 h-3.5 text-white/40 group-hover:text-primary transition-colors" />
+ <link.icon className="w-3.5 h-3.5 text-white group-hover:text-white transition-colors" />
  </div>
  <span className="font-bold text-[12px] tracking-tight">
  {link.label}
@@ -379,13 +379,13 @@ const Navbar = () => {
  <div className="pt-2 border-t border-white/10 space-y-0.5">
  <Link
  to="#"
- className="block px-3 py-1.5 text-[11px] font-bold text-white/40 hover:text-white transition-colors uppercase tracking-widest"
+ className="block px-3 py-1.5 text-[11px] font-bold text-white hover:text-white transition-colors  tracking-normal"
  >
  Trust & safety
  </Link>
  <Link
  to="/contact"
- className="block px-3 py-1.5 text-[11px] font-bold text-white/40 hover:text-white transition-colors uppercase tracking-widest"
+ className="block px-3 py-1.5 text-[11px] font-bold text-white hover:text-white transition-colors  tracking-normal"
  >
  Contact us
  </Link>
@@ -397,7 +397,7 @@ const Navbar = () => {
 
  <div
  onClick={() => setIsCartOpen(true)}
- className="relative cursor-pointer hover:text-primary transition-all group"
+ className="relative cursor-pointer hover:text-white transition-all group"
  >
  <ShoppingCart className="w-[22px] h-[22px] stroke-[2.5px]" />
  {cartCount > 0 && (
@@ -432,7 +432,7 @@ const Navbar = () => {
  <div className="p-8 space-y-8">
  <button
  onClick={() => setIsMegaMenuOpen(true)}
- className="w-full flex items-center justify-between bg-[#8bc332] text-black p-6 rounded-[24px] font-black uppercase tracking-widest text-sm shadow-xl shadow-[#a2e63e]/20"
+ className="w-full flex items-center justify-between bg-[#8bc332] text-black p-6 rounded-[24px] font-black  tracking-normal text-sm shadow-xl shadow-[#a2e63e]/20"
  >
  Choose your game
  <ChevronRight className="w-5 h-5" />
@@ -443,7 +443,7 @@ const Navbar = () => {
  <Link
  key={link}
  to={`/${link.toLowerCase()}`}
- className="block text-3xl font-black uppercase tracking-tighter text-white/40 hover:text-white transition-all transform hover:translate-x-2"
+ className="block text-3xl font-black  tracking-tighter text-white hover:text-white transition-all transform hover:translate-x-2"
  >
  {link}
  </Link>
@@ -457,3 +457,6 @@ const Navbar = () => {
 };
 
 export default Navbar;
+
+
+

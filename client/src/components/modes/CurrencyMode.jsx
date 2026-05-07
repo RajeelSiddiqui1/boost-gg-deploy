@@ -252,10 +252,10 @@ const CurrencyMode = () => {
  <div className="absolute inset-0 p-10 flex flex-col justify-between">
  <div className="flex justify-between items-start">
  <div className="space-y-2 text-left">
- <h3 className="text-2xl font-black text-white leading-none uppercase tracking-tighter group-hover:text-primary transition-colors">{game.name}</h3>
+ <h3 className="text-2xl font-black text-white leading-none  tracking-tighter group-hover:text-white transition-colors">{game.name}</h3>
  <div className="flex items-center gap-2">
  <div className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></div>
- <span className="text-[10px] font-black uppercase text-white/40 tracking-[0.2em]">Live Deals</span>
+ <span className="text-[10px] font-black  text-white tracking-[0.2em]">Live Deals</span>
  </div>
  </div>
  <div className="w-16 h-16 p-3 bg-white/5 rounded-2xl border border-white/10 group-hover:border-primary transition-all">
@@ -265,7 +265,7 @@ const CurrencyMode = () => {
  
  <div className="flex items-center justify-between">
  <div className="flex flex-col">
- <span className="text-[10px] font-black text-white/30 uppercase tracking-widest">Available</span>
+ <span className="text-[10px] font-black text-white  tracking-widest">Available</span>
  <span className="text-lg font-black text-white">{game.currencyCount || 0} Offers</span>
  </div>
  <div className="w-12 h-12 rounded-full bg-white/10 border border-white/10 flex items-center justify-center group-hover:bg-primary group-hover:border-primary transition-all duration-500">
@@ -302,23 +302,23 @@ const CurrencyMode = () => {
  </button>
  <div className="space-y-1">
  <div className="flex items-center gap-3">
- <span className="px-3 py-1 bg-primary border border-primary rounded-lg text-[10px] font-black text-black uppercase tracking-[0.2em]">Marketplace</span>
+ <span className="px-3 py-1 bg-primary border border-primary rounded-lg text-[10px] font-black text-black  tracking-[0.2em]">Marketplace</span>
  <div className="w-1 h-1 rounded-full bg-white/20"></div>
- <span className="text-[10px] font-black text-white/40 uppercase tracking-[0.2em]">{selectedGame.name}</span>
+ <span className="text-[10px] font-black text-white  tracking-[0.2em]">{selectedGame.name}</span>
  </div>
- <h1 className="text-[64px] md:text-[80px] font-black text-white uppercase tracking-tighter leading-[0.8] mb-2">
- {selectedGame.name} <span className="text-primary">{selectedListing?.currencyType || 'Gold'}</span>
+ <h1 className="text-[64px] md:text-[80px] font-black text-white  tracking-tighter leading-[0.8] mb-2">
+ {selectedGame.name} <span className="text-white">{selectedListing?.currencyType || 'Gold'}</span>
  </h1>
  </div>
  </div>
   <div className="flex items-center gap-4">
-  <button className="flex items-center gap-3 px-8 py-4 bg-white/5 border border-white/10 rounded-2xl text-[12px] font-black uppercase tracking-widest text-white/60 hover:bg-white/10 hover:text-white transition-all">
+  <button className="flex items-center gap-3 px-8 py-4 bg-white/5 border border-white/10 rounded-2xl text-[12px] font-black  tracking-widest text-white/60 hover:bg-white/10 hover:text-white transition-all">
   <Share2 className="w-4 h-4" />
   Share
   </button>
   <button 
     onClick={handleToggleFavorite}
-    className={`flex items-center gap-3 px-8 py-4 rounded-2xl text-[12px] font-black uppercase tracking-widest transition-all ${
+    className={`flex items-center gap-3 px-8 py-4 rounded-2xl text-[12px] font-black  tracking-widest transition-all ${
       isFavorite 
         ? 'bg-primary text-black' 
         : 'bg-white/5 border border-white/10 text-white/60 hover:bg-white/10 hover:text-white'
@@ -345,11 +345,11 @@ const CurrencyMode = () => {
   <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/20 pointer-events-none"></div>
   <div className="absolute left-6 top-6 flex flex-col gap-3 z-20">
       {[
-        { text: 'COMPLETE SAFETY', color: 'bg-primary text-black' },
-        { text: 'QUICK DELIVERY', color: 'bg-white/10 text-white backdrop-blur-md' },
-        { text: 'FAIR PRICE', color: 'bg-white/10 text-white backdrop-blur-md' }
+        { text: 'Complete safety', color: 'bg-primary text-black' },
+        { text: 'Quick delivery', color: 'bg-white/10 text-white backdrop-blur-md' },
+        { text: 'Fair price', color: 'bg-white/10 text-white backdrop-blur-md' }
       ].map((tag, i) => (
-        <div key={i} className={`px-4 py-2 rounded-lg text-[10px] font-black uppercase tracking-wider shadow-2xl ${tag.color} border border-white/10`}>
+        <div key={i} className={`px-4 py-2 rounded-lg text-[10px] font-black  tracking-wider shadow-2xl ${tag.color} border border-white/10`}>
           {tag.text}
         </div>
       ))}
@@ -370,7 +370,7 @@ const CurrencyMode = () => {
     <div className="absolute bottom-6 right-6 text-right z-20">
       <div className="flex flex-col items-end">
         <span className="text-5xl font-black text-white leading-none tracking-tighter drop-shadow-lg">5 min</span>
-        <span className="text-[10px] font-black text-white/60 uppercase tracking-[0.3em] mt-1">ESTIMATED START TIME</span>
+        <span className="text-[10px] font-black text-white  tracking-[0.3em] mt-1">Estimated start time</span>
       </div>
     </div>
   </div>
@@ -378,16 +378,16 @@ const CurrencyMode = () => {
   {/* Trust Badges Row */}
   <div className="flex flex-wrap items-center justify-center gap-3 px-4">
     {[
-      { icon: Lock, text: 'SSL SECURE' },
-      { icon: Shield, text: 'VPN SAFE' },
-      { icon: CheckCircle2, text: 'SAFE SERVICE' },
-      { icon: Users, text: '24/7 SUPPORT' },
-      { icon: RotateCcw, text: 'REFUNDS' },
-      { icon: TrendingUp, text: 'CASHBACK 5%' }
+      { icon: Lock, text: 'SSL Secure' },
+      { icon: Shield, text: 'VPN Safe' },
+      { icon: CheckCircle2, text: 'Safe Service' },
+      { icon: Users, text: '24/7 Support' },
+      { icon: RotateCcw, text: 'Refunds' },
+      { icon: TrendingUp, text: 'Cashback 5%' }
     ].map((badge, i) => (
       <div key={i} className="flex items-center gap-2 px-3 py-1.5 bg-white/[0.03] border border-white/5 rounded-xl hover:bg-white/10 hover:border-white/20 transition-all cursor-default">
         <badge.icon className="w-3 h-3 text-primary" />
-        <span className="text-[9px] font-black uppercase tracking-wider text-white/70">{badge.text}</span>
+        <span className="text-[9px] font-black  tracking-wider text-white">{badge.text}</span>
       </div>
     ))}
   </div>
@@ -395,8 +395,8 @@ const CurrencyMode = () => {
   {/* Description Section */}
   <div className="pt-8 space-y-8">
     <div className="space-y-4">
-      <h2 className="text-3xl md:text-4xl font-black text-white uppercase tracking-tighter">DESCRIPTION</h2>
-      <p className="text-white/50 font-medium leading-relaxed text-sm md:text-base">
+      <h2 className="text-3xl md:text-4xl font-black text-white  tracking-tighter">Description</h2>
+      <p className="text-white font-medium leading-relaxed text-sm md:text-base">
         If you're looking to purchase a low-priced {selectedGame?.name || 'game'} gold farming service, you're in the right place. 
         We offer the best {selectedGame?.name || 'game'} gold service in the market. Acquiring gold can be challenging and time-consuming, 
         especially for players who want to focus on building and decorating. With our service, you can skip the grind 
@@ -406,7 +406,7 @@ const CurrencyMode = () => {
     
     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
       <div className="p-6 md:p-8 rounded-[32px] bg-white/[0.02] border border-white/5 space-y-6">
-        <h4 className="text-xl font-black text-white uppercase">WHAT YOU'LL GET:</h4>
+        <h4 className="text-xl font-black text-white ">What you'll get:</h4>
         <ul className="space-y-3">
           <li className="flex items-center gap-3 text-sm text-white/50 font-bold">
             <div className="w-1.5 h-1.5 rounded-full bg-primary"></div>
@@ -432,9 +432,9 @@ const CurrencyMode = () => {
  <div className="space-y-6">
  <div className="flex items-center justify-between px-2">
  <div className="flex items-center gap-3">
- <label className="text-[11px] font-black uppercase tracking-[0.2em] text-white/80">Gold (Millions)</label>
+ <label className="text-[11px] font-black  tracking-[0.2em] text-white">Gold (Millions)</label>
  {selectedListing && (
- <div className="px-2 py-0.5 bg-white/5 border border-white/10 rounded text-[9px] font-black text-white/60 uppercase tracking-widest">
+ <div className="px-2 py-0.5 bg-white/5 border border-white/10 rounded text-[9px] font-black text-white  tracking-widest">
  Rate: {selectedListing.pricePerUnit} / unit
  </div>
  )}
@@ -449,7 +449,7 @@ const CurrencyMode = () => {
  className="w-full bg-[#2a2a2a] border border-white/5 rounded-2xl py-5 px-6 text-2xl font-black text-white placeholder:text-white/20 outline-none transition-all hover:border-white/10 focus:border-primary group"
  />
  <div className="absolute right-6 top-1/2 -translate-y-1/2 flex flex-col items-end pointer-events-none">
- <span className="text-[12px] font-black uppercase text-white/40 tracking-widest">{selectedListing?.currencyType || 'Gold'}</span>
+ <span className="text-[12px] font-black  text-white tracking-widest">{selectedListing?.currencyType || 'Gold'}</span>
  </div>
  </div>
  </div>
@@ -468,7 +468,7 @@ const CurrencyMode = () => {
  <button 
  key={i} 
  onClick={() => setQuantity(q)}
- className={`text-[10px] font-black uppercase tracking-widest transition-colors ${quantity === q ? 'text-primary' : 'text-white/40 hover:text-white/80'}`}
+ className={`text-[10px] font-black  tracking-widest transition-colors ${quantity === q ? 'text-primary' : 'text-white/40 hover:text-white/80'}`}
  >
  {q >= 1000 ? `${(q/1000).toFixed(0)}k` : q}
  </button>
@@ -479,7 +479,7 @@ const CurrencyMode = () => {
 
  {/* Dropdowns as styled list */}
  <div className="space-y-6">
- <label className="text-[11px] font-black uppercase tracking-[0.2em] text-white/80 ml-2">Choose Servers:</label>
+ <label className="text-[11px] font-black  tracking-[0.2em] text-white ml-2">Choose Servers:</label>
  <div className="space-y-2">
  {listings.map(listing => (
  <button
@@ -493,7 +493,7 @@ const CurrencyMode = () => {
  <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center flex-shrink-0 transition-colors ${selectedListing?._id === listing._id ? 'border-primary bg-primary/20' : 'border-white/20 bg-black/40'}`}>
  {selectedListing?._id === listing._id && <div className="w-2 h-2 rounded-full bg-primary"></div>}
  </div>
- <span className={`text-xs font-bold ${selectedListing?._id === listing._id ? 'text-white' : 'text-white/60'}`}>
+ <span className={`text-xs font-bold ${selectedListing?._id === listing._id ? 'text-white' : 'text-white'}`}>
  {listing.region} - {listing.server}
  </span>
  </button>
@@ -510,7 +510,7 @@ const CurrencyMode = () => {
  
  {/* Completion Speed */}
  <div className="space-y-4  p-6 rounded-[32px] shadow-lg relative z-10">
- <h4 className="text-[11px] font-black text-white uppercase tracking-[0.2em]">Select completion speed</h4>
+ <h4 className="text-[11px] font-black text-white  tracking-[0.2em]">Select completion speed</h4>
  <div className="space-y-2">
  {[
  { id: 'Normal', label: 'Normal', surcharge: 0 },
@@ -529,10 +529,10 @@ const CurrencyMode = () => {
  <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center flex-shrink-0 transition-colors ${isActive ? 'border-white bg-white' : 'border-white/20 bg-black/20'}`}>
  {isActive && <div className="w-1.5 h-1.5 rounded-full bg-payment-method"></div>}
  </div>
- <span className={`text-xs font-black uppercase tracking-widest ${isActive ? 'text-white' : 'text-white/60'}`}>{option.label}</span>
+ <span className={`text-xs font-black  tracking-widest ${isActive ? 'text-white' : 'text-white'}`}>{option.label}</span>
  </div>
  {option.surcharge > 0 && (
- <span className="text-[10px] font-black text-white/60">+{displayPrice(surchargeAmount)}</span>
+ <span className="text-[10px] font-black text-white">+{displayPrice(surchargeAmount)}</span>
  )}
  </button>
  );
@@ -543,18 +543,18 @@ const CurrencyMode = () => {
  {/* Order Summary */}
  <div className="space-y-6 pt-4 border-t border-white/10">
  <div className="flex items-center justify-between">
- <span className="text-sm font-black text-white/80">Total</span>
+ <span className="text-sm font-black text-white">Total</span>
  <div className="flex items-end gap-1">
  <div className={`text-3xl font-black text-white tracking-tighter ${calculating ? 'opacity-20 blur-sm' : ''}`}>
  {displayPrice((priceData?.price || 0) * (selectedSpeed === 'Express' ? 1.2 : selectedSpeed === 'Super Express' ? 1.4 : 1))}
  </div>
- <span className="text-[10px] font-bold text-white/60 mb-1">excl VAT</span>
+ <span className="text-[10px] font-bold text-white mb-1">excl VAT</span>
  </div>
  </div>
  
  <div className="flex items-center gap-3 px-4 py-2 bg-white/10 rounded-lg max-w-fit">
  <span className="text-[11px] font-black text-white">0,02 €</span>
- <span className="text-[10px] font-medium text-white/60 leading-tight">cashback after<br/>purchase</span>
+ <span className="text-[10px] font-medium text-white leading-tight">cashback after<br/>purchase</span>
  </div>
  </div>
 
@@ -572,7 +572,7 @@ const CurrencyMode = () => {
  
  <button 
  onClick={handleAddToCart}
- className="w-full py-4 bg-primary rounded-xl font-black uppercase tracking-[0.2em] text-sm hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-3 shadow-2xl"
+ className="w-full py-4 bg-primary rounded-xl font-black  tracking-[0.2em] text-sm hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-3 shadow-2xl"
  >
  Buy now
  <ShieldCheck className="w-5 h-5" />
@@ -591,7 +591,7 @@ const CurrencyMode = () => {
  <div className="pt-6 relative">
  <div className="flex items-center gap-4 mb-6 opacity-40">
  <div className="h-px bg-white flex-1"></div>
- <span className="text-[10px] font-bold text-white uppercase tracking-widest text-center">Any questions?</span>
+ <span className="text-[10px] font-bold text-white  tracking-widest text-center">Any questions?</span>
  <div className="h-px bg-white flex-1"></div>
  </div>
  <button className="w-full py-4 bg-[#2a2a2a] border border-white/5 rounded-xl text-[12px] font-bold text-white hover:bg-[#333] transition-colors flex items-center justify-between px-6 group">
@@ -616,8 +616,8 @@ const CurrencyMode = () => {
   <div className="space-y-12">
     <div className="flex items-center justify-between">
       <div className="space-y-2">
-        <h2 className="text-4xl md:text-5xl font-black text-white uppercase tracking-tighter">Recommended Games</h2>
-        <p className="text-white/40 font-medium">Explore more top-tier farming and boosting services</p>
+        <h2 className="text-4xl md:text-5xl font-black text-white  tracking-tighter">Recommended Games</h2>
+        <p className="text-white font-medium">Explore more top-tier farming and boosting services</p>
       </div>
     </div>
     
@@ -646,10 +646,10 @@ const CurrencyMode = () => {
               </div>
             </div>
             <div>
-              <h4 className="text-2xl font-black text-white uppercase leading-none mb-2 group-hover:text-primary transition-colors">{game.name}</h4>
+              <h4 className="text-2xl font-black text-white  leading-none mb-2 group-hover:text-white transition-colors">{game.name}</h4>
               <div className="flex items-center gap-2">
                 <div className="w-1.5 h-1.5 rounded-full bg-primary/50 group-hover:bg-primary group-hover:animate-pulse transition-colors"></div>
-                <span className="text-[10px] font-black text-white/40 uppercase tracking-[0.2em]">{game.currencyCount} Offers</span>
+                <span className="text-[10px] font-black text-white  tracking-[0.2em]">{game.currencyCount} Offers</span>
               </div>
             </div>
           </div>
@@ -663,3 +663,4 @@ const CurrencyMode = () => {
 };
 
 export default CurrencyMode;
+

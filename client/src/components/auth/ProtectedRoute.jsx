@@ -100,3 +100,4 @@ const ProtectedRoute = ({ children, allowedRoles, adminOnly, proOnly, affiliateO
 };
 
 export default ProtectedRoute;
+

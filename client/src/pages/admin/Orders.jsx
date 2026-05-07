@@ -79,15 +79,15 @@ const OrdersList = () => {
       <div className="space-y-8">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div className="space-y-1">
-            <h2 className="text-2xl font-black uppercase tracking-tight">Order Nexus</h2>
-            <p className="text-[10px] font-bold uppercase text-white/20 tracking-widest">Global platform operations monitoring</p>
+            <h2 className="text-2xl font-black  tracking-tight">Order Nexus</h2>
+            <p className="text-[10px] font-bold  text-white tracking-widest">Global platform operations monitoring</p>
           </div>
 
           <div className="flex flex-wrap gap-4">
             <select
               value={filter}
               onChange={(e) => setFilter(e.target.value)}
-              className="bg-white/5 border border-white/10 rounded-2xl py-3 px-6 text-xs text-white font-black uppercase outline-none focus:border-primary transition-all appearance-none cursor-pointer"
+              className="bg-white/5 border border-white/10 rounded-2xl py-3 px-6 text-xs text-white font-black  outline-none focus:border-primary transition-all appearance-none cursor-pointer"
             >
               <option value="all">All States</option>
               <option value="pending">Pending</option>
@@ -114,12 +114,12 @@ const OrdersList = () => {
             <table className="w-full text-left">
               <thead className="bg-white/[0.01]">
                 <tr>
-                  <th className="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-white/20">Order ID</th>
-                  <th className="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-white/20">Client / Booster</th>
-                  <th className="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-white/20">Service Data</th>
-                  <th className="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-white/20">Pro Claim Price</th>
-                  <th className="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-white/20">Status</th>
-                  <th className="px-8 py-5 text-[10px] font-black uppercase tracking-widest text-white/20 text-right">Action</th>
+                  <th className="px-8 py-5 text-[10px] font-black  tracking-widest text-white/20">Order ID</th>
+                  <th className="px-8 py-5 text-[10px] font-black  tracking-widest text-white/20">Client / Booster</th>
+                  <th className="px-8 py-5 text-[10px] font-black  tracking-widest text-white/20">Service Data</th>
+                  <th className="px-8 py-5 text-[10px] font-black  tracking-widest text-white/20">Pro Claim Price</th>
+                  <th className="px-8 py-5 text-[10px] font-black  tracking-widest text-white/20">Status</th>
+                  <th className="px-8 py-5 text-[10px] font-black  tracking-widest text-white/20 text-right">Action</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-white/5">
@@ -131,18 +131,18 @@ const OrdersList = () => {
                   filteredOrders.map((order) => (
                     <tr key={order._id} className="hover:bg-white/[0.01] transition-colors group">
                       <td className="px-8 py-6">
-                        <p className="font-mono text-[10px] font-black text-primary uppercase">#ORD-{order._id.slice(-6)}</p>
-                        <p className="text-[8px] font-bold text-white/20 uppercase mt-1">{new Date(order.createdAt).toLocaleString()}</p>
+                        <p className="font-mono text-[10px] font-black text-white ">#ORD-{order._id.slice(-6)}</p>
+                        <p className="text-[8px] font-bold text-white  mt-1">{new Date(order.createdAt).toLocaleString()}</p>
                       </td>
                       <td className="px-8 py-6">
                         <div className="space-y-1">
-                          <p className="text-[10px] font-black uppercase text-white/60">C: {order.user?.name || 'Anonymous'}</p>
-                          <p className="text-[10px] font-black uppercase text-primary/60">B: {order.pro?.name || 'Searching...'}</p>
+                          <p className="text-[10px] font-black  text-white">C: {order.user?.name || 'Anonymous'}</p>
+                          <p className="text-[10px] font-black  text-white/60">B: {order.pro?.name || 'Searching...'}</p>
                         </div>
                       </td>
                       <td className="px-8 py-6">
-                        <p className="text-xs font-black uppercase text-white/80">{order.serviceId?.title || order.offer?.title || 'Custom Boost'}</p>
-                        <p className="text-[9px] font-black text-white/40 uppercase mt-1">Paid: {formatPrice(order.amount || order.price)}</p>
+                        <p className="text-xs font-black  text-white">{order.serviceId?.title || order.offer?.title || 'Custom Boost'}</p>
+                        <p className="text-[9px] font-black text-white  mt-1">Paid: {formatPrice(order.amount || order.price)}</p>
                       </td>
                       <td className="px-8 py-6">
                         {editingClaimPrice === order._id ? (
@@ -177,7 +177,7 @@ const OrdersList = () => {
                               setClaimPriceInput(order.customClaimPrice || order.boosterEarnings || order.price);
                             }}
                           >
-                            <span className="text-[11px] font-black text-green-500 uppercase group-hover/price:text-primary transition-colors">
+                            <span className="text-[11px] font-black text-green-500  group-hover/price:text-white transition-colors">
                               {formatPrice(order.customClaimPrice || order.boosterEarnings || order.price)}
                             </span>
                             <DollarSign className="w-3 h-3 text-white/10 group-hover/price:text-primary transition-colors" />
@@ -185,7 +185,7 @@ const OrdersList = () => {
                         )}
                       </td>
                       <td className="px-8 py-6">
-                        <span className={`px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest border border-solid ${getStatusStyle(order.status)}`}>
+                        <span className={`px-3 py-1 rounded-full text-[9px] font-black  tracking-widest border border-solid ${getStatusStyle(order.status)}`}>
                           {order.status}
                         </span>
                       </td>
@@ -195,7 +195,7 @@ const OrdersList = () => {
                           className="p-2 rounded-xl bg-white/5 border border-white/5 text-white/20 hover:text-white hover:border-white/20 transition-all active:scale-95 flex items-center gap-2 ml-auto"
                         >
                           <Eye className="w-4 h-4" />
-                          <span className="text-[10px] font-black uppercase text-white/20 group-hover:text-white">Bids</span>
+                          <span className="text-[10px] font-black  text-white group-hover:text-white">Bids</span>
                         </button>
                       </td>
                     </tr>
@@ -211,3 +211,4 @@ const OrdersList = () => {
 };
 
 export default OrdersList;
+

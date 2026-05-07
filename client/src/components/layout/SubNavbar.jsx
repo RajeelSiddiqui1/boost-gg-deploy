@@ -28,7 +28,7 @@ const SubNavbar = () => {
                             ))}
                         </div>
                         <span className="text-[11px] font-black text-white ml-1">4.9</span>
-                        <span className="text-[10px] font-bold text-white/30 uppercase tracking-wider ml-1">11,200+ reviews</span>
+                        <span className="text-[10px] font-bold text-white  tracking-wider ml-1">11,200+ reviews</span>
                     </div>
 
                     <div className="w-[1px] h-3 bg-white/10"></div>
@@ -39,7 +39,7 @@ const SubNavbar = () => {
                             <div className="absolute inset-0 bg-[#13c100] rounded-full animate-ping opacity-20"></div>
                         </div>
                         <span className="text-[11px] font-black text-white">496</span>
-                        <span className="text-[10px] font-bold text-white/30 uppercase tracking-wider">players online</span>
+                        <span className="text-[10px] font-bold text-white  tracking-wider">players online</span>
                     </div>
                 </div>
 
@@ -54,14 +54,14 @@ const SubNavbar = () => {
  >
  {/* Icon Container */}
  <div
- className={`flex items-center justify-center w-6 h-6 rounded-md transition-colors ${isOn ? 'text-primary' : 'text-white/30'}`}
+ className={`flex items-center justify-center w-6 h-6 rounded-md transition-colors ${isOn ? 'text-primary' : 'text-white'}`}
  style={{ backgroundColor: isOn ? '#1a2b10' : '#111111' }}
  >
  <item.icon className="w-3.5 h-3.5" />
  </div>
 
  {/* Label */}
- <span className={`text-[10px] font-black tracking-widest transition-colors ${isOn ? 'text-white' : 'text-white/30 group-hover:text-white/50'}`}>
+ <span className={`text-[10px] font-black tracking-widest transition-colors ${isOn ? 'text-white' : 'text-white/30 group-hover:text-white'}`}>
  {item.label}
  </span>
 
@@ -82,3 +82,4 @@ const SubNavbar = () => {
 };
 
 export default SubNavbar;
+

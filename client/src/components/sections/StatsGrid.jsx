@@ -20,10 +20,10 @@ const StatsGrid = () => {
  <div className="absolute -inset-6 border border-white/0 group-hover:border-white/10 rounded-3xl transition-all duration-500 group-hover:bg-white/[0.02] backdrop-blur-[2px]"></div>
 
  <div className="relative z-10 flex flex-col items-center lg:items-start transition-all duration-500">
- <div className="text-[64px] font-light text-white leading-none mb-4 tracking-tighter group-hover:text-primary transition-all duration-500">
+ <div className="text-[64px] font-light text-white leading-none mb-4 tracking-tighter group-hover:text-white transition-all duration-500">
  {stat.value}
  </div>
- <div className="text-[12px] font-black uppercase tracking-[0.3em] text-white/40 group-hover:text-white/60 transition-all duration-500">
+ <div className="text-[12px] font-black  tracking-[0.3em] text-white/40 group-hover:text-white transition-all duration-500">
  {stat.label}
  </div>
  </div>
@@ -35,3 +35,4 @@ const StatsGrid = () => {
 };
 
 export default StatsGrid;
+

@@ -73,8 +73,8 @@ const Blog = () => {
 
  {/* Header Section */}
  <div className="mb-12">
- <p className="text-white/40 text-sm font-black uppercase tracking-[0.3em] mb-4">BoostGG Blog</p>
- <h1 className="text-5xl md:text-7xl font-black tracking-tighter uppercase mb-2">Welcome to our Blog</h1>
+ <p className="text-white text-sm font-black  tracking-[0.3em] mb-4">BoostGG Blog</p>
+ <h1 className="text-5xl md:text-7xl font-black tracking-tighter  mb-2">Welcome to our Blog</h1>
  <div className="w-20 h-1 bg-primary mb-12"></div>
  </div>
 
@@ -82,7 +82,7 @@ const Blog = () => {
  <section className="mb-24">
  <div className="flex items-center gap-3 mb-8">
  <TrendingUp className="w-5 h-5 text-primary" />
- <h2 className="text-xs font-black uppercase tracking-[0.2em] text-white/60">The most popular articles</h2>
+ <h2 className="text-xs font-black  tracking-[0.2em] text-white">The most popular articles</h2>
  </div>
 
  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
@@ -100,8 +100,8 @@ const Blog = () => {
  <img src={getImageUrl(blog.image)} alt={blog.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 opacity-60 group-hover:opacity-100" />
  <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent"></div>
  <div className="absolute bottom-4 left-4 right-4">
- <span className="text-[9px] font-black uppercase tracking-widest text-primary mb-1 block">{blog.category}</span>
- <h3 className="text-[11px] font-black uppercase leading-tight line-clamp-2 tracking-tighter">{blog.title}</h3>
+ <span className="text-[9px] font-black  tracking-widest text-white mb-1 block">{blog.category}</span>
+ <h3 className="text-[11px] font-black  leading-tight line-clamp-2 tracking-tighter">{blog.title}</h3>
  </div>
  </Link>
  ))
@@ -128,21 +128,21 @@ const Blog = () => {
  >
  <div className="aspect-video relative overflow-hidden">
  <img src={getImageUrl(blog.image)} alt={blog.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
- <div className="absolute top-4 left-4 bg-black/60 backdrop-blur-md px-3 py-1 rounded-full border border-white/10 text-[10px] uppercase font-black tracking-widest text-primary flex items-center gap-2">
+ <div className="absolute top-4 left-4 bg-black/60 backdrop-blur-md px-3 py-1 rounded-full border border-white/10 text-[10px]  font-black tracking-widest text-white flex items-center gap-2">
  <Zap className="w-3 h-3" />
  {blog.category}
  </div>
  </div>
  <div className="p-8 pb-10 flex-1 flex flex-col">
- <div className="flex items-center gap-4 text-white/30 text-[10px] font-black uppercase tracking-widest mb-4">
+ <div className="flex items-center gap-4 text-white text-[10px] font-black  tracking-widest mb-4">
  <span className="flex items-center gap-1.5"><Calendar className="w-3 h-3" /> {new Date(blog.createdAt).toLocaleDateString()}</span>
  <span className="flex items-center gap-1.5"><Eye className="w-3 h-3" /> {blog.views}</span>
  </div>
- <h3 className="text-2xl font-black uppercase tracking-tighter leading-tight mb-4 group-hover:text-primary transition-colors">{blog.title}</h3>
- <p className="text-white/40 text-sm font-bold leading-relaxed line-clamp-3 mb-8">
+ <h3 className="text-2xl font-black  tracking-tighter leading-tight mb-4 group-hover:text-white transition-colors">{blog.title}</h3>
+ <p className="text-white text-sm font-bold leading-relaxed line-clamp-3 mb-8">
  {blog.shortDescription || "Boost your gaming experience with our professional guides and industry insights."}
  </p>
- <div className="mt-auto flex items-center gap-2 text-primary font-black uppercase text-[10px] tracking-widest group-hover:gap-4 transition-all">
+ <div className="mt-auto flex items-center gap-2 text-white font-black  text-[10px] tracking-widest group-hover:gap-4 transition-all">
  Read article
  <ChevronRight className="w-4 h-4" />
  </div>
@@ -155,8 +155,8 @@ const Blog = () => {
  {!loading && blogs.length === 0 && (
  <div className="text-center py-24 bg-white/2 rounded-[40px] border border-dashed border-white/10">
  <Gamepad2 className="w-16 h-16 text-white/10 mx-auto mb-6" />
- <h3 className="text-2xl font-black uppercase tracking-tighter">No articles found</h3>
- <p className="text-white/40 font-bold mt-2 ">Try adjusting your search or category filter</p>
+ <h3 className="text-2xl font-black  tracking-tighter">No articles found</h3>
+ <p className="text-white font-bold mt-2 ">Try adjusting your search or category filter</p>
  </div>
  )}
  </div>
@@ -166,7 +166,7 @@ const Blog = () => {
 
  {/* Search Sidebar */}
  <div className="bg-[#0A0A0A] border border-white/5 rounded-[32px] p-8">
- <h3 className="text-xs font-black uppercase tracking-[0.2em] text-white/60 mb-6 flex items-center gap-2">
+ <h3 className="text-xs font-black  tracking-[0.2em] text-white mb-6 flex items-center gap-2">
  <Search className="w-4 h-4" />
  Search articles
  </h3>
@@ -186,7 +186,7 @@ const Blog = () => {
 
  {/* Categories Sidebar (By Game) */}
  <div className="bg-[#0A0A0A] border border-white/5 rounded-[32px] p-8">
- <h3 className="text-xs font-black uppercase tracking-[0.2em] text-white/60 mb-6 flex items-center gap-2">
+ <h3 className="text-xs font-black  tracking-[0.2em] text-white mb-6 flex items-center gap-2">
  <Filter className="w-4 h-4" />
  Search by games
  </h3>
@@ -219,8 +219,8 @@ const Blog = () => {
  <img src="https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&q=80&w=800" alt="promo" className="w-full h-full object-cover opacity-40 group-hover:scale-110 transition-transform duration-700" />
  <div className="absolute inset-0 bg-gradient-to-t from-primary/80 to-transparent"></div>
  <div className="absolute bottom-8 left-8 right-8 text-center md:text-left">
- <h4 className="text-2xl font-black uppercase tracking-tighter mb-4">Start your boost today</h4>
- <Link to="/" className="inline-block bg-white text-black px-6 py-3 rounded-xl font-black uppercase text-[10px] tracking-widest hover:scale-105 transition-all">
+ <h4 className="text-2xl font-black  tracking-tighter mb-4">Start your boost today</h4>
+ <Link to="/" className="inline-block bg-white text-black px-6 py-3 rounded-xl font-black  text-[10px] tracking-widest hover:scale-105 transition-all">
  Browse Marketplace
  </Link>
  </div>
@@ -250,3 +250,4 @@ const Blog = () => {
 };
 
 export default Blog;
+

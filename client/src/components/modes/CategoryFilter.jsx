@@ -18,7 +18,7 @@ const CategoryFilter = ({ activeCategory, onCategoryChange }) => {
  <button
  key={cat.id}
  onClick={() => onCategoryChange(cat.id)}
- className={`flex items-center gap-3 px-6 py-4 rounded-2xl text-[11px] font-black uppercase tracking-widest transition-all whitespace-nowrap border ${activeCategory === cat.id
+ className={`flex items-center gap-3 px-6 py-4 rounded-2xl text-[11px] font-black  tracking-widest transition-all whitespace-nowrap border ${activeCategory === cat.id
  ? 'bg-primary text-black border-primary shadow-[0_10px_20px_rgba(162,230,62,0.2)]'
  : 'bg-white/[0.02] border-white/5 text-white/40 hover:text-white hover:bg-white/5 hover:border-white/10'
  }`}
@@ -38,3 +38,4 @@ const CategoryFilter = ({ activeCategory, onCategoryChange }) => {
 };
 
 export default CategoryFilter;
+

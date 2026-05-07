@@ -433,10 +433,10 @@ const AdminSections = () => {
  {/* Header */}
  <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8">
  <div>
- <h1 className="text-3xl font-black text-white uppercase tracking-tighter">
+ <h1 className="text-3xl font-black text-white  tracking-tighter">
  Section Builder
  </h1>
- <p className="text-white/40 text-xs font-bold uppercase tracking-widest mt-1">
+ <p className="text-white text-xs font-bold  tracking-widest mt-1">
  Create custom sections with dynamic fields
  </p>
  </div>
@@ -485,9 +485,9 @@ const AdminSections = () => {
 
  {/* Notification */}
  {notification && (
- <div className={`mb-6 p-4 rounded-2xl text-xs font-bold uppercase tracking-wider ${notification.type === 'success'
+ <div className={`mb-6 p-4 rounded-2xl text-xs font-bold  tracking-wider ${notification.type === 'success'
  ? 'bg-green-500/10 border border-green-500/20 text-green-500'
- : 'bg-red-500/10 border border-red-500/20 text-red-500'
+ : 'bg-red-500/10 border border-red-500/20 text-white'
  }`}>
  {notification.message}
  </div>
@@ -500,9 +500,9 @@ const AdminSections = () => {
  <div className="flex items-start justify-between mb-4">
  <div className="flex-1">
  <h3 className="text-white font-bold text-lg">{section.title}</h3>
- <p className="text-white/40 text-xs mt-1">{section.sectionId}</p>
+ <p className="text-white text-xs mt-1">{section.sectionId}</p>
  </div>
- <div className={`px-3 py-1 rounded-full text-xs font-bold uppercase ${section.status === 'active'
+ <div className={`px-3 py-1 rounded-full text-xs font-bold  ${section.status === 'active'
  ? 'bg-green-500/20 text-green-400'
  : section.status === 'draft'
  ? 'bg-yellow-500/20 text-yellow-400'
@@ -513,10 +513,10 @@ const AdminSections = () => {
  </div>
 
  {section.subheading && (
- <p className="text-white/60 text-sm mb-4 line-clamp-2">{section.subheading}</p>
+ <p className="text-white text-sm mb-4 line-clamp-2">{section.subheading}</p>
  )}
 
- <div className="flex items-center gap-4 text-white/40 text-xs mb-4">
+ <div className="flex items-center gap-4 text-white text-xs mb-4">
  <span className="flex items-center gap-1">
  <Layers className="w-4 h-4" />
  {section.fields?.length || 0} fields
@@ -566,7 +566,7 @@ const AdminSections = () => {
  <div className="text-center py-12">
  <Layers className="w-16 h-16 text-white/20 mx-auto mb-4" />
  <h3 className="text-white font-bold text-xl mb-2">No sections found</h3>
- <p className="text-white/40 mb-6">Create your first custom section</p>
+ <p className="text-white mb-6">Create your first custom section</p>
  <button
  onClick={handleNewClick}
  className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-white font-bold rounded-2xl hover:bg-primary/90 transition-all"
@@ -586,10 +586,10 @@ const AdminSections = () => {
  {/* Header */}
  <div className="flex items-center justify-between mb-8">
  <div>
- <h2 className="text-2xl md:text-3xl font-black text-white uppercase tracking-tighter">
+ <h2 className="text-2xl md:text-3xl font-black text-white  tracking-tighter">
  {editingSection ? 'Edit Section' : 'Create Section'}
  </h2>
- <p className="text-white/40 text-[10px] font-bold uppercase tracking-widest mt-1">
+ <p className="text-white text-[10px] font-bold  tracking-widest mt-1">
  Add title, subheading and unlimited fields
  </p>
  </div>
@@ -624,7 +624,7 @@ const AdminSections = () => {
 
  <div className="space-y-4">
  <div>
- <label className="text-white/60 text-xs font-bold uppercase tracking-wider mb-2 block">
+ <label className="text-white text-xs font-bold  tracking-wider mb-2 block">
  Title *
  </label>
  <input
@@ -638,7 +638,7 @@ const AdminSections = () => {
  </div>
 
  <div>
- <label className="text-white/60 text-xs font-bold uppercase tracking-wider mb-2 block">
+ <label className="text-white text-xs font-bold  tracking-wider mb-2 block">
  Section ID
  </label>
  <input
@@ -652,7 +652,7 @@ const AdminSections = () => {
  </div>
 
  <div>
- <label className="text-white/60 text-xs font-bold uppercase tracking-wider mb-2 block">
+ <label className="text-white text-xs font-bold  tracking-wider mb-2 block">
  Subheading
  </label>
  <input
@@ -666,7 +666,7 @@ const AdminSections = () => {
  </div>
 
  <div>
- <label className="text-white/60 text-xs font-bold uppercase tracking-wider mb-2 block">
+ <label className="text-white text-xs font-bold  tracking-wider mb-2 block">
  Description
  </label>
  <textarea
@@ -680,7 +680,7 @@ const AdminSections = () => {
  </div>
 
  <div>
- <label className="text-white/60 text-xs font-bold uppercase tracking-wider mb-2 block">
+ <label className="text-white text-xs font-bold  tracking-wider mb-2 block">
  Section Type
  </label>
  <select
@@ -737,16 +737,16 @@ const AdminSections = () => {
  <div className="flex-1">
  <div className="flex items-center gap-2">
  <span className="text-white font-bold">{field.label}</span>
- <span className="text-white/40 text-xs">({field.fieldType})</span>
+ <span className="text-white text-xs">({field.fieldType})</span>
  {field.required && <span className="text-red-400 text-xs">*required</span>}
  </div>
  {field.sublabel && (
- <p className="text-white/40 text-xs">{field.sublabel}</p>
+ <p className="text-white text-xs">{field.sublabel}</p>
  )}
  {field.options?.length > 0 && (
  <div className="flex flex-wrap gap-1 mt-1">
  {field.options.map((opt, i) => (
- <span key={i} className="px-2 py-0.5 bg-white/10 rounded text-xs text-white/60">
+ <span key={i} className="px-2 py-0.5 bg-white/10 rounded text-xs text-white">
  {opt.label}
  </span>
  ))}
@@ -768,11 +768,11 @@ const AdminSections = () => {
 
  {/* Add New Field */}
  <div className="border-t border-white/10 pt-6">
- <h4 className="text-white/60 text-xs font-bold uppercase tracking-wider mb-4">Add New Field</h4>
+ <h4 className="text-white text-xs font-bold  tracking-wider mb-4">Add New Field</h4>
 
  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
  <div>
- <label className="text-white/40 text-xs mb-1 block">Label *</label>
+ <label className="text-white text-xs mb-1 block">Label *</label>
  <input
  type="text"
  value={newField.label}
@@ -782,7 +782,7 @@ const AdminSections = () => {
  />
  </div>
  <div>
- <label className="text-white/40 text-xs mb-1 block">Sublabel</label>
+ <label className="text-white text-xs mb-1 block">Sublabel</label>
  <input
  type="text"
  value={newField.sublabel}
@@ -792,7 +792,7 @@ const AdminSections = () => {
  />
  </div>
  <div>
- <label className="text-white/40 text-xs mb-1 block">Field Type</label>
+ <label className="text-white text-xs mb-1 block">Field Type</label>
  <select
  value={newField.fieldType}
  onChange={(e) => setNewField(prev => ({ ...prev, fieldType: e.target.value }))}
@@ -804,7 +804,7 @@ const AdminSections = () => {
  </select>
  </div>
  <div>
- <label className="text-white/40 text-xs mb-1 block">Placeholder</label>
+ <label className="text-white text-xs mb-1 block">Placeholder</label>
  <input
  type="text"
  value={newField.placeholder}
@@ -818,7 +818,7 @@ const AdminSections = () => {
  {/* Options for select/radio/checkbox_group */}
  {['select', 'radio', 'checkbox_group'].includes(newField.fieldType) && (
  <div className="mb-4 p-4 bg-white/5 rounded-lg">
- <label className="text-white/40 text-xs font-bold uppercase tracking-wider mb-3 block">
+ <label className="text-white text-xs font-bold  tracking-wider mb-3 block">
  Options
  </label>
 
@@ -826,9 +826,9 @@ const AdminSections = () => {
  {newField.options.map((opt, index) => (
  <div key={index} className="flex items-center gap-2">
  <span className="flex-1 text-white text-sm">{opt.label}</span>
- <span className="text-white/40 text-xs">({opt.value})</span>
+ <span className="text-white text-xs">({opt.value})</span>
  {opt.priceModifier !== 0 && (
- <span className="text-primary text-xs">{opt.priceModifier > 0 ? '+' : ''}{opt.priceModifier}%</span>
+ <span className="text-white text-xs">{opt.priceModifier > 0 ? '+' : ''}{opt.priceModifier}%</span>
  )}
  <button
  type="button"
@@ -876,7 +876,7 @@ const AdminSections = () => {
  onChange={(e) => setNewField(prev => ({ ...prev, required: e.target.checked }))}
  className="w-4 h-4 rounded border-white/20 bg-white/5 text-primary"
  />
- <span className="text-white/60 text-sm">Required</span>
+ <span className="text-white text-sm">Required</span>
  </label>
 
  <button
@@ -904,7 +904,7 @@ const AdminSections = () => {
 
  <div className="space-y-4">
  <div>
- <label className="text-white/60 text-xs font-bold uppercase tracking-wider mb-2 block">
+ <label className="text-white text-xs font-bold  tracking-wider mb-2 block">
  Status
  </label>
  <select
@@ -920,7 +920,7 @@ const AdminSections = () => {
  </div>
 
  <div>
- <label className="text-white/60 text-xs font-bold uppercase tracking-wider mb-2 block">
+ <label className="text-white text-xs font-bold  tracking-wider mb-2 block">
  Display Order
  </label>
  <input
@@ -942,7 +942,7 @@ const AdminSections = () => {
  onChange={handleChange}
  className="w-4 h-4 rounded border-white/20 bg-white/5 text-primary"
  />
- <span className="text-white/60 text-sm">Show Title</span>
+ <span className="text-white text-sm">Show Title</span>
  </label>
  <label className="flex items-center gap-2 cursor-pointer">
  <input
@@ -952,12 +952,12 @@ const AdminSections = () => {
  onChange={handleChange}
  className="w-4 h-4 rounded border-white/20 bg-white/5 text-primary"
  />
- <span className="text-white/60 text-sm">Show Subheading</span>
+ <span className="text-white text-sm">Show Subheading</span>
  </label>
  </div>
 
  <div>
- <label className="text-white/60 text-xs font-bold uppercase tracking-wider mb-2 block">
+ <label className="text-white text-xs font-bold  tracking-wider mb-2 block">
  Columns
  </label>
  <select
@@ -974,7 +974,7 @@ const AdminSections = () => {
  </div>
 
  <div>
- <label className="text-white/60 text-xs font-bold uppercase tracking-wider mb-2 block">
+ <label className="text-white text-xs font-bold  tracking-wider mb-2 block">
  Link to Game
  </label>
  <select
@@ -991,7 +991,7 @@ const AdminSections = () => {
  </div>
 
  <div>
- <label className="text-white/60 text-xs font-bold uppercase tracking-wider mb-2 block">
+ <label className="text-white text-xs font-bold  tracking-wider mb-2 block">
  Link to Service
  </label>
  <select
@@ -1012,14 +1012,14 @@ const AdminSections = () => {
  {/* Styling */}
  <div className="bg-white/[0.02] border border-white/5 rounded-2xl p-6">
  <h3 className="text-white font-bold mb-4 flex items-center gap-2">
- <Palette className="w-5 h-5 text-primary" />
+ <Palette className="w-5 h-5 text-white" />
  Styling
  </h3>
 
  <div className="space-y-4">
  <div className="grid grid-cols-2 gap-4">
  <div>
- <label className="text-white/40 text-xs mb-1 block">Background</label>
+ <label className="text-white text-xs mb-1 block">Background</label>
  <div className="flex items-center gap-2">
  <input
  type="color"
@@ -1028,11 +1028,11 @@ const AdminSections = () => {
  onChange={handleChange}
  className="w-10 h-10 rounded-lg border border-white/20 cursor-pointer"
  />
- <span className="text-white/60 text-xs">{formData.settings.backgroundColor}</span>
+ <span className="text-white text-xs">{formData.settings.backgroundColor}</span>
  </div>
  </div>
  <div>
- <label className="text-white/40 text-xs mb-1 block">Text Color</label>
+ <label className="text-white text-xs mb-1 block">Text Color</label>
  <div className="flex items-center gap-2">
  <input
  type="color"
@@ -1041,13 +1041,13 @@ const AdminSections = () => {
  onChange={handleChange}
  className="w-10 h-10 rounded-lg border border-white/20 cursor-pointer"
  />
- <span className="text-white/60 text-xs">{formData.settings.textColor}</span>
+ <span className="text-white text-xs">{formData.settings.textColor}</span>
  </div>
  </div>
  </div>
 
  <div>
- <label className="text-white/40 text-xs mb-1 block">Border Radius</label>
+ <label className="text-white text-xs mb-1 block">Border Radius</label>
  <input
  type="range"
  name="settings.borderRadius"
@@ -1057,7 +1057,7 @@ const AdminSections = () => {
  max="32"
  className="w-full"
  />
- <div className="text-right text-white/40 text-xs">{formData.settings.borderRadius}px</div>
+ <div className="text-right text-white text-xs">{formData.settings.borderRadius}px</div>
  </div>
  </div>
  </div>
@@ -1150,3 +1150,4 @@ const AdminSections = () => {
 };
 
 export default AdminSections;
+

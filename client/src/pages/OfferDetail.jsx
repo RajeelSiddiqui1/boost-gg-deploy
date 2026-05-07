@@ -100,7 +100,7 @@ const OfferDetail = () => {
  if (error || !offer) return (
  <div className="min-h-screen bg-black text-white flex flex-col items-center justify-center p-10">
  <h1 className="text-4xl font-black mb-4">OUPPS!</h1>
- <p className="text-white/40 mb-8">{error || 'Offer not found'}</p>
+ <p className="text-white mb-8">{error || 'Offer not found'}</p>
  <button onClick={() => navigate('/')} className="px-8 py-3 bg-white/5 border border-white/10 rounded-xl font-bold hover:bg-white/10 transition-all">Back to Home</button>
  </div>
  );
@@ -112,30 +112,30 @@ const OfferDetail = () => {
  {/* Left Column: Info & Details */}
  <div className="lg:col-span-8 space-y-10">
  {/* Navigation Breadcrumb */}
- <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-white/30">
+ <div className="flex items-center gap-2 text-[10px] font-black  tracking-widest text-white">
  <span className="hover:text-white cursor-pointer" onClick={() => navigate('/')}>Home</span>
  <ChevronRight className="w-3 h-3" />
  <span className="hover:text-white cursor-pointer">{offer.game}</span>
  <ChevronRight className="w-3 h-3" />
- <span className="text-primary">{offer.title}</span>
+ <span className="text-white">{offer.title}</span>
  </div>
 
  {/* Header */}
  <div className="space-y-4">
- <div className="inline-flex items-center gap-2 px-3 py-1 bg-primary/20 border border-primary/30 rounded-full text-primary text-[10px] font-black uppercase tracking-wider">
+ <div className="inline-flex items-center gap-2 px-3 py-1 bg-primary/20 border border-primary/30 rounded-full text-white text-[10px] font-black  tracking-wider">
  <Zap className="w-3 h-3 fill-primary" />
  {offer.category}
  </div>
- <h1 className="text-5xl font-black tracking-tight leading-none uppercase max-w-2xl">{offer.title}</h1>
+ <h1 className="text-5xl font-black tracking-tight leading-none  max-w-2xl">{offer.title}</h1>
  <div className="flex items-center gap-6">
  <div className="flex items-center gap-1.5">
  <Star className="w-4 h-4 fill-yellow-500 text-yellow-500" />
  <span className="text-sm font-black">{offer.rating}</span>
- <span className="text-white/30 text-xs font-bold uppercase tracking-widest ml-1">({offer.reviews} Reviews)</span>
+ <span className="text-white text-xs font-bold  tracking-widest ml-1">({offer.reviews} Reviews)</span>
  </div>
- <div className="flex items-center gap-1.5 text-white/40">
+ <div className="flex items-center gap-1.5 text-white">
  <Clock className="w-4 h-4" />
- <span className="text-sm font-bold uppercase tracking-widest">Est. Start: 15-30 min</span>
+ <span className="text-sm font-bold  tracking-widest">Est. Start: 15-30 min</span>
  </div>
  </div>
  </div>
@@ -152,7 +152,7 @@ const OfferDetail = () => {
  <div className="space-y-4">
  <div className="flex gap-3">
  {offer.features?.map((f, i) => (
- <div key={i} className="px-4 py-2 bg-black/60 backdrop-blur-md border border-white/10 rounded-2xl text-[10px] font-black uppercase tracking-widest flex items-center gap-2">
+ <div key={i} className="px-4 py-2 bg-black/60 backdrop-blur-md border border-white/10 rounded-2xl text-[10px] font-black  tracking-widest flex items-center gap-2">
  <CheckCircle2 className="w-3 h-3 text-primary" />
  {f}
  </div>
@@ -170,19 +170,19 @@ const OfferDetail = () => {
  {/* Tabs / Content */}
  <div className="space-y-8">
  <div className="flex gap-10 border-b border-white/5">
- <button className="pb-4 text-xs font-black uppercase tracking-[0.2em] text-primary border-b-2 border-primary">Description</button>
- <button className="pb-4 text-xs font-black uppercase tracking-[0.2em] text-white/20 hover:text-white transition-colors">Requirements</button>
- <button className="pb-4 text-xs font-black uppercase tracking-[0.2em] text-white/20 hover:text-white transition-colors">How it works</button>
+ <button className="pb-4 text-xs font-black  tracking-[0.2em] text-primary border-b-2 border-primary">Description</button>
+ <button className="pb-4 text-xs font-black  tracking-[0.2em] text-white/20 hover:text-white transition-colors">Requirements</button>
+ <button className="pb-4 text-xs font-black  tracking-[0.2em] text-white/20 hover:text-white transition-colors">How it works</button>
  </div>
  <div className="space-y-6">
- <p className="text-white/60 text-lg leading-relaxed font-bold ">
+ <p className="text-white text-lg leading-relaxed font-bold ">
  {offer.description || "Boost your gameplay with our premium service. We ensure fast delivery, top-tier professional pilots, and absolute account security."}
  </p>
  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
  {offer.requirements?.map((req, i) => (
  <div key={i} className="flex items-start gap-3 p-5 bg-[#0A0A0A] border border-white/5 rounded-[24px]">
  <Info className="w-5 h-5 text-white/20 shrink-0" />
- <span className="text-sm font-bold text-white/70">{req}</span>
+ <span className="text-sm font-bold text-white">{req}</span>
  </div>
  ))}
  </div>
@@ -199,14 +199,14 @@ const OfferDetail = () => {
  <div className="absolute -top-24 -right-24 w-48 h-48 bg-primary/10 blur-3xl rounded-full group-hover/calc:bg-primary/20 transition-all duration-700"></div>
 
  <div className="relative z-10 space-y-8">
- <h3 className="text-sm font-black uppercase tracking-[0.2em] text-white/40">Select Options</h3>
+ <h3 className="text-sm font-black  tracking-[0.2em] text-white">Select Options</h3>
 
  {/* Slider Calculator */}
  {offer.calculatorType === 'slider' && offer.calculatorSettings && (
  <div className="space-y-6">
  <div className="flex justify-between items-end">
- <span className="text-[10px] font-black uppercase tracking-widest text-white/20">{offer.calculatorSettings.unitName}</span>
- <span className="text-3xl font-black text-primary">{calcValue}</span>
+ <span className="text-[10px] font-black  tracking-widest text-white">{offer.calculatorSettings.unitName}</span>
+ <span className="text-3xl font-black text-white">{calcValue}</span>
  </div>
  <div className="relative pt-1">
  <input
@@ -218,7 +218,7 @@ const OfferDetail = () => {
  onChange={(e) => setCalcValue(parseInt(e.target.value))}
  className="w-full h-2 bg-white/5 rounded-lg appearance-none cursor-pointer accent-primary"
  />
- <div className="flex justify-between mt-3 text-[10px] font-bold text-white/20">
+ <div className="flex justify-between mt-3 text-[10px] font-bold text-white">
  <span>{offer.calculatorSettings.min}</span>
  <span>{offer.calculatorSettings.max}</span>
  </div>
@@ -229,7 +229,7 @@ const OfferDetail = () => {
  {/* Dynamic Options (Radio/Checkbox) */}
  {offer.options?.map((opt, i) => (
  <div key={i} className="space-y-4">
- <label className="text-[10px] font-black uppercase tracking-[0.2em] text-white/40">{opt.name}</label>
+ <label className="text-[10px] font-black  tracking-[0.2em] text-white">{opt.name}</label>
  <div className="flex flex-col gap-2">
  {opt.choices.map((choice, ci) => (
  <div
@@ -251,7 +251,7 @@ const OfferDetail = () => {
  {choice.label}
  </div>
  {choice.priceModifier > 0 && (
- <span className="text-[10px] font-black text-primary">
+ <span className="text-[10px] font-black text-white">
  +{formatPrice(choice.priceModifier)}
  </span>
  )}
@@ -265,9 +265,9 @@ const OfferDetail = () => {
  <div className="pt-8 border-t border-white/5 space-y-6">
  <div className="flex items-center justify-between">
  <div className="space-y-1">
- <span className="text-[10px] font-black tracking-[0.2em] text-white/30 uppercase">Final Price</span>
+ <span className="text-[10px] font-black tracking-[0.2em] text-white ">Final Price</span>
  <div className="flex items-baseline gap-2">
- <span className="text-sm font-bold text-white/40 line-through">{formatPrice(Math.round(totalPrice * 2))}</span>
+ <span className="text-sm font-bold text-white line-through">{formatPrice(Math.round(totalPrice * 2))}</span>
  <span className="text-4xl font-black tracking-tighter">{formatPrice(Math.round(totalPrice))}</span>
  </div>
  </div>
@@ -288,7 +288,7 @@ const OfferDetail = () => {
  selectedOptions: selectedOptions
  });
  }}
- className="w-full bg-primary hover:bg-[#8bc332] text-black py-5 rounded-3xl font-black text-xs uppercase tracking-[0.2em] flex items-center justify-center gap-3 transition-all active:scale-95 shadow-2xl shadow-primary/40 group/btn overflow-hidden relative"
+ className="w-full bg-primary hover:bg-[#8bc332] text-black py-5 rounded-3xl font-black text-xs  tracking-[0.2em] flex items-center justify-center gap-3 transition-all active:scale-95 shadow-2xl shadow-primary/40 group/btn overflow-hidden relative"
  >
  <span className="relative z-10 flex items-center gap-2">
  Buy Product <ArrowLeft className="w-5 h-5 rotate-180 group-hover/btn:translate-x-1 transition-transform" />
@@ -299,11 +299,11 @@ const OfferDetail = () => {
  <div className="flex items-center justify-center gap-6 pt-4">
  <div className="flex items-center gap-2 opacity-30 grayscale hover:opacity-100 hover:grayscale-0 transition-all cursor-crosshair">
  <ShieldCheck className="w-4 h-4" />
- <span className="text-[9px] font-black uppercase tracking-widest">Safe Service</span>
+ <span className="text-[9px] font-black  tracking-widest">Safe Service</span>
  </div>
  <div className="flex items-center gap-2 opacity-30 grayscale hover:opacity-100 hover:grayscale-0 transition-all cursor-crosshair">
  <Globe className="w-4 h-4" />
- <span className="text-[9px] font-black uppercase tracking-widest">Global Support</span>
+ <span className="text-[9px] font-black  tracking-widest">Global Support</span>
  </div>
  </div>
  </div>
@@ -312,19 +312,19 @@ const OfferDetail = () => {
 
  {/* Why choose us small card */}
  <div className="bg-[#0A0A0A] border border-white/5 rounded-[32px] p-6 space-y-4">
- <h4 className="text-[10px] font-black uppercase tracking-widest text-white/40 border-b border-white/5 pb-4">Our Guarantee</h4>
+ <h4 className="text-[10px] font-black  tracking-widest text-white border-b border-white/5 pb-4">Our Guarantee</h4>
  <div className="space-y-4">
  <div className="flex items-center gap-3">
  <div className="w-8 h-8 rounded-xl bg-white/5 flex items-center justify-center">
- <PlayCircle className="w-4 h-4 text-white/40" />
+ <PlayCircle className="w-4 h-4 text-white" />
  </div>
- <span className="text-xs font-bold text-white/60">Free stream on request</span>
+ <span className="text-xs font-bold text-white">Free stream on request</span>
  </div>
  <div className="flex items-center gap-3">
  <div className="w-8 h-8 rounded-xl bg-white/5 flex items-center justify-center">
- <Plus className="w-4 h-4 text-white/40" />
+ <Plus className="w-4 h-4 text-white" />
  </div>
- <span className="text-xs font-bold text-white/60">24/7 Personal management</span>
+ <span className="text-xs font-bold text-white">24/7 Personal management</span>
  </div>
  </div>
  </div>
@@ -362,3 +362,4 @@ const OfferDetail = () => {
 };
 
 export default OfferDetail;
+

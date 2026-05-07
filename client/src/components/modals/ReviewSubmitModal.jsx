@@ -54,7 +54,7 @@ const ReviewSubmitModal = ({ onClose }) => {
  <form onSubmit={handleSubmit} className="space-y-6">
  {/* Rating Stars */}
  <div>
- <label className="text-white/60 text-[13px] font-black uppercase tracking-widest mb-3 block">Your Rating</label>
+ <label className="text-white text-[13px] font-black  tracking-widest mb-3 block">Your Rating</label>
  <div className="flex gap-2">
  {[1, 2, 3, 4, 5].map(star => (
  <button
@@ -79,7 +79,7 @@ const ReviewSubmitModal = ({ onClose }) => {
 
  {/* Name */}
  <div>
- <label className="text-white/60 text-[13px] font-black uppercase tracking-widest mb-2 block">Your Name</label>
+ <label className="text-white text-[13px] font-black  tracking-widest mb-2 block">Your Name</label>
  <input
  type="text"
  value={formData.reviewerName}
@@ -92,7 +92,7 @@ const ReviewSubmitModal = ({ onClose }) => {
 
  {/* Title */}
  <div>
- <label className="text-white/60 text-[13px] font-black uppercase tracking-widest mb-2 block">Review Title</label>
+ <label className="text-white text-[13px] font-black  tracking-widest mb-2 block">Review Title</label>
  <input
  type="text"
  value={formData.title}
@@ -104,7 +104,7 @@ const ReviewSubmitModal = ({ onClose }) => {
 
  {/* Review Text */}
  <div>
- <label className="text-white/60 text-[13px] font-black uppercase tracking-widest mb-2 block">Your Review</label>
+ <label className="text-white text-[13px] font-black  tracking-widest mb-2 block">Your Review</label>
  <textarea
  value={formData.text}
  onChange={e => setFormData({...formData, text: e.target.value})}
@@ -117,7 +117,7 @@ const ReviewSubmitModal = ({ onClose }) => {
  <button
  type="submit"
  disabled={loading}
- className="w-full py-4 bg-primary hover:bg-primary/90 text-white font-black uppercase tracking-widest text-[13px] rounded-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+ className="w-full py-4 bg-primary hover:bg-primary/90 text-white font-black  tracking-widest text-[13px] rounded-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
  >
  {loading ? (
  <>
@@ -135,3 +135,4 @@ const ReviewSubmitModal = ({ onClose }) => {
 };
 
 export default ReviewSubmitModal;
+

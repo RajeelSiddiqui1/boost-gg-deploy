@@ -27,7 +27,7 @@ const ReviewsSection = () => {
     return (
       <div className="text-center py-12">
         <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-        <p className="text-white/40">Loading reviews...</p>
+        <p className="text-white">Loading reviews...</p>
       </div>
     );
   }
@@ -47,10 +47,10 @@ const ReviewsSection = () => {
     <section className="py-16">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="mb-12 text-center">
-          <h2 className="text-3xl font-black text-white uppercase tracking-tighter">
+          <h2 className="text-3xl font-black text-white  tracking-tighter">
             What Our VIPs Are Saying
           </h2>
-          <p className="mt-4 text-white/40 text-xl">
+          <p className="mt-4 text-white text-xl">
             Hear from our satisfied customers about their boosting experience
           </p>
         </div>
@@ -75,12 +75,12 @@ const ReviewsSection = () => {
                 {[...Array(5)].map((_, i) => (
                   <span 
                     key={i} 
-                    className={`w-4 h-4 ${i < review.stars ? 'text-[#a2e63e]' : 'text-white/10'}`}
+                    className={`w-4 h-4 ${i < review.stars ? 'text-[#a2e63e]' : 'text-white'}`}
                   >
                     ★
                   </span>
                 ))}
-                <span className="ml-2 text-xs text-white/40">
+                <span className="ml-2 text-xs text-white">
                   ({review.stars}/5)
                 </span>
               </div>
@@ -89,12 +89,12 @@ const ReviewsSection = () => {
                 {review.title || 'No Title'}
               </h4>
               
-              <p className="text-white/60 text-sm flex-1 mb-4 line-clamp-3">
+              <p className="text-white text-sm flex-1 mb-4 line-clamp-3">
                 {review.description}
               </p>
               
               <div className="mt-auto pt-4 border-t border-white/10">
-                <div className="flex items-center gap-3 text-white/40 text-[12px] font-bold uppercase tracking-widest">
+                <div className="flex items-center gap-3 text-white text-[12px] font-bold  tracking-widest">
                   <span>{review.reviewerName}</span>
                   {review.countryName && (
                     <span className="flex items-center gap-1.5">
@@ -107,7 +107,7 @@ const ReviewsSection = () => {
                     </span>
                   )}
                 </div>
-                <span className="block mt-1 text-white/20 text-[10px] font-bold uppercase tracking-widest">
+                <span className="block mt-1 text-white text-[10px] font-bold  tracking-widest">
                   {new Date(review.createdAt).toLocaleDateString()}
                 </span>
               </div>
@@ -119,7 +119,7 @@ const ReviewsSection = () => {
           <div className="mt-12 text-center">
             <a 
               href="/reviews" 
-              className="inline-block px-8 py-4 bg-primary text-black font-black uppercase tracking-widest text-[13px] rounded-xl hover:scale-[1.02] transition-all flex items-center justify-center gap-2"
+              className="inline-block px-8 py-4 bg-primary text-black font-black  tracking-widest text-[13px] rounded-xl hover:scale-[1.02] transition-all flex items-center justify-center gap-2"
             >
               View all reviews
             </a>

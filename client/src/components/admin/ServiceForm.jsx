@@ -523,26 +523,26 @@ const ServiceForm = ({ service, games, onClose, onSuccess }) => {
  </div>
  <div>
  <div className="flex items-center gap-3">
- <h2 className="text-3xl md:text-4xl font-black text-white uppercase tracking-tighter">
+ <h2 className="text-3xl md:text-4xl font-black text-white  tracking-tighter">
  {service ? 'Modify Service' : 'Initialize Service'}
  </h2>
  {service && (
- <span className="px-2 py-0.5 bg-primary/10 border border-primary/20 rounded text-[9px] font-black uppercase tracking-widest text-primary">
+ <span className="px-2 py-0.5 bg-primary/10 border border-primary/20 rounded text-[9px] font-black  tracking-widest text-white">
  Active
  </span>
  )}
  </div>
  <div className="flex items-center gap-3 mt-1.5">
  <div className="flex items-center gap-1.5">
- <span className="text-[9px] text-white/20 font-black uppercase tracking-widest">ID:</span>
- <span className="text-[10px] text-white/40 font-mono font-bold tracking-tight bg-white/5 px-2 py-0.5 rounded border border-white/5">
+ <span className="text-[9px] text-white font-black  tracking-widest">ID:</span>
+ <span className="text-[10px] text-white font-mono font-bold tracking-tight bg-white/5 px-2 py-0.5 rounded border border-white/5">
  {service?._id || 'NEW_ENTRY'}
  </span>
  </div>
  <div className="w-1 h-1 bg-white/10 rounded-full"></div>
  <div className="flex items-center gap-1.5">
- <span className="text-[9px] text-white/20 font-black uppercase tracking-widest">Slug:</span>
- <span className="text-[10px] text-primary/60 font-bold tracking-tight ">
+ <span className="text-[9px] text-white font-black  tracking-widest">Slug:</span>
+ <span className="text-[10px] text-white/60 font-bold tracking-tight ">
  {service?.slug || 'will-be-generated'}
  </span>
  </div>
@@ -560,7 +560,7 @@ const ServiceForm = ({ service, games, onClose, onSuccess }) => {
  </div>
 
  {error && (
- <div className="mb-8 p-5 bg-red-500/10 border border-red-500/20 rounded-3xl text-red-500 text-xs font-black uppercase tracking-widest flex items-center gap-3">
+ <div className="mb-8 p-5 bg-red-500/10 border border-red-500/20 rounded-3xl text-white text-xs font-black  tracking-widest flex items-center gap-3">
  <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
  {error}
  </div>
@@ -569,7 +569,7 @@ const ServiceForm = ({ service, games, onClose, onSuccess }) => {
  <form onSubmit={handleSubmit} className="space-y-6">
  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
  <div className="md:col-span-2">
- <label className="block text-white/40 text-[10px] font-black uppercase tracking-widest mb-3 px-1">Service Name *</label>
+ <label className="block text-white text-[10px] font-black  tracking-widest mb-3 px-1">Service Name *</label>
  <input
  type="text"
  name="name"
@@ -581,7 +581,7 @@ const ServiceForm = ({ service, games, onClose, onSuccess }) => {
  />
  </div>
  <div className="md:col-span-1">
- <label className="block text-white/40 text-[10px] font-black uppercase tracking-widest mb-3 px-1">Select Game *</label>
+ <label className="block text-white text-[10px] font-black  tracking-widest mb-3 px-1">Select Game *</label>
  <select
  name="gameId"
  value={formData.gameId}
@@ -597,12 +597,12 @@ const ServiceForm = ({ service, games, onClose, onSuccess }) => {
  </div>
  <div className="md:col-span-1">
  <div className="flex items-center justify-between mb-3 px-1">
- <label className="text-white/40 text-[10px] font-black uppercase tracking-widest">Select Category *</label>
+ <label className="text-white text-[10px] font-black  tracking-widest">Select Category *</label>
  <button
  type="button"
  onClick={() => setShowCategoryForm(true)}
  disabled={!formData.gameId}
- className="text-[10px] font-black text-primary hover:text-white uppercase disabled:opacity-30 flex items-center gap-1"
+ className="text-[10px] font-black text-primary hover:text-white  disabled:opacity-30 flex items-center gap-1"
  >
  <Plus className="w-2.5 h-2.5" /> Add Category
  </button>
@@ -622,7 +622,7 @@ const ServiceForm = ({ service, games, onClose, onSuccess }) => {
  </select>
  </div>
  <div className="md:col-span-2">
- <label className="block text-white/40 text-[10px] font-black uppercase tracking-widest mb-3 px-1">Short Description</label>
+ <label className="block text-white text-[10px] font-black  tracking-widest mb-3 px-1">Short Description</label>
  <input
  type="text"
  name="shortDescription"
@@ -634,7 +634,7 @@ const ServiceForm = ({ service, games, onClose, onSuccess }) => {
  />
  </div>
  <div className="md:col-span-2">
- <label className="block text-white/40 text-[10px] font-black uppercase tracking-widest mb-3 px-1">Full Description</label>
+ <label className="block text-white text-[10px] font-black  tracking-widest mb-3 px-1">Full Description</label>
  <textarea
  name="description"
  value={formData.description}
@@ -645,7 +645,7 @@ const ServiceForm = ({ service, games, onClose, onSuccess }) => {
  />
  </div>
  <div className="md:col-span-2 border-t border-white/5 pt-10 mt-6 relative">
- <h3 className="text-xl font-black text-white uppercase mb-6 flex items-center gap-3">
+ <h3 className="text-xl font-black text-white  mb-6 flex items-center gap-3">
  <div className="p-2 bg-primary/10 rounded-lg">
  <FileText className="w-5 h-5 text-primary" />
  </div>
@@ -653,7 +653,7 @@ const ServiceForm = ({ service, games, onClose, onSuccess }) => {
  </h3>
  </div>
  <div>
- <label className="block text-white/40 text-[10px] font-black uppercase tracking-[0.2em] mb-3 px-1">Service Type</label>
+ <label className="block text-white text-[10px] font-black  tracking-[0.2em] mb-3 px-1">Service Type</label>
  <div className="relative group">
  <select
  name="serviceType"
@@ -671,7 +671,7 @@ const ServiceForm = ({ service, games, onClose, onSuccess }) => {
  {(formData.serviceType === 'boosting' || formData.serviceType === 'coaching') && (
  <>
  <div>
- <label className="block text-white/40 text-[10px] font-black uppercase tracking-[0.2em] mb-3 px-1">Boost Type</label>
+ <label className="block text-white text-[10px] font-black  tracking-[0.2em] mb-3 px-1">Boost Type</label>
  <div className="relative group">
  <select
  name="boostType"
@@ -687,7 +687,7 @@ const ServiceForm = ({ service, games, onClose, onSuccess }) => {
  </div>
  </div>
  <div>
- <label className="block text-white/40 text-[10px] font-black uppercase tracking-[0.2em] mb-3 px-1">Boost Category</label>
+ <label className="block text-white text-[10px] font-black  tracking-[0.2em] mb-3 px-1">Boost Category</label>
  <div className="relative group">
  <select
  name="boostCategory"
@@ -707,7 +707,7 @@ const ServiceForm = ({ service, games, onClose, onSuccess }) => {
  </>
  )}
  <div>
- <label className="block text-white/40 text-[10px] font-black uppercase tracking-widest mb-3 px-1">Display Order</label>
+ <label className="block text-white text-[10px] font-black  tracking-widest mb-3 px-1">Display Order</label>
  <input
  type="number"
  name="displayOrder"
@@ -718,7 +718,7 @@ const ServiceForm = ({ service, games, onClose, onSuccess }) => {
  />
  </div>
  <div>
- <label className="block text-white/40 text-[10px] font-black uppercase tracking-widest mb-3 px-1">Status</label>
+ <label className="block text-white text-[10px] font-black  tracking-widest mb-3 px-1">Status</label>
  <select
  name="status"
  value={formData.status}
@@ -731,7 +731,7 @@ const ServiceForm = ({ service, games, onClose, onSuccess }) => {
  </select>
  </div>
  <div>
- <label className="block text-white/40 text-[10px] font-black uppercase tracking-widest mb-3 px-1">Delivery Time (hours)</label>
+ <label className="block text-white text-[10px] font-black  tracking-widest mb-3 px-1">Delivery Time (hours)</label>
  <input
  type="number"
  name="deliveryTime"
@@ -742,7 +742,7 @@ const ServiceForm = ({ service, games, onClose, onSuccess }) => {
  />
  </div>
  <div>
- <label className="block text-white/40 text-[10px] font-black uppercase tracking-widest mb-3 px-1">Delivery Time Text</label>
+ <label className="block text-white text-[10px] font-black  tracking-widest mb-3 px-1">Delivery Time Text</label>
  <input
  type="text"
  name="deliveryTimeText"
@@ -764,11 +764,11 @@ const ServiceForm = ({ service, games, onClose, onSuccess }) => {
  />
  <div className="w-11 h-6 bg-white/5 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white/20 after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary/50 peer-checked:after:bg-primary"></div>
  </div>
- <span className="text-white/40 text-[10px] font-black uppercase tracking-widest group-hover:text-white transition-colors">Feature this service</span>
+ <span className="text-white text-[10px] font-black  tracking-widest group-hover:text-white transition-colors">Feature this service</span>
  </label>
  </div>
  <div className="md:col-span-2 border-t border-white/5 pt-10 mt-6">
- <h3 className="text-xl font-black text-white uppercase mb-6 flex items-center gap-3">
+ <h3 className="text-xl font-black text-white  mb-6 flex items-center gap-3">
  <div className="p-2 bg-primary/10 rounded-lg">
  <DollarSign className="w-5 h-5 text-primary" />
  </div>
@@ -776,7 +776,7 @@ const ServiceForm = ({ service, games, onClose, onSuccess }) => {
  </h3>
  </div>
  <div className="md:col-span-2">
- <label className="block text-white/40 text-[10px] font-black uppercase tracking-[0.2em] mb-3 px-1">Pricing Type Model</label>
+ <label className="block text-white text-[10px] font-black  tracking-[0.2em] mb-3 px-1">Pricing Type Model</label>
  <div className="relative group">
  <select
  name="pricing.type"
@@ -793,7 +793,7 @@ const ServiceForm = ({ service, games, onClose, onSuccess }) => {
  </div>
  {['fixed', 'tiered'].includes(formData.pricing.type) && (
  <div>
- <label className="block text-white/40 text-[10px] font-black uppercase tracking-widest mb-3 px-1">Base Price ($)</label>
+ <label className="block text-white text-[10px] font-black  tracking-widest mb-3 px-1">Base Price ($)</label>
  <input
  type="number"
  name="pricing.basePrice"
@@ -807,7 +807,7 @@ const ServiceForm = ({ service, games, onClose, onSuccess }) => {
  )}
  {['per_level', 'per_win', 'hourly'].includes(formData.pricing.type) && (
  <div>
- <label className="block text-white/40 text-[10px] font-black uppercase tracking-widest mb-3 px-1">Price Per Unit ($)</label>
+ <label className="block text-white text-[10px] font-black  tracking-widest mb-3 px-1">Price Per Unit ($)</label>
  <input
  type="number"
  name="pricing.pricePerUnit"
@@ -820,7 +820,7 @@ const ServiceForm = ({ service, games, onClose, onSuccess }) => {
  </div>
  )}
  <div>
- <label className="block text-white/40 text-[10px] font-black uppercase tracking-widest mb-3 px-1">Min Price ($)</label>
+ <label className="block text-white text-[10px] font-black  tracking-widest mb-3 px-1">Min Price ($)</label>
  <input
  type="number"
  name="pricing.minPrice"
@@ -832,7 +832,7 @@ const ServiceForm = ({ service, games, onClose, onSuccess }) => {
  />
  </div>
  <div>
- <label className="block text-white/40 text-[10px] font-black uppercase tracking-widest mb-3 px-1">Max Price ($)</label>
+ <label className="block text-white text-[10px] font-black  tracking-widest mb-3 px-1">Max Price ($)</label>
  <input
  type="number"
  name="pricing.maxPrice"
@@ -844,7 +844,7 @@ const ServiceForm = ({ service, games, onClose, onSuccess }) => {
  />
  </div>
  <div>
- <label className="block text-white/40 text-[10px] font-black uppercase tracking-widest mb-3 px-1">Discount (%)</label>
+ <label className="block text-white text-[10px] font-black  tracking-widest mb-3 px-1">Discount (%)</label>
  <input
  type="number"
  name="pricing.discountPercent"
@@ -857,7 +857,7 @@ const ServiceForm = ({ service, games, onClose, onSuccess }) => {
  </div>
  {formData.pricing.type === 'tiered' && (
  <div className="md:col-span-2">
- <label className="block text-white/40 text-[10px] font-black uppercase tracking-widest mb-3 px-1">Pricing Tiers</label>
+ <label className="block text-white text-[10px] font-black  tracking-widest mb-3 px-1">Pricing Tiers</label>
  {formData.pricing.tiers.map((tier, index) => (
  <div key={index} className="p-4 bg-white/[0.02] border border-white/5 rounded-2xl mb-2">
  <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
@@ -901,13 +901,13 @@ const ServiceForm = ({ service, games, onClose, onSuccess }) => {
  </div>
  )}
  <div className="md:col-span-2 border-t border-white/5 pt-6 mt-4">
- <h3 className="text-lg font-black text-white uppercase mb-4 flex items-center gap-2">
+ <h3 className="text-lg font-black text-white  mb-4 flex items-center gap-2">
  <Wrench className="w-5 h-5" />
  Service Configuration
  </h3>
  </div>
  <div className="md:col-span-2">
- <label className="block text-white/40 text-[10px] font-black uppercase tracking-widest mb-3 px-1">Platforms</label>
+ <label className="block text-white text-[10px] font-black  tracking-widest mb-3 px-1">Platforms</label>
  <div className="flex flex-wrap gap-2">
  {AVAILABLE_PLATFORMS.map(platform => (
  <button
@@ -925,7 +925,7 @@ const ServiceForm = ({ service, games, onClose, onSuccess }) => {
  </div>
  </div>
  <div className="md:col-span-2">
- <label className="block text-white/40 text-[10px] font-black uppercase tracking-widest mb-3 px-1">Regions</label>
+ <label className="block text-white text-[10px] font-black  tracking-widest mb-3 px-1">Regions</label>
  <div className="flex flex-wrap gap-2">
  {AVAILABLE_REGIONS.map(region => (
  <button
@@ -943,7 +943,7 @@ const ServiceForm = ({ service, games, onClose, onSuccess }) => {
  </div>
  </div>
  <div className="md:col-span-2">
- <label className="block text-white/40 text-[10px] font-black uppercase tracking-widest mb-3 px-1">Features</label>
+ <label className="block text-white text-[10px] font-black  tracking-widest mb-3 px-1">Features</label>
  <div className="flex gap-2 mb-2">
  <input
  type="text"
@@ -963,7 +963,7 @@ const ServiceForm = ({ service, games, onClose, onSuccess }) => {
  </div>
  <div className="flex flex-wrap gap-2">
  {formData.features.map((feature, index) => (
- <span key={index} className="px-3 py-1.5 bg-white/5 rounded-lg text-sm text-white/80 flex items-center gap-2">
+ <span key={index} className="px-3 py-1.5 bg-white/5 rounded-lg text-sm text-white flex items-center gap-2">
  {feature}
  <button type="button" onClick={() => removeFeature(index)} className="text-white/40 hover:text-white">
  <X className="w-3 h-3" />
@@ -973,7 +973,7 @@ const ServiceForm = ({ service, games, onClose, onSuccess }) => {
  </div>
  </div>
  <div className="md:col-span-2">
- <label className="block text-white/40 text-[10px] font-black uppercase tracking-widest mb-3 px-1">Requirements</label>
+ <label className="block text-white text-[10px] font-black  tracking-widest mb-3 px-1">Requirements</label>
  <div className="flex gap-2 mb-2">
  <input
  type="text"
@@ -1003,7 +1003,7 @@ const ServiceForm = ({ service, games, onClose, onSuccess }) => {
  </div>
  </div>
  <div className="md:col-span-2">
- <label className="block text-white/40 text-[10px] font-black uppercase tracking-widest mb-3 px-1">Tags</label>
+ <label className="block text-white text-[10px] font-black  tracking-widest mb-3 px-1">Tags</label>
  <div className="flex gap-2 mb-2">
  <input
  type="text"
@@ -1035,7 +1035,7 @@ const ServiceForm = ({ service, games, onClose, onSuccess }) => {
  </div>
  {/* Visual Assets Section */}
  <div className="md:col-span-2 border-t border-white/5 pt-10 mt-6 relative">
- <h3 className="text-xl font-black text-white uppercase mb-6 flex items-center gap-3">
+ <h3 className="text-xl font-black text-white  mb-6 flex items-center gap-3">
  <div className="p-2 bg-primary/10 rounded-lg">
  <Upload className="w-5 h-5 text-primary" />
  </div>
@@ -1045,7 +1045,7 @@ const ServiceForm = ({ service, games, onClose, onSuccess }) => {
  <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
  {/* Background Image */}
  <div>
- <label className="block text-white/40 text-[10px] font-black uppercase tracking-widest mb-3 px-1">Background Image (JPG/JPEG)</label>
+ <label className="block text-white text-[10px] font-black  tracking-widest mb-3 px-1">Background Image (JPG/JPEG)</label>
  <div 
  className="relative group w-full h-48 bg-white/[0.02] border border-white/5 rounded-3xl overflow-hidden cursor-pointer hover:border-primary/50 transition-all shadow-lg"
  onClick={() => document.getElementById('bg-input').click()}
@@ -1057,11 +1057,11 @@ const ServiceForm = ({ service, games, onClose, onSuccess }) => {
  <div className="p-3 bg-white/5 rounded-full">
  <Upload className="w-6 h-6 text-white/20" />
  </div>
- <span className="text-[10px] font-black text-white/20 uppercase tracking-widest">Select Background</span>
+ <span className="text-[10px] font-black text-white  tracking-widest">Select Background</span>
  </div>
  )}
  <div className="absolute inset-0 bg-primary/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
- <span className="px-6 py-3 bg-white text-black text-[10px] font-black uppercase tracking-widest rounded-xl shadow-2xl scale-90 group-hover:scale-100 transition-transform">
+ <span className="px-6 py-3 bg-white text-black text-[10px] font-black  tracking-widest rounded-xl shadow-2xl scale-90 group-hover:scale-100 transition-transform">
  Change Image
  </span>
  </div>
@@ -1077,7 +1077,7 @@ const ServiceForm = ({ service, games, onClose, onSuccess }) => {
 
  {/* Icon Image */}
  <div>
- <label className="block text-white/40 text-[10px] font-black uppercase tracking-widest mb-3 px-1">Service Icon (PNG Only)</label>
+ <label className="block text-white text-[10px] font-black  tracking-widest mb-3 px-1">Service Icon (PNG Only)</label>
  <div 
  className="relative group w-full h-48 bg-white/[0.02] border border-white/5 rounded-3xl overflow-hidden cursor-pointer hover:border-primary/50 transition-all shadow-lg flex items-center justify-center"
  onClick={() => document.getElementById('icon-input').click()}
@@ -1089,11 +1089,11 @@ const ServiceForm = ({ service, games, onClose, onSuccess }) => {
  <div className="p-3 bg-white/5 rounded-full">
  <ImageIcon className="w-6 h-6 text-white/20" />
  </div>
- <span className="text-[10px] font-black text-white/20 uppercase tracking-widest">Select Icon</span>
+ <span className="text-[10px] font-black text-white  tracking-widest">Select Icon</span>
  </div>
  )}
  <div className="absolute inset-0 bg-primary/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
- <span className="px-6 py-3 bg-white text-black text-[10px] font-black uppercase tracking-widest rounded-xl shadow-2xl scale-90 group-hover:scale-100 transition-transform">
+ <span className="px-6 py-3 bg-white text-black text-[10px] font-black  tracking-widest rounded-xl shadow-2xl scale-90 group-hover:scale-100 transition-transform">
  Change Icon
  </span>
  </div>
@@ -1113,14 +1113,14 @@ const ServiceForm = ({ service, games, onClose, onSuccess }) => {
  <button
  type="button"
  onClick={onClose}
- className="w-full md:flex-1 px-8 py-5 bg-white/5 hover:bg-white/10 text-white/60 hover:text-white rounded-[24px] font-black uppercase tracking-[0.2em] text-[11px] transition-all border border-white/5 hover:border-white/20"
+ className="w-full md:flex-1 px-8 py-5 bg-white/5 hover:bg-white/10 text-white/60 hover:text-white rounded-[24px] font-black  tracking-[0.2em] text-[11px] transition-all border border-white/5 hover:border-white/20"
  >
  Discard Changes
  </button>
  <button
  type="submit"
  disabled={loading}
- className="w-full md:flex-1 px-8 py-5 bg-primary hover:bg-[#722AEE] text-white rounded-[24px] font-black uppercase tracking-[0.2em] text-[11px] transition-all disabled:opacity-50 flex items-center justify-center gap-3 shadow-[0_10px_25px_rgba(147,51,234,0.3)] hover:shadow-[0_10px_35px_rgba(147,51,234,0.4)] hover:scale-[1.02] active:scale-[0.98]"
+ className="w-full md:flex-1 px-8 py-5 bg-primary hover:bg-[#722AEE] text-white rounded-[24px] font-black  tracking-[0.2em] text-[11px] transition-all disabled:opacity-50 flex items-center justify-center gap-3 shadow-[0_10px_25px_rgba(147,51,234,0.3)] hover:shadow-[0_10px_35px_rgba(147,51,234,0.4)] hover:scale-[1.02] active:scale-[0.98]"
  >
  {loading ? (
  <div className="w-5 h-5 border-2 border-white/20 border-t-white rounded-full animate-spin"></div>
@@ -1147,3 +1147,4 @@ const ServiceForm = ({ service, games, onClose, onSuccess }) => {
 };
 
 export default ServiceForm;
+

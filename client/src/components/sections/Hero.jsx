@@ -81,7 +81,7 @@ const Hero = () => {
                 <img src={slide.image} className="w-full h-full object-cover" alt="" />
                 <div className="absolute inset-0 bg-gradient-to-r from-black via-black/40 to-transparent"></div>
                 <div className={`absolute ${slide.logoPos} z-30`}>
-                  <span className="text-[10px] font-black text-white/40 tracking-[0.5em] uppercase px-4 py-2 bg-black/20 backdrop-blur-md rounded-lg border border-white/5">BOOSTGG</span>
+                  <span className="text-[10px] font-black text-white tracking-[0.5em]  px-4 py-2 bg-black/20 backdrop-blur-md rounded-lg border border-white/5">BOOSTGG</span>
                 </div>
               </div>
             ))}
@@ -93,12 +93,12 @@ const Hero = () => {
                   key={index} 
                   className={`transition-all duration-700 absolute inset-y-0 left-12 flex flex-col justify-center ${index === currentSlide ? 'opacity-100 translate-x-0 pointer-events-auto' : 'opacity-0 translate-x-8 pointer-events-none'}`}
                 >
-                  <p className="text-white/40 text-[14px] font-bold mb-4 uppercase tracking-widest">{slide.subtitle}</p>
-                  <h2 className="text-[56px] font-black text-white leading-[1] tracking-tighter mb-10 uppercase">
+                  <p className="text-white text-[14px] font-bold mb-4  tracking-widest">{slide.subtitle}</p>
+                  <h2 className="text-[56px] font-black text-white leading-[1] tracking-tighter mb-10 ">
                     {slide.title}
                   </h2>
                   <div>
-                    <button className="bg-primary hover:bg-primary-light text-white px-10 py-4 rounded-2xl font-black text-[14px] transition-all hover:scale-105 active:scale-95 shadow-2xl shadow-primary/40 uppercase tracking-widest">
+                    <button className="bg-primary hover:bg-primary-light text-white px-10 py-4 rounded-2xl font-black text-[14px] transition-all hover:scale-105 active:scale-95 shadow-2xl shadow-primary/40  tracking-widest">
                       {slide.buttonText}
                     </button>
                   </div>
@@ -128,7 +128,7 @@ const Hero = () => {
               ))
             ) : games.length === 0 ? (
               <div className="flex-1 rounded-[32px] bg-[#0D0D0D] border border-white/10 flex items-center justify-center">
-                <p className="text-white/20 text-sm">No games</p>
+                <p className="text-white text-sm">No games</p>
               </div>
             ) : (
               games.map((game, index) => (
@@ -145,3 +145,4 @@ const Hero = () => {
 };
 
 export default Hero;
+

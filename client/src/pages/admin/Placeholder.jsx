@@ -7,10 +7,11 @@ const Placeholder = ({ title = 'Coming Soon' }) => {
  <div className="w-20 h-20 bg-white/5 rounded-full flex items-center justify-center mb-6">
  <Clock className="w-10 h-10 text-white/20" />
  </div>
- <h2 className="text-2xl font-black uppercase text-white/60 mb-2">{title}</h2>
- <p className="text-white/30 text-sm">This feature is under development</p>
+ <h2 className="text-2xl font-black  text-white mb-2">{title}</h2>
+ <p className="text-white text-sm">This feature is under development</p>
  </div>
  );
 };
 
 export default Placeholder;
+

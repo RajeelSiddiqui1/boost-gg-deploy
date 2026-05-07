@@ -66,16 +66,16 @@ const ServiceCard = ({ service, style }) => {
 
  <div className="p-8 flex flex-col flex-grow relative">
  {/* Title */}
- <h3 className="text-lg font-black text-white mb-4 line-clamp-2 leading-[1.2] group-hover:text-primary transition-colors">
+ <h3 className="text-lg font-black text-white mb-4 line-clamp-2 leading-[1.2] group-hover:text-white transition-colors">
  {service.title}
  </h3>
 
  {/* Features List with custom design */}
  <div className="space-y-3 mb-8 flex-grow">
  {service.features?.slice(0, 3).map((feature, index) => (
- <div key={index} className="flex items-start gap-3 text-[11px] font-bold text-white/30 group-hover:text-white/50 transition-colors">
+ <div key={index} className="flex items-start gap-3 text-[11px] font-bold text-white/30 group-hover:text-white transition-colors">
  <div className="w-1.5 h-1.5 rounded-full bg-primary mt-1.5 flex-shrink-0 shadow-[0_0_8px_rgba(162,230,62,0.4)]"></div>
- <span className="line-clamp-1 uppercase tracking-tight">{feature}</span>
+ <span className="line-clamp-1  tracking-tight">{feature}</span>
  </div>
  ))}
  </div>
@@ -84,12 +84,12 @@ const ServiceCard = ({ service, style }) => {
  <div className="mt-auto pt-6 border-t border-white/5 flex items-center justify-between">
  <div className="flex flex-col">
  {service.discount > 0 && service.oldPrice && (
- <span className="text-[10px] text-white/20 line-through font-bold mb-1">
+ <span className="text-[10px] text-white line-through font-bold mb-1">
  {formatPrice(service.oldPrice)}
  </span>
  )}
  <div className="flex items-baseline">
- <span className="text-sm font-bold text-white/40 mr-1">from</span>
+ <span className="text-sm font-bold text-white mr-1">from</span>
  <span className="text-3xl font-black text-white tracking-tighter">{formatPrice(service.basePrice)}</span>
  </div>
  </div>
@@ -107,3 +107,4 @@ const ServiceCard = ({ service, style }) => {
 };
 
 export default ServiceCard;
+
