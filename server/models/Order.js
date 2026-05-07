@@ -208,6 +208,14 @@ orderSchema.virtual('user', {
     justOne: true
 });
 
+// Virtual to populate bid info
+orderSchema.virtual('bid', {
+    ref: 'Bid',
+    localField: '_id',
+    foreignField: 'orderId',
+    justOne: true
+});
+
 // Static method to get orders by user
 orderSchema.statics.findByUser = function (userId, options = {}) {
     const query = { userId };

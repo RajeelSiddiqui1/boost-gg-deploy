@@ -1,10 +1,9 @@
 const express = require('express');
 const {
+    getAllBids,
+    updateBidPrice,
     createBid,
-    getBidsForOrder,
-    acceptBid,
-    getMyBids,
-    updateBid
+    getProAvailableBids
 } = require('../controllers/bidController');
 
 const router = express.Router();
@@ -14,11 +13,13 @@ const { ROLES } = require('../models/User');
 
 router.use(protect);
 
-router.post('/', authorize(ROLES.PRO), createBid);
-router.get('/me', authorize(ROLES.PRO), getMyBids);
-router.put('/:id', authorize(ROLES.PRO), updateBid);
+// Pro routes
+router.get('/pro/available', authorize(ROLES.PRO), getProAvailableBids);
 
-router.get('/order/:orderId', authorize(ROLES.ADMIN), getBidsForOrder);
-router.put('/:id/accept', authorize(ROLES.ADMIN), acceptBid);
+// Admin routes
+router.use(authorize(ROLES.ADMIN));
+router.get('/', getAllBids);
+router.post('/', createBid);
+router.put('/:id', updateBidPrice);
 
 module.exports = router;

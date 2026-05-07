@@ -95,6 +95,7 @@ const AdminLayout = ({ children }) => {
  { label: 'Accounts', icon: Shield, path: '/admin/accounts', desc: 'Manage game accounts listed for sale.' },
  { label: 'Offers', icon: ShoppingCart, path: '/admin/offers', desc: 'Configure "Hot Now" deals and special offers.' },
  { label: 'Orders', icon: ShoppingCart, path: '/admin/orders', desc: 'Track and manage customer order fulfillment.' },
+ { label: 'Bids', icon: Tag, path: '/admin/bids', desc: 'Manage and update order bid prices.' },
  { label: 'Chat Support', icon: MessageSquare, path: '/admin/chat', desc: 'Direct message center for user support.' },
  { label: 'Finance', icon: Wallet, path: '/admin/finance', desc: 'Monitor transactions and site revenue.' },
  { label: 'Reviews', icon: Star, path: '/admin/reviews', desc: 'Moderate and manage customer testimonials.' },

@@ -1,62 +1,80 @@
-const OrderBid = require('../models/OrderBid');
+const Bid = require('../models/Bid');
 const Order = require('../models/Order');
+const Notification = require('../models/Notification');
+const User = require('../models/User');
+const sendEmail = require('../utils/sendEmail');
 const { getIO } = require('../socket');
 
-// @desc    Create a bid for an order
-// @route   POST /api/v1/bids
-// @access  Pro
-exports.createBid = async (req, res, next) => {
+// Helper: Send notifications to specialized pros (uses bid.gameId directly)
+const notifySpecializedPros = async (bid, actionLabel = 'New') => {
     try {
-        const { orderId, bidAmount, message, type } = req.body;
+        const io = getIO();
 
-        // Check if order exists and is available
-        const order = await Order.findById(orderId);
-        if (!order) {
-            return res.status(404).json({ success: false, message: 'Order not found' });
-        }
+        // Populate serviceId title for the message
+        const order = await Order.findById(bid.orderId).populate('serviceId', 'title');
+        const serviceTitle = order?.serviceId?.title || 'Service Order';
 
-        if (order.status !== 'pending' || order.pro) {
-            return res.status(400).json({ success: false, message: 'Order is no longer available' });
-        }
-
-        // Check if Pro already bid
-        const existingBid = await OrderBid.findOne({ orderId, proId: req.user._id });
-        if (existingBid) {
-            return res.status(400).json({ success: false, message: 'You have already bid on this order' });
-        }
-
-        const bid = await OrderBid.create({
-            orderId,
-            proId: req.user._id,
-            bidAmount,
-            message,
-            type: type || 'bid'
+        const pros = await User.find({
+            role: 'pro',
+            'proSpecializations.game': bid.gameId
         });
 
-        res.status(201).json({ success: true, data: bid });
+        const notificationTitle = `${actionLabel} Order Bid Available!`;
+        const notificationMessage = `A bid of $${bid.bidPrice} is available for ${serviceTitle}. Check it out now!`;
+        const link = `/pro/notifications`;
 
-        // Emit real-time update
-        const io = getIO();
-        io.emit('marketUpdate'); // Global refresh for market
-        io.to(orderId.toString()).emit('bidUpdate', { orderId });
-    } catch (err) {
-        res.status(400).json({ success: false, message: err.message });
+        for (const pro of pros) {
+            // 1. DB Notification
+            await Notification.create({
+                userId: pro._id,
+                title: notificationTitle,
+                message: notificationMessage,
+                type: 'bid_created',
+                link
+            });
+
+            // 2. Real-time Socket
+            io.to(pro._id.toString()).emit('notification', {
+                title: notificationTitle,
+                message: notificationMessage,
+                type: 'bid_created',
+                link
+            });
+
+            // 3. Email (async, non-blocking)
+            sendEmail({
+                email: pro.email,
+                subject: notificationTitle,
+                html: `
+                    <div style="font-family: Arial, sans-serif; padding: 20px; background-color: #000; color: #fff; border-radius: 10px;">
+                        <h2 style="color: #A2E63E;">${actionLabel} Bid Deployed!</h2>
+                        <p>A bid has been ${actionLabel === 'Updated' ? 'updated' : 'placed'} for an order in your specialized game.</p>
+                        <div style="background: #111; padding: 15px; border-radius: 8px; margin: 20px 0;">
+                            <p><strong>Service:</strong> ${serviceTitle}</p>
+                            <p><strong>Original Price:</strong> $${bid.originalPrice}</p>
+                            <p><strong>Your Payout (Bid):</strong> $${bid.bidPrice}</p>
+                        </div>
+                        <a href="${process.env.CLIENT_URL}${link}" style="background: #A2E63E; color: #000; padding: 12px 25px; text-decoration: none; border-radius: 5px; font-weight: bold; display: inline-block;">View Order</a>
+                    </div>
+                `
+            }).catch(e => console.error('Email Error:', e.message));
+        }
+
+        console.log(`Notified ${pros.length} pros for bid ${bid._id}`);
+    } catch (error) {
+        console.error('Notification Error:', error.message);
     }
 };
 
-// @desc    Get all bids for a specific order (Admin only)
-// @route   GET /api/v1/bids/order/:orderId
-// @access  Admin
-exports.getBidsForOrder = async (req, res, next) => {
+// @desc    Get all bids (Admin only)
+exports.getAllBids = async (req, res) => {
     try {
-        const bids = await OrderBid.find({ orderId: req.params.orderId })
+        const bids = await Bid.find()
             .populate({
-                path: 'proId',
-                populate: {
-                    path: 'specializedGames',
-                    model: 'Game'
-                }
+                path: 'orderId',
+                populate: { path: 'serviceId', select: 'title icon image' }
             })
+            .populate('gameId', 'name')
             .sort('-createdAt');
 
         res.status(200).json({ success: true, count: bids.length, data: bids });
@@ -65,112 +83,98 @@ exports.getBidsForOrder = async (req, res, next) => {
     }
 };
 
-// @desc    Accept a bid (Admin only)
-// @route   PUT /api/v1/bids/:id/accept
-// @access  Admin
-exports.acceptBid = async (req, res, next) => {
+// @desc    Update bid (price/status) — Admin only
+exports.updateBidPrice = async (req, res) => {
     try {
-        const bid = await OrderBid.findById(req.params.id);
+        const { bidPrice, status } = req.body;
+
+        let bid = await Bid.findById(req.params.id);
         if (!bid) {
             return res.status(404).json({ success: false, message: 'Bid not found' });
         }
 
-        const order = await Order.findById(bid.orderId);
+        const oldPrice = bid.bidPrice;
+        const oldStatus = bid.status;
+
+        if (bidPrice !== undefined) bid.bidPrice = bidPrice;
+        if (status !== undefined) bid.status = status;
+
+        await bid.save();
+
+        // Notify ONLY when bid becomes active (status changed to active, or price changed while active)
+        const becameActive = oldStatus !== 'active' && bid.status === 'active';
+        const priceChangedWhileActive = bidPrice !== undefined && bidPrice !== oldPrice && bid.status === 'active';
+
+        if (becameActive) {
+            await notifySpecializedPros(bid, 'New');
+        } else if (priceChangedWhileActive) {
+            await notifySpecializedPros(bid, 'Updated');
+        }
+
+        res.status(200).json({ success: true, data: bid });
+    } catch (err) {
+        res.status(400).json({ success: false, message: err.message });
+    }
+};
+
+// @desc    Create a bid for an order — Admin only
+exports.createBid = async (req, res) => {
+    try {
+        const { orderId, bidPrice, status } = req.body;
+
+        const order = await Order.findById(orderId).populate('serviceId', 'gameId title');
         if (!order) {
             return res.status(404).json({ success: false, message: 'Order not found' });
         }
 
-        // Assign Pro to order and update status
-        order.pro = bid.proId;
-        order.status = 'processing';
-        await order.save();
-
-        // Update bid status
-        bid.status = 'approved';
-        await bid.save();
-
-        // Reject all other bids for this order
-        await OrderBid.updateMany(
-            { orderId: bid.orderId, _id: { $ne: bid._id } },
-            { status: 'rejected' }
-        );
-
-        res.status(200).json({ success: true, message: 'Order assigned to Pro successfully', data: order });
-    } catch (err) {
-        res.status(400).json({ success: false, message: err.message });
-    }
-};
-
-// @desc    Update a bid (Pro only)
-// @route   PUT /api/v1/bids/:id
-// @access  Pro
-exports.updateBid = async (req, res, next) => {
-    try {
-        let bid = await OrderBid.findById(req.params.id);
-
-        if (!bid) {
-            return res.status(404).json({ success: false, message: 'Bid not found' });
+        const existingBid = await Bid.findOne({ orderId });
+        if (existingBid) {
+            return res.status(400).json({ success: false, message: 'Bid already exists for this order' });
         }
 
-        // Make sure bid belongs to user
-        if (bid.proId.toString() !== req.user._id.toString()) {
-            return res.status(401).json({ success: false, message: 'Not authorized to update this bid' });
-        }
+        // Extract gameId from service (shortcut stored directly in bid)
+        const gameId = order.serviceId?.gameId || null;
 
-        if (bid.status !== 'pending') {
-            return res.status(400).json({ success: false, message: 'Cannot update a bid that has already been reviewed' });
-        }
-
-        bid = await OrderBid.findByIdAndUpdate(req.params.id, req.body, {
-            new: true,
-            runValidators: true
+        const bidStatus = status || 'active';
+        const bid = await Bid.create({
+            orderId,
+            gameId,
+            originalPrice: order.price,
+            bidPrice: bidPrice || Math.round((order.price * 0.1) * 100) / 100,
+            status: bidStatus
         });
 
-        res.status(200).json({ success: true, data: bid });
+        // Only notify if created as active
+        if (bidStatus === 'active') {
+            await notifySpecializedPros(bid, 'New');
+        }
 
-        // Emit real-time update
-        const io = getIO();
-        io.emit('marketUpdate');
-        io.to(bid.orderId.toString()).emit('bidUpdate', { orderId: bid.orderId });
+        res.status(201).json({ success: true, data: bid });
     } catch (err) {
         res.status(400).json({ success: false, message: err.message });
     }
 };
 
-// @desc    Get my bids (Pro only)
-// @route   GET /api/v1/bids/me
-// @access  Pro
-exports.getMyBids = async (req, res, next) => {
+// @desc    Get active bids for a Pro user (matched by their specializedGames)
+exports.getProAvailableBids = async (req, res) => {
     try {
-        const bids = await OrderBid.find({ proId: req.user._id })
-            .populate({
-                path: 'orderId',
-                populate: { path: 'serviceId' }
-            })
-            .sort('-createdAt');
+        const user = await User.findById(req.user.id);
+        if (!user || !user.proSpecializations || user.proSpecializations.length === 0) {
+            return res.status(200).json({ success: true, data: [] });
+        }
 
-        // Add highest bid info and competitor list for each order
-        const bidsWithCompetition = await Promise.all(bids.map(async (bid) => {
-            const allBidsForOrder = await OrderBid.find({ orderId: bid.orderId._id })
-                .populate('proId', 'name avatar')
-                .sort('bidAmount');
-            
-            const highestBid = allBidsForOrder[0]; // Assuming lower is better/competitive
-            
-            return {
-                ...bid.toObject(),
-                highestBid: highestBid ? highestBid.bidAmount : bid.bidAmount,
-                isLowest: highestBid ? (highestBid._id.toString() === bid._id.toString()) : true,
-                competitors: allBidsForOrder
-                    .filter(b => b.proId._id.toString() !== req.user._id.toString())
-                    .map(b => ({
-                        name: b.proId.name,
-                        amount: b.bidAmount
-                    }))
-            };
-        }));
+        const specializedGameIds = user.proSpecializations.map(s => s.game);
 
-        res.status(200).json({ success: true, count: bids.length, data: bidsWithCompetition });
+        // Direct query using bid.gameId — no deep population needed
+        const bids = await Bid.find({
+            gameId: { $in: specializedGameIds },
+            status: 'active'
+        }).populate({
+            path: 'orderId',
+            populate: { path: 'serviceId', select: 'title icon image' }
+        });
+
+        res.status(200).json({ success: true, data: bids });
     } catch (err) {
         res.status(400).json({ success: false, message: err.message });
     }

@@ -30,6 +30,7 @@ exports.createOrder = async (req, res) => {
             };
         }
 
+        const Bid = require('../models/Bid');
         const orders = [];
         for (const item of items) {
             const orderCount = await Order.countDocuments();
@@ -53,6 +54,14 @@ exports.createOrder = async (req, res) => {
                 promoCode: promoData?.code,
                 discount: discount / items.length // Distribute discount equally
             });
+            
+            // Create automatic bid for the order (10% as default based on "50$ order -> 5$ bid")
+            await Bid.create({
+                orderId: order._id,
+                originalPrice: itemPrice,
+                bidPrice: Math.round((itemPrice * 0.1) * 100) / 100
+            });
+
             orders.push(order);
         }
 
@@ -435,11 +444,16 @@ exports.rejectOrder = async (req, res) => {
 exports.getAllOrders = async (req, res) => {
     try {
         const { status, proId, userId, page = 1, limit = 20, search } = req.query;
+        const query = {};
+        if (status) query.status = status;
+        if (proId) query.pro = proId;
+        if (userId) query.userId = userId;
 
         const orders = await Order.find(query)
             .populate('serviceId', 'title image icon backgroundImage characterImage game')
             .populate('userId', 'name email')
             .populate('pro', 'name email rating')
+            .populate('bid') // Populate the virtual bid
             .sort({ createdAt: -1 })
             .skip((page - 1) * limit)
             .limit(parseInt(limit));

@@ -140,6 +140,7 @@ const ProDashboard = () => {
   const [activeOrders, setActiveOrders] = useState([]);
   const [payouts, setPayouts] = useState([]);
   const [myBids, setMyBids] = useState([]);
+  const [adminBids, setAdminBids] = useState([]);
   const [loading, setLoading] = useState(true);
   const [claimingId, setClaimingId] = useState(null);
   const [completingId, setCompletingId] = useState(null);
@@ -175,18 +176,22 @@ const ProDashboard = () => {
   const fetchData = async () => {
     try {
       const token = localStorage.getItem('token');
-      const [availableRes, myOrdersRes, payoutRes, bidsRes] = await Promise.all([
+      const [availableRes, myOrdersRes, payoutRes, bidsRes, adminBidsRes] = await Promise.all([
         axios.get(`${API_URL}/api/v1/orders/available`),
         axios.get(`${API_URL}/api/v1/orders/booster`),
         axios.get(`${API_URL}/api/v1/payouts/me`),
         axios.get(`${API_URL}/api/v1/bids/me`, {
           headers: { Authorization: `Bearer ${token}` }
-        })
+        }).catch(() => ({ data: { data: [] } })),
+        axios.get(`${API_URL}/api/v1/bids/pro/available`, {
+          headers: { Authorization: `Bearer ${token}` }
+        }).catch(() => ({ data: { data: [] } }))
       ]);
       setAvailableOrders(availableRes.data.data);
       setActiveOrders(myOrdersRes.data.data.filter(o => o.status === 'processing' || o.status === 'pending'));
       setPayouts(payoutRes.data.data);
       setMyBids(bidsRes.data.data);
+      setAdminBids(adminBidsRes.data.data);
       setLoading(false);
     } catch (err) {
       console.error(err);
@@ -593,25 +598,88 @@ const ProDashboard = () => {
 
           <div className="min-h-[400px]">
             {tab === 'work' && (
-              <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
-                <div className="flex items-center justify-between">
-                  <h3 className="text-2xl font-black  tracking-tight">Available Assignments</h3>
-                  <p className="text-[10px] font-bold text-white  tracking-normal">Real-time Sync Active</p>
-                </div>
+              <div className="space-y-12 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                {/* ADMIN DEPLOYED BIDS SECTION */}
+                {adminBids.length > 0 && (
+                  <div className="space-y-6">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-4">
+                        <h3 className="text-2xl font-black tracking-tight">Active Bids</h3>
+                        <span className="text-[9px] font-black tracking-widest uppercase px-3 py-1.5 bg-primary/10 text-primary border border-primary/20 rounded-full">{adminBids.length} Available</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <div className="w-2 h-2 bg-primary rounded-full animate-pulse"></div>
+                        <p className="text-[10px] font-bold text-white tracking-normal">Admin Deployed</p>
+                      </div>
+                    </div>
 
-                {availableOrders.filter(o => !myBids.some(b => b.orderId?._id === o._id)).length === 0 ? (
-                  <div className="py-32 flex flex-col items-center justify-center bg-[#0A0A0A] border border-white/5 border-dashed rounded-[40px] text-center space-y-6">
-                    <AlertCircle className="w-12 h-12 text-white" />
-                    <h4 className="text-xl font-black  text-white">No New Missions</h4>
-                  </div>
-                ) : (
-                  <div className={viewMode === 'grid' ? "grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8" : "space-y-4"}>
-                    {availableOrders
-                      .filter(o => !myBids.some(b => b.orderId?._id === o._id))
-                      .map(o => viewMode === 'grid' ? renderOrderCard(o) : renderOrderRow(o))
-                    }
+                    <div className="space-y-4">
+                      {adminBids.map((bid) => (
+                        <div 
+                          key={bid._id}
+                          className="group bg-[#0A0A0A] border border-primary/10 hover:border-primary/30 rounded-[32px] p-8 transition-all flex flex-col md:flex-row items-center gap-8 relative overflow-hidden"
+                        >
+                          <div className="absolute top-0 left-0 w-1 h-full bg-primary"></div>
+                          <div className="absolute -top-12 -right-12 w-24 h-24 bg-primary/10 blur-[60px] rounded-full"></div>
+                          
+                          <div className="flex items-center gap-6 flex-1 min-w-0 w-full md:w-auto">
+                            <div className="w-16 h-16 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center p-3 shrink-0">
+                              <img src={getImageUrl(bid.orderId?.serviceId?.icon || bid.orderId?.serviceId?.image)} className="w-full h-full object-contain" alt="" />
+                            </div>
+                            <div className="min-w-0">
+                              <div className="flex items-center gap-2 mb-1">
+                                <span className="text-[8px] font-black tracking-widest uppercase px-2 py-0.5 bg-primary/10 text-primary rounded border border-primary/20">Admin Bid</span>
+                                <span className="text-[9px] font-bold text-white tracking-normal">#{bid.orderId?._id?.slice(-6).toUpperCase()}</span>
+                              </div>
+                              <h4 className="text-lg font-black text-white tracking-tight truncate">
+                                {bid.orderId?.serviceId?.title || 'Service Order'}
+                              </h4>
+                            </div>
+                          </div>
+
+                          <div className="flex items-center gap-10 w-full md:w-auto justify-between md:justify-end">
+                            <div className="text-center">
+                              <p className="text-[9px] font-black text-white/40 tracking-normal">Order Value</p>
+                              <p className="text-sm font-black text-white/50 line-through">{formatPrice(bid.originalPrice)}</p>
+                            </div>
+                            <div className="text-center">
+                              <p className="text-[9px] font-black text-primary tracking-normal">Your Payout</p>
+                              <p className="text-2xl font-black text-primary tracking-tighter">{formatPrice(bid.bidPrice)}</p>
+                            </div>
+                            <button 
+                              onClick={() => navigate(`/pro/order/${bid.orderId?._id}`)}
+                              className="px-8 py-4 bg-primary hover:bg-white text-black rounded-2xl font-black text-[11px] tracking-normal transition-all shadow-lg shadow-primary/20"
+                            >
+                              View Details
+                            </button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 )}
+
+                {/* EXISTING AVAILABLE ASSIGNMENTS */}
+                <div className="space-y-6">
+                  <div className="flex items-center justify-between">
+                    <h3 className="text-2xl font-black tracking-tight">Available Assignments</h3>
+                    <p className="text-[10px] font-bold text-white tracking-normal">Real-time Sync Active</p>
+                  </div>
+
+                  {availableOrders.filter(o => !myBids.some(b => b.orderId?._id === o._id)).length === 0 ? (
+                    <div className="py-32 flex flex-col items-center justify-center bg-[#0A0A0A] border border-white/5 border-dashed rounded-[40px] text-center space-y-6">
+                      <AlertCircle className="w-12 h-12 text-white" />
+                      <h4 className="text-xl font-black text-white">No New Missions</h4>
+                    </div>
+                  ) : (
+                    <div className={viewMode === 'grid' ? "grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8" : "space-y-4"}>
+                      {availableOrders
+                        .filter(o => !myBids.some(b => b.orderId?._id === o._id))
+                        .map(o => viewMode === 'grid' ? renderOrderCard(o) : renderOrderRow(o))
+                      }
+                    </div>
+                  )}
+                </div>
               </div>
             )}
 

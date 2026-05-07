@@ -2,7 +2,6 @@ const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 const path = require('path');
 const User = require('../models/User');
-const OrderBid = require('../models/OrderBid');
 
 // Load env vars
 dotenv.config({ path: path.join(__dirname, '../.env') });
@@ -39,26 +38,6 @@ const seedPros = async () => {
                 console.log(`Pro ${i} already exists`);
             }
             proUsers.push(user);
-        }
-
-        // Place 10 bids
-        for (let i = 0; i < 10; i++) {
-            const pro = proUsers[i];
-            const existingBid = await OrderBid.findOne({ orderId, proId: pro._id });
-
-            if (!existingBid) {
-                await OrderBid.create({
-                    orderId: orderId,
-                    proId: pro._id,
-                    bidAmount: 40 + Math.floor(Math.random() * 20), // Random bid between 40 and 60
-                    message: `I am highly experienced in this game. Choose me for fast delivery!`,
-                    type: i % 3 === 0 ? 'claim' : 'bid', // Mix of claims and bids
-                    status: 'pending'
-                });
-                console.log(`Bid placed by ${pro.name}`);
-            } else {
-                console.log(`Bid already exists for ${pro.name}`);
-            }
         }
 
         console.log('Seeding completed successfully!');

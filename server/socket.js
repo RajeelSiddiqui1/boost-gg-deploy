@@ -46,6 +46,12 @@ module.exports = {
             socket.on('disconnect', () => {
                 console.log('Socket Client disconnected:', socket.id);
             });
+
+            // Allow users to join their personal notification room
+            socket.on('joinUser', (userId) => {
+                socket.join(userId);
+                console.log(`Socket ${socket.id} joined user room: ${userId}`);
+            });
         });
 
         return io;

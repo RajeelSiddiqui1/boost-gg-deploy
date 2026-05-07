@@ -2,15 +2,17 @@ import React from 'react';
 import { NavLink, useNavigate, useLocation } from 'react-router-dom';
 import {
  LayoutDashboard, ShoppingCart, User as UserIcon,
- Settings, LogOut, ChevronLeft, Zap, ShieldCheck, Heart, MessageSquare
+ Settings, LogOut, ChevronLeft, Zap, ShieldCheck, Heart, MessageSquare, Bell
 } from 'lucide-react';
 
 import { useAuth } from '../../context/AuthContext';
 import { useCurrency } from '../../context/CurrencyContext';
+import { useNotifications } from '../../context/NotificationContext';
 
 const DashboardLayout = ({ children, title }) => {
  const { logout, user } = useAuth();
  const { formatPrice } = useCurrency();
+ const { unreadCount } = useNotifications();
  const navigate = useNavigate();
  const location = useLocation();
 
@@ -36,6 +38,7 @@ const DashboardLayout = ({ children, title }) => {
   menuItems.push({ name: 'My Bids', icon: Zap, path: '/dashboard?tab=bids' });
   menuItems.push({ name: 'Messages', icon: MessageSquare, path: '/pro/chat' });
   menuItems.push({ name: 'Earnings', icon: Zap, path: '/dashboard?tab=earnings' });
+  menuItems.push({ name: 'Notifications', icon: Bell, path: '/pro/notifications', count: unreadCount });
   menuItems.push({ name: 'Performance', icon: ShieldCheck, path: '/dashboard?tab=performance' });
   menuItems.push({ name: 'Profile Settings', icon: UserIcon, path: '/dashboard?tab=profile' });
  } else {
@@ -50,89 +53,103 @@ const DashboardLayout = ({ children, title }) => {
 
  return (
  <div className="min-h-screen bg-black text-white flex font-['Outfit']">
- {/* Sidebar */}
- <aside className="w-[300px] border-r border-white/5 flex flex-col bg-[#050505] sticky top-0 h-screen">
- <div className="p-8 border-b border-white/5 flex items-center gap-3">
- <div className="w-10 h-10 bg-primary/20 rounded-xl flex items-center justify-center border border-primary/30">
- <Zap className="w-5 h-5 text-primary fill-primary" />
- </div>
- <span className="text-xl font-black  tracking-tighter">BoostGG</span>
- </div>
+  {/* Sidebar */}
+  <aside className="w-[300px] border-r border-white/5 flex flex-col bg-[#050505] sticky top-0 h-screen">
+  <div className="p-8 border-b border-white/5 flex items-center gap-3">
+  <div className="w-10 h-10 bg-primary/20 rounded-xl flex items-center justify-center border border-primary/30">
+  <Zap className="w-5 h-5 text-primary fill-primary" />
+  </div>
+  <span className="text-xl font-black  tracking-tighter">BoostGG</span>
+  </div>
 
- <nav className="flex-1 p-6 space-y-2">
- <p className="text-[10px] font-black  tracking-[0.2em] text-white ml-4 mb-4">Main Menu</p>
- {menuItems.map((item) => {
-  const isActive = location.pathname + location.search === item.path || 
-          (item.path.startsWith('/dashboard') && location.pathname === '/dashboard' && !location.search && item.name === 'Dashboard') ||
-          (item.name === 'Messages' && location.pathname.startsWith('/pro/chat'));
-  
-  return (
-  <NavLink
-  key={item.name}
-  to={item.path}
-  className={`
-  flex items-center gap-4 px-4 py-4 rounded-2xl font-black text-xs  tracking-widest transition-all
-  ${isActive ? 'bg-primary text-black shadow-lg shadow-primary/20' : 'text-white/40 hover:text-white hover:bg-white/5'}
-  `}
+  <nav className="flex-1 p-6 space-y-2">
+  <p className="text-[10px] font-black  tracking-[0.2em] text-white ml-4 mb-4">Main Menu</p>
+  {menuItems.map((item) => {
+   const isActive = location.pathname + location.search === item.path || 
+           (item.path.startsWith('/dashboard') && location.pathname === '/dashboard' && !location.search && item.name === 'Dashboard') ||
+           (item.name === 'Messages' && location.pathname.startsWith('/pro/chat'));
+   
+   return (
+   <NavLink
+   key={item.name}
+   to={item.path}
+   className={`
+   flex items-center gap-4 px-4 py-4 rounded-2xl font-black text-xs  tracking-widest transition-all
+   ${isActive ? 'bg-primary text-black shadow-lg shadow-primary/20' : 'text-white/40 hover:text-white hover:bg-white/5'}
+   `}
+   >
+   <item.icon className="w-5 h-5" />
+   <span className="flex-1">{item.name}</span>
+   {item.count > 0 && (
+    <span className="bg-white text-black text-[8px] font-black w-4 h-4 rounded-full flex items-center justify-center">
+     {item.count}
+    </span>
+   )}
+   </NavLink>
+   );
+  })}
+  </nav>
+
+  <div className="p-6 border-t border-white/5">
+  <button
+  onClick={handleLogout}
+  className="w-full flex items-center gap-4 px-4 py-4 rounded-2xl font-black text-xs  tracking-widest text-red-500/60 hover:text-red-500 hover:bg-red-500/10 transition-all"
   >
-  <item.icon className="w-5 h-5" />
-  {item.name}
-  </NavLink>
-  );
- })}
- </nav>
+  <LogOut className="w-5 h-5" />
+  Logout
+  </button>
 
- <div className="p-6 border-t border-white/5">
- <button
- onClick={handleLogout}
- className="w-full flex items-center gap-4 px-4 py-4 rounded-2xl font-black text-xs  tracking-widest text-red-500/60 hover:text-red-500 hover:bg-red-500/10 transition-all"
- >
- <LogOut className="w-5 h-5" />
- Logout
- </button>
+  <div className="mt-6 p-4 bg-white/[0.02] border border-white/5 rounded-2xl flex items-center gap-3">
+  <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center border border-primary/30">
+  <span className="text-sm font-black text-white">{user?.name?.charAt(0)}</span>
+  </div>
+  <div className="min-w-0">
+  <p className="text-[10px] font-black  text-white truncate">{user?.name}</p>
+  <p className="text-[8px] font-bold  text-white tracking-widest flex items-center gap-1">
+  {isAdmin ? <ShieldCheck className="w-2.5 h-2.5 text-primary" /> : null}
+  {user?.role === 'user' ? 'Buyer' : user?.role === 'pro' ? 'Pro Player' : 'Nexus Admin'}
+  </p>
+  </div>
+  </div>
+  </div>
+  </aside>
 
- <div className="mt-6 p-4 bg-white/[0.02] border border-white/5 rounded-2xl flex items-center gap-3">
- <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center border border-primary/30">
- <span className="text-sm font-black text-white">{user?.name?.charAt(0)}</span>
- </div>
- <div className="min-w-0">
- <p className="text-[10px] font-black  text-white truncate">{user?.name}</p>
- <p className="text-[8px] font-bold  text-white tracking-widest flex items-center gap-1">
- {isAdmin ? <ShieldCheck className="w-2.5 h-2.5 text-primary" /> : null}
- {user?.role === 'user' ? 'Buyer' : user?.role === 'pro' ? 'Pro Player' : 'Nexus Admin'}
- </p>
- </div>
- </div>
- </div>
- </aside>
+  {/* Main Content Area */}
+  <main className="flex-1 min-w-0 bg-black overflow-y-auto">
+  <header className="h-[100px] border-b border-white/5 flex items-center justify-between px-10 bg-black/50 backdrop-blur-xl sticky top-0 z-50">
+  <h1 className="text-2xl font-black  tracking-tight">{title}</h1>
+  <div className="flex items-center gap-6">
+  <button 
+   onClick={() => navigate('/pro/notifications')}
+   className="relative p-3 rounded-xl bg-white/5 border border-white/10 text-white/40 hover:text-white hover:border-white/20 transition-all"
+  >
+   <Bell className="w-5 h-5" />
+   {unreadCount > 0 && (
+    <span className="absolute top-2 right-2 w-2 h-2 bg-primary rounded-full border-2 border-black animate-pulse"></span>
+   )}
+  </button>
+  <div className="w-[1px] h-8 bg-white/5"></div>
+  <div className="flex flex-col items-end">
+  <span className="text-[10px] font-black  tracking-widest text-white">
+  {isPro ? 'Total Earnings' : 'Available Funds'}
+  </span>
+  <span className="text-lg font-black text-white">
+  {formatPrice(isPro ? (user?.earnings || 0) : (user?.walletBalance || 0))}
+  </span>
+  </div>
+  <div className="w-[1px] h-8 bg-white/5"></div>
+  <button className="flex items-center gap-2 text-[10px] font-black  tracking-[0.2em] text-white/40 hover:text-white transition-all">
+  Help Center
+  </button>
+  </div>
+  </header>
 
- {/* Main Content Area */}
- <main className="flex-1 min-w-0 bg-black overflow-y-auto">
- <header className="h-[100px] border-b border-white/5 flex items-center justify-between px-10 bg-black/50 backdrop-blur-xl sticky top-0 z-50">
- <h1 className="text-2xl font-black  tracking-tight">{title}</h1>
- <div className="flex items-center gap-6">
- <div className="flex flex-col items-end">
- <span className="text-[10px] font-black  tracking-widest text-white">
- {isPro ? 'Total Earnings' : 'Available Funds'}
- </span>
- <span className="text-lg font-black text-white">
- {formatPrice(isPro ? (user?.earnings || 0) : (user?.walletBalance || 0))}
- </span>
- </div>
- <div className="w-[1px] h-8 bg-white/5"></div>
- <button className="flex items-center gap-2 text-[10px] font-black  tracking-[0.2em] text-white/40 hover:text-white transition-all">
- Help Center
- </button>
- </div>
- </header>
-
- <div className="p-10">
- {children}
- </div>
- </main>
+  <div className="p-10">
+  {children}
+  </div>
+  </main>
  </div>
  );
 };
 
 export default DashboardLayout;
-

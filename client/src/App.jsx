@@ -18,6 +18,7 @@ import { API_URL } from './utils/api';
 import { UIProvider } from './context/UIContext';
 import { CurrencyProvider } from './context/CurrencyContext';
 import { ModeProvider } from './context/ModeContext';
+import { NotificationProvider } from './context/NotificationContext';
 import { io } from 'socket.io-client';
 
 const Home = lazy(() => import('./pages/Home'));
@@ -36,7 +37,7 @@ const AdminAccounts = lazy(() => import('./pages/admin/Accounts'));
 const AdminOffers = lazy(() => import('./pages/admin/Offers'));
 const AdminUsers = lazy(() => import('./pages/admin/Users'));
 const AdminOrders = lazy(() => import('./pages/admin/Orders'));
-const OrderBids = lazy(() => import('./pages/admin/OrderBids'));
+const AdminBids = lazy(() => import('./pages/admin/Bids'));
 const AdminChat = lazy(() => import('./pages/admin/Chat'));
 const AdminFinance = lazy(() => import('./pages/admin/Finance'));
 const AdminReviews = lazy(() => import('./pages/admin/Reviews'));
@@ -69,6 +70,7 @@ const PaymentGateway = lazy(() => import('./pages/PaymentGateway'));
 const BoosterOrderDetails = lazy(() => import('./pages/BoosterOrderDetails'));
 const ChatHub = lazy(() => import('./pages/ChatHub'));
 const CustomerOrderDetails = lazy(() => import('./pages/CustomerOrderDetails'));
+const Notifications = lazy(() => import('./pages/Notifications'));
 
 const AppContent = () => {
   const location = useLocation();
@@ -178,6 +180,7 @@ const AppContent = () => {
             <Route path="/pro/order/:id" element={<ProtectedRoute proOnly><BoosterOrderDetails /></ProtectedRoute>} />
             <Route path="/pro/chat" element={<ProtectedRoute><ChatHub /></ProtectedRoute>} />
             <Route path="/pro/chat/:orderId" element={<ProtectedRoute><ChatHub /></ProtectedRoute>} />
+            <Route path="/pro/notifications" element={<ProtectedRoute><Notifications /></ProtectedRoute>} />
 
             <Route path="/affiliate/dashboard" element={<ProtectedRoute affiliateOnly><AffiliateDashboard /></ProtectedRoute>} />
 
@@ -195,7 +198,7 @@ const AppContent = () => {
             <Route path="/admin/blogs/:id/edit" element={<ProtectedRoute adminOnly><BlogEditor /></ProtectedRoute>} />
             <Route path="/admin/users" element={<ProtectedRoute adminOnly><AdminUsers /></ProtectedRoute>} />
             <Route path="/admin/orders" element={<ProtectedRoute adminOnly><AdminOrders /></ProtectedRoute>} />
-            <Route path="/admin/orders/:id/bids" element={<ProtectedRoute adminOnly><OrderBids /></ProtectedRoute>} />
+            <Route path="/admin/bids" element={<ProtectedRoute adminOnly><AdminBids /></ProtectedRoute>} />
             <Route path="/admin/chat" element={<ProtectedRoute adminOnly><AdminChat /></ProtectedRoute>} />
             <Route path="/admin/finance" element={<ProtectedRoute adminOnly><AdminFinance /></ProtectedRoute>} />
             <Route path="/admin/reviews" element={<ProtectedRoute adminOnly><AdminReviews /></ProtectedRoute>} />
@@ -222,15 +225,17 @@ function App() {
     <Router>
       <ToastProvider>
         <AuthProvider>
-          <CurrencyProvider>
-            <CartProvider>
-              <ModeProvider>
-                <UIProvider>
-                  <AppContent />
-                </UIProvider>
-              </ModeProvider>
-            </CartProvider>
-          </CurrencyProvider>
+          <NotificationProvider>
+            <CurrencyProvider>
+              <CartProvider>
+                <ModeProvider>
+                  <UIProvider>
+                    <AppContent />
+                  </UIProvider>
+                </ModeProvider>
+              </CartProvider>
+            </CurrencyProvider>
+          </NotificationProvider>
         </AuthProvider>
       </ToastProvider>
     </Router>
