@@ -17,7 +17,7 @@ const notificationSchema = new mongoose.Schema({
     },
     type: {
         type: String,
-        enum: ['bid_created', 'order_update', 'system', 'payout'],
+        enum: ['bid_created', 'order_update', 'system', 'payout', 'booster_bid'],
         default: 'system'
     },
     link: {

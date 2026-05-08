@@ -3,7 +3,8 @@ import axios from 'axios';
 import { API_URL } from '../../utils/api';
 import AdminLayout from '../../components/admin/AdminLayout';
 import { useCurrency } from '../../context/CurrencyContext';
-import { Tag, Edit2, Check, X, Loader2, ToggleLeft, ToggleRight } from 'lucide-react';
+import { Tag, Edit2, Check, X, Loader2, User, ToggleLeft, ToggleRight, Eye, MessageSquare } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 const Bids = () => {
   const { formatPrice } = useCurrency();
@@ -13,6 +14,8 @@ const Bids = () => {
   const [newPrice, setNewPrice] = useState('');
   const [actionLoading, setActionLoading] = useState(false);
   const [toggleLoading, setToggleLoading] = useState(null);
+  const [tab, setTab] = useState('active');
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchBids();
@@ -81,8 +84,11 @@ const Bids = () => {
     );
   }
 
-  const activeBids = bids.filter(b => b.status === 'active');
-  const inactiveBids = bids.filter(b => b.status === 'inactive');
+  const activeBids = bids.filter(b => b.status === 'active' && !b.assignedUser);
+  const assignedBids = bids.filter(b => b.assignedUser);
+  const inactiveBids = bids.filter(b => b.status === 'inactive' && !b.assignedUser);
+
+  const displayedBids = tab === 'active' ? activeBids : tab === 'assigned' ? assignedBids : inactiveBids;
 
   return (
     <AdminLayout>
@@ -91,15 +97,30 @@ const Bids = () => {
           <h2 className="text-4xl font-black tracking-tighter flex items-center gap-4 text-white">
             Order Bids Control
           </h2>
-          <div className="flex items-center gap-4">
-            <div className="flex items-center gap-3 px-5 py-3 bg-primary/10 border border-primary/20 rounded-2xl">
-              <div className="w-2 h-2 bg-primary rounded-full animate-pulse"></div>
-              <span className="text-[10px] font-black text-primary tracking-widest uppercase">{activeBids.length} Active</span>
-            </div>
-            <div className="flex items-center gap-3 px-5 py-3 bg-white/5 border border-white/10 rounded-2xl">
-              <div className="w-2 h-2 bg-white/30 rounded-full"></div>
-              <span className="text-[10px] font-black text-white/40 tracking-widest uppercase">{inactiveBids.length} Inactive</span>
-            </div>
+          <div className="flex items-center gap-3 bg-white/5 p-1.5 rounded-[22px] border border-white/10">
+            <button 
+              onClick={() => setTab('active')}
+              className={`flex items-center gap-3 px-6 py-3 rounded-2xl transition-all ${tab === 'active' ? 'bg-primary text-black shadow-lg shadow-primary/20' : 'hover:bg-white/5 text-white/40'}`}
+            >
+              <div className={`w-2 h-2 rounded-full ${tab === 'active' ? 'bg-black animate-pulse' : 'bg-primary'}`}></div>
+              <span className="text-[10px] font-black tracking-widest uppercase">{activeBids.length} Active</span>
+            </button>
+            
+            <button 
+              onClick={() => setTab('assigned')}
+              className={`flex items-center gap-3 px-6 py-3 rounded-2xl transition-all ${tab === 'assigned' ? 'bg-primary text-black shadow-lg shadow-primary/20' : 'hover:bg-white/5 text-white/40'}`}
+            >
+              <div className={`w-2 h-2 rounded-full ${tab === 'assigned' ? 'bg-black' : 'bg-blue-500'}`}></div>
+              <span className="text-[10px] font-black tracking-widest uppercase">{assignedBids.length} Assigned</span>
+            </button>
+
+            <button 
+              onClick={() => setTab('inactive')}
+              className={`flex items-center gap-3 px-6 py-3 rounded-2xl transition-all ${tab === 'inactive' ? 'bg-primary text-black shadow-lg shadow-primary/20' : 'hover:bg-white/5 text-white/40'}`}
+            >
+              <div className={`w-2 h-2 rounded-full ${tab === 'inactive' ? 'bg-black' : 'bg-white/30'}`}></div>
+              <span className="text-[10px] font-black tracking-widest uppercase">{inactiveBids.length} Inactive</span>
+            </button>
           </div>
         </div>
 
@@ -111,22 +132,26 @@ const Bids = () => {
                   <th className="p-8 text-[10px] font-black tracking-[0.2em] text-white/40 uppercase">Order Details</th>
                   <th className="p-8 text-[10px] font-black tracking-[0.2em] text-white/40 uppercase">Original Price</th>
                   <th className="p-8 text-[10px] font-black tracking-[0.2em] text-white/40 uppercase">Bid Price</th>
-                  <th className="p-8 text-[10px] font-black tracking-[0.2em] text-white/40 uppercase">Visibility</th>
+                  {tab === 'assigned' ? (
+                    <th className="p-8 text-[10px] font-black tracking-[0.2em] text-white/40 uppercase">Winner</th>
+                  ) : (
+                    <th className="p-8 text-[10px] font-black tracking-[0.2em] text-white/40 uppercase">Visibility</th>
+                  )}
                   <th className="p-8 text-[10px] font-black tracking-[0.2em] text-white/40 uppercase text-right">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-white/5">
-                {bids.length === 0 ? (
+                {displayedBids.length === 0 ? (
                   <tr>
-                    <td colSpan="5" className="p-20 text-center">
+                    <td colSpan={tab === 'assigned' ? "5" : "5"} className="p-20 text-center">
                       <div className="flex flex-col items-center gap-4 opacity-20">
                         <Tag className="w-12 h-12" />
-                        <p className="text-[10px] font-black tracking-widest uppercase">No active bids found in memory</p>
+                        <p className="text-[10px] font-black tracking-widest uppercase">No {tab} bids found in registry</p>
                       </div>
                     </td>
                   </tr>
                 ) : (
-                  bids.map((bid) => (
+                  displayedBids.map((bid) => (
                     <tr key={bid._id} className={`group hover:bg-white/[0.01] transition-colors ${bid.status === 'inactive' ? 'opacity-40' : ''}`}>
                       <td className="p-8">
                         <div>
@@ -162,22 +187,38 @@ const Bids = () => {
                         )}
                       </td>
                       <td className="p-8">
-                        <button
-                          onClick={() => handleToggleStatus(bid)}
-                          disabled={toggleLoading === bid._id}
-                          className="flex items-center gap-3 cursor-pointer group/toggle"
-                        >
-                          {toggleLoading === bid._id ? (
-                            <Loader2 className="w-8 h-8 animate-spin text-white/20" />
-                          ) : bid.status === 'active' ? (
-                            <ToggleRight className="w-8 h-8 text-primary transition-all group-hover/toggle:scale-110" />
-                          ) : (
-                            <ToggleLeft className="w-8 h-8 text-white/20 transition-all group-hover/toggle:scale-110" />
-                          )}
-                          <span className={`text-[9px] font-black tracking-widest uppercase ${bid.status === 'active' ? 'text-primary' : 'text-white/30'}`}>
-                            {bid.status}
-                          </span>
-                        </button>
+                        {tab === 'assigned' ? (
+                          <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center text-primary overflow-hidden">
+                              {bid.assignedUser?.avatar ? (
+                                <img src={getImageUrl(bid.assignedUser.avatar)} className="w-full h-full object-cover" alt="" />
+                              ) : (
+                                <User className="w-5 h-5" />
+                              )}
+                            </div>
+                            <div>
+                              <p className="text-xs font-black text-white">{bid.assignedUser?.name || 'Assigned'}</p>
+                              <p className="text-[9px] font-bold text-white/30 uppercase tracking-widest">{bid.assignedUser?.email?.split('@')[0]}</p>
+                            </div>
+                          </div>
+                        ) : (
+                          <button
+                            onClick={() => handleToggleStatus(bid)}
+                            disabled={toggleLoading === bid._id}
+                            className="flex items-center gap-3 cursor-pointer group/toggle"
+                          >
+                            {toggleLoading === bid._id ? (
+                              <Loader2 className="w-8 h-8 animate-spin text-white/20" />
+                            ) : bid.status === 'active' ? (
+                              <ToggleRight className="w-8 h-8 text-primary transition-all group-hover/toggle:scale-110" />
+                            ) : (
+                              <ToggleLeft className="w-8 h-8 text-white/20 transition-all group-hover/toggle:scale-110" />
+                            )}
+                            <span className={`text-[9px] font-black tracking-widest uppercase ${bid.status === 'active' ? 'text-primary' : 'text-white/30'}`}>
+                              {bid.status}
+                            </span>
+                          </button>
+                        )}
                       </td>
                       <td className="p-8 text-right">
                         {editingBid === bid._id ? (
@@ -197,12 +238,29 @@ const Bids = () => {
                             </button>
                           </div>
                         ) : (
-                          <button
-                            onClick={() => handleEdit(bid)}
-                            className="p-4 bg-white/5 text-white/40 rounded-2xl hover:bg-primary hover:text-black transition-all group-hover:scale-105"
-                          >
-                            <Edit2 className="w-4 h-4" />
-                          </button>
+                          <div className="flex justify-end gap-2">
+                            {tab === 'assigned' && (
+                              <button
+                                onClick={() => navigate(`/admin/bids/${bid._id}/details`)}
+                                className="p-4 bg-white/5 text-white/40 rounded-2xl hover:bg-primary hover:text-black transition-all flex items-center gap-2"
+                              >
+                                <MessageSquare className="w-4 h-4" />
+                              </button>
+                            )}
+                            <button
+                              onClick={() => navigate(`/admin/bids/${bid._id}/details`)}
+                              className="p-4 bg-primary/10 text-primary rounded-2xl hover:bg-primary hover:text-black transition-all flex items-center gap-2"
+                            >
+                              <Eye className="w-4 h-4" />
+                              <span className="text-[10px] font-black uppercase tracking-widest">View Bids</span>
+                            </button>
+                            <button
+                              onClick={() => handleEdit(bid)}
+                              className="p-4 bg-white/5 text-white/40 rounded-2xl hover:bg-primary hover:text-black transition-all"
+                            >
+                              <Edit2 className="w-4 h-4" />
+                            </button>
+                          </div>
                         )}
                       </td>
                     </tr>

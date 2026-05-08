@@ -71,6 +71,8 @@ const BoosterOrderDetails = lazy(() => import('./pages/BoosterOrderDetails'));
 const ChatHub = lazy(() => import('./pages/ChatHub'));
 const CustomerOrderDetails = lazy(() => import('./pages/CustomerOrderDetails'));
 const Notifications = lazy(() => import('./pages/Notifications'));
+const BidBidders = lazy(() => import('./pages/BidBidders'));
+const AdminBidDetails = lazy(() => import('./pages/admin/AdminBidDetails'));
 
 const AppContent = () => {
   const location = useLocation();
@@ -178,6 +180,7 @@ const AppContent = () => {
             <Route path="/pro/dashboard" element={<ProtectedRoute proOnly><BoosterDashboard /></ProtectedRoute>} />
             <Route path="/pro/settings" element={<ProtectedRoute proOnly><ProSettings /></ProtectedRoute>} />
             <Route path="/pro/order/:id" element={<ProtectedRoute proOnly><BoosterOrderDetails /></ProtectedRoute>} />
+            <Route path="/pro/bid/:id/bidders" element={<ProtectedRoute proOnly><BidBidders /></ProtectedRoute>} />
             <Route path="/pro/chat" element={<ProtectedRoute><ChatHub /></ProtectedRoute>} />
             <Route path="/pro/chat/:orderId" element={<ProtectedRoute><ChatHub /></ProtectedRoute>} />
             <Route path="/pro/notifications" element={<ProtectedRoute><Notifications /></ProtectedRoute>} />
@@ -199,6 +202,7 @@ const AppContent = () => {
             <Route path="/admin/users" element={<ProtectedRoute adminOnly><AdminUsers /></ProtectedRoute>} />
             <Route path="/admin/orders" element={<ProtectedRoute adminOnly><AdminOrders /></ProtectedRoute>} />
             <Route path="/admin/bids" element={<ProtectedRoute adminOnly><AdminBids /></ProtectedRoute>} />
+            <Route path="/admin/bids/:id/details" element={<ProtectedRoute adminOnly><AdminBidDetails /></ProtectedRoute>} />
             <Route path="/admin/chat" element={<ProtectedRoute adminOnly><AdminChat /></ProtectedRoute>} />
             <Route path="/admin/finance" element={<ProtectedRoute adminOnly><AdminFinance /></ProtectedRoute>} />
             <Route path="/admin/reviews" element={<ProtectedRoute adminOnly><AdminReviews /></ProtectedRoute>} />

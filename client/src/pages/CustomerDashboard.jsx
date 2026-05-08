@@ -21,6 +21,7 @@ const BuyerDashboard = () => {
   const [loading, setLoading] = useState(true);
   const [favorites, setFavorites] = useState([]);
   const [viewMode, setViewMode] = useState('list');
+  const [ordersSubTab, setOrdersSubTab] = useState('active'); // 'active' (assigned) or 'pending' (waiting)
 
   const { user, checkUserLoggedIn } = useAuth();
   const { formatPrice } = useCurrency();
@@ -94,8 +95,12 @@ const BuyerDashboard = () => {
 
   const renderOrderRow = (order) => {
     const service = order.serviceId || order.offer;
-    const pro = order.pro;
+    const pro = order.assignedBid?.assignedUser;
     
+    // Check if this order should be in this tab
+    const isAssigned = !!pro;
+    if (ordersSubTab === 'active' && !isAssigned) return null;
+    if (ordersSubTab === 'pending' && isAssigned) return null;
     return (
       <div 
         key={order._id}
@@ -125,11 +130,15 @@ const BuyerDashboard = () => {
           {pro ? (
             <div className="flex items-center gap-4">
               <div className="w-12 h-12 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center text-white relative">
-                <User className="w-6 h-6" />
+                {pro.avatar ? (
+                  <img src={getImageUrl(pro.avatar)} className="w-full h-full object-cover rounded-full" alt="" />
+                ) : (
+                  <User className="w-6 h-6" />
+                )}
                 <div className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-green-500 rounded-full border-2 border-[#0A0A0A]"></div>
               </div>
               <div>
-                <p className="text-[10px] font-black text-white  tracking-normal">Specialist</p>
+                <p className="text-[10px] font-black text-white  tracking-normal">Mission Specialist</p>
                 <p className="text-sm font-black text-white  truncate">{pro.name}</p>
               </div>
             </div>
@@ -140,7 +149,7 @@ const BuyerDashboard = () => {
               </div>
               <div>
                 <p className="text-[10px] font-black text-white  tracking-normal">Status</p>
-                <p className="text-sm font-black text-white ">Awaiting Pro</p>
+                <p className="text-sm font-black text-white ">Auction Live</p>
               </div>
             </div>
           )}
@@ -153,12 +162,14 @@ const BuyerDashboard = () => {
           </div>
 
           <div className="flex items-center gap-3">
-            <button 
-              onClick={(e) => { e.stopPropagation(); navigate(`/pro/chat/${order._id}`); }}
-              className="w-14 h-14 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center text-primary hover:bg-primary hover:text-black transition-all"
-            >
-              <MessageSquare className="w-6 h-6" />
-            </button>
+            {pro && (
+              <button 
+                onClick={(e) => { e.stopPropagation(); navigate(`/pro/chat/${order._id}`); }}
+                className="w-14 h-14 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center text-primary hover:bg-primary hover:text-black transition-all"
+              >
+                <MessageSquare className="w-6 h-6" />
+              </button>
+            )}
             <ChevronRight className="w-5 h-5 text-white group-hover:text-primary transition-all group-hover:translate-x-1" />
           </div>
         </div>
@@ -168,7 +179,12 @@ const BuyerDashboard = () => {
 
   const renderOrderCard = (order) => {
     const service = order.serviceId || order.offer;
-    const pro = order.pro;
+    const pro = order.assignedBid?.assignedUser;
+
+    // Check if this order should be in this tab
+    const isAssigned = !!pro;
+    if (ordersSubTab === 'active' && !isAssigned) return null;
+    if (ordersSubTab === 'pending' && isAssigned) return null;
     
     return (
       <div 
@@ -200,12 +216,14 @@ const BuyerDashboard = () => {
                     <span className="text-xl font-black text-white tracking-tighter">{formatPrice(order.amount || order.price)}</span>
                 </div>
                 <div className="flex items-center gap-2">
-                    <button 
-                        onClick={(e) => { e.stopPropagation(); navigate(`/pro/chat/${order._id}`); }}
-                        className="w-12 h-12 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center text-primary hover:bg-primary hover:text-black transition-all"
-                    >
-                        <MessageSquare className="w-5 h-5" />
-                    </button>
+                    {pro && (
+                        <button 
+                            onClick={(e) => { e.stopPropagation(); navigate(`/pro/chat/${order._id}`); }}
+                            className="w-12 h-12 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center text-primary hover:bg-primary hover:text-black transition-all"
+                        >
+                            <MessageSquare className="w-5 h-5" />
+                        </button>
+                    )}
                     <div className="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center text-white group-hover:bg-primary group-hover:text-black transition-all">
                         <ChevronRight className="w-5 h-5" />
                     </div>
@@ -254,10 +272,23 @@ const BuyerDashboard = () => {
 
               <div className="space-y-6">
                 <div className="flex items-center justify-between px-2">
-                  <h3 className="text-xl font-black  text-white tracking-tight">Active Operation Registry</h3>
-                  <div className="flex items-center gap-2">
+                  <div className="flex p-1 bg-white/5 rounded-2xl border border-white/10">
+                    <button 
+                      onClick={() => setOrdersSubTab('active')} 
+                      className={`px-8 py-3 rounded-xl text-[10px] font-black  tracking-normal transition-all ${ordersSubTab === 'active' ? 'bg-primary text-black shadow-lg shadow-primary/20' : 'text-white/40 hover:text-white'}`}
+                    >
+                      Active Missions
+                    </button>
+                    <button 
+                      onClick={() => setOrdersSubTab('pending')} 
+                      className={`px-8 py-3 rounded-xl text-[10px] font-black  tracking-normal transition-all ${ordersSubTab === 'pending' ? 'bg-primary text-black shadow-lg shadow-primary/20' : 'text-white/40 hover:text-white'}`}
+                    >
+                      Live Auctions
+                    </button>
+                  </div>
+                  <div className="flex items-center gap-2 hidden md:flex">
                     <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                    <span className="text-[9px] font-black text-white  tracking-normal">Live Updates Enabled</span>
+                    <span className="text-[9px] font-black text-white  tracking-normal uppercase">Command Link Stable</span>
                   </div>
                 </div>
 

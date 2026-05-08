@@ -26,6 +26,17 @@ module.exports = {
                 console.log(`Socket ${socket.id} left order room: ${orderId}`);
             });
 
+            // Bid rooms
+            socket.on('joinBid', (bidId) => {
+                socket.join(bidId);
+                console.log(`Socket ${socket.id} joined bid room: ${bidId}`);
+            });
+
+            socket.on('leaveBid', (bidId) => {
+                socket.leave(bidId);
+                console.log(`Socket ${socket.id} left bid room: ${bidId}`);
+            });
+
             // --- Support Chat Socket Events ---
             socket.on('joinSupport', (conversationId) => {
                 socket.join(conversationId);

@@ -28,6 +28,7 @@ const ChatHub = () => {
 
     const [orders, setOrders] = useState([]);
     const [activeOrder, setActiveOrder] = useState(null);
+    const [activeBid, setActiveBid] = useState(null);
     const [messages, setMessages] = useState([]);
     const [newMessage, setNewMessage] = useState('');
     const [loading, setLoading] = useState(true);
@@ -64,10 +65,18 @@ const ChatHub = () => {
 
         const fetchOrderDetails = async () => {
             try {
-                const res = await axios.get(`${API_URL}/api/v1/orders/${paramOrderId}`);
-                setActiveOrder(res.data.data);
-                setMessages(res.data.data.chat || []);
+                const res = await axios.get(`${API_URL}/api/v1/chats/order/${paramOrderId}`);
+                setActiveOrder(res.data.bid.orderId);
+                setActiveBid(res.data.bid);
+                setMessages(res.data.data || []);
+                
+                // Join rooms for real-time updates
                 socket.emit('joinOrder', paramOrderId);
+                socket.emit('joinBid', res.data.bid._id);
+                console.log(`📡 Connected to Command Link: Order ${paramOrderId} | Bid ${res.data.bid._id}`);
+                
+                // Mark as seen
+                await axios.put(`${API_URL}/api/v1/chats/${res.data.bid._id}/seen`);
             } catch (err) {
                 console.error(err);
             }
@@ -87,15 +96,30 @@ const ChatHub = () => {
             setMessages(prev => prev.filter(m => m._id !== messageId));
         };
 
+        const handleMessagesSeen = ({ userId: seenByUserId }) => {
+            if (seenByUserId !== user?._id) {
+                setMessages(prev => prev.map(m => {
+                    const senderId = m.sender?._id || m.sender;
+                    if (senderId === user?._id) {
+                        return { ...m, seen: true };
+                    }
+                    return m;
+                }));
+            }
+        };
+
         socket.on('newMessage', handleNewMessage);
         socket.on('messageDeleted', handleMessageDeleted);
+        socket.on('messagesSeen', handleMessagesSeen);
 
         return () => {
             socket.emit('leaveOrder', paramOrderId);
+            if (activeBid) socket.emit('leaveBid', activeBid._id);
             socket.off('newMessage', handleNewMessage);
             socket.off('messageDeleted', handleMessageDeleted);
+            socket.off('messagesSeen', handleMessagesSeen);
         };
-    }, [paramOrderId]);
+    }, [paramOrderId, activeBid?._id]);
 
     useEffect(() => {
         if (scrollRef.current) {
@@ -108,7 +132,7 @@ const ChatHub = () => {
         if (!newMessage.trim() || !paramOrderId) return;
 
         try {
-            await axios.post(`${API_URL}/api/v1/orders/${paramOrderId}/chat`, {
+            await axios.post(`${API_URL}/api/v1/chats/${activeBid._id}`, {
                 message: newMessage,
                 type: 'text'
             });
@@ -129,12 +153,12 @@ const ChatHub = () => {
 
         setIsUploading(true);
         try {
-            const res = await axios.post(`${API_URL}/api/v1/orders/${paramOrderId}/chat/upload`, formData, {
+            const res = await axios.post(`${API_URL}/api/v1/chats/upload`, formData, {
                 headers: { 'Content-Type': 'multipart/form-data' }
             });
 
             const fileData = res.data.data;
-            await axios.post(`${API_URL}/api/v1/orders/${paramOrderId}/chat`, {
+            await axios.post(`${API_URL}/api/v1/chats/${activeBid._id}`, {
                 message: `Sent a ${fileData.type}`,
                 type: fileData.type,
                 attachment: fileData
@@ -391,7 +415,8 @@ const ChatHub = () => {
                                 ) : (
                                     <div className="space-y-12">
                                         {messages.map((msg, i) => {
-                                            const isMe = msg.sender === user?._id;
+                                            const senderId = msg.sender?._id || msg.sender;
+                                            const isMe = senderId === user?._id;
                                             return (
                                                 <div key={i} className={`flex ${isMe ? 'justify-end' : 'justify-start'} animate-in fade-in slide-in-from-bottom-4 duration-500`}>
                                                     <div className={`max-w-[65%] group relative`}>
@@ -402,12 +427,17 @@ const ChatHub = () => {
                                                             {renderMessageContent(msg)}
                                                         </div>
                                                         <div className={`mt-2 flex items-center gap-3 opacity-0 group-hover:opacity-100 transition-opacity ${isMe ? 'flex-row-reverse' : ''}`}>
-                                                            <span className="text-[9px] font-black  tracking-widest text-white">
-                                                                {isMe ? 'Operator' : (isPro ? 'Client' : 'Specialist')}
+                                                            <span className="text-[9px] font-black  tracking-widest text-white uppercase">
+                                                                {msg.role === 'admin' ? 'Support Admin' : msg.role === 'pro' ? 'Specialist' : 'Customer'}
                                                             </span>
                                                             <span className="text-[8px] font-bold text-white">•</span>
-                                                            <span className="text-[9px] font-black tracking-widest text-white">
+                                                            <span className="text-[9px] font-black tracking-widest text-white flex items-center gap-2">
                                                                 {format(new Date(msg.timestamp), 'HH:mm')}
+                                                                {isMe && (
+                                                                    <span className={msg.seen ? 'text-primary' : 'text-white/20'}>
+                                                                        <Check size={10} />
+                                                                    </span>
+                                                                )}
                                                             </span>
                                                         </div>
                                                     </div>

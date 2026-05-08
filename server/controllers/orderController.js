@@ -54,7 +54,7 @@ exports.createOrder = async (req, res) => {
                 promoCode: promoData?.code,
                 discount: discount / items.length // Distribute discount equally
             });
-            
+
             // Create automatic bid for the order (10% as default based on "50$ order -> 5$ bid")
             await Bid.create({
                 orderId: order._id,
@@ -89,10 +89,20 @@ exports.getMyOrders = async (req, res) => {
     try {
         const orders = await Order.find({ userId: req.user.id })
             .populate('serviceId', 'title image icon backgroundImage characterImage game')
-            .populate('pro', 'name')
             .sort('-createdAt');
 
-        res.status(200).json({ success: true, count: orders.length, data: orders });
+        const Bid = require('../models/Bid');
+        const ordersWithBids = await Promise.all(orders.map(async (order) => {
+            const bid = await Bid.findOne({ orderId: order._id })
+                .populate('assignedUser', 'name avatar email')
+                .select('assignedUser status bidPrice');
+            return { 
+                ...order._doc, 
+                assignedBid: bid 
+            };
+        }));
+
+        res.status(200).json({ success: true, count: orders.length, data: ordersWithBids });
     } catch (err) {
         res.status(400).json({ success: false, message: err.message });
     }
@@ -107,10 +117,10 @@ exports.getAvailableOrders = async (req, res) => {
             // We need to find orders whose services belong to the pro's specialized games
             // This is easier with aggregation or by finding service IDs first
             const Service = require('../models/Service');
-            const authorizedServices = await Service.find({ 
-                gameId: { $in: req.user.specializedGames } 
+            const authorizedServices = await Service.find({
+                gameId: { $in: req.user.specializedGames }
             }).select('_id');
-            
+
             const serviceIds = authorizedServices.map(s => s._id);
             query.serviceId = { $in: serviceIds };
         }
@@ -239,7 +249,7 @@ exports.claimOrder = async (req, res, next) => {
         // Calculate booster earnings at time of claiming
         const pro = await User.findById(req.user.id);
         if (!pro) return res.status(404).json({ success: false, message: 'Booster profile not found' });
-        
+
         const commissionRate = pro.boosterCommissionRate || 80;
         order.boosterEarnings = Math.round((order.price * (commissionRate / 100)) * 100) / 100;
 
@@ -272,119 +282,7 @@ exports.getOrder = async (req, res) => {
     }
 };
 
-exports.sendChatMessage = async (req, res) => {
-    try {
-        const order = await Order.findById(req.params.id);
-        if (!order) return res.status(404).json({ success: false, message: 'Order not found' });
-
-        const { message, type = 'text', attachment } = req.body;
-
-        const newMessage = {
-            sender: req.user.id,
-            message: message,
-            type: type,
-            attachment: attachment,
-            timestamp: new Date()
-        };
-
-        order.chat.push(newMessage);
-        await order.save();
-        const broadcastMsg = order.chat[order.chat.length - 1];
-
-        // Broadcast to order room
-        try {
-            const io = require('../socket').getIO();
-            io.to(order._id.toString()).emit('newMessage', broadcastMsg);
-        } catch (e) {
-            console.error('Socket broadcast error:', e.message);
-        }
-
-        res.status(200).json({ success: true, data: order });
-    } catch (err) {
-        res.status(400).json({ success: false, message: err.message });
-    }
-};
-
-exports.uploadChatFile = async (req, res) => {
-    try {
-        if (!req.file) {
-            return res.status(400).json({ success: false, message: 'Please upload a file' });
-        }
-
-        const fileType = req.file.mimetype.startsWith('image/') ? 'image' 
-                        : req.file.mimetype.startsWith('video/') ? 'video'
-                        : req.file.mimetype === 'application/pdf' ? 'pdf'
-                        : 'text';
-
-        const subfolder = fileType === 'image' ? 'images' 
-                        : fileType === 'video' ? 'videos' 
-                        : fileType === 'pdf' ? 'pdf' 
-                        : 'others';
-
-        const fileUrl = `/uploads/chats/${subfolder}/${req.file.filename}`;
-
-        res.status(200).json({
-            success: true,
-            data: {
-                url: fileUrl,
-                name: req.file.originalname,
-                size: req.file.size,
-                type: fileType,
-                mimeType: req.file.mimetype
-            }
-        });
-    } catch (err) {
-        res.status(400).json({ success: false, message: err.message });
-    }
-};
-
-exports.deleteChatMessage = async (req, res) => {
-    try {
-        console.log('Delete Request - Order ID:', req.params.id);
-        console.log('Delete Request - Message ID:', req.body.messageId);
-
-        const order = await Order.findById(req.params.id);
-        if (!order) {
-            console.log('Order not found');
-            return res.status(404).json({ success: false, message: 'Order not found' });
-        }
-
-        const { messageId } = req.body;
-        if (!messageId) {
-            return res.status(400).json({ success: false, message: 'Message ID is required' });
-        }
-
-        const messageIndex = order.chat.findIndex(m => m._id && m._id.toString() === messageId);
-        
-        if (messageIndex === -1) {
-            console.log('Message not found in order. Chat length:', order.chat.length);
-            // Log first few message IDs for debugging
-            order.chat.slice(0, 3).forEach(m => console.log('Message ID in DB:', m._id));
-            return res.status(404).json({ success: false, message: 'Message not found' });
-        }
-
-        // Only sender or admin can delete
-        if (order.chat[messageIndex].sender.toString() !== req.user.id && req.user.role !== 'admin') {
-            return res.status(403).json({ success: false, message: 'Not authorized to delete this message' });
-        }
-
-        order.chat.splice(messageIndex, 1);
-        await order.save();
-
-        // Broadcast deletion
-        try {
-            const io = require('../socket').getIO();
-            io.to(order._id.toString()).emit('messageDeleted', messageId);
-        } catch (e) {
-            console.error('Socket broadcast error:', e.message);
-        }
-
-        res.status(200).json({ success: true, message: 'Message deleted' });
-    } catch (err) {
-        console.error('Delete Chat Error:', err);
-        res.status(400).json({ success: false, message: err.message });
-    }
-};
+// Legacy chat logic removed (Migrated to Bid-based Chat system)
 
 // @desc    Admin: Assign PRO to order
 // @route   PUT /api/v1/orders/:id/assign-pro
@@ -481,7 +379,7 @@ exports.getAllOrders = async (req, res) => {
 exports.updateClaimPrice = async (req, res) => {
     try {
         const { customClaimPrice } = req.body;
-        
+
         if (customClaimPrice === undefined) {
             return res.status(400).json({ success: false, message: 'Please provide customClaimPrice' });
         }

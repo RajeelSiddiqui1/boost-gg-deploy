@@ -33,8 +33,5 @@ router.put('/:id/claim-price', protect, authorize('admin'), updateClaimPrice);
 router.post('/:id/review', protect, submitReview);
 const chatUpload = require('../middleware/chatUpload');
 
-router.post('/:id/chat', protect, sendChatMessage);
-router.post('/:id/chat/upload', protect, chatUpload.single('file'), uploadChatFile);
-router.delete('/:id/chat', protect, deleteChatMessage);
-
+// Legacy chat routes removed
 module.exports = router;

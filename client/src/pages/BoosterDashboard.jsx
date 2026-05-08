@@ -136,7 +136,6 @@ const ProDashboard = () => {
     }
   }, [isCommercePro, isContentPro, isPartnerPro, searchParams]);
 
-  const [availableOrders, setAvailableOrders] = useState([]);
   const [activeOrders, setActiveOrders] = useState([]);
   const [payouts, setPayouts] = useState([]);
   const [myBids, setMyBids] = useState([]);
@@ -147,6 +146,9 @@ const ProDashboard = () => {
   const [isCompetitorsModalOpen, setIsCompetitorsModalOpen] = useState(false);
   const [selectedBidForCompetitors, setSelectedBidForCompetitors] = useState(null);
   const [isPayoutModalOpen, setIsPayoutModalOpen] = useState(false);
+  const [isBidModalOpen, setIsBidModalOpen] = useState(false);
+  const [bidsSubTab, setBidsSubTab] = useState('won'); // 'bid', 'claim', or 'won'
+  const [bidData, setBidData] = useState({ orderId: null, amount: '', message: '', type: 'bid', highestBid: 0 });
   
   const [showProofUpload, setShowProofUpload] = useState(null);
   const [tempProofs, setTempProofs] = useState([]);
@@ -176,10 +178,13 @@ const ProDashboard = () => {
   const fetchData = async () => {
     try {
       const token = localStorage.getItem('token');
-      const [availableRes, myOrdersRes, payoutRes, bidsRes, adminBidsRes] = await Promise.all([
-        axios.get(`${API_URL}/api/v1/orders/available`),
-        axios.get(`${API_URL}/api/v1/orders/booster`),
-        axios.get(`${API_URL}/api/v1/payouts/me`),
+      const [myOrdersRes, payoutRes, bidsRes, adminBidsRes] = await Promise.all([
+        axios.get(`${API_URL}/api/v1/orders/booster`, {
+          headers: { Authorization: `Bearer ${token}` }
+        }),
+        axios.get(`${API_URL}/api/v1/payouts/me`, {
+          headers: { Authorization: `Bearer ${token}` }
+        }),
         axios.get(`${API_URL}/api/v1/bids/me`, {
           headers: { Authorization: `Bearer ${token}` }
         }).catch(() => ({ data: { data: [] } })),
@@ -187,7 +192,6 @@ const ProDashboard = () => {
           headers: { Authorization: `Bearer ${token}` }
         }).catch(() => ({ data: { data: [] } }))
       ]);
-      setAvailableOrders(availableRes.data.data);
       setActiveOrders(myOrdersRes.data.data.filter(o => o.status === 'processing' || o.status === 'pending'));
       setPayouts(payoutRes.data.data);
       setMyBids(bidsRes.data.data);
@@ -233,6 +237,25 @@ const ProDashboard = () => {
     }
   }, [isCompetitorsModalOpen, selectedBidForCompetitors]);
 
+  useEffect(() => {
+    if (isBidModalOpen && bidData.isAdminBid && bidData.bidId) {
+      socket.emit('joinBid', bidData.bidId);
+
+      const handleAdminBidUpdate = (data) => {
+        if (data.bidId === bidData.bidId) {
+          fetchData();
+        }
+      };
+
+      socket.on('bidUpdate', handleAdminBidUpdate);
+
+      return () => {
+        socket.emit('leaveBid', bidData.bidId);
+        socket.off('bidUpdate', handleAdminBidUpdate);
+      };
+    }
+  }, [isBidModalOpen, bidData.isAdminBid, bidData.bidId]);
+
   // Sync selected bid with fresh data from myBids
   useEffect(() => {
     if (selectedBidForCompetitors) {
@@ -240,10 +263,6 @@ const ProDashboard = () => {
       if (freshBid) setSelectedBidForCompetitors(freshBid);
     }
   }, [myBids]);
-
-  const [isBidModalOpen, setIsBidModalOpen] = useState(false);
-  const [bidsSubTab, setBidsSubTab] = useState('bid');
-  const [bidData, setBidData] = useState({ orderId: null, amount: '', message: '', type: 'bid', highestBid: 0 });
 
   const handleAction = (order, type) => {
     const baseAmount = order.customClaimPrice || order.boosterEarnings || order.price;
@@ -268,6 +287,9 @@ const ProDashboard = () => {
   };
 
   const handleBidSubmit = async () => {
+    if (bidData.isAdminBid) {
+      return handleAdminBidSubmit();
+    }
     if (!bidData.amount) return toast.error('Please enter a bid amount');
     
     // Highest bid validation
@@ -324,6 +346,63 @@ const ProDashboard = () => {
     setIsBidModalOpen(true);
   };
 
+  const handleAdminBidAction = (bid, type) => {
+    if (type === 'claim') {
+      handleAdminClaim(bid);
+    } else {
+      setBidData({
+        bidId: bid._id,
+        orderId: bid.orderId?._id,
+        amount: bid.bidPrice,
+        maxPrice: bid.bidPrice,
+        type: 'admin-bid',
+        message: '',
+        isAdminBid: true
+      });
+      setIsBidModalOpen(true);
+    }
+  };
+
+  const handleAdminClaim = async (bid) => {
+    setClaimingId(bid._id);
+    try {
+      const token = localStorage.getItem('token');
+      await axios.post(`${API_URL}/api/v1/bids/${bid._id}/claim`, {}, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      toast.success('Job claimed successfully!');
+      fetchData();
+    } catch (err) {
+      toast.error(err.response?.data?.message || 'Failed to claim job');
+    } finally {
+      setClaimingId(null);
+    }
+  };
+
+  const handleAdminBidSubmit = async () => {
+    if (!bidData.amount) return toast.error('Please enter a bid amount');
+    if (Number(bidData.amount) < bidData.maxPrice) {
+      return toast.error(`Your bid must be at least ${formatPrice(bidData.maxPrice)}`);
+    }
+    
+    setClaimingId(bidData.bidId);
+    try {
+      const token = localStorage.getItem('token');
+      await axios.post(`${API_URL}/api/v1/bids/${bidData.bidId}/booster-bid`, {
+        amount: Number(bidData.amount)
+      }, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      toast.success('Bid placed successfully!');
+      setIsBidModalOpen(false);
+      fetchData();
+    } catch (err) {
+      toast.error(err.response?.data?.message || 'Failed to place bid');
+    } finally {
+      setClaimingId(null);
+    }
+  };
+
   const handleCompleteSubmit = async (orderId) => {
     if (tempProofs.length === 0) return toast.error('Please upload at least one proof screenshot');
 
@@ -347,14 +426,14 @@ const ProDashboard = () => {
   const stats = useMemo(() => {
     if (isCommercePro) {
       return [
-        { label: 'Market Jobs', value: availableOrders.length, icon: Zap, color: 'text-primary', bg: 'bg-primary/5' },
+        { label: 'Market Jobs', value: adminBids.length, icon: Zap, color: 'text-primary', bg: 'bg-primary/5' },
         { label: 'Active Work', value: activeOrders.length, icon: Clock, color: 'text-yellow-500', bg: 'bg-yellow-500/5' },
         { label: 'Total Earnings', value: formatPrice(user?.earnings || 0), icon: DollarSign, color: 'text-green-500', bg: 'bg-green-500/5' },
         { label: 'Trust Rating', value: `${user?.rating || 0}/5`, icon: CheckCircle2, color: 'text-blue-500', bg: 'bg-blue-500/5' }
       ];
     }
     return [];
-  }, [availableOrders, activeOrders, user, isCommercePro, formatPrice]);
+  }, [adminBids, activeOrders, user, isCommercePro, formatPrice]);
 
   const renderOrderRow = (order, isStatusActive = false) => {
     const service = order.serviceId;
@@ -643,43 +722,34 @@ const ProDashboard = () => {
                               <p className="text-sm font-black text-white/50 line-through">{formatPrice(bid.originalPrice)}</p>
                             </div>
                             <div className="text-center">
-                              <p className="text-[9px] font-black text-primary tracking-normal">Your Payout</p>
+                              <p className="text-[9px] font-black text-primary tracking-normal">Best Payout</p>
                               <p className="text-2xl font-black text-primary tracking-tighter">{formatPrice(bid.bidPrice)}</p>
                             </div>
-                            <button 
-                              onClick={() => navigate(`/pro/order/${bid.orderId?._id}`)}
-                              className="px-8 py-4 bg-primary hover:bg-white text-black rounded-2xl font-black text-[11px] tracking-normal transition-all shadow-lg shadow-primary/20"
-                            >
-                              View Details
-                            </button>
+                            <div className="flex flex-col md:flex-row items-center gap-3">
+                              {(!bid.bidders?.some(b => (b.user?._id || b.user) === user?._id)) && (
+                                <button
+                                  onClick={() => handleAdminBidAction(bid, 'claim')}
+                                  disabled={claimingId === bid._id}
+                                  className="px-6 py-4 bg-white/5 hover:bg-white text-white hover:text-black border border-white/10 rounded-2xl font-black text-[10px] tracking-normal transition-all"
+                                >
+                                  {claimingId === bid._id ? '...' : 'Claim Job'}
+                                </button>
+                              )}
+
+                              <button
+                                onClick={() => handleAdminBidAction(bid, 'bid')}
+                                disabled={claimingId === bid._id}
+                                className="px-8 py-4 bg-primary hover:bg-white text-black rounded-2xl font-black text-[11px] tracking-normal transition-all shadow-lg shadow-primary/20 whitespace-nowrap"
+                              >
+                                {bid.bidders?.length > 0 ? 'Join Auction' : 'Place Bid'}
+                              </button>
+                            </div>
                           </div>
                         </div>
                       ))}
                     </div>
                   </div>
                 )}
-
-                {/* EXISTING AVAILABLE ASSIGNMENTS */}
-                <div className="space-y-6">
-                  <div className="flex items-center justify-between">
-                    <h3 className="text-2xl font-black tracking-tight">Available Assignments</h3>
-                    <p className="text-[10px] font-bold text-white tracking-normal">Real-time Sync Active</p>
-                  </div>
-
-                  {availableOrders.filter(o => !myBids.some(b => b.orderId?._id === o._id)).length === 0 ? (
-                    <div className="py-32 flex flex-col items-center justify-center bg-[#0A0A0A] border border-white/5 border-dashed rounded-[40px] text-center space-y-6">
-                      <AlertCircle className="w-12 h-12 text-white" />
-                      <h4 className="text-xl font-black text-white">No New Missions</h4>
-                    </div>
-                  ) : (
-                    <div className={viewMode === 'grid' ? "grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8" : "space-y-4"}>
-                      {availableOrders
-                        .filter(o => !myBids.some(b => b.orderId?._id === o._id))
-                        .map(o => viewMode === 'grid' ? renderOrderCard(o) : renderOrderRow(o))
-                      }
-                    </div>
-                  )}
-                </div>
               </div>
             )}
 
@@ -706,6 +776,12 @@ const ProDashboard = () => {
                   
                   <div className="flex p-1 bg-white/5 rounded-2xl border border-white/10">
                     <button 
+                      onClick={() => setBidsSubTab('won')} 
+                      className={`px-8 py-3 rounded-xl text-[10px] font-black  tracking-normal transition-all ${bidsSubTab === 'won' ? 'bg-primary text-black shadow-lg shadow-primary/20' : 'text-white hover:text-white'}`}
+                    >
+                      Assigned
+                    </button>
+                    <button 
                       onClick={() => setBidsSubTab('bid')} 
                       className={`px-8 py-3 rounded-xl text-[10px] font-black  tracking-normal transition-all ${bidsSubTab === 'bid' ? 'bg-primary text-black shadow-lg shadow-primary/20' : 'text-white hover:text-white'}`}
                     >
@@ -720,14 +796,25 @@ const ProDashboard = () => {
                   </div>
                 </div>
 
-                {myBids.filter(b => b.type === bidsSubTab).length === 0 ? (
+                {myBids.filter(b => {
+                  if (bidsSubTab === 'won') return (b.assignedUser?._id || b.assignedUser) === user?._id;
+                  // Only show in Bidders/Claims if not yet assigned to anyone (still active/pending)
+                  if (b.assignedUser) return false; 
+                  if (bidsSubTab === 'bid') return b.bidders.some(bidder => (bidder.user?._id || bidder.user) === user?._id);
+                  return b.claims?.some(claim => (claim.user?._id || claim.user) === user?._id);
+                }).length === 0 ? (
                   <div className="py-24 text-center text-white font-black  tracking-normal border border-white/5 border-dashed rounded-[40px]">
-                    No {bidsSubTab === 'bid' ? 'bidders' : 'claims'} found in your registry.
+                    No {bidsSubTab === 'bid' ? 'active bids' : bidsSubTab === 'claim' ? 'pending claims' : 'assigned missions'} found in your registry.
                   </div>
                 ) : (
                   <div className="space-y-4">
                     {myBids
-                      .filter(b => b.type === bidsSubTab)
+                      .filter(b => {
+                        if (bidsSubTab === 'won') return (b.assignedUser?._id || b.assignedUser) === user?._id;
+                        if (b.assignedUser) return false;
+                        if (bidsSubTab === 'bid') return b.bidders.some(bidder => (bidder.user?._id || bidder.user) === user?._id);
+                        return b.claims?.some(claim => (claim.user?._id || claim.user) === user?._id);
+                      })
                       .map((bid) => (
                       <div 
                         key={bid._id} 
@@ -750,11 +837,41 @@ const ProDashboard = () => {
                             </div>
                             <h4 className="text-lg font-black text-white  tracking-tight">{bid.orderId?.serviceId?.title || 'Custom Service'}</h4>
                             <p className="text-[10px] font-bold text-white  tracking-normal mt-1">
-                              Your Bid: <span className="text-white">{formatPrice(bid.bidAmount)}</span> 
-                              {bid.highestBid && (
-                                <span className="ml-3">Best Price: <span className={bid.isLowest ? 'text-green-500' : 'text-white'}>{formatPrice(bid.highestBid)}</span></span>
+                              {bidsSubTab === 'won' ? (
+                                <span className="text-primary">You won this mission! Final Earnings: {formatPrice(bid.orderId?.boosterEarnings || 0)}</span>
+                              ) : (
+                                <>
+                                  Your Bid: <span className="text-white">{formatPrice(bid.bidders.find(u => (u.user?._id || u.user) === user?._id)?.amount || bid.bidPrice)}</span> 
+                                  {bid.highestBid && (
+                                    <span className="ml-3">Best Price: <span className={bid.isLowest ? 'text-green-500' : 'text-white'}>{formatPrice(bid.highestBid)}</span></span>
+                                  )}
+                                </>
                               )}
                             </p>
+                            
+                            {bidsSubTab === 'won' && (
+                              <div className="mt-6 flex items-center gap-4">
+                                <button 
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    navigate(`/pro/chat/${bid.orderId?._id}`);
+                                  }}
+                                  className="px-6 py-3 bg-primary text-black rounded-xl text-[10px] font-black uppercase tracking-widest flex items-center gap-2 hover:bg-white transition-all"
+                                >
+                                  <MessageSquare size={14} />
+                                  Open Chat
+                                </button>
+                                <button 
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    navigate(`/pro/order/${bid.orderId?._id}`);
+                                  }}
+                                  className="px-6 py-3 bg-white/5 hover:bg-white/10 text-white rounded-xl text-[10px] font-black uppercase tracking-widest transition-all"
+                                >
+                                  Mission Details
+                                </button>
+                              </div>
+                            )}
                             
                             {/* Competition Visualizer */}
                             {bid.highestBid && (
@@ -1019,7 +1136,7 @@ const ProDashboard = () => {
       {isBidModalOpen && (
         <div className="fixed inset-0 z-[150] flex items-center justify-center p-6">
           <div className="absolute inset-0 bg-black/90 backdrop-blur-xl" onClick={() => setIsBidModalOpen(false)}></div>
-          <div className="relative w-full max-w-[500px] bg-[#0A0A0A] border border-white/10 rounded-[48px] p-12 overflow-hidden shadow-2xl space-y-10">
+          <div className="relative w-full max-w-[500px] max-h-[90vh] overflow-y-auto bg-[#0A0A0A] border border-white/10 rounded-[48px] p-12 shadow-2xl space-y-10 custom-scrollbar">
             <div>
               <h3 className="text-3xl font-black  text-white tracking-tight mb-2">Place Your Bid</h3>
               <p className="text-[10px] font-bold  text-white tracking-normal">Secure this mission by offering your terms</p>
@@ -1038,8 +1155,8 @@ const ProDashboard = () => {
                     value={bidData.amount}
                     onChange={(e) => setBidData({ ...bidData, amount: e.target.value })}
                     readOnly={bidData.type === 'claim'}
-                    min={bidData.highestBid || 0}
-                    className={`w-full bg-black border rounded-3xl py-6 pl-16 pr-8 text-sm font-bold transition-all outline-none ${bidData.type === 'claim' ? 'border-primary/50 text-primary cursor-not-allowed' : (bidData.highestBid && Number(bidData.amount) < Number(bidData.highestBid)) ? 'border-red-500/50 text-red-500 focus:border-red-500' : 'border-white/5 text-white focus:border-primary/50'}`} 
+                    min={bidData.maxPrice || 0}
+                    className={`w-full bg-black border rounded-3xl py-6 pl-16 pr-8 text-sm font-bold transition-all outline-none ${bidData.type === 'claim' ? 'border-primary/50 text-primary cursor-not-allowed' : (bidData.isAdminBid ? (Number(bidData.amount) < bidData.maxPrice ? 'border-red-500/50 text-red-500' : 'border-white/5 text-white focus:border-primary/50') : (bidData.highestBid && Number(bidData.amount) < Number(bidData.highestBid)) ? 'border-red-500/50 text-red-500 focus:border-red-500' : 'border-white/5 text-white focus:border-primary/50')}`} 
                     placeholder="Enter bid amount..."
                   />
                   {bidData.type === 'claim' && (
@@ -1048,7 +1165,13 @@ const ProDashboard = () => {
                       <span className="text-[8px] font-black  text-white">Locked</span>
                     </div>
                   )}
-                  {bidData.highestBid > 0 && Number(bidData.amount) < Number(bidData.highestBid) && bidData.type !== 'claim' && (
+                  {bidData.isAdminBid && Number(bidData.amount) < bidData.maxPrice && (
+                    <div className="absolute -bottom-6 left-4 flex items-center gap-1.5">
+                      <AlertCircle size={10} className="text-red-500" />
+                      <span className="text-[9px] font-bold text-white  tracking-tight">Must be at least {formatPrice(bidData.maxPrice)}</span>
+                    </div>
+                  )}
+                  {bidData.highestBid > 0 && Number(bidData.amount) < Number(bidData.highestBid) && bidData.type !== 'claim' && !bidData.isAdminBid && (
                     <div className="absolute -bottom-6 left-4 flex items-center gap-1.5">
                       <AlertCircle size={10} className="text-red-500" />
                       <span className="text-[9px] font-bold text-white  tracking-tight">Must be at least {formatPrice(bidData.highestBid)}</span>
@@ -1057,21 +1180,39 @@ const ProDashboard = () => {
                 </div>
               </div>
 
-              <div className="space-y-3">
-                <label className="text-[10px] font-black  text-white ml-4">Deployment Statement</label>
-                <div className="relative group">
-                  <MessageSquare className="absolute left-6 top-8 w-4 h-4 text-white group-focus-within:text-primary transition-colors" />
-                  <textarea 
-                    value={bidData.message}
-                    onChange={(e) => setBidData({ ...bidData, message: e.target.value })}
-                    className="w-full bg-black border border-white/5 rounded-3xl py-6 pl-16 pr-8 text-sm font-bold text-white focus:border-primary/50 transition-all outline-none min-h-[120px] resize-none" 
-                    placeholder="Any message for the admin?..."
-                  ></textarea>
-                </div>
-              </div>
+          
             </div>
             
-            {bidData.highestBid > 0 && (
+            {bidData.isAdminBid && (
+              <div className="space-y-4 pt-4 border-t border-white/5">
+                <div className="flex items-center justify-between ml-4">
+                  <p className="text-[10px] font-black text-white/40 tracking-normal">Current Bidders</p>
+                  <button 
+                    onClick={() => navigate(`/pro/bid/${bidData.bidId}/bidders`)}
+                    className="text-[9px] font-black text-primary hover:text-white transition-colors"
+                  >
+                    View All
+                  </button>
+                </div>
+                <div className="space-y-2 max-h-[200px] overflow-y-auto pr-2 custom-scrollbar">
+                  {adminBids.find(b => b._id === bidData.bidId)?.bidders?.length > 0 ? (
+                    adminBids.find(b => b._id === bidData.bidId).bidders.map((b, idx) => (
+                      <div key={idx} className="flex justify-between items-center p-3 bg-white/[0.02] rounded-xl border border-white/5">
+                        <div className="flex items-center gap-2">
+                          <User size={12} className="text-white/40" />
+                          <span className="text-[10px] font-bold text-white ">{b.user?.name || 'Booster'}</span>
+                        </div>
+                        <span className="text-[10px] font-black text-primary">{formatPrice(b.amount)}</span>
+                      </div>
+                    ))
+                  ) : (
+                    <p className="text-[10px] font-bold text-white/30 italic ml-4">No bids yet. Be the first!</p>
+                  )}
+                </div>
+              </div>
+            )}
+
+            {bidData.highestBid > 0 && !bidData.isAdminBid && (
               <div className="p-6 bg-primary/5 border border-primary/10 rounded-[32px] flex items-center justify-between animate-in fade-in slide-in-from-top-2 duration-500">
                 <div className="flex items-center gap-3">
                   <div className="w-8 h-8 rounded-xl bg-primary/10 flex items-center justify-center">

@@ -1,11 +1,20 @@
 import React, { useEffect } from 'react';
-import DashboardLayout from '../../components/layout/DashboardLayout';
-import { useNotifications } from '../../context/NotificationContext';
-import { Bell, CheckCircle, Clock, ExternalLink, Trash2, MailOpen } from 'lucide-react';
+import DashboardLayout from '../components/layout/DashboardLayout';
+import AdminLayout from '../components/admin/AdminLayout';
+import { useNotifications } from '../context/NotificationContext';
+import { useAuth } from '../context/AuthContext';
+import { 
+    Bell, CheckCircle, Clock, ExternalLink, 
+    Trash2, MailOpen, Tag, DollarSign, Package,
+    ShieldAlert
+} from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
+import { useState } from 'react';
 
 const Notifications = () => {
+    const { user } = useAuth();
     const { notifications, markAsRead, markAllAsRead, fetchNotifications } = useNotifications();
+    const [filter, setFilter] = useState('all');
 
     useEffect(() => {
         fetchNotifications();
@@ -13,42 +22,96 @@ const Notifications = () => {
 
     const getIcon = (type) => {
         switch (type) {
+            case 'booster_bid': return <Tag className="w-5 h-5 text-primary" />;
             case 'bid_created': return <Bell className="w-5 h-5 text-primary" />;
-            case 'order_update': return <CheckCircle className="w-5 h-5 text-blue-500" />;
-            case 'payout': return <Clock className="w-5 h-5 text-green-500" />;
+            case 'order_update': return <Package className="w-5 h-5 text-blue-500" />;
+            case 'payout': return <DollarSign className="w-5 h-5 text-green-500" />;
+            case 'system': return <ShieldAlert className="w-5 h-5 text-yellow-500" />;
             default: return <Bell className="w-5 h-5 text-white/40" />;
         }
     };
 
+    const getCategories = () => {
+        const base = [{ id: 'all', label: 'All Intelligence', icon: <Bell size={14} /> }];
+        if (user?.role === 'admin') {
+            return [
+                ...base,
+                { id: 'booster_bid', label: 'Booster Bids', icon: <Tag size={14} /> },
+                { id: 'payout', label: 'Finance', icon: <DollarSign size={14} /> },
+                { id: 'system', label: 'System', icon: <ShieldAlert size={14} /> }
+            ];
+        }
+        if (user?.role === 'pro') {
+            return [
+                ...base,
+                { id: 'bid_created', label: 'Job Alerts', icon: <Package size={14} /> },
+                { id: 'payout', label: 'Earnings', icon: <DollarSign size={14} /> }
+            ];
+        }
+        return [
+            ...base,
+            { id: 'order_update', label: 'Order Updates', icon: <Package size={14} /> }
+        ];
+    };
+
+    const filteredNotifications = filter === 'all' 
+        ? notifications 
+        : notifications.filter(n => n.type === filter);
+
+    const Layout = user?.role === 'admin' ? AdminLayout : DashboardLayout;
+
     return (
-        <DashboardLayout title="Notification Center">
-            <div className="max-w-4xl mx-auto space-y-8">
-                <div className="flex items-center justify-between">
+        <Layout title="Intel Center">
+            <div className="max-w-5xl mx-auto space-y-12 pb-20">
+                <div className="flex flex-col md:flex-row items-center justify-between gap-8">
                     <div>
-                        <h2 className="text-3xl font-black text-white tracking-tighter uppercase">Alert Intel</h2>
-                        <p className="text-[10px] font-bold text-white/40 tracking-[0.2em] uppercase mt-2">Real-time operational updates</p>
+                        <h2 className="text-4xl font-black text-white tracking-tighter uppercase leading-none">Alert Matrix</h2>
+                        <p className="text-[10px] font-bold text-white/40 tracking-[0.2em] uppercase mt-4">Real-time operational stream for {user?.role} clearance</p>
                     </div>
                     {notifications.some(n => !n.isRead) && (
                         <button 
                             onClick={markAllAsRead}
-                            className="flex items-center gap-2 px-6 py-3 bg-white/5 border border-white/10 rounded-2xl text-[10px] font-black text-white hover:bg-white/10 transition-all uppercase tracking-widest"
+                            className="flex items-center gap-3 px-8 py-4 bg-white/5 border border-white/10 rounded-2xl text-[10px] font-black text-white hover:bg-white hover:text-black transition-all uppercase tracking-widest shadow-2xl"
                         >
                             <MailOpen className="w-4 h-4" />
-                            Mark all as read
+                            Purge Unread
                         </button>
                     )}
                 </div>
 
-                <div className="space-y-4">
-                    {notifications.length === 0 ? (
-                        <div className="bg-[#0A0A0A] border border-white/5 rounded-[48px] p-20 text-center flex flex-col items-center gap-6">
-                            <div className="w-20 h-20 bg-white/5 rounded-full flex items-center justify-center">
-                                <Bell className="w-10 h-10 text-white/10" />
+                {/* Filter Tabs */}
+                <div className="flex items-center gap-3 overflow-x-auto pb-4 custom-scrollbar">
+                    {getCategories().map((cat) => (
+                        <button
+                            key={cat.id}
+                            onClick={() => setFilter(cat.id)}
+                            className={`
+                                flex items-center gap-3 px-6 py-3 rounded-2xl text-[10px] font-black uppercase tracking-widest whitespace-nowrap transition-all border
+                                ${filter === cat.id 
+                                    ? 'bg-primary border-primary text-black shadow-[0_0_30px_rgba(162,230,62,0.3)]' 
+                                    : 'bg-white/5 border-white/10 text-white/40 hover:text-white hover:bg-white/10'}
+                            `}
+                        >
+                            {cat.icon}
+                            {cat.label}
+                        </button>
+                    ))}
+                </div>
+
+                <div className="space-y-6">
+                    {filteredNotifications.length === 0 ? (
+                        <div className="bg-[#0A0A0A] border border-white/5 rounded-[48px] p-32 text-center flex flex-col items-center gap-8">
+                            <div className="w-24 h-24 bg-white/5 rounded-full flex items-center justify-center relative">
+                                <Bell className="w-12 h-12 text-white/10" />
+                                <div className="absolute inset-0 bg-primary/5 blur-3xl rounded-full"></div>
                             </div>
-                            <p className="text-xs font-black text-white/20 tracking-widest uppercase">System clear. No active alerts.</p>
+                            <div className="space-y-2">
+                                <p className="text-xl font-black text-white uppercase tracking-tight">Encryption Clear</p>
+                                <p className="text-[10px] font-bold text-white/20 tracking-widest uppercase">No matching data in the current sector</p>
+                            </div>
                         </div>
                     ) : (
-                        notifications.map((notification) => (
+                        filteredNotifications.map((notification) => (
                             <div 
                                 key={notification._id}
                                 className={`
@@ -110,7 +173,7 @@ const Notifications = () => {
                     )}
                 </div>
             </div>
-        </DashboardLayout>
+        </Layout>
     );
 };
 
