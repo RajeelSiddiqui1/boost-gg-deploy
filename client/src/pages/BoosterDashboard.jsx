@@ -894,14 +894,16 @@ const ProDashboard = () => {
                                 >
                                   Mission Details
                                 </button>
-                                {/* Complete Mission button — only if not yet submitted */}
-                                {(!bid.completionStatus || bid.completionStatus === 'none') && (
+                                {/* Complete Mission button — only if not yet submitted or if rejected */}
+                                {(!bid.completionStatus || bid.completionStatus === 'none' || bid.completionStatus === 'rejected') && (
                                   <button
                                     onClick={(e) => { e.stopPropagation(); setShowBidProof(bid); }}
-                                    className="px-6 py-3 bg-green-500/10 hover:bg-green-500 text-green-400 hover:text-black border border-green-500/20 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all flex items-center gap-2"
+                                    className={`px-6 py-3 border rounded-xl text-[10px] font-black uppercase tracking-widest transition-all flex items-center gap-2 ${
+                                      bid.completionStatus === 'rejected' ? 'bg-red-500/10 hover:bg-red-500 text-red-400 hover:text-black border-red-500/20' : 'bg-green-500/10 hover:bg-green-500 text-green-400 hover:text-black border-green-500/20'
+                                    }`}
                                   >
                                     <CheckCircle2 size={14} />
-                                    Complete Mission
+                                    {bid.completionStatus === 'rejected' ? 'Resubmit Proof' : 'Complete Mission'}
                                   </button>
                                 )}
                                 {bid.completionStatus && bid.completionStatus !== 'none' && (

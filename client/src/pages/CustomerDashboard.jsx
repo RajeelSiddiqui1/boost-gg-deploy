@@ -47,17 +47,37 @@ const BuyerDashboard = () => {
     setCustomerProofPreview(URL.createObjectURL(file));
   };
 
+  const handleOpenCustomerProof = (e, bid) => {
+    e.stopPropagation();
+    setShowCustomerProof(bid);
+    if (bid.customerProof) {
+      setCustomerProofComment(bid.customerProof.comment || '');
+      setCustomerProofStatus(bid.customerProof.status || 'approved');
+      if (bid.customerProof.imageUrl) {
+        setCustomerProofPreview(getImageUrl(bid.customerProof.imageUrl));
+      } else {
+        setCustomerProofPreview(null);
+      }
+    } else {
+      setCustomerProofComment('');
+      setCustomerProofStatus('approved');
+      setCustomerProofPreview(null);
+    }
+    setCustomerProofFile(null);
+  };
+
   const handleCustomerProofSubmit = async () => {
-    if (customerProofStatus === 'rejected' && !customerProofFile) {
+    if (customerProofStatus === 'rejected' && !customerProofFile && !customerProofPreview) {
       return alert('Please select a proof image for rejection reason');
     }
     setSubmittingCustomerProof(true);
     try {
       const token = localStorage.getItem('token');
       const formData = new FormData();
-      formData.append('proofImage', customerProofFile);
+      if (customerProofFile) formData.append('proofImage', customerProofFile);
       formData.append('comment', customerProofComment);
       formData.append('status', customerProofStatus);
+      formData.append('keepExistingImage', customerProofPreview && !customerProofFile ? 'true' : 'false');
       await axios.post(`${API_URL}/api/v1/bids/${showCustomerProof._id}/customer-proof`, formData, {
         headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'multipart/form-data' }
       });
@@ -222,23 +242,31 @@ const BuyerDashboard = () => {
           </div>
 
           <div className="flex items-center gap-3">
-            {order.assignedBid?.completionStatus === 'pro_submitted' && (
+            {(order.assignedBid?.completionStatus === 'pro_submitted' || order.assignedBid?.completionStatus === 'customer_submitted') && (
               <button 
-                onClick={(e) => { e.stopPropagation(); setShowCustomerProof(order.assignedBid); }}
+                onClick={(e) => handleOpenCustomerProof(e, order.assignedBid)}
                 className="px-4 py-2 bg-green-500/10 hover:bg-green-500 border border-green-500/20 text-green-400 hover:text-black rounded-xl text-[9px] font-black uppercase tracking-widest transition-all"
               >
-                Review & Confirm
+                {order.assignedBid?.completionStatus === 'customer_submitted' ? 'Update Review' : 'Review & Confirm'}
               </button>
             )}
             {order.assignedBid?.completionStatus && order.assignedBid.completionStatus !== 'none' && order.assignedBid.completionStatus !== 'pro_submitted' && (
-              <span className={`px-3 py-1.5 rounded-xl text-[8px] font-black uppercase tracking-widest border ${
-                order.assignedBid.completionStatus === 'approved' ? 'bg-green-500/10 text-green-400 border-green-500/20' :
-                order.assignedBid.completionStatus === 'rejected' ? 'bg-red-500/10 text-red-400 border-red-500/20' :
-                'bg-yellow-500/10 text-yellow-400 border-yellow-500/20'
+              <button 
+                onClick={(e) => {
+                  if (order.assignedBid?.completionStatus === 'customer_submitted') {
+                    handleOpenCustomerProof(e, order.assignedBid);
+                  }
+                }}
+                className={`px-3 py-1.5 rounded-xl text-[8px] font-black uppercase tracking-widest border transition-all ${
+                  order.assignedBid.completionStatus === 'approved' ? 'bg-green-500/10 text-green-400 border-green-500/20' :
+                  order.assignedBid.completionStatus === 'rejected' ? 'bg-red-500/10 text-red-400 border-red-500/20' :
+                  order.assignedBid.customerProof?.status === 'rejected' ? 'bg-red-500/10 hover:bg-red-500 text-red-400 hover:text-black border-red-500/20' :
+                  'bg-yellow-500/10 hover:bg-yellow-500 text-yellow-400 hover:text-black border-yellow-500/20'
               }`}>
-                {order.assignedBid.completionStatus === 'customer_submitted' ? '⏳ Under Admin Review' :
-                 order.assignedBid.completionStatus === 'approved' ? '✅ Approved' : '❌ Rejected'}
-              </span>
+                {order.assignedBid.completionStatus === 'customer_submitted' ? 
+                  (order.assignedBid.customerProof?.status === 'rejected' ? '❌ You Rejected (Under Review)' : '⏳ You Approved (Under Review)') :
+                 order.assignedBid.completionStatus === 'approved' ? '✅ Approved by Admin' : '❌ Rejected by Admin'}
+              </button>
             )}
             {pro && (
               <button 
@@ -294,12 +322,12 @@ const BuyerDashboard = () => {
                     <span className="text-xl font-black text-white tracking-tighter">{formatPrice(order.amount || order.price)}</span>
                 </div>
                 <div className="flex items-center gap-2">
-                    {order.assignedBid?.completionStatus === 'pro_submitted' && (
+                    {(order.assignedBid?.completionStatus === 'pro_submitted' || order.assignedBid?.completionStatus === 'customer_submitted') && (
                       <button 
-                        onClick={(e) => { e.stopPropagation(); setShowCustomerProof(order.assignedBid); }}
+                        onClick={(e) => handleOpenCustomerProof(e, order.assignedBid)}
                         className="px-4 py-2 bg-green-500/10 hover:bg-green-500 border border-green-500/20 text-green-400 hover:text-black rounded-xl text-[9px] font-black uppercase tracking-widest transition-all"
                       >
-                        Review
+                        {order.assignedBid?.completionStatus === 'customer_submitted' ? 'Update' : 'Review'}
                       </button>
                     )}
                     {pro && (
@@ -613,18 +641,28 @@ const BuyerDashboard = () => {
               <label className="text-[10px] font-black text-white ml-2 tracking-normal">
                 Your Proof Screenshot {customerProofStatus === 'rejected' ? '*' : '(Optional)'}
               </label>
-              <label className="flex flex-col items-center justify-center w-full h-48 border-2 border-dashed border-white/10 rounded-3xl cursor-pointer hover:border-primary/40 transition-all bg-white/[0.02] hover:bg-primary/5 group">
-                {customerProofPreview ? (
-                  <img src={customerProofPreview} className="h-full w-full object-contain rounded-3xl p-2" alt="proof preview" />
-                ) : (
-                  <div className="flex flex-col items-center gap-3 text-white/30 group-hover:text-white/60 transition-colors">
-                    <CheckCircle2 size={32} />
-                    <p className="text-[10px] font-black uppercase tracking-widest">Upload Confirmation</p>
-                    <p className="text-[9px] font-bold">PNG, JPG, MP4 up to 50MB</p>
-                  </div>
+              <div className="relative">
+                <label className="flex flex-col items-center justify-center w-full h-48 border-2 border-dashed border-white/10 rounded-3xl cursor-pointer hover:border-primary/40 transition-all bg-white/[0.02] hover:bg-primary/5 group">
+                  {customerProofPreview ? (
+                    <img src={customerProofPreview} className="h-full w-full object-contain rounded-3xl p-2" alt="proof preview" />
+                  ) : (
+                    <div className="flex flex-col items-center gap-3 text-white/30 group-hover:text-white/60 transition-colors">
+                      <CheckCircle2 size={32} />
+                      <p className="text-[10px] font-black uppercase tracking-widest">Upload Confirmation</p>
+                      <p className="text-[9px] font-bold">PNG, JPG, MP4 up to 50MB</p>
+                    </div>
+                  )}
+                  <input type="file" accept="image/*,video/*" className="hidden" onChange={handleCustomerProofFileChange} />
+                </label>
+                {customerProofPreview && (
+                  <button
+                    onClick={() => { setCustomerProofFile(null); setCustomerProofPreview(null); }}
+                    className="absolute top-4 right-4 w-8 h-8 bg-black/60 backdrop-blur-md rounded-full flex items-center justify-center text-white/50 hover:text-red-500 hover:bg-red-500/20 transition-all"
+                  >
+                    <X size={14} />
+                  </button>
                 )}
-                <input type="file" accept="image/*,video/*" className="hidden" onChange={handleCustomerProofFileChange} />
-              </label>
+              </div>
               {customerProofFile && (
                 <p className="text-[9px] font-bold text-primary ml-2">✓ {customerProofFile.name}</p>
               )}
@@ -651,7 +689,7 @@ const BuyerDashboard = () => {
               </button>
               <button
                 onClick={handleCustomerProofSubmit}
-                disabled={submittingCustomerProof || (customerProofStatus === 'rejected' && !customerProofFile)}
+                disabled={submittingCustomerProof || (customerProofStatus === 'rejected' && !customerProofFile && !customerProofPreview)}
                 className={`flex-1 py-5 hover:bg-white text-black rounded-[30px] text-[10px] font-black tracking-normal transition-all shadow-xl flex items-center justify-center gap-2 disabled:opacity-50 ${
                   customerProofStatus === 'rejected' ? 'bg-red-500 shadow-red-500/20' : 'bg-primary shadow-primary/20'
                 }`}

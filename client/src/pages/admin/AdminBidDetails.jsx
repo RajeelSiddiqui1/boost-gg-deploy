@@ -25,21 +25,21 @@ const AdminBidDetails = () => {
   const [messages, setMessages] = useState([]);
   const [chatLoading, setChatLoading] = useState(false);
 
-  useEffect(() => {
-    const fetchBidDetails = async () => {
-      try {
-        const token = localStorage.getItem('token');
-        const res = await axios.get(`${API_URL}/api/v1/bids/${id}/bidders`, {
-          headers: { Authorization: `Bearer ${token}` }
-        });
-        setBid(res.data.data);
-        setLoading(false);
-      } catch (err) {
-        console.error(err);
-        setLoading(false);
-      }
-    };
+  const fetchBidDetails = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const res = await axios.get(`${API_URL}/api/v1/bids/${id}/bidders`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setBid(res.data.data);
+      setLoading(false);
+    } catch (err) {
+      console.error(err);
+      setLoading(false);
+    }
+  };
 
+  useEffect(() => {
     fetchBidDetails();
   }, [id]);
 
@@ -75,14 +75,6 @@ const AdminBidDetails = () => {
     socket.on('newMessage', handleNewMessage);
     socket.on('bidUpdate', (data) => {
       if (data.bidId === id) {
-        // Refresh bid details
-        const fetchBidDetails = async () => {
-          const token = localStorage.getItem('token');
-          const res = await axios.get(`${API_URL}/api/v1/bids/${id}/bidders`, {
-            headers: { Authorization: `Bearer ${token}` }
-          });
-          setBid(res.data.data);
-        };
         fetchBidDetails();
       }
     });
@@ -128,7 +120,7 @@ const AdminBidDetails = () => {
       }, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      fetchBid();
+      fetchBidDetails();
     } catch (err) {
       console.error(err);
       alert(err.response?.data?.message || 'Failed to review completion');
@@ -272,7 +264,7 @@ const AdminBidDetails = () => {
                 )}
                 
                 {/* Customer Proof */}
-                {bid.customerProof && bid.customerProof.imageUrl ? (
+                {bid.customerProof && bid.customerProof.submittedAt ? (
                     <div className="bg-white/5 border border-white/10 rounded-[32px] p-8 space-y-4">
                         <div className="flex items-center justify-between">
                             <p className="text-[10px] font-black tracking-widest uppercase text-white/50">Customer Confirmation</p>
@@ -284,7 +276,9 @@ const AdminBidDetails = () => {
                                 </span>
                             )}
                         </div>
-                        <img src={getImageUrl(bid.customerProof.imageUrl)} className="w-full max-h-64 object-contain bg-black rounded-2xl" alt="Customer Proof" />
+                        {bid.customerProof.imageUrl && (
+                            <img src={getImageUrl(bid.customerProof.imageUrl)} className="w-full max-h-64 object-contain bg-black rounded-2xl" alt="Customer Proof" />
+                        )}
                         {bid.customerProof.comment && (
                             <p className="text-sm text-white/80 bg-black/50 p-4 rounded-xl">{bid.customerProof.comment}</p>
                         )}

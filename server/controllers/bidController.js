@@ -2,6 +2,7 @@ const Bid = require('../models/Bid');
 const Order = require('../models/Order');
 const Notification = require('../models/Notification');
 const User = require('../models/User');
+const Transaction = require('../models/Transaction');
 const sendEmail = require('../utils/sendEmail');
 const { getIO } = require('../socket');
 
@@ -577,10 +578,14 @@ exports.submitCustomerProof = async (req, res) => {
         if (!order || order.userId._id.toString() !== req.user.id)
             return res.status(403).json({ success: false, message: 'Not authorized' });
 
-        const { comment, status } = req.body;
-        const imageUrl = req.file
-            ? `/uploads/orders/customer-order-proof/${req.file.filename}`
-            : null;
+        const { comment, status, keepExistingImage } = req.body;
+        
+        let imageUrl = null;
+        if (req.file) {
+            imageUrl = `/uploads/orders/customer-order-proof/${req.file.filename}`;
+        } else if (keepExistingImage === 'true' && bid.customerProof?.imageUrl) {
+            imageUrl = bid.customerProof.imageUrl;
+        }
 
         bid.customerProof = { imageUrl, comment, status, approved: null, submittedAt: new Date() };
         bid.completionStatus = 'customer_submitted';
@@ -642,7 +647,27 @@ exports.reviewCompletion = async (req, res) => {
 
         if (decision === 'approved') {
             // Mark order as completed
-            await Order.findByIdAndUpdate(bid.orderId._id || bid.orderId, { status: 'completed' });
+            const updatedOrder = await Order.findByIdAndUpdate(bid.orderId._id || bid.orderId, { status: 'completed' }, { new: true });
+            
+            if (proId) {
+                const pro = await User.findById(proId);
+                if (pro) {
+                    const amountToAdd = updatedOrder.boosterEarnings || bid.bidPrice || 0;
+                    pro.earnings = (pro.earnings || 0) + amountToAdd;
+                    pro.totalOrdersCompleted = (pro.totalOrdersCompleted || 0) + 1;
+                    pro.missionDone = (pro.missionDone || 0) + 1;
+                    await pro.save();
+
+                    await Transaction.create({
+                        user: proId,
+                        type: 'credit',
+                        amount: amountToAdd,
+                        description: `Mission Completion: ${serviceTitle}`,
+                        orderId: updatedOrder._id,
+                        status: 'completed'
+                    });
+                }
+            }
         }
 
         await bid.save();
