@@ -73,6 +73,7 @@ const CustomerOrderDetails = lazy(() => import('./pages/CustomerOrderDetails'));
 const Notifications = lazy(() => import('./pages/Notifications'));
 const BidBidders = lazy(() => import('./pages/BidBidders'));
 const AdminBidDetails = lazy(() => import('./pages/admin/AdminBidDetails'));
+const AdminBidChat = lazy(() => import('./pages/admin/AdminBidChat'));
 
 const AppContent = () => {
   const location = useLocation();
@@ -203,6 +204,7 @@ const AppContent = () => {
             <Route path="/admin/orders" element={<ProtectedRoute adminOnly><AdminOrders /></ProtectedRoute>} />
             <Route path="/admin/bids" element={<ProtectedRoute adminOnly><AdminBids /></ProtectedRoute>} />
             <Route path="/admin/bids/:id/details" element={<ProtectedRoute adminOnly><AdminBidDetails /></ProtectedRoute>} />
+            <Route path="/admin/bids/:id/chat" element={<ProtectedRoute adminOnly><AdminBidChat /></ProtectedRoute>} />
             <Route path="/admin/chat" element={<ProtectedRoute adminOnly><AdminChat /></ProtectedRoute>} />
             <Route path="/admin/finance" element={<ProtectedRoute adminOnly><AdminFinance /></ProtectedRoute>} />
             <Route path="/admin/reviews" element={<ProtectedRoute adminOnly><AdminReviews /></ProtectedRoute>} />

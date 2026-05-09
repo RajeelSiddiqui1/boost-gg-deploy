@@ -95,7 +95,31 @@ const bidSchema = new mongoose.Schema({
             type: Date,
             default: Date.now
         }
-    }]
+    }],
+
+    // ── Completion Workflow ──────────────────────────────────
+    completionStatus: {
+        type: String,
+        enum: ['none', 'pro_submitted', 'customer_submitted', 'approved', 'rejected'],
+        default: 'none'
+    },
+
+    // Pro submits proof of completion
+    completionProof: {
+        imageUrl: String,          // path: uploads/orders/complete-order-proof
+        comment: String,
+        submittedAt: Date
+    },
+
+    // Customer submits their confirmation proof
+    customerProof: {
+        imageUrl: String,          // path: uploads/orders/customer-order-proof
+        comment: String,
+        status: { type: String, enum: ['approved', 'rejected'] }, // customer's choice
+        approved: { type: Boolean, default: null },  // null = not reviewed, true/false = admin decision
+        submittedAt: Date
+    }
+
 }, {
     timestamps: true
 });

@@ -95,7 +95,7 @@ exports.getMyOrders = async (req, res) => {
         const ordersWithBids = await Promise.all(orders.map(async (order) => {
             const bid = await Bid.findOne({ orderId: order._id })
                 .populate('assignedUser', 'name avatar email')
-                .select('assignedUser status bidPrice');
+                .select('assignedUser status bidPrice completionStatus completionProof customerProof');
             return { 
                 ...order._doc, 
                 assignedBid: bid 

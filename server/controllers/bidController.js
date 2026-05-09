@@ -112,6 +112,11 @@ exports.updateBidPrice = async (req, res) => {
             await notifySpecializedPros(bid, 'Updated');
         }
 
+        // Real-time: refresh admin bids page + pro marketplace
+        const io = getIO();
+        io.emit('bidsUpdate', { action: 'updated', bidId: bid._id, status: bid.status, bidPrice: bid.bidPrice });
+        io.emit('marketUpdate');
+
         res.status(200).json({ success: true, data: bid });
     } catch (err) {
         res.status(400).json({ success: false, message: err.message });
@@ -149,6 +154,11 @@ exports.createBid = async (req, res) => {
         if (bidStatus === 'active') {
             await notifySpecializedPros(bid, 'New');
         }
+
+        // Real-time: push new bid to admin bids page + pro marketplace
+        const io = getIO();
+        io.emit('bidsUpdate', { action: 'created', bidId: bid._id, status: bid.status });
+        io.emit('marketUpdate');
 
         res.status(201).json({ success: true, data: bid });
     } catch (err) {
@@ -273,6 +283,8 @@ exports.boosterBid = async (req, res) => {
             boosterName: boosterName,
             amount: amount
         });
+        // Refresh admin bids table
+        io.emit('bidsUpdate', { action: 'booster_bid', bidId: bid._id, boosterName, amount });
 
         res.status(200).json({ success: true, data: bid });
     } catch (err) {
@@ -366,9 +378,19 @@ exports.approveBid = async (req, res) => {
             link: `/pro/order/${order._id}`
         });
 
-        // 4. Emit socket to admin room for live refresh
+        // 4. Emit socket events
         const io = getIO();
         io.to(bid._id.toString()).emit('bidUpdate', { bidId: bid._id, status: 'approved' });
+        // Notify assigned pro
+        io.to(proId.toString()).emit('notification', {
+            title: 'Bid Approved!',
+            message: `Your proposal was approved. You can now start the mission.`,
+            type: 'order_update',
+            link: `/pro/order/${order._id}`
+        });
+        // Refresh admin bids page + pro marketplace
+        io.emit('bidsUpdate', { action: 'approved', bidId: bid._id, proId });
+        io.emit('marketUpdate');
 
         res.status(200).json({ success: true, message: 'Bid approved and order assigned successfully' });
     } catch (err) {
@@ -456,8 +478,212 @@ exports.boosterClaim = async (req, res) => {
             status: 'assigned',
             boosterName: boosterName
         });
+        // Refresh admin bids table + pro marketplace
+        io.emit('bidsUpdate', { action: 'claimed', bidId: bid._id, boosterName });
+        io.emit('marketUpdate');
 
         res.status(200).json({ success: true, message: 'Mission claimed and assigned successfully!', data: bid });
+    } catch (err) {
+        res.status(400).json({ success: false, message: err.message });
+    }
+};
+
+// ─────────────────────────────────────────────────────────────────────────────
+// COMPLETION WORKFLOW
+// ─────────────────────────────────────────────────────────────────────────────
+
+// @desc    PRO: Submit completion proof
+// @route   POST /api/v1/bids/:id/complete
+// @access  Private (PRO)
+exports.submitCompletionProof = async (req, res) => {
+    try {
+        const bid = await Bid.findById(req.params.id)
+            .populate({ path: 'orderId', populate: { path: 'serviceId userId', select: 'title name email' } })
+            .populate('assignedUser', 'name email');
+
+        if (!bid) return res.status(404).json({ success: false, message: 'Bid not found' });
+        if (!bid.assignedUser || bid.assignedUser._id.toString() !== req.user.id)
+            return res.status(403).json({ success: false, message: 'Not authorized' });
+
+        const { comment } = req.body;
+        const imageUrl = req.file
+            ? `/uploads/orders/complete-order-proof/${req.file.filename}`
+            : null;
+
+        if (!imageUrl) return res.status(400).json({ success: false, message: 'Proof image is required' });
+
+        bid.completionProof = { imageUrl, comment, submittedAt: new Date() };
+        bid.completionStatus = 'pro_submitted';
+        await bid.save();
+
+        const io = getIO();
+        const order = bid.orderId;
+        const customer = order?.userId;
+        const serviceTitle = order?.serviceId?.title || 'your order';
+
+        // Notify admins
+        const admins = await User.find({ role: 'admin' });
+        for (const admin of admins) {
+            await Notification.create({
+                userId: admin._id,
+                title: 'Completion Proof Submitted',
+                message: `Pro ${req.user.name} submitted proof for ${serviceTitle}.`,
+                type: 'order_update',
+                link: `/admin/bids/${bid._id}/details`
+            });
+            io.to(admin._id.toString()).emit('notification', {
+                title: 'Completion Proof Submitted',
+                message: `Pro ${req.user.name} submitted proof for ${serviceTitle}.`,
+                type: 'order_update',
+                link: `/admin/bids/${bid._id}/details`
+            });
+        }
+
+        // Notify customer
+        if (customer) {
+            await Notification.create({
+                userId: customer._id,
+                title: 'Mission Completed! Your Review Needed',
+                message: `Your order "${serviceTitle}" has been completed. Please review and submit your confirmation.`,
+                type: 'order_update',
+                link: `/dashboard`
+            });
+            io.to(customer._id.toString()).emit('notification', {
+                title: 'Mission Completed!',
+                message: `Your order "${serviceTitle}" has been completed. Review it now.`,
+                type: 'order_update'
+            });
+        }
+
+        io.emit('bidsUpdate', { action: 'proof_submitted', bidId: bid._id });
+
+        res.status(200).json({ success: true, message: 'Proof submitted successfully', data: bid });
+    } catch (err) {
+        res.status(400).json({ success: false, message: err.message });
+    }
+};
+
+// @desc    CUSTOMER: Submit their confirmation proof
+// @route   POST /api/v1/bids/:id/customer-proof
+// @access  Private (Customer)
+exports.submitCustomerProof = async (req, res) => {
+    try {
+        const bid = await Bid.findById(req.params.id)
+            .populate({ path: 'orderId', populate: { path: 'serviceId userId', select: 'title name email _id' } });
+
+        if (!bid) return res.status(404).json({ success: false, message: 'Bid not found' });
+
+        const order = bid.orderId;
+        if (!order || order.userId._id.toString() !== req.user.id)
+            return res.status(403).json({ success: false, message: 'Not authorized' });
+
+        const { comment, status } = req.body;
+        const imageUrl = req.file
+            ? `/uploads/orders/customer-order-proof/${req.file.filename}`
+            : null;
+
+        bid.customerProof = { imageUrl, comment, status, approved: null, submittedAt: new Date() };
+        bid.completionStatus = 'customer_submitted';
+        await bid.save();
+
+        const io = getIO();
+        const serviceTitle = order?.serviceId?.title || 'order';
+
+        // Notify admins
+        const admins = await User.find({ role: 'admin' });
+        for (const admin of admins) {
+            await Notification.create({
+                userId: admin._id,
+                title: 'Customer Proof Submitted',
+                message: `Customer ${req.user.name} submitted their proof for ${serviceTitle}.`,
+                type: 'order_update',
+                link: `/admin/bids/${bid._id}/details`
+            });
+            io.to(admin._id.toString()).emit('notification', {
+                title: 'Customer Proof Submitted',
+                message: `Customer submitted proof for ${serviceTitle}. Review now.`,
+                type: 'order_update',
+                link: `/admin/bids/${bid._id}/details`
+            });
+        }
+
+        io.emit('bidsUpdate', { action: 'customer_proof', bidId: bid._id });
+
+        res.status(200).json({ success: true, message: 'Customer proof submitted', data: bid });
+    } catch (err) {
+        res.status(400).json({ success: false, message: err.message });
+    }
+};
+
+// @desc    ADMIN: Approve or reject completion
+// @route   PUT /api/v1/bids/:id/review-completion
+// @access  Private (ADMIN)
+exports.reviewCompletion = async (req, res) => {
+    try {
+        const { decision, comment } = req.body; // decision: 'approved' | 'rejected'
+        if (!['approved', 'rejected'].includes(decision))
+            return res.status(400).json({ success: false, message: 'Decision must be approved or rejected' });
+
+        const bid = await Bid.findById(req.params.id)
+            .populate({ path: 'orderId', populate: { path: 'serviceId userId', select: 'title name email _id' } })
+            .populate('assignedUser', 'name email _id');
+
+        if (!bid) return res.status(404).json({ success: false, message: 'Bid not found' });
+
+        bid.completionStatus = decision;
+        if (bid.customerProof) bid.customerProof.approved = decision === 'approved';
+        if (comment) bid.customerProof = { ...(bid.customerProof || {}), comment };
+
+        const io = getIO();
+        const order = bid.orderId;
+        const serviceTitle = order?.serviceId?.title || 'order';
+        const proId = bid.assignedUser?._id;
+        const customerId = order?.userId?._id;
+
+        if (decision === 'approved') {
+            // Mark order as completed
+            await Order.findByIdAndUpdate(bid.orderId._id || bid.orderId, { status: 'completed' });
+        }
+
+        await bid.save();
+
+        // Notify pro
+        if (proId) {
+            await Notification.create({
+                userId: proId,
+                title: decision === 'approved' ? '🎉 Mission Approved!' : '❌ Mission Rejected',
+                message: decision === 'approved'
+                    ? `Your completion of "${serviceTitle}" has been approved. Payment will be processed.`
+                    : `Your completion of "${serviceTitle}" was rejected. Please review.`,
+                type: 'order_update',
+                link: `/dashboard?tab=active`
+            });
+            io.to(proId.toString()).emit('notification', {
+                title: decision === 'approved' ? 'Mission Approved!' : 'Mission Rejected',
+                type: 'order_update'
+            });
+        }
+
+        // Notify customer
+        if (customerId) {
+            await Notification.create({
+                userId: customerId,
+                title: decision === 'approved' ? '✅ Order Completed!' : 'Order Under Review',
+                message: decision === 'approved'
+                    ? `Your order "${serviceTitle}" is officially complete!`
+                    : `Your order "${serviceTitle}" completion is under review.`,
+                type: 'order_update',
+                link: `/dashboard`
+            });
+            io.to(customerId.toString()).emit('notification', {
+                title: decision === 'approved' ? 'Order Completed!' : 'Order Under Review',
+                type: 'order_update'
+            });
+        }
+
+        io.emit('bidsUpdate', { action: 'completion_reviewed', bidId: bid._id, decision });
+
+        res.status(200).json({ success: true, message: `Completion ${decision}`, data: bid });
     } catch (err) {
         res.status(400).json({ success: false, message: err.message });
     }

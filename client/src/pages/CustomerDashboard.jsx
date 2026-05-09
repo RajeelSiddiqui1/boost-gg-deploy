@@ -5,14 +5,17 @@ import DashboardLayout from '../components/layout/DashboardLayout';
 import {
   ShoppingCart, Clock, CheckCircle2,
   AlertCircle, MessageSquare, ChevronRight,
-  Search, Filter, ExternalLink, Heart, Trash2,
+  Search, Filter, ExternalLink, Heart, Trash2, X,
   Zap, ShieldCheck, DollarSign, Globe, Monitor,
-  User, ArrowUpRight, LayoutGrid, List
+  User, ArrowUpRight, LayoutGrid, List, Loader2
 } from 'lucide-react';
 import { format } from 'date-fns';
 import { useAuth } from '../context/AuthContext';
 import { useCurrency } from '../context/CurrencyContext';
 import { API_URL, getImageUrl } from '../utils/api';
+import { io } from 'socket.io-client';
+
+const socket = io(API_URL.replace('/api/v1', ''));
 
 const BuyerDashboard = () => {
   const [tab, setTab] = useState('orders');
@@ -29,9 +32,53 @@ const BuyerDashboard = () => {
   const navigate = useNavigate();
   const [profileName, setProfileName] = useState(user?.name || '');
 
+  // Completion Proof (Customer)
+  const [showCustomerProof, setShowCustomerProof] = useState(null); // bid object
+  const [customerProofFile, setCustomerProofFile] = useState(null);
+  const [customerProofPreview, setCustomerProofPreview] = useState(null);
+  const [customerProofComment, setCustomerProofComment] = useState('');
+  const [customerProofStatus, setCustomerProofStatus] = useState('approved'); // approved | rejected
+  const [submittingCustomerProof, setSubmittingCustomerProof] = useState(false);
+
+  const handleCustomerProofFileChange = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    setCustomerProofFile(file);
+    setCustomerProofPreview(URL.createObjectURL(file));
+  };
+
+  const handleCustomerProofSubmit = async () => {
+    if (customerProofStatus === 'rejected' && !customerProofFile) {
+      return alert('Please select a proof image for rejection reason');
+    }
+    setSubmittingCustomerProof(true);
+    try {
+      const token = localStorage.getItem('token');
+      const formData = new FormData();
+      formData.append('proofImage', customerProofFile);
+      formData.append('comment', customerProofComment);
+      formData.append('status', customerProofStatus);
+      await axios.post(`${API_URL}/api/v1/bids/${showCustomerProof._id}/customer-proof`, formData, {
+        headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'multipart/form-data' }
+      });
+      alert('Confirmation proof submitted!');
+      setShowCustomerProof(null);
+      setCustomerProofFile(null);
+      setCustomerProofPreview(null);
+      setCustomerProofComment('');
+      setCustomerProofStatus('approved');
+      fetchData();
+    } catch (err) {
+      alert(err.response?.data?.message || 'Failed to submit proof');
+    } finally {
+      setSubmittingCustomerProof(false);
+    }
+  };
+
   useEffect(() => {
     if (user?.name) setProfileName(user.name);
   }, [user]);
+
 
   const handleUpdateProfile = async () => {
     try {
@@ -73,6 +120,19 @@ const BuyerDashboard = () => {
 
   useEffect(() => {
     fetchData();
+
+    socket.on('bidsUpdate', () => {
+      fetchData();
+    });
+
+    socket.on('marketUpdate', () => {
+      fetchData();
+    });
+
+    return () => {
+      socket.off('bidsUpdate');
+      socket.off('marketUpdate');
+    };
   }, []);
 
   const handleRemoveFavorite = async (itemId) => {
@@ -162,6 +222,24 @@ const BuyerDashboard = () => {
           </div>
 
           <div className="flex items-center gap-3">
+            {order.assignedBid?.completionStatus === 'pro_submitted' && (
+              <button 
+                onClick={(e) => { e.stopPropagation(); setShowCustomerProof(order.assignedBid); }}
+                className="px-4 py-2 bg-green-500/10 hover:bg-green-500 border border-green-500/20 text-green-400 hover:text-black rounded-xl text-[9px] font-black uppercase tracking-widest transition-all"
+              >
+                Review & Confirm
+              </button>
+            )}
+            {order.assignedBid?.completionStatus && order.assignedBid.completionStatus !== 'none' && order.assignedBid.completionStatus !== 'pro_submitted' && (
+              <span className={`px-3 py-1.5 rounded-xl text-[8px] font-black uppercase tracking-widest border ${
+                order.assignedBid.completionStatus === 'approved' ? 'bg-green-500/10 text-green-400 border-green-500/20' :
+                order.assignedBid.completionStatus === 'rejected' ? 'bg-red-500/10 text-red-400 border-red-500/20' :
+                'bg-yellow-500/10 text-yellow-400 border-yellow-500/20'
+              }`}>
+                {order.assignedBid.completionStatus === 'customer_submitted' ? '⏳ Under Admin Review' :
+                 order.assignedBid.completionStatus === 'approved' ? '✅ Approved' : '❌ Rejected'}
+              </span>
+            )}
             {pro && (
               <button 
                 onClick={(e) => { e.stopPropagation(); navigate(`/pro/chat/${order._id}`); }}
@@ -216,6 +294,14 @@ const BuyerDashboard = () => {
                     <span className="text-xl font-black text-white tracking-tighter">{formatPrice(order.amount || order.price)}</span>
                 </div>
                 <div className="flex items-center gap-2">
+                    {order.assignedBid?.completionStatus === 'pro_submitted' && (
+                      <button 
+                        onClick={(e) => { e.stopPropagation(); setShowCustomerProof(order.assignedBid); }}
+                        className="px-4 py-2 bg-green-500/10 hover:bg-green-500 border border-green-500/20 text-green-400 hover:text-black rounded-xl text-[9px] font-black uppercase tracking-widest transition-all"
+                      >
+                        Review
+                      </button>
+                    )}
                     {pro && (
                         <button 
                             onClick={(e) => { e.stopPropagation(); navigate(`/pro/chat/${order._id}`); }}
@@ -227,6 +313,7 @@ const BuyerDashboard = () => {
                     <div className="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center text-white group-hover:bg-primary group-hover:text-black transition-all">
                         <ChevronRight className="w-5 h-5" />
                     </div>
+
                 </div>
             </div>
         </div>
@@ -465,9 +552,121 @@ const BuyerDashboard = () => {
           )}
         </div>
       </div>
+
+      {/* ── Customer Proof Modal ── */}
+      {showCustomerProof && (
+        <div className="fixed inset-0 z-[200] flex items-center justify-center p-6">
+          <div className="absolute inset-0 bg-black/90 backdrop-blur-xl" onClick={() => { setShowCustomerProof(null); setCustomerProofFile(null); setCustomerProofPreview(null); setCustomerProofComment(''); }} />
+          <div className="relative w-full max-w-[560px] bg-[#0A0A0A] border border-white/10 rounded-[48px] p-12 shadow-2xl space-y-8 overflow-y-auto max-h-[90vh] custom-scrollbar">
+            {/* Header */}
+            <div>
+              <div className="flex items-center gap-3 mb-2">
+                <div className="w-10 h-10 rounded-2xl bg-primary/10 flex items-center justify-center">
+                  <CheckCircle2 size={20} className="text-primary" />
+                </div>
+                <h3 className="text-2xl font-black text-white tracking-tight">Mission Review</h3>
+              </div>
+              <p className="text-[10px] font-bold text-white/40 tracking-widest uppercase ml-1">
+                Upload your confirmation to finalize payment.
+              </p>
+            </div>
+
+            {/* Proof View from Pro */}
+            {showCustomerProof.completionProof && (
+              <div className="p-6 bg-white/5 border border-white/10 rounded-3xl space-y-4">
+                <p className="text-[10px] font-black text-white tracking-widest uppercase">Specialist's Proof</p>
+                {showCustomerProof.completionProof.imageUrl && (
+                  <img src={getImageUrl(showCustomerProof.completionProof.imageUrl)} className="w-full max-h-48 object-contain rounded-xl bg-black" alt="Pro Proof" />
+                )}
+                {showCustomerProof.completionProof.comment && (
+                  <p className="text-sm text-white/80 bg-black/50 p-4 rounded-xl">{showCustomerProof.completionProof.comment}</p>
+                )}
+              </div>
+            )}
+
+            {/* Approval Decision */}
+            <div className="grid grid-cols-2 gap-4">
+              <button 
+                onClick={() => setCustomerProofStatus('approved')}
+                className={`py-4 rounded-2xl flex items-center justify-center gap-2 text-[10px] font-black tracking-widest uppercase transition-all ${
+                  customerProofStatus === 'approved' 
+                    ? 'bg-green-500/20 border-2 border-green-500 text-green-400' 
+                    : 'bg-white/5 border-2 border-transparent text-white/40 hover:bg-white/10'
+                }`}
+              >
+                <CheckCircle2 size={16} /> Approve
+              </button>
+              <button 
+                onClick={() => setCustomerProofStatus('rejected')}
+                className={`py-4 rounded-2xl flex items-center justify-center gap-2 text-[10px] font-black tracking-widest uppercase transition-all ${
+                  customerProofStatus === 'rejected' 
+                    ? 'bg-red-500/20 border-2 border-red-500 text-red-400' 
+                    : 'bg-white/5 border-2 border-transparent text-white/40 hover:bg-white/10'
+                }`}
+              >
+                <X size={16} /> Reject
+              </button>
+            </div>
+
+            {/* File Upload */}
+            <div className="space-y-3">
+              <label className="text-[10px] font-black text-white ml-2 tracking-normal">
+                Your Proof Screenshot {customerProofStatus === 'rejected' ? '*' : '(Optional)'}
+              </label>
+              <label className="flex flex-col items-center justify-center w-full h-48 border-2 border-dashed border-white/10 rounded-3xl cursor-pointer hover:border-primary/40 transition-all bg-white/[0.02] hover:bg-primary/5 group">
+                {customerProofPreview ? (
+                  <img src={customerProofPreview} className="h-full w-full object-contain rounded-3xl p-2" alt="proof preview" />
+                ) : (
+                  <div className="flex flex-col items-center gap-3 text-white/30 group-hover:text-white/60 transition-colors">
+                    <CheckCircle2 size={32} />
+                    <p className="text-[10px] font-black uppercase tracking-widest">Upload Confirmation</p>
+                    <p className="text-[9px] font-bold">PNG, JPG, MP4 up to 50MB</p>
+                  </div>
+                )}
+                <input type="file" accept="image/*,video/*" className="hidden" onChange={handleCustomerProofFileChange} />
+              </label>
+              {customerProofFile && (
+                <p className="text-[9px] font-bold text-primary ml-2">✓ {customerProofFile.name}</p>
+              )}
+            </div>
+
+            {/* Comment */}
+            <div className="space-y-2">
+              <label className="text-[10px] font-black text-white ml-2 tracking-normal">Comment (optional)</label>
+              <textarea
+                value={customerProofComment}
+                onChange={(e) => setCustomerProofComment(e.target.value)}
+                placeholder="Leave a message about the delivery..."
+                className="w-full bg-white/[0.03] border border-white/5 rounded-2xl py-4 px-6 text-sm font-medium text-white outline-none focus:border-primary/40 transition-all min-h-[100px] resize-none"
+              />
+            </div>
+
+            {/* Buttons */}
+            <div className="flex gap-4 pt-2">
+              <button
+                onClick={() => { setShowCustomerProof(null); setCustomerProofFile(null); setCustomerProofPreview(null); setCustomerProofComment(''); setCustomerProofStatus('approved'); }}
+                className="flex-1 py-5 bg-white/5 hover:bg-white/10 rounded-[30px] text-[10px] font-black tracking-normal text-white transition-all"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleCustomerProofSubmit}
+                disabled={submittingCustomerProof || (customerProofStatus === 'rejected' && !customerProofFile)}
+                className={`flex-1 py-5 hover:bg-white text-black rounded-[30px] text-[10px] font-black tracking-normal transition-all shadow-xl flex items-center justify-center gap-2 disabled:opacity-50 ${
+                  customerProofStatus === 'rejected' ? 'bg-red-500 shadow-red-500/20' : 'bg-primary shadow-primary/20'
+                }`}
+              >
+                {submittingCustomerProof ? <Loader2 className="w-4 h-4 animate-spin" /> : (customerProofStatus === 'rejected' ? <X className="w-4 h-4" /> : <CheckCircle2 className="w-4 h-4" />)}
+                {submittingCustomerProof ? 'Submitting...' : `Submit ${customerProofStatus === 'rejected' ? 'Rejection' : 'Confirmation'}`}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </DashboardLayout>
   );
 };
 
 export default BuyerDashboard;
+
 

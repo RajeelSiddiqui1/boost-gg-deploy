@@ -156,6 +156,44 @@ const ProDashboard = () => {
   const toast = useToast();
   const [profileName, setProfileName] = useState(user?.name || '');
 
+  // Bid completion proof
+  const [showBidProof, setShowBidProof] = useState(null); // bid object
+  const [bidProofFile, setBidProofFile] = useState(null);
+  const [bidProofPreview, setBidProofPreview] = useState(null);
+  const [bidProofComment, setBidProofComment] = useState('');
+  const [submittingBidProof, setSubmittingBidProof] = useState(false);
+
+  const handleBidProofFileChange = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    setBidProofFile(file);
+    setBidProofPreview(URL.createObjectURL(file));
+  };
+
+  const handleBidProofSubmit = async () => {
+    if (!bidProofFile) return toast.error('Please select a proof image');
+    setSubmittingBidProof(true);
+    try {
+      const token = localStorage.getItem('token');
+      const formData = new FormData();
+      formData.append('proofImage', bidProofFile);
+      formData.append('comment', bidProofComment);
+      await axios.post(`${API_URL}/api/v1/bids/${showBidProof._id}/complete`, formData, {
+        headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'multipart/form-data' }
+      });
+      toast.success('Completion proof submitted!');
+      setShowBidProof(null);
+      setBidProofFile(null);
+      setBidProofPreview(null);
+      setBidProofComment('');
+      fetchData();
+    } catch (err) {
+      toast.error(err.response?.data?.message || 'Failed to submit proof');
+    } finally {
+      setSubmittingBidProof(false);
+    }
+  };
+
   useEffect(() => {
     if (user?.name) setProfileName(user.name);
   }, [user]);
@@ -211,8 +249,13 @@ const ProDashboard = () => {
       fetchData();
     });
 
+    socket.on('bidsUpdate', () => {
+      fetchData();
+    });
+
     return () => {
       socket.off('marketUpdate');
+      socket.off('bidsUpdate');
     };
   }, []);
 
@@ -659,8 +702,7 @@ const ProDashboard = () => {
             <div className="flex-1">
               <h2 className="text-3xl font-black  tracking-tighter">
                 {tab === 'work' && 'Marketplace'}
-                {tab === 'active' && 'Active Tasks'}
-                {tab === 'bids' && 'My Proposals'}
+                {tab === 'active' && 'My Active Task'}
                 {tab === 'earnings' && 'Financial Overview'}
                 {tab === 'performance' && 'Performance Analytics'}
                 {tab === 'profile' && 'Account Settings'}
@@ -755,22 +797,9 @@ const ProDashboard = () => {
 
             {tab === 'active' && (
               <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
-                <h3 className="text-2xl font-black  tracking-tight">Your Registry</h3>
-                {activeOrders.length === 0 ? (
-                  <div className="py-24 text-center text-white font-black  tracking-normal border border-white/5 rounded-[40px]">No active missions.</div>
-                ) : (
-                  <div className={viewMode === 'grid' ? "grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8" : "space-y-4"}>
-                    {activeOrders.map(o => viewMode === 'grid' ? renderOrderCard(o, true) : renderOrderRow(o, true))}
-                  </div>
-                )}
-              </div>
-            )}
-
-            {tab === 'bids' && (
-              <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
                 <div className="flex flex-col md:flex-row items-center justify-between gap-6">
                   <div>
-                    <h3 className="text-2xl font-black  tracking-tight">Active Proposals</h3>
+                    <h3 className="text-2xl font-black  tracking-tight">Active Tasks</h3>
                     <p className="text-[10px] font-bold text-white  tracking-normal mt-1">Manage Your Terms</p>
                   </div>
                   
@@ -787,12 +816,7 @@ const ProDashboard = () => {
                     >
                       Bidders
                     </button>
-                    <button 
-                      onClick={() => setBidsSubTab('claim')} 
-                      className={`px-8 py-3 rounded-xl text-[10px] font-black  tracking-normal transition-all ${bidsSubTab === 'claim' ? 'bg-primary text-black shadow-lg shadow-primary/20' : 'text-white hover:text-white'}`}
-                    >
-                      Claims
-                    </button>
+                   
                   </div>
                 </div>
 
@@ -870,6 +894,27 @@ const ProDashboard = () => {
                                 >
                                   Mission Details
                                 </button>
+                                {/* Complete Mission button — only if not yet submitted */}
+                                {(!bid.completionStatus || bid.completionStatus === 'none') && (
+                                  <button
+                                    onClick={(e) => { e.stopPropagation(); setShowBidProof(bid); }}
+                                    className="px-6 py-3 bg-green-500/10 hover:bg-green-500 text-green-400 hover:text-black border border-green-500/20 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all flex items-center gap-2"
+                                  >
+                                    <CheckCircle2 size={14} />
+                                    Complete Mission
+                                  </button>
+                                )}
+                                {bid.completionStatus && bid.completionStatus !== 'none' && (
+                                  <span className={`px-4 py-2 rounded-xl text-[9px] font-black uppercase tracking-widest border ${
+                                    bid.completionStatus === 'approved' ? 'bg-green-500/10 text-green-400 border-green-500/20' :
+                                    bid.completionStatus === 'rejected' ? 'bg-red-500/10 text-red-400 border-red-500/20' :
+                                    'bg-yellow-500/10 text-yellow-400 border-yellow-500/20'
+                                  }`}>
+                                    {bid.completionStatus === 'pro_submitted' ? '⏳ Pending Review' :
+                                     bid.completionStatus === 'customer_submitted' ? '👤 Customer Reviewing' :
+                                     bid.completionStatus === 'approved' ? '✅ Approved' : '❌ Rejected'}
+                                  </span>
+                                )}
                               </div>
                             )}
                             
@@ -1277,7 +1322,7 @@ const ProDashboard = () => {
               <div className="space-y-4 max-h-[300px] overflow-y-auto pr-2 custom-scrollbar">
                 <p className="text-[10px] font-black  text-white tracking-normal ml-4">Active Competitors</p>
                 
-                {selectedBidForCompetitors.competitors?.length === 0 ? (
+                {(!selectedBidForCompetitors.competitors || selectedBidForCompetitors.competitors.length === 0) ? (
                   <div className="py-12 text-center bg-white/[0.02] border border-white/5 border-dashed rounded-[32px]">
                     <p className="text-xs font-bold text-white ">No other proposals yet</p>
                   </div>
@@ -1321,7 +1366,78 @@ const ProDashboard = () => {
       )}
 
       <PayoutModal isOpen={isPayoutModalOpen} onClose={() => setIsPayoutModalOpen(false)} balance={user?.earnings || 0} onRefresh={() => { fetchData(); checkUserLoggedIn(); }} />
+
+      {/* ── Bid Completion Proof Modal ── */}
+      {showBidProof && (
+        <div className="fixed inset-0 z-[200] flex items-center justify-center p-6">
+          <div className="absolute inset-0 bg-black/90 backdrop-blur-xl" onClick={() => { setShowBidProof(null); setBidProofFile(null); setBidProofPreview(null); setBidProofComment(''); }} />
+          <div className="relative w-full max-w-[560px] bg-[#0A0A0A] border border-white/10 rounded-[48px] p-12 shadow-2xl space-y-8 overflow-y-auto max-h-[90vh] custom-scrollbar">
+            {/* Header */}
+            <div>
+              <div className="flex items-center gap-3 mb-2">
+                <div className="w-10 h-10 rounded-2xl bg-green-500/10 flex items-center justify-center">
+                  <CheckCircle2 size={20} className="text-green-400" />
+                </div>
+                <h3 className="text-2xl font-black text-white tracking-tight">Complete Mission</h3>
+              </div>
+              <p className="text-[10px] font-bold text-white/40 tracking-widest uppercase ml-1">
+                {showBidProof.orderId?.serviceId?.title || 'Submit your completion proof'}
+              </p>
+            </div>
+
+            {/* File Upload */}
+            <div className="space-y-3">
+              <label className="text-[10px] font-black text-white ml-2 tracking-normal">Proof Screenshot / Image *</label>
+              <label className="flex flex-col items-center justify-center w-full h-48 border-2 border-dashed border-white/10 rounded-3xl cursor-pointer hover:border-primary/40 transition-all bg-white/[0.02] hover:bg-primary/5 group">
+                {bidProofPreview ? (
+                  <img src={bidProofPreview} className="h-full w-full object-contain rounded-3xl p-2" alt="proof preview" />
+                ) : (
+                  <div className="flex flex-col items-center gap-3 text-white/30 group-hover:text-white/60 transition-colors">
+                    <Upload size={32} />
+                    <p className="text-[10px] font-black uppercase tracking-widest">Click to upload proof</p>
+                    <p className="text-[9px] font-bold">PNG, JPG, MP4 up to 50MB</p>
+                  </div>
+                )}
+                <input type="file" accept="image/*,video/*" className="hidden" onChange={handleBidProofFileChange} />
+              </label>
+              {bidProofFile && (
+                <p className="text-[9px] font-bold text-green-400 ml-2">✓ {bidProofFile.name}</p>
+              )}
+            </div>
+
+            {/* Comment */}
+            <div className="space-y-2">
+              <label className="text-[10px] font-black text-white ml-2 tracking-normal">Comment (optional)</label>
+              <textarea
+                value={bidProofComment}
+                onChange={(e) => setBidProofComment(e.target.value)}
+                placeholder="Describe what was completed..."
+                className="w-full bg-white/[0.03] border border-white/5 rounded-2xl py-4 px-6 text-sm font-medium text-white outline-none focus:border-primary/40 transition-all min-h-[100px] resize-none"
+              />
+            </div>
+
+            {/* Buttons */}
+            <div className="flex gap-4 pt-2">
+              <button
+                onClick={() => { setShowBidProof(null); setBidProofFile(null); setBidProofPreview(null); setBidProofComment(''); }}
+                className="flex-1 py-5 bg-white/5 hover:bg-white/10 rounded-[30px] text-[10px] font-black tracking-normal text-white transition-all"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleBidProofSubmit}
+                disabled={submittingBidProof || !bidProofFile}
+                className="flex-1 py-5 bg-green-500 hover:bg-white text-black rounded-[30px] text-[10px] font-black tracking-normal transition-all shadow-xl shadow-green-500/20 flex items-center justify-center gap-2 disabled:opacity-50"
+              >
+                {submittingBidProof ? <Loader2 className="w-4 h-4 animate-spin" /> : <CheckCircle2 className="w-4 h-4" />}
+                {submittingBidProof ? 'Submitting...' : 'Submit Proof'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </DashboardLayout>
+
   );
 };
 

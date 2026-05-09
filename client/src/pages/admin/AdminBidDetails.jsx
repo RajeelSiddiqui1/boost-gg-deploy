@@ -117,6 +117,26 @@ const AdminBidDetails = () => {
     }
   };
 
+  const [isSubmittingReview, setIsSubmittingReview] = useState(false);
+
+  const handleReviewCompletion = async (decision) => {
+    setIsSubmittingReview(true);
+    try {
+      const token = localStorage.getItem('token');
+      await axios.put(`${API_URL}/api/v1/bids/${id}/review-completion`, {
+        decision
+      }, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      fetchBid();
+    } catch (err) {
+      console.error(err);
+      alert(err.response?.data?.message || 'Failed to review completion');
+    } finally {
+      setIsSubmittingReview(false);
+    }
+  };
+
   if (loading) {
     return (
       <AdminLayout>
@@ -205,13 +225,13 @@ const AdminBidDetails = () => {
                 Competitive Bidders ({bid.bidders.length})
                 {subTab === 'bidders' && <div className="absolute bottom-0 left-0 w-full h-1 bg-primary rounded-t-full shadow-[0_0_20px_rgba(162,230,62,0.5)]"></div>}
             </button>
-            <button 
+            {/* <button 
                 onClick={() => setSubTab('claims')}
                 className={`pb-4 px-2 text-xs font-black uppercase tracking-widest transition-all relative ${subTab === 'claims' ? 'text-primary' : 'text-white/30 hover:text-white'}`}
             >
                 Instant Claimants ({bid.claims?.length || 0})
                 {subTab === 'claims' && <div className="absolute bottom-0 left-0 w-full h-1 bg-primary rounded-t-full shadow-[0_0_20px_rgba(162,230,62,0.5)]"></div>}
-            </button>
+            </button> */}
             {bid.assignedUser && (
               <button 
                   onClick={() => setSubTab('chat')}
@@ -221,7 +241,93 @@ const AdminBidDetails = () => {
                   {subTab === 'chat' && <div className="absolute bottom-0 left-0 w-full h-1 bg-primary rounded-t-full shadow-[0_0_20px_rgba(162,230,62,0.5)]"></div>}
               </button>
             )}
+            {bid.completionStatus && bid.completionStatus !== 'none' && (
+              <button 
+                  onClick={() => setSubTab('completion')}
+                  className={`pb-4 px-2 text-xs font-black uppercase tracking-widest transition-all relative ${subTab === 'completion' ? 'text-primary' : 'text-white/30 hover:text-white'}`}
+              >
+                  Completion Proofs
+                  {subTab === 'completion' && <div className="absolute bottom-0 left-0 w-full h-1 bg-primary rounded-t-full shadow-[0_0_20px_rgba(162,230,62,0.5)]"></div>}
+              </button>
+            )}
         </div>
+
+        {subTab === 'completion' && bid.completionStatus && bid.completionStatus !== 'none' && (
+          <div className="bg-[#0A0A0A] border border-white/10 rounded-[48px] overflow-hidden shadow-2xl p-10 space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+            <h3 className="text-2xl font-black text-white">Mission Completion Review</h3>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                {/* Pro Proof */}
+                {bid.completionProof && (
+                    <div className="bg-white/5 border border-white/10 rounded-[32px] p-8 space-y-4">
+                        <p className="text-[10px] font-black tracking-widest uppercase text-white/50">Specialist Submission</p>
+                        {bid.completionProof.imageUrl && (
+                            <img src={getImageUrl(bid.completionProof.imageUrl)} className="w-full max-h-64 object-contain bg-black rounded-2xl" alt="Pro Proof" />
+                        )}
+                        {bid.completionProof.comment && (
+                            <p className="text-sm text-white/80 bg-black/50 p-4 rounded-xl">{bid.completionProof.comment}</p>
+                        )}
+                        <p className="text-[10px] text-white/40">{new Date(bid.completionProof.submittedAt).toLocaleString()}</p>
+                    </div>
+                )}
+                
+                {/* Customer Proof */}
+                {bid.customerProof && bid.customerProof.imageUrl ? (
+                    <div className="bg-white/5 border border-white/10 rounded-[32px] p-8 space-y-4">
+                        <div className="flex items-center justify-between">
+                            <p className="text-[10px] font-black tracking-widest uppercase text-white/50">Customer Confirmation</p>
+                            {bid.customerProof.status && (
+                                <span className={`px-3 py-1 rounded-full text-[9px] font-black tracking-widest uppercase border ${
+                                    bid.customerProof.status === 'approved' ? 'bg-green-500/10 text-green-500 border-green-500/20' : 'bg-red-500/10 text-red-500 border-red-500/20'
+                                }`}>
+                                    {bid.customerProof.status}
+                                </span>
+                            )}
+                        </div>
+                        <img src={getImageUrl(bid.customerProof.imageUrl)} className="w-full max-h-64 object-contain bg-black rounded-2xl" alt="Customer Proof" />
+                        {bid.customerProof.comment && (
+                            <p className="text-sm text-white/80 bg-black/50 p-4 rounded-xl">{bid.customerProof.comment}</p>
+                        )}
+                        <p className="text-[10px] text-white/40">{new Date(bid.customerProof.submittedAt).toLocaleString()}</p>
+                    </div>
+                ) : (
+                    <div className="bg-white/5 border border-white/5 border-dashed rounded-[32px] p-8 flex flex-col items-center justify-center text-white/30 min-h-[300px]">
+                        <Clock size={32} className="mb-4 text-white/20" />
+                        <p className="text-[10px] font-black tracking-widest uppercase">Awaiting Customer</p>
+                        <p className="text-xs font-medium text-center mt-2 max-w-[200px] opacity-60">Customer has not submitted their confirmation yet.</p>
+                    </div>
+                )}
+            </div>
+
+            {/* Admin Actions */}
+            {bid.completionStatus !== 'approved' && bid.completionStatus !== 'rejected' && (
+                <div className="flex items-center gap-4 pt-8 border-t border-white/5">
+                    <button 
+                        onClick={() => handleReviewCompletion('approved')}
+                        disabled={isSubmittingReview}
+                        className="px-8 py-4 bg-green-500 hover:bg-white text-black rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all"
+                    >
+                        Approve Completion
+                    </button>
+                    <button 
+                        onClick={() => handleReviewCompletion('rejected')}
+                        disabled={isSubmittingReview}
+                        className="px-8 py-4 bg-red-500 hover:bg-white text-white hover:text-black rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all"
+                    >
+                        Reject
+                    </button>
+                </div>
+            )}
+            
+            {(bid.completionStatus === 'approved' || bid.completionStatus === 'rejected') && (
+                <div className={`p-4 rounded-2xl text-[10px] font-black uppercase tracking-widest border max-w-fit ${
+                    bid.completionStatus === 'approved' ? 'bg-green-500/10 text-green-500 border-green-500/20' : 'bg-red-500/10 text-red-500 border-red-500/20'
+                }`}>
+                    Status: {bid.completionStatus}
+                </div>
+            )}
+          </div>
+        )}
 
         {subTab === 'chat' ? (
           <div className="bg-[#0A0A0A] border border-white/10 rounded-[48px] overflow-hidden shadow-2xl flex flex-col h-[600px]">

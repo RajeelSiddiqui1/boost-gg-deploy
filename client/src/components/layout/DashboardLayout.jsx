@@ -35,7 +35,7 @@ const DashboardLayout = ({ children, title }) => {
  } else if (isPro) {
   menuItems.push({ name: 'Dashboard', icon: LayoutDashboard, path: '/dashboard?tab=work' });
   menuItems.push({ name: 'Active Tasks', icon: ShoppingCart, path: '/dashboard?tab=active' });
-  menuItems.push({ name: 'My Bids', icon: Zap, path: '/dashboard?tab=bids' });
+ 
   menuItems.push({ name: 'Messages', icon: MessageSquare, path: '/pro/chat' });
   menuItems.push({ name: 'Earnings', icon: Zap, path: '/dashboard?tab=earnings' });
   menuItems.push({ name: 'Notifications', icon: Bell, path: '/pro/notifications', count: unreadCount });

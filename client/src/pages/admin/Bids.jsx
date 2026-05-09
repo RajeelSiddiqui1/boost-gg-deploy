@@ -5,6 +5,9 @@ import AdminLayout from '../../components/admin/AdminLayout';
 import { useCurrency } from '../../context/CurrencyContext';
 import { Tag, Edit2, Check, X, Loader2, User, ToggleLeft, ToggleRight, Eye, MessageSquare } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { io } from 'socket.io-client';
+
+const socket = io(API_URL.replace('/api/v1', ''));
 
 const Bids = () => {
   const { formatPrice } = useCurrency();
@@ -19,6 +22,16 @@ const Bids = () => {
 
   useEffect(() => {
     fetchBids();
+
+    // Real-time: auto-refresh on any bid event
+    socket.on('bidsUpdate', (data) => {
+      console.log('[Socket] bidsUpdate:', data.action);
+      fetchBids();
+    });
+
+    return () => {
+      socket.off('bidsUpdate');
+    };
   }, []);
 
   const fetchBids = async () => {
@@ -241,7 +254,7 @@ const Bids = () => {
                           <div className="flex justify-end gap-2">
                             {tab === 'assigned' && (
                               <button
-                                onClick={() => navigate(`/admin/bids/${bid._id}/details`)}
+                                onClick={() => navigate(`/admin/bids/${bid._id}/chat`)}
                                 className="p-4 bg-white/5 text-white/40 rounded-2xl hover:bg-primary hover:text-black transition-all flex items-center gap-2"
                               >
                                 <MessageSquare className="w-4 h-4" />
@@ -254,12 +267,14 @@ const Bids = () => {
                               <Eye className="w-4 h-4" />
                               <span className="text-[10px] font-black uppercase tracking-widest">View Bids</span>
                             </button>
-                            <button
-                              onClick={() => handleEdit(bid)}
-                              className="p-4 bg-white/5 text-white/40 rounded-2xl hover:bg-primary hover:text-black transition-all"
-                            >
-                              <Edit2 className="w-4 h-4" />
-                            </button>
+                            {tab !== 'assigned' && (
+                              <button
+                                onClick={() => handleEdit(bid)}
+                                className="p-4 bg-white/5 text-white/40 rounded-2xl hover:bg-primary hover:text-black transition-all"
+                              >
+                                <Edit2 className="w-4 h-4" />
+                              </button>
+                            )}
                           </div>
                         )}
                       </td>
