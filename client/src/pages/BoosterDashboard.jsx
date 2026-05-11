@@ -1089,7 +1089,7 @@ const ProDashboard = () => {
                     <div className="flex items-center gap-8">
                       <div className="w-24 h-24 rounded-full bg-primary/20 border-4 border-white/5 flex items-center justify-center relative group overflow-hidden">
                         {user?.avatar ? (
-                          <img src={user.avatar} className="w-full h-full object-cover" alt="" />
+                          <img src={getImageUrl(user.avatar)} className="w-full h-full object-cover" alt="" />
                         ) : (
                           <span className="text-4xl font-black text-white">{user?.name?.charAt(0)}</span>
                         )}
