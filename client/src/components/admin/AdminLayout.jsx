@@ -31,15 +31,35 @@ import { io } from 'socket.io-client';
 
 const adminSocket = io(API_URL.replace('/api/v1', ''), { autoConnect: false });
 
-const playPing = () => {
- const audio = new Audio('https://assets.mixkit.co/active_storage/sfx/1110/1110-preview.mp3');
- audio.volume = 0.8;
- audio.play().catch(() => { });
-};
-
 const AdminLayout = ({ children }) => {
- const { logout, user } = useAuth();
- const { unreadCount } = useNotifications();
+    const { logout, user } = useAuth();
+    const { unreadCount } = useNotifications();
+    const [audio] = useState(() => {
+        const a = new Audio('/notification/notification.mp3');
+        a.preload = 'auto';
+        a.volume = 0.8;
+        return a;
+    });
+
+    // 🔊 Unlock audio for admin alerts
+    useEffect(() => {
+        const unlock = () => {
+            audio.play().then(() => {
+                audio.pause();
+                audio.currentTime = 0;
+            }).catch(() => { });
+            window.removeEventListener('click', unlock);
+        };
+        window.addEventListener('click', unlock);
+        return () => window.removeEventListener('click', unlock);
+    }, [audio]);
+
+    const playPing = () => {
+        try {
+            audio.currentTime = 0;
+            audio.play().catch(() => { });
+        } catch (e) { }
+    };
  const location = useLocation();
  const navigate = useNavigate();
  const [isSidebarOpen, setIsSidebarOpen] = React.useState(false);

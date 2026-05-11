@@ -21,8 +21,31 @@ export const NotificationProvider = ({ children }) => {
     }, [user]);
     const [socket, setSocket] = useState(null);
 
-    const NOTIFICATION_SOUND = 'https://assets.mixkit.co/sfx/preview/mixkit-software-interface-start-2574.mp3';
-    const audio = React.useMemo(() => new Audio(NOTIFICATION_SOUND), []);
+    const NOTIFICATION_SOUND = '/notification/notification.mp3';
+    const [audio] = useState(() => {
+        const a = new Audio(NOTIFICATION_SOUND);
+        a.preload = 'auto';
+        a.volume = 0.6;
+        return a;
+    });
+
+    // 🔊 Robust Audio Unlock Pattern (Browser Policy Fix)
+    useEffect(() => {
+        const unlock = () => {
+            audio.play().then(() => {
+                audio.pause();
+                audio.currentTime = 0;
+            }).catch(e => console.log('Audio init pending...'));
+            window.removeEventListener('click', unlock);
+            window.removeEventListener('touchstart', unlock);
+        };
+        window.addEventListener('click', unlock);
+        window.addEventListener('touchstart', unlock);
+        return () => {
+            window.removeEventListener('click', unlock);
+            window.removeEventListener('touchstart', unlock);
+        };
+    }, [audio]);
 
     const fetchNotifications = useCallback(async () => {
         if (!token) {
@@ -31,11 +54,9 @@ export const NotificationProvider = ({ children }) => {
         }
         try {
             setLoading(true);
-            console.log('Fetching notifications from API...');
             const res = await axios.get(`${API_URL}/api/v1/notifications`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
-            console.log('API Response:', res.data);
             if (res.data.success) {
                 setNotifications(res.data.data || []);
                 setUnreadCount(res.data.unreadCount || 0);
@@ -56,7 +77,6 @@ export const NotificationProvider = ({ children }) => {
     useEffect(() => {
         if (token && user) {
             const socketUrl = API_URL.replace('/api/v1', '');
-            console.log('Attempting socket connection to:', socketUrl);
             
             const newSocket = io(socketUrl, {
                 auth: { token },
@@ -66,33 +86,33 @@ export const NotificationProvider = ({ children }) => {
 
             newSocket.on('connect', () => {
                 const uid = user._id || user.id;
-                console.log('Socket connected successfully. Room joining:', uid);
                 newSocket.emit('joinUser', uid);
             });
 
-            newSocket.on('connect_error', (err) => {
-                console.error('Socket Connection Error:', err.message);
-            });
-
-            newSocket.on('notification', (notification) => {
+            newSocket.on('notification', async (notification) => {
                 setNotifications(prev => [notification, ...prev]);
                 setUnreadCount(prev => prev + 1);
                 
-                // Play sound (reset to start if already playing)
-                audio.currentTime = 0;
-                audio.play().catch(e => console.log('Sound play blocked:', e));
+                // 🔊 Play Notification Sound
+                try {
+                    audio.currentTime = 0;
+                    const playPromise = audio.play();
+                    if (playPromise !== undefined) {
+                        await playPromise;
+                    }
+                } catch (e) {
+                    console.warn('Notification sound suppressed until user interaction');
+                }
                 
                 // Trigger a toast alert
                 info(notification.title);
-                
-                console.log('New Notification:', notification);
             });
 
             setSocket(newSocket);
 
             return () => newSocket.close();
         }
-    }, [token, user, info]);
+    }, [token, user, info, audio]);
 
     const markAsRead = async (id) => {
         try {
