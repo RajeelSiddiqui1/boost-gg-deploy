@@ -292,11 +292,11 @@ const CustomerDashboard = () => {
                 fetchProReviews(pro?._id || pro);
               }}
             >
-              <div className="w-12 h-12 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center text-white relative group-hover/pro:border-primary transition-all">
-                {(pro?.avatar || pro?.avatar === '') ? (
+              <div className="w-12 h-12 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center text-white relative group-hover/pro:border-primary transition-all overflow-hidden">
+                {pro?.avatar && pro.avatar !== '' ? (
                   <img src={getImageUrl(pro.avatar)} className="w-full h-full object-cover rounded-full" alt="" />
                 ) : (
-                  <User className="w-6 h-6" />
+                  <span className="text-lg font-black text-white">{pro?.name?.charAt(0)?.toUpperCase() || '?'}</span>
                 )}
                 <div className={`absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 ${isApproved ? 'bg-gray-500' : 'bg-green-500'} rounded-full border-2 border-[#0A0A0A]`}></div>
               </div>
@@ -418,10 +418,10 @@ const CustomerDashboard = () => {
                 }}
               >
                 <div className="w-10 h-10 rounded-full bg-primary/10 border border-white/5 flex items-center justify-center overflow-hidden group-hover/pro:border-primary transition-all">
-                    {pro?.avatar ? (
+                    {pro?.avatar && pro.avatar !== '' ? (
                         <img src={getImageUrl(pro.avatar)} className="w-full h-full object-cover" alt="" />
                     ) : (
-                        <User size={16} className="text-primary" />
+                        <span className="text-sm font-black text-white">{pro?.name?.charAt(0)?.toUpperCase() || '?'}</span>
                     )}
                 </div>
                 <div>
@@ -921,10 +921,10 @@ const CustomerDashboard = () => {
             <div className="flex items-center justify-between mb-10 shrink-0">
               <div className="flex items-center gap-6">
                 <div className="w-20 h-20 rounded-full bg-primary/20 border-4 border-white/5 flex items-center justify-center overflow-hidden">
-                  {selectedPro.avatar ? (
+                  {selectedPro.avatar && selectedPro.avatar !== '' ? (
                     <img src={getImageUrl(selectedPro.avatar)} className="w-full h-full object-cover" alt="" />
                   ) : (
-                    <span className="text-3xl font-black text-white">{selectedPro.name?.charAt(0)}</span>
+                    <span className="text-3xl font-black text-white">{selectedPro.name?.charAt(0)?.toUpperCase() || '?'}</span>
                   )}
                 </div>
                 <div>
@@ -963,10 +963,10 @@ const CustomerDashboard = () => {
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-3">
                           <div className="w-10 h-10 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center overflow-hidden">
-                            {rev.user?.avatar ? (
+                            {rev.user?.avatar && rev.user.avatar !== '' ? (
                               <img src={getImageUrl(rev.user.avatar)} className="w-full h-full object-cover" alt="" />
                             ) : (
-                              <User size={16} className="text-primary" />
+                              <span className="text-sm font-black text-white">{rev.user?.name?.charAt(0)?.toUpperCase() || '?'}</span>
                             )}
                           </div>
                           <div>

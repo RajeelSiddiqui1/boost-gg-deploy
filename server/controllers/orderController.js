@@ -94,8 +94,8 @@ exports.getMyOrders = async (req, res) => {
         const Bid = require('../models/Bid');
         const ordersWithBids = await Promise.all(orders.map(async (order) => {
             const bid = await Bid.findOne({ orderId: order._id })
-                .populate('assignedUser', 'name avatar email')
-                .select('assignedUser status bidPrice completionStatus completionProof customerProof');
+                .populate('assignedUser', 'name avatar email rating totalReviews')
+                .select('assignedUser status bidPrice completionStatus completionProof customerProof isReviewedByCustomer isActive');
             return { 
                 ...order._doc, 
                 assignedBid: bid 
