@@ -120,7 +120,7 @@ const DashboardLayout = ({ children, title }) => {
   <h1 className="text-2xl font-black  tracking-tight">{title}</h1>
   <div className="flex items-center gap-6">
   <button 
-   onClick={() => navigate('/pro/notifications')}
+   onClick={() => navigate('/notifications')}
    className="relative p-3 rounded-xl bg-white/5 border border-white/10 text-white/40 hover:text-white hover:border-white/20 transition-all"
   >
    <Bell className="w-5 h-5" />

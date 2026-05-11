@@ -112,16 +112,54 @@ exports.sendMessage = async (req, res) => {
             .populate('chat.receiver', 'name avatar role');
         
         const broadcastMsg = populatedBid.chat[populatedBid.chat.length - 1];
+        const messageId = broadcastMsg._id;
 
-        // Broadcast via Socket
+        // Broadcast via Socket (Instant)
         try {
             const io = getIO();
-            // Join rooms based on orderId and bidId for maximum compatibility
             io.to(bid.orderId._id.toString()).emit('newMessage', broadcastMsg);
             io.to(bid._id.toString()).emit('newMessage', broadcastMsg);
         } catch (e) {
             console.error('Socket Error:', e.message);
         }
+
+        // --- DELAYED NOTIFICATION ---
+        // If message is not seen within 5 seconds, send a persistent notification
+        setTimeout(async () => {
+            try {
+                const Notification = require('../models/Notification');
+                const checkBid = await Bid.findById(bid._id);
+                if (!checkBid) return;
+
+                const msg = checkBid.chat.id(messageId);
+                if (msg && !msg.seen) {
+                    const io = getIO();
+                    const notificationTitle = `New Message from ${req.user.name}`;
+                    const notificationMessage = message.length > 50 ? `${message.substring(0, 50)}...` : message;
+                    const link = `/pro/chat/${bid.orderId._id}`;
+
+                    const newNotif = await Notification.create({
+                        userId: receiverId,
+                        title: notificationTitle,
+                        message: notificationMessage,
+                        type: 'chat_message',
+                        link
+                    });
+
+                    io.to(receiverId.toString()).emit('notification', {
+                        _id: newNotif._id,
+                        title: notificationTitle,
+                        message: notificationMessage,
+                        type: 'chat_message',
+                        link,
+                        createdAt: newNotif.createdAt,
+                        isRead: false
+                    });
+                }
+            } catch (err) {
+                console.error('Delayed Notif Error:', err.message);
+            }
+        }, 5000);
 
         res.status(200).json({ success: true, data: broadcastMsg });
     } catch (err) {

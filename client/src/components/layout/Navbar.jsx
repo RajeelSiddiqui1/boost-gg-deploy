@@ -24,15 +24,18 @@ import {
 } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
 import { useCart } from "../../context/CartContext";
+import { useNotifications } from "../../context/NotificationContext";
 import MegaMenu from "./MegaMenu";
 import logo from "../../assets/logo.png";
 import { useUI } from "../../context/UIContext";
-import { API_URL } from "../../utils/api";
+import { API_URL, getImageUrl } from "../../utils/api";
 import { useCurrency } from "../../context/CurrencyContext";
+import { Bell } from "lucide-react";
 
 const Navbar = () => {
  const { user, logout } = useAuth();
  const { cartCount, setIsCartOpen } = useCart();
+ const { unreadCount } = useNotifications();
  const { currency, changeCurrency, symbols } = useCurrency();
  const { isMegaMenuOpen, setIsMegaMenuOpen, searchTerm, setSearchTerm } =
  useUI();
@@ -406,6 +409,20 @@ const Navbar = () => {
  </span>
  )}
  </div>
+
+ {user && (
+ <Link
+ to="/notifications"
+ className="relative cursor-pointer hover:text-white transition-all group ml-4"
+ >
+ <Bell className="w-[22px] h-[22px] stroke-[2.5px]" />
+ {unreadCount > 0 && (
+ <span className="absolute -top-1.5 -right-1.5 bg-red-500 text-white text-[9px] font-black w-4 h-4 rounded-full flex items-center justify-center border-2 border-black animate-pulse">
+ {unreadCount}
+ </span>
+ )}
+ </Link>
+ )}
  </>
  )}
 

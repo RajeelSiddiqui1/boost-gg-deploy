@@ -3,28 +3,47 @@ import { io } from 'socket.io-client';
 import axios from 'axios';
 import { API_URL } from '../utils/api';
 import { useAuth } from './AuthContext';
+import { useToast } from './ToastContext';
 
 const NotificationContext = createContext();
 
 export const NotificationProvider = ({ children }) => {
-    const { user, token } = useAuth();
+    const { user } = useAuth();
+    const [token, setToken] = useState(localStorage.getItem('token'));
+    const { info } = useToast();
     const [notifications, setNotifications] = useState([]);
     const [unreadCount, setUnreadCount] = useState(0);
+    const [loading, setLoading] = useState(true);
+
+    // Sync token when user changes
+    useEffect(() => {
+        setToken(localStorage.getItem('token'));
+    }, [user]);
     const [socket, setSocket] = useState(null);
 
-    const NOTIFICATION_SOUND = 'https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3';
-    const audio = new Audio(NOTIFICATION_SOUND);
+    const NOTIFICATION_SOUND = 'https://assets.mixkit.co/sfx/preview/mixkit-software-interface-start-2574.mp3';
+    const audio = React.useMemo(() => new Audio(NOTIFICATION_SOUND), []);
 
     const fetchNotifications = useCallback(async () => {
-        if (!token) return;
+        if (!token) {
+            setLoading(false);
+            return;
+        }
         try {
+            setLoading(true);
+            console.log('Fetching notifications from API...');
             const res = await axios.get(`${API_URL}/api/v1/notifications`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
-            setNotifications(res.data.data);
-            setUnreadCount(res.data.unreadCount);
+            console.log('API Response:', res.data);
+            if (res.data.success) {
+                setNotifications(res.data.data || []);
+                setUnreadCount(res.data.unreadCount || 0);
+            }
         } catch (err) {
-            console.error('Error fetching notifications:', err);
+            console.error('Error fetching notifications:', err.response?.data || err.message);
+        } finally {
+            setLoading(false);
         }
     }, [token]);
 
@@ -36,23 +55,36 @@ export const NotificationProvider = ({ children }) => {
 
     useEffect(() => {
         if (token && user) {
-            const newSocket = io(API_URL.replace('/api/v1', ''), {
-                auth: { token }
+            const socketUrl = API_URL.replace('/api/v1', '');
+            console.log('Attempting socket connection to:', socketUrl);
+            
+            const newSocket = io(socketUrl, {
+                auth: { token },
+                transports: ['websocket', 'polling'],
+                reconnectionAttempts: 5
             });
 
             newSocket.on('connect', () => {
-                console.log('Socket connected for notifications');
-                newSocket.emit('joinUser', user.id);
+                const uid = user._id || user.id;
+                console.log('Socket connected successfully. Room joining:', uid);
+                newSocket.emit('joinUser', uid);
+            });
+
+            newSocket.on('connect_error', (err) => {
+                console.error('Socket Connection Error:', err.message);
             });
 
             newSocket.on('notification', (notification) => {
                 setNotifications(prev => [notification, ...prev]);
                 setUnreadCount(prev => prev + 1);
                 
-                // Play sound
+                // Play sound (reset to start if already playing)
+                audio.currentTime = 0;
                 audio.play().catch(e => console.log('Sound play blocked:', e));
                 
-                // You could also trigger a toast here
+                // Trigger a toast alert
+                info(notification.title);
+                
                 console.log('New Notification:', notification);
             });
 
@@ -60,7 +92,7 @@ export const NotificationProvider = ({ children }) => {
 
             return () => newSocket.close();
         }
-    }, [token, user]);
+    }, [token, user, info]);
 
     const markAsRead = async (id) => {
         try {
@@ -90,6 +122,7 @@ export const NotificationProvider = ({ children }) => {
         <NotificationContext.Provider value={{ 
             notifications, 
             unreadCount, 
+            loading,
             markAsRead, 
             markAllAsRead,
             fetchNotifications

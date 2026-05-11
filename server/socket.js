@@ -60,8 +60,14 @@ module.exports = {
 
             // Allow users to join their personal notification room
             socket.on('joinUser', (userId) => {
+                if (!userId) {
+                    console.warn('Socket joinUser failed: No userId provided');
+                    return;
+                }
                 socket.join(userId);
+                console.log(`--- SOCKET DEBUG ---`);
                 console.log(`Socket ${socket.id} joined user room: ${userId}`);
+                console.log(`--------------------`);
             });
         });
 

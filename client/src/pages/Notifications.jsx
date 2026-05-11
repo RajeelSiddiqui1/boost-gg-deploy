@@ -13,8 +13,7 @@ import { useState } from 'react';
 
 const Notifications = () => {
     const { user } = useAuth();
-    const { notifications, markAsRead, markAllAsRead, fetchNotifications } = useNotifications();
-    const [filter, setFilter] = useState('all');
+    const { notifications, markAsRead, markAllAsRead, fetchNotifications, loading } = useNotifications();
 
     useEffect(() => {
         fetchNotifications();
@@ -23,40 +22,19 @@ const Notifications = () => {
     const getIcon = (type) => {
         switch (type) {
             case 'booster_bid': return <Tag className="w-5 h-5 text-primary" />;
-            case 'bid_created': return <Bell className="w-5 h-5 text-primary" />;
+            case 'bid_created':
+            case 'bid_active':
+            case 'bid_placed': return <Bell className="w-5 h-5 text-primary" />;
+            case 'bid_approved':
+            case 'bid_won': return <CheckCircle className="w-5 h-5 text-green-500" />;
+            case 'bid_claimed':
+            case 'claim_assigned':
             case 'order_update': return <Package className="w-5 h-5 text-blue-500" />;
             case 'payout': return <DollarSign className="w-5 h-5 text-green-500" />;
             case 'system': return <ShieldAlert className="w-5 h-5 text-yellow-500" />;
             default: return <Bell className="w-5 h-5 text-white/40" />;
         }
     };
-
-    const getCategories = () => {
-        const base = [{ id: 'all', label: 'All Intelligence', icon: <Bell size={14} /> }];
-        if (user?.role === 'admin') {
-            return [
-                ...base,
-                { id: 'booster_bid', label: 'Booster Bids', icon: <Tag size={14} /> },
-                { id: 'payout', label: 'Finance', icon: <DollarSign size={14} /> },
-                { id: 'system', label: 'System', icon: <ShieldAlert size={14} /> }
-            ];
-        }
-        if (user?.role === 'pro') {
-            return [
-                ...base,
-                { id: 'bid_created', label: 'Job Alerts', icon: <Package size={14} /> },
-                { id: 'payout', label: 'Earnings', icon: <DollarSign size={14} /> }
-            ];
-        }
-        return [
-            ...base,
-            { id: 'order_update', label: 'Order Updates', icon: <Package size={14} /> }
-        ];
-    };
-
-    const filteredNotifications = filter === 'all' 
-        ? notifications 
-        : notifications.filter(n => n.type === filter);
 
     const Layout = user?.role === 'admin' ? AdminLayout : DashboardLayout;
 
@@ -79,27 +57,13 @@ const Notifications = () => {
                     )}
                 </div>
 
-                {/* Filter Tabs */}
-                <div className="flex items-center gap-3 overflow-x-auto pb-4 custom-scrollbar">
-                    {getCategories().map((cat) => (
-                        <button
-                            key={cat.id}
-                            onClick={() => setFilter(cat.id)}
-                            className={`
-                                flex items-center gap-3 px-6 py-3 rounded-2xl text-[10px] font-black uppercase tracking-widest whitespace-nowrap transition-all border
-                                ${filter === cat.id 
-                                    ? 'bg-primary border-primary text-black shadow-[0_0_30px_rgba(162,230,62,0.3)]' 
-                                    : 'bg-white/5 border-white/10 text-white/40 hover:text-white hover:bg-white/10'}
-                            `}
-                        >
-                            {cat.icon}
-                            {cat.label}
-                        </button>
-                    ))}
-                </div>
-
                 <div className="space-y-6">
-                    {filteredNotifications.length === 0 ? (
+                    {loading ? (
+                    <div className="flex flex-col items-center justify-center py-24 space-y-4 animate-pulse">
+                        <div className="w-12 h-12 border-4 border-primary/20 border-t-primary rounded-full animate-spin shadow-[0_0_20px_rgba(139,195,50,0.3)]" />
+                        <p className="text-primary text-[10px] font-black tracking-[0.3em] uppercase">Decrypting Intel Stream</p>
+                    </div>
+                ) : notifications.length === 0 ? (
                         <div className="bg-[#0A0A0A] border border-white/5 rounded-[48px] p-32 text-center flex flex-col items-center gap-8">
                             <div className="w-24 h-24 bg-white/5 rounded-full flex items-center justify-center relative">
                                 <Bell className="w-12 h-12 text-white/10" />
@@ -111,7 +75,7 @@ const Notifications = () => {
                             </div>
                         </div>
                     ) : (
-                        filteredNotifications.map((notification) => (
+                        notifications.map((notification) => (
                             <div 
                                 key={notification._id}
                                 className={`

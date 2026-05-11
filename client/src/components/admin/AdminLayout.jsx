@@ -4,6 +4,7 @@ import {
  ShoppingCart,
  Wallet,
  Gamepad2,
+ Shield ,
  MessageSquare,
  Settings,
  Star,
@@ -16,13 +17,14 @@ import {
  Tag,
  Layers,
  DollarSign,
- Shield,
  Wrench,
  Plus,
- Briefcase
+ Briefcase,
+ Bell
 } from 'lucide-react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
+import { useNotifications } from '../../context/NotificationContext';
 import axios from 'axios';
 import { API_URL } from '../../utils/api';
 import { io } from 'socket.io-client';
@@ -37,6 +39,7 @@ const playPing = () => {
 
 const AdminLayout = ({ children }) => {
  const { logout, user } = useAuth();
+ const { unreadCount } = useNotifications();
  const location = useLocation();
  const navigate = useNavigate();
  const [isSidebarOpen, setIsSidebarOpen] = React.useState(false);
@@ -225,6 +228,17 @@ const AdminLayout = ({ children }) => {
  </div>
 
  <div className="flex items-center gap-4">
+ <Link
+ to="/notifications"
+ className="relative p-2.5 bg-white/5 border border-white/5 hover:border-white/10 rounded-xl transition-all text-white/60 hover:text-white group"
+ >
+ <Bell className="w-5 h-5" />
+ {unreadCount > 0 && (
+ <span className="absolute -top-1.5 -right-1.5 bg-red-500 text-white text-[9px] font-black w-4 h-4 rounded-full flex items-center justify-center border-2 border-[#0A0A0A] animate-pulse">
+ {unreadCount}
+ </span>
+ )}
+ </Link>
  <button className="p-2.5 bg-white/5 border border-white/5 hover:border-white/10 rounded-xl transition-all text-white/60 hover:text-white">
  <Settings className="w-5 h-5" />
  </button>

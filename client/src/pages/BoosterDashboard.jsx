@@ -913,8 +913,9 @@ const ProDashboard = () => {
                                     'bg-yellow-500/10 text-yellow-400 border-yellow-500/20'
                                   }`}>
                                     {bid.completionStatus === 'pro_submitted' ? '⏳ Pending Review' :
-                                     bid.completionStatus === 'customer_submitted' ? '👤 Customer Reviewing' :
-                                     bid.completionStatus === 'approved' ? '✅ Approved' : '❌ Rejected'}
+                                     bid.completionStatus === 'customer_submitted' ? 
+                                      (bid.customerProof?.status === 'rejected' ? '👤 Customer: Rejected' : '👤 Customer: Approved') :
+                                      bid.completionStatus === 'approved' ? '✅ Approved' : '❌ Rejected'}
                                   </span>
                                 )}
                               </div>
@@ -1322,6 +1323,52 @@ const ProDashboard = () => {
               </div>
 
               <div className="space-y-4 max-h-[300px] overflow-y-auto pr-2 custom-scrollbar">
+                {/* --- CUSTOMER REVIEW SECTION --- */}
+                {(selectedBidForCompetitors.completionStatus === 'customer_submitted' || selectedBidForCompetitors.customerProof) && (
+                  <div className="mb-6 space-y-4">
+                    <p className="text-[10px] font-black text-primary tracking-widest uppercase ml-4">Customer Review Intel</p>
+                    <div className="bg-white/[0.03] border border-white/5 rounded-[32px] p-6 space-y-5">
+                      <div className="flex items-center justify-between">
+                        <span className="text-[10px] font-bold text-white/40">Review Status</span>
+                        <span className={`px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest ${
+                          selectedBidForCompetitors.customerProof?.status === 'approved' 
+                            ? 'bg-green-500/20 text-green-400 border border-green-500/30' 
+                            : 'bg-red-500/20 text-red-400 border border-red-500/30'
+                        }`}>
+                          {selectedBidForCompetitors.customerProof?.status || 'Pending'}
+                        </span>
+                      </div>
+
+                      {selectedBidForCompetitors.customerProof?.imageUrl && (
+                        <div className="space-y-2">
+                          <span className="text-[10px] font-bold text-white/40">Confirmation Proof</span>
+                          <div className="relative rounded-2xl overflow-hidden border border-white/10 group/img">
+                            <img 
+                              src={getImageUrl(selectedBidForCompetitors.customerProof.imageUrl)} 
+                              className="w-full h-auto object-cover hover:scale-105 transition-transform duration-500" 
+                              alt="Customer Proof" 
+                            />
+                            <div className="absolute inset-0 bg-black/40 opacity-0 group-hover/img:opacity-100 transition-opacity flex items-center justify-center">
+                              <button onClick={() => window.open(getImageUrl(selectedBidForCompetitors.customerProof.imageUrl), '_blank')} className="p-3 bg-white text-black rounded-full shadow-xl">
+                                <ExternalLink size={16} />
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+
+                      {selectedBidForCompetitors.customerProof?.comment && (
+                        <div className="space-y-1.5">
+                          <span className="text-[10px] font-bold text-white/40">Customer Feedback</span>
+                          <div className="p-4 bg-white/5 rounded-2xl border border-white/5 italic text-xs font-medium text-white/80">
+                            "{selectedBidForCompetitors.customerProof.comment}"
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )}
+
                 <p className="text-[10px] font-black  text-white tracking-normal ml-4">Active Competitors</p>
                 
                 {(!selectedBidForCompetitors.competitors || selectedBidForCompetitors.competitors.length === 0) ? (

@@ -5,14 +5,21 @@ const Notification = require('../models/Notification');
 // @access  Private
 exports.getNotifications = async (req, res) => {
     try {
-        const notifications = await Notification.find({ userId: req.user.id })
+        const userId = req.user._id || req.user.id;
+        const logger = require('../config/logger');
+        
+        logger.info(`DEBUG: Fetching notifications for user ${userId} (${req.user.name})`);
+
+        const notifications = await Notification.find({ userId: userId })
             .sort({ createdAt: -1 })
             .limit(50);
 
         const unreadCount = await Notification.countDocuments({ 
-            userId: req.user.id, 
+            userId: userId, 
             isRead: false 
         });
+
+        logger.info(`DEBUG: Found ${notifications.length} notifications (${unreadCount} unread)`);
 
         res.status(200).json({
             success: true,
@@ -20,6 +27,7 @@ exports.getNotifications = async (req, res) => {
             data: notifications
         });
     } catch (err) {
+        console.error('Fetch Notifications Error:', err.message);
         res.status(400).json({ success: false, message: err.message });
     }
 };

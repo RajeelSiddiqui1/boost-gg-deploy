@@ -19,7 +19,6 @@ import { UIProvider } from './context/UIContext';
 import { CurrencyProvider } from './context/CurrencyContext';
 import { ModeProvider } from './context/ModeContext';
 import { NotificationProvider } from './context/NotificationContext';
-import { io } from 'socket.io-client';
 
 const Home = lazy(() => import('./pages/Home'));
 const Offers = lazy(() => import('./pages/Offers'));
@@ -185,6 +184,7 @@ const AppContent = () => {
             <Route path="/pro/chat" element={<ProtectedRoute><ChatHub /></ProtectedRoute>} />
             <Route path="/pro/chat/:orderId" element={<ProtectedRoute><ChatHub /></ProtectedRoute>} />
             <Route path="/pro/notifications" element={<ProtectedRoute><Notifications /></ProtectedRoute>} />
+            <Route path="/notifications" element={<ProtectedRoute><Notifications /></ProtectedRoute>} />
 
             <Route path="/affiliate/dashboard" element={<ProtectedRoute affiliateOnly><AffiliateDashboard /></ProtectedRoute>} />
 

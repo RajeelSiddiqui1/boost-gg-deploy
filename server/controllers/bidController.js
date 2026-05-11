@@ -6,7 +6,7 @@ const Transaction = require('../models/Transaction');
 const sendEmail = require('../utils/sendEmail');
 const { getIO } = require('../socket');
 
-// Helper: Send notifications to specialized pros (uses bid.gameId directly)
+// Helper: Send notifications to specialized pros in parallel
 const notifySpecializedPros = async (bid, actionLabel = 'New') => {
     try {
         const io = getIO();
@@ -15,55 +15,104 @@ const notifySpecializedPros = async (bid, actionLabel = 'New') => {
         const order = await Order.findById(bid.orderId).populate('serviceId', 'title');
         const serviceTitle = order?.serviceId?.title || 'Service Order';
 
+        // Find all pros specialized in this game
         const pros = await User.find({
             role: 'pro',
             'proSpecializations.game': bid.gameId
         });
 
+        if (pros.length === 0) return;
+
         const notificationTitle = `${actionLabel} Order Bid Available!`;
         const notificationMessage = `A bid of $${bid.bidPrice} is available for ${serviceTitle}. Check it out now!`;
-        const link = `/pro/notifications`;
+        const link = `/dashboard?tab=work`;
 
-        for (const pro of pros) {
-            // 1. DB Notification
-            await Notification.create({
-                userId: pro._id,
-                title: notificationTitle,
-                message: notificationMessage,
-                type: 'bid_created',
-                link
-            });
+        // Process notifications in parallel
+        await Promise.all(pros.map(async (pro) => {
+            try {
+                // 1. DB Notification
+                const newNotif = await Notification.create({
+                    userId: pro._id,
+                    title: notificationTitle,
+                    message: notificationMessage,
+                    type: actionLabel === 'New' ? 'bid_created' : 'bid_active',
+                    link
+                });
 
-            // 2. Real-time Socket
-            io.to(pro._id.toString()).emit('notification', {
-                title: notificationTitle,
-                message: notificationMessage,
-                type: 'bid_created',
-                link
-            });
+                // 2. Real-time Socket
+                io.to(pro._id.toString()).emit('notification', {
+                    _id: newNotif._id,
+                    title: notificationTitle,
+                    message: notificationMessage,
+                    type: 'bid_created',
+                    link,
+                    createdAt: newNotif.createdAt,
+                    isRead: false
+                });
 
-            // 3. Email (async, non-blocking)
-            sendEmail({
-                email: pro.email,
-                subject: notificationTitle,
-                html: `
-                    <div style="font-family: Arial, sans-serif; padding: 20px; background-color: #000; color: #fff; border-radius: 10px;">
-                        <h2 style="color: #A2E63E;">${actionLabel} Bid Deployed!</h2>
-                        <p>A bid has been ${actionLabel === 'Updated' ? 'updated' : 'placed'} for an order in your specialized game.</p>
-                        <div style="background: #111; padding: 15px; border-radius: 8px; margin: 20px 0;">
-                            <p><strong>Service:</strong> ${serviceTitle}</p>
-                            <p><strong>Original Price:</strong> $${bid.originalPrice}</p>
-                            <p><strong>Your Payout (Bid):</strong> $${bid.bidPrice}</p>
+                // 3. Email (Still non-blocking within the map)
+                sendEmail({
+                    email: pro.email,
+                    subject: notificationTitle,
+                    html: `
+                        <div style="font-family: Arial, sans-serif; padding: 20px; background-color: #000; color: #fff; border-radius: 10px;">
+                            <h2 style="color: #A2E63E;">${actionLabel} Bid Deployed!</h2>
+                            <p>A bid has been ${actionLabel === 'Updated' ? 'updated' : 'placed'} for an order in your specialized game.</p>
+                            <div style="background: #111; padding: 15px; border-radius: 8px; margin: 20px 0;">
+                                <p><strong>Service:</strong> ${serviceTitle}</p>
+                                <p><strong>Original Price:</strong> $${bid.originalPrice}</p>
+                                <p><strong>Your Payout (Bid):</strong> $${bid.bidPrice}</p>
+                            </div>
+                            <a href="${process.env.CLIENT_URL}${link}" style="background: #A2E63E; color: #000; padding: 12px 25px; text-decoration: none; border-radius: 5px; font-weight: bold; display: inline-block;">View Order</a>
                         </div>
-                        <a href="${process.env.CLIENT_URL}${link}" style="background: #A2E63E; color: #000; padding: 12px 25px; text-decoration: none; border-radius: 5px; font-weight: bold; display: inline-block;">View Order</a>
-                    </div>
-                `
-            }).catch(e => console.error('Email Error:', e.message));
-        }
+                    `
+                }).catch(e => console.error('Email Error:', e.message));
+            } catch (err) {
+                console.error(`Failed to notify pro ${pro._id}:`, err.message);
+            }
+        }));
 
         console.log(`Notified ${pros.length} pros for bid ${bid._id}`);
     } catch (error) {
         console.error('Notification Error:', error.message);
+    }
+};
+
+// Helper: Send general notification in parallel
+const sendParallelNotifications = async (notificationsToSend) => {
+    try {
+        if (notificationsToSend.length === 0) return;
+        console.log(`Dispatching ${notificationsToSend.length} alerts...`);
+
+        const io = getIO();
+        await Promise.all(notificationsToSend.map(async (notif) => {
+            try {
+                if (!notif.userId) return;
+                const uid = notif.userId.toString ? notif.userId.toString() : notif.userId;
+                console.log(`Socket emitting to user room: ${uid}`);
+                const newNotif = await Notification.create({
+                    userId: uid,
+                    title: notif.title,
+                    message: notif.message,
+                    type: notif.type || 'system',
+                    link: notif.link || ''
+                });
+
+                io.to(uid).emit('notification', {
+                    _id: newNotif._id,
+                    title: notif.title,
+                    message: notif.message,
+                    type: notif.type || 'system',
+                    link: notif.link || '',
+                    createdAt: newNotif.createdAt,
+                    isRead: false
+                });
+            } catch (err) {
+                console.error(`Internal Notification Error for user ${notif.userId}:`, err.message);
+            }
+        }));
+    } catch (error) {
+        console.error('sendParallelNotifications Error:', error.message);
     }
 };
 
@@ -171,7 +220,7 @@ exports.createBid = async (req, res) => {
 exports.getProAvailableBids = async (req, res) => {
     try {
         const user = await User.findById(req.user.id);
-        
+
         let query = { status: 'active' };
 
         // If user is pro, filter by their games. If admin, show all active bids for testing.
@@ -232,36 +281,61 @@ exports.boosterBid = async (req, res) => {
 
         await bid.save();
 
-        // NOTIFY ADMINS
-        const admins = await User.find({ role: 'admin' });
-        const io = getIO();
+        const isUpdate = existingBidderIndex > -1;
         const boosterName = req.user.name;
-
-        // Populate service title for notification
         const order = await Order.findById(bid.orderId).populate('serviceId', 'title');
         const serviceTitle = order?.serviceId?.title || 'Service Order';
 
-        const notificationTitle = `New Bid Placed!`;
-        const notificationMessage = `Booster ${boosterName} has bid $${amount} for ${serviceTitle}.`;
+        // 1. Notify Admins (Parallel)
+        const admins = await User.find({ role: 'admin' }, '_id email');
+        const adminIds = admins.map(a => a._id);
+        const adminData = {
+            title: isUpdate ? `Pro Bid Updated! 🔄` : `New Pro Bid Received! 💰`,
+            message: `Booster ${boosterName} has ${isUpdate ? 'updated their bid' : 'placed a bid'} to $${amount} on ${serviceTitle}.`,
+            type: 'booster_bid',
+            link: `/admin/bids/${bid._id}/details`
+        };
 
-        for (const admin of admins) {
-            await Notification.create({
-                userId: admin._id,
-                title: notificationTitle,
-                message: notificationMessage,
-                type: 'booster_bid',
-                link: `/admin/orders` // Assuming admin goes here to manage
-            });
+        // 2. Notify other Bidders (Parallel)
+        const otherBiddersIds = bid.bidders
+            .filter(b => b.user.toString() !== req.user.id)
+            .map(b => b.user);
+        
+        const otherBiddersData = {
+            title: isUpdate ? `Bid Price Changed 📈` : `New Competitor Joined ⚔️`,
+            message: isUpdate 
+                ? `A booster has updated their bid for ${serviceTitle}. Check the new landscape!`
+                : `A new pro has placed a bid on ${serviceTitle}. competition is heating up!`,
+            type: 'bid_placed',
+            link: `/dashboard?tab=work`
+        };
 
-            io.to(admin._id.toString()).emit('notification', {
-                title: notificationTitle,
-                message: notificationMessage,
-                type: 'booster_bid'
-            });
+        // Run both notification batches in parallel
+        await Promise.all([
+            sendParallelNotifications(adminIds.map(id => ({
+                userId: id,
+                ...adminData
+            }))),
+            sendParallelNotifications(otherBiddersIds.map(id => ({
+                userId: id,
+                ...otherBiddersData
+            })))
+        ]).catch(e => console.error('BoosterBid Notifications Error:', e.message));
 
+        // 3. Real-time updates for the bid room & tables
+        const io = getIO();
+        io.to(bid._id.toString()).emit('bidUpdate', {
+            bidId: bid._id,
+            boosterName: boosterName,
+            amount: amount
+        });
+        io.emit('bidsUpdate', { action: 'booster_bid', bidId: bid._id, boosterName, amount });
+
+        // 4. Admin Emails (Non-blocking)
+        admins.forEach(admin => {
             sendEmail({
                 email: admin.email,
-                subject: notificationTitle,
+                subject: adminData.title,
                 html: `
                     <div style="font-family: Arial, sans-serif; padding: 20px; background-color: #000; color: #fff; border-radius: 10px;">
                         <h2 style="color: #A2E63E;">New Booster Bid!</h2>
@@ -272,20 +346,11 @@ exports.boosterBid = async (req, res) => {
                             <p><strong>Bid Amount:</strong> $${amount}</p>
                             <p><strong>Platform Price:</strong> $${bid.bidPrice}</p>
                         </div>
-                        <a href="${process.env.CLIENT_URL}/admin/orders" style="background: #A2E63E; color: #000; padding: 12px 25px; text-decoration: none; border-radius: 5px; font-weight: bold; display: inline-block;">Manage Bids</a>
+                        <a href="${process.env.CLIENT_URL}${adminData.link}" style="background: #A2E63E; color: #000; padding: 12px 25px; text-decoration: none; border-radius: 5px; font-weight: bold; display: inline-block;">Manage Bids</a>
                     </div>
                 `
             }).catch(e => console.error('Admin Email Error:', e.message));
-        }
-
-        // 4. Emit live update to the specific bid room
-        io.to(bid._id.toString()).emit('bidUpdate', {
-            bidId: bid._id,
-            boosterName: boosterName,
-            amount: amount
         });
-        // Refresh admin bids table
-        io.emit('bidsUpdate', { action: 'booster_bid', bidId: bid._id, boosterName, amount });
 
         res.status(200).json({ success: true, data: bid });
     } catch (err) {
@@ -351,10 +416,12 @@ exports.approveBid = async (req, res) => {
             return res.status(404).json({ success: false, message: 'Bid registry not found' });
         }
 
-        const order = await Order.findById(bid.orderId);
+        const order = await Order.findById(bid.orderId).populate('serviceId', 'title');
         if (!order) {
             return res.status(404).json({ success: false, message: 'Order not found' });
         }
+
+        const serviceTitle = order?.serviceId?.title || 'Mission';
 
         if (bid.assignedUser) {
             return res.status(400).json({ success: false, message: 'This auction already has an assigned booster' });
@@ -370,26 +437,56 @@ exports.approveBid = async (req, res) => {
         bid.assignedUser = proId;
         await bid.save();
 
-        // 3. Notify Booster
-        await Notification.create({
-            userId: proId,
-            title: 'Bid Approved!',
-            message: `Your proposal for ${order._id} was approved. You can now start the mission.`,
-            type: 'order_update',
-            link: `/pro/order/${order._id}`
-        });
+        // Fetch winning pro details for name
+        const winningPro = await User.findById(proId).select('name');
+        const proName = winningPro?.name || 'a Pro Booster';
 
-        // 4. Emit socket events
+        // --- NOTIFICATIONS (Parallel) ---
+        const winnerData = {
+            title: 'Your Bid Accepted! 🏆',
+            message: `Congratulations! Your bid for ${serviceTitle} was accepted. Check the mission board now!`,
+            type: 'bid_won',
+            link: `/dashboard?tab=work`
+        };
+
+        // 2. Notify other Bidders
+        const loserIds = bid.bidders
+            .filter(b => b.user.toString() !== proId.toString())
+            .map(b => b.user);
+
+        const losersData = {
+            title: 'Bid Update: Mission Closed',
+            message: `The mission for ${serviceTitle} has been assigned to another pro. Keep bidding!`,
+            type: 'bid_approved',
+            link: `/dashboard?tab=work`
+        };
+
+        const customerData = {
+            title: 'Booster Assigned! 🚀',
+            message: `Admin has assigned pro ${proName} to your order ${serviceTitle}.`,
+            type: 'order_update',
+            link: `/dashboard?tab=orders`
+        };
+
+        // Dispatch all in parallel
+        await Promise.all([
+            sendParallelNotifications([{
+                userId: proId,
+                ...winnerData
+            }]),
+            sendParallelNotifications(loserIds.map(id => ({
+                userId: id,
+                ...losersData
+            }))),
+            sendParallelNotifications([{
+                userId: order.userId,
+                ...customerData
+            }])
+        ]).catch(e => console.error('ApproveBid Notifications Error:', e.message));
+
+        // Socket events for status refresh
         const io = getIO();
         io.to(bid._id.toString()).emit('bidUpdate', { bidId: bid._id, status: 'approved' });
-        // Notify assigned pro
-        io.to(proId.toString()).emit('notification', {
-            title: 'Bid Approved!',
-            message: `Your proposal was approved. You can now start the mission.`,
-            type: 'order_update',
-            link: `/pro/order/${order._id}`
-        });
-        // Refresh admin bids page + pro marketplace
         io.emit('bidsUpdate', { action: 'approved', bidId: bid._id, proId });
         io.emit('marketUpdate');
 
@@ -431,33 +528,72 @@ exports.boosterClaim = async (req, res) => {
         bid.bidders = []; // Clear other bidders
         await bid.save();
 
-        // 3. Notify Administrators of the Instant Claim
-        const admins = await User.find({ role: 'admin' });
-        const io = getIO();
+        // --- NOTIFICATIONS (Parallel) ---
         const boosterName = req.user.name;
         const serviceTitle = order?.serviceId?.title || 'Service Order';
+        
+        // 1. Notify Admins
+        const admins = await User.find({ role: 'admin' }, '_id email');
+        const adminIds = admins.map(a => a._id);
+        const adminData = {
+            title: `Mission Claimed Instantly! ⚡`,
+            message: `Booster ${boosterName} has claimed ${serviceTitle} at the instant-access price.`,
+            type: 'bid_claimed',
+            link: `/admin/bids`
+        };
 
-        const notificationTitle = `Mission Claimed Instantly!`;
-        const notificationMessage = `Booster ${boosterName} has claimed ${serviceTitle} for $${bid.bidPrice}.`;
+        // 2. Notify the Booster (Self)
+        const boosterData = {
+            title: `Mission Claimed! ✅`,
+            message: `You have successfully claimed "${serviceTitle}". Mission is now active!`,
+            type: 'claim_assigned',
+            link: `/dashboard?tab=orders`
+        };
 
-        for (const admin of admins) {
-            await Notification.create({
-                userId: admin._id,
-                title: notificationTitle,
-                message: notificationMessage,
-                type: 'order_update',
-                link: `/admin/bids`
-            });
+        // 3. Notify Other Bidders (Losers)
+        const loserIds = bid.bidders
+            .filter(b => b.user.toString() !== req.user.id)
+            .map(b => b.user);
+        const losersData = {
+            title: 'Mission Update: Claimed',
+            message: `The mission for ${serviceTitle} was claimed by another pro.`,
+            type: 'bid_approved',
+            link: `/dashboard?tab=work`
+        };
 
-            io.to(admin._id.toString()).emit('notification', {
-                title: notificationTitle,
-                message: notificationMessage,
-                type: 'order_update'
-            });
+        // 4. Notify Customer
+        const customerData = {
+            title: `Booster Assigned! 🚀`,
+            message: `Booster ${boosterName} has claimed your order "${serviceTitle}" and started working.`,
+            type: 'order_update',
+            link: `/dashboard?tab=orders`
+        };
 
+        // Dispatch all in parallel
+        await Promise.all([
+            sendParallelNotifications(adminIds.map(id => ({
+                userId: id,
+                ...adminData
+            }))),
+            sendParallelNotifications([{
+                userId: req.user.id,
+                ...boosterData
+            }]),
+            sendParallelNotifications(loserIds.map(id => ({
+                userId: id,
+                ...losersData
+            }))),
+            sendParallelNotifications([{
+                userId: order.userId,
+                ...customerData
+            }])
+        ]).catch(e => console.error('BoosterClaim Notifications Error:', e.message));
+
+        // Admin Emails (Non-blocking)
+        admins.forEach(admin => {
             sendEmail({
                 email: admin.email,
-                subject: notificationTitle,
+                subject: adminData.title,
                 html: `
                     <div style="font-family: Arial, sans-serif; padding: 20px; background-color: #000; color: #fff; border-radius: 10px;">
                         <h2 style="color: #A2E63E;">Mission Claimed!</h2>
@@ -471,15 +607,15 @@ exports.boosterClaim = async (req, res) => {
                     </div>
                 `
             }).catch(e => console.error('Admin Email Error:', e.message));
-        }
+        });
 
-        // 4. Emit live update to the specific bid room to refresh booster dashboards
+        // Socket events
+        const io = getIO();
         io.to(bid._id.toString()).emit('bidUpdate', {
             bidId: bid._id,
             status: 'assigned',
             boosterName: boosterName
         });
-        // Refresh admin bids table + pro marketplace
         io.emit('bidsUpdate', { action: 'claimed', bidId: bid._id, boosterName });
         io.emit('marketUpdate');
 
@@ -523,37 +659,32 @@ exports.submitCompletionProof = async (req, res) => {
         const serviceTitle = order?.serviceId?.title || 'your order';
 
         // Notify admins
-        const admins = await User.find({ role: 'admin' });
-        for (const admin of admins) {
-            await Notification.create({
-                userId: admin._id,
-                title: 'Completion Proof Submitted',
-                message: `Pro ${req.user.name} submitted proof for ${serviceTitle}.`,
-                type: 'order_update',
-                link: `/admin/bids/${bid._id}/details`
-            });
-            io.to(admin._id.toString()).emit('notification', {
-                title: 'Completion Proof Submitted',
-                message: `Pro ${req.user.name} submitted proof for ${serviceTitle}.`,
-                type: 'order_update',
-                link: `/admin/bids/${bid._id}/details`
-            });
-        }
+        const admins = await User.find({ role: 'admin' }, '_id');
+        const adminData = {
+            title: 'Completion Proof Submitted',
+            message: `Pro ${req.user.name} submitted proof for ${serviceTitle}.`,
+            type: 'order_update',
+            link: `/admin/bids/${bid._id}/details`
+        };
+
+        await sendParallelNotifications(admins.map(admin => ({
+            userId: admin._id,
+            ...adminData
+        }))).catch(e => console.error('Admin Completion Notifications Error:', e.message));
 
         // Notify customer
         if (customer) {
-            await Notification.create({
-                userId: customer._id,
-                title: 'Mission Completed! Your Review Needed',
-                message: `Your order "${serviceTitle}" has been completed. Please review and submit your confirmation.`,
+            const customerData = {
+                title: 'Mission Completed! Your Review Needed 🏁',
+                message: `Your order "${serviceTitle}" has been completed by the pro. Please review and submit your confirmation.`,
                 type: 'order_update',
-                link: `/dashboard`
-            });
-            io.to(customer._id.toString()).emit('notification', {
-                title: 'Mission Completed!',
-                message: `Your order "${serviceTitle}" has been completed. Review it now.`,
-                type: 'order_update'
-            });
+                link: `/dashboard?tab=orders`
+            };
+
+            await sendParallelNotifications([{
+                userId: customer._id,
+                ...customerData
+            }]).catch(e => console.error('Customer Completion Notifications Error:', e.message));
         }
 
         io.emit('bidsUpdate', { action: 'proof_submitted', bidId: bid._id });
@@ -579,7 +710,7 @@ exports.submitCustomerProof = async (req, res) => {
             return res.status(403).json({ success: false, message: 'Not authorized' });
 
         const { comment, status, keepExistingImage } = req.body;
-        
+
         let imageUrl = null;
         if (req.file) {
             imageUrl = `/uploads/orders/customer-order-proof/${req.file.filename}`;
@@ -593,24 +724,38 @@ exports.submitCustomerProof = async (req, res) => {
 
         const io = getIO();
         const serviceTitle = order?.serviceId?.title || 'order';
+        const isRejection = status === 'rejected';
 
-        // Notify admins
-        const admins = await User.find({ role: 'admin' });
-        for (const admin of admins) {
-            await Notification.create({
+        // 1. Notify Admins
+        const admins = await User.find({ role: 'admin' }, '_id');
+        const adminData = {
+            title: isRejection ? 'Mission Rejected by Customer ⚠️' : 'Mission Approved by Customer ✅',
+            message: `Customer ${req.user.name} has ${isRejection ? 'rejected' : 'confirmed'} completion for ${serviceTitle}.`,
+            type: 'order_update',
+            link: `/admin/bids/${bid._id}/details`
+        };
+
+        // 2. Notify Pro
+        const proId = bid.assignedUser;
+        const proData = {
+            title: isRejection ? 'Work Rejected! ❌' : 'Work Approved! ✨',
+            message: isRejection 
+                ? `Customer has rejected your submission for ${serviceTitle}. Please review feedback.`
+                : `Customer has confirmed your work for ${serviceTitle}. Waiting for final admin payout!`,
+            type: 'order_update',
+            link: `/dashboard?tab=work`
+        };
+
+        await Promise.all([
+            sendParallelNotifications(admins.map(admin => ({
                 userId: admin._id,
-                title: 'Customer Proof Submitted',
-                message: `Customer ${req.user.name} submitted their proof for ${serviceTitle}.`,
-                type: 'order_update',
-                link: `/admin/bids/${bid._id}/details`
-            });
-            io.to(admin._id.toString()).emit('notification', {
-                title: 'Customer Proof Submitted',
-                message: `Customer submitted proof for ${serviceTitle}. Review now.`,
-                type: 'order_update',
-                link: `/admin/bids/${bid._id}/details`
-            });
-        }
+                ...adminData
+            }))),
+            sendParallelNotifications([{
+                userId: proId,
+                ...proData
+            }])
+        ]).catch(e => console.error('CustomerReview Notifications Error:', e.message));
 
         io.emit('bidsUpdate', { action: 'customer_proof', bidId: bid._id });
 
@@ -635,6 +780,16 @@ exports.reviewCompletion = async (req, res) => {
 
         if (!bid) return res.status(404).json({ success: false, message: 'Bid not found' });
 
+        // 1. Restriction: Lock until customer review
+        const lockedStatuses = ['none', 'pro_submitted'];
+        if (lockedStatuses.includes(bid.completionStatus)) {
+            return res.status(400).json({ 
+                success: false, 
+                message: 'Administrative review is locked until customer provides confirmation or feedback.' 
+            });
+        }
+
+        const isReApproval = bid.completionStatus === 'approved';
         bid.completionStatus = decision;
         if (bid.customerProof) bid.customerProof.approved = decision === 'approved';
         if (comment) bid.customerProof = { ...(bid.customerProof || {}), comment };
@@ -645,10 +800,10 @@ exports.reviewCompletion = async (req, res) => {
         const proId = bid.assignedUser?._id;
         const customerId = order?.userId?._id;
 
-        if (decision === 'approved') {
+        if (decision === 'approved' && !isReApproval) {
             // Mark order as completed
             const updatedOrder = await Order.findByIdAndUpdate(bid.orderId._id || bid.orderId, { status: 'completed' }, { new: true });
-            
+
             if (proId) {
                 const pro = await User.findById(proId);
                 if (pro) {
@@ -672,42 +827,37 @@ exports.reviewCompletion = async (req, res) => {
 
         await bid.save();
 
-        // Notify pro
-        if (proId) {
-            await Notification.create({
+        // --- NOTIFICATIONS ---
+        const proNotifData = {
+            title: decision === 'approved' ? '🎉 Mission Approved!' : '❌ Mission Rejected',
+            message: decision === 'approved'
+                ? `Admin has approved your completion of "${serviceTitle}". Payout processed.`
+                : `Admin has rejected your completion of "${serviceTitle}". Please review the feedback.`,
+            type: 'order_update',
+            link: `/dashboard?tab=work`
+        };
+
+        const customerNotifData = {
+            title: decision === 'approved' ? 'Mission Finalized ✅' : 'Mission Status: Disputed ⚠️',
+            message: decision === 'approved'
+                ? `Admin has finalized and approved the completion of "${serviceTitle}".`
+                : `Admin has marked the completion of "${serviceTitle}" as rejected/disputed.`,
+            type: 'order_update',
+            link: `/dashboard?tab=orders`
+        };
+
+        await Promise.all([
+            proId ? sendParallelNotifications([{
                 userId: proId,
-                title: decision === 'approved' ? '🎉 Mission Approved!' : '❌ Mission Rejected',
-                message: decision === 'approved'
-                    ? `Your completion of "${serviceTitle}" has been approved. Payment will be processed.`
-                    : `Your completion of "${serviceTitle}" was rejected. Please review.`,
-                type: 'order_update',
-                link: `/dashboard?tab=active`
-            });
-            io.to(proId.toString()).emit('notification', {
-                title: decision === 'approved' ? 'Mission Approved!' : 'Mission Rejected',
-                type: 'order_update'
-            });
-        }
-
-        // Notify customer
-        if (customerId) {
-            await Notification.create({
+                ...proNotifData
+            }]) : Promise.resolve(),
+            customerId ? sendParallelNotifications([{
                 userId: customerId,
-                title: decision === 'approved' ? '✅ Order Completed!' : 'Order Under Review',
-                message: decision === 'approved'
-                    ? `Your order "${serviceTitle}" is officially complete!`
-                    : `Your order "${serviceTitle}" completion is under review.`,
-                type: 'order_update',
-                link: `/dashboard`
-            });
-            io.to(customerId.toString()).emit('notification', {
-                title: decision === 'approved' ? 'Order Completed!' : 'Order Under Review',
-                type: 'order_update'
-            });
-        }
+                ...customerNotifData
+            }]) : Promise.resolve()
+        ]).catch(e => console.error('AdminReview Notifications Error:', e.message));
 
-        io.emit('bidsUpdate', { action: 'completion_reviewed', bidId: bid._id, decision });
-
+        io.emit('bidsUpdate', { action: 'admin_review', bidId: bid._id, status: decision });
         res.status(200).json({ success: true, message: `Completion ${decision}`, data: bid });
     } catch (err) {
         res.status(400).json({ success: false, message: err.message });
