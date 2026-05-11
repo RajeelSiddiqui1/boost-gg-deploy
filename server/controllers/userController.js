@@ -140,3 +140,42 @@ exports.toggleSavedGame = async (req, res) => {
         res.status(400).json({ success: false, message: err.message });
     }
 };
+
+// @desc    Get paginated user reviews
+// @route   GET /api/v1/users/:id/reviews
+// @access  Private
+exports.getUserReviews = async (req, res) => {
+    try {
+        const userId = req.params.id;
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 10;
+        const skip = (page - 1) * limit;
+
+        const user = await User.findById(userId)
+            .select('reviews')
+            .populate('reviews.user', 'name avatar');
+
+        if (!user) {
+            return res.status(404).json({ success: false, message: 'User not found' });
+        }
+
+        // Sort reviews by date descending
+        const allReviews = user.reviews.sort((a, b) => b.createdAt - a.createdAt);
+        
+        const total = allReviews.length;
+        const paginatedReviews = allReviews.slice(skip, skip + limit);
+
+        res.status(200).json({
+            success: true,
+            data: paginatedReviews,
+            pagination: {
+                total,
+                page,
+                limit,
+                pages: Math.ceil(total / limit)
+            }
+        });
+    } catch (err) {
+        res.status(400).json({ success: false, message: err.message });
+    }
+};

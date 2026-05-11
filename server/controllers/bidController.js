@@ -863,3 +863,83 @@ exports.reviewCompletion = async (req, res) => {
         res.status(400).json({ success: false, message: err.message });
     }
 };
+
+// @desc    CUSTOMER: Submit review for booster
+// @route   POST /api/v1/bids/:id/review
+// @access  Private (CUSTOMER)
+exports.submitBoosterReview = async (req, res) => {
+    try {
+        const { rating, comment } = req.body;
+        if (!rating || rating < 1 || rating > 5) {
+            return res.status(400).json({ success: false, message: 'Please provide a valid rating (1-5)' });
+        }
+
+        const bid = await Bid.findById(req.params.id)
+            .populate('assignedUser')
+            .populate({ path: 'orderId', select: 'serviceId userId' });
+
+        if (!bid) return res.status(404).json({ success: false, message: 'Bid not found' });
+        
+        // Ensure only the customer who owns the order can review
+        if (bid.orderId?.userId?.toString() !== req.user.id) {
+            return res.status(401).json({ success: false, message: 'Not authorized to review this mission' });
+        }
+
+        // Ensure mission is approved by admin first
+        if (bid.completionStatus !== 'approved') {
+            return res.status(400).json({ success: false, message: 'Mission must be approved by admin before you can review' });
+        }
+
+        // Check if already reviewed
+        if (bid.isReviewedByCustomer) {
+            return res.status(400).json({ success: false, message: 'You have already reviewed this pro for this mission' });
+        }
+
+        const proId = bid.assignedUser?._id;
+        if (!proId) return res.status(400).json({ success: false, message: 'No pro assigned to this bid' });
+
+        const pro = await User.findById(proId);
+        if (!pro) return res.status(404).json({ success: false, message: 'Pro not found' });
+
+        // NEW: Check if this customer has ALREADY reviewed this specific Pro
+        const alreadyReviewed = pro.reviews.some(r => r.user.toString() === req.user.id.toString());
+        if (alreadyReviewed) {
+            return res.status(400).json({ 
+                success: false, 
+                message: 'You have already provided feedback for this specialist. Ratings are limited to one per professional.' 
+            });
+        }
+
+        // Add review to Pro's profile
+        pro.reviews.push({
+            user: req.user.id,
+            rating: Number(rating),
+            comment: comment || '',
+            createdAt: new Date()
+        });
+
+        // Calculate average rating
+        const totalRating = pro.reviews.reduce((acc, item) => acc + item.rating, 0);
+        pro.totalReviews = pro.reviews.length;
+        pro.rating = (totalRating / pro.reviews.length).toFixed(1);
+
+        await pro.save();
+
+        // Mark bid as reviewed
+        bid.isReviewedByCustomer = true;
+        await bid.save();
+
+        // Notify pro about the new rating
+        await sendParallelNotifications([{
+            userId: proId,
+            title: '⭐ New Review Received!',
+            message: `Customer ${req.user.name} has rated you ${rating} stars for your work.`,
+            type: 'order_update',
+            link: '/dashboard?tab=profile'
+        }]).catch(e => console.error('Review Notification Error:', e.message));
+
+        res.status(200).json({ success: true, message: 'Review submitted successfully', rating: pro.rating });
+    } catch (err) {
+        res.status(400).json({ success: false, message: err.message });
+    }
+};

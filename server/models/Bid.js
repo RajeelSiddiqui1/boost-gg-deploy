@@ -118,6 +118,10 @@ const bidSchema = new mongoose.Schema({
         status: { type: String, enum: ['approved', 'rejected'] }, // customer's choice
         approved: { type: Boolean, default: null },  // null = not reviewed, true/false = admin decision
         submittedAt: Date
+    },
+    isReviewedByCustomer: {
+        type: Boolean,
+        default: false
     }
 
 }, {

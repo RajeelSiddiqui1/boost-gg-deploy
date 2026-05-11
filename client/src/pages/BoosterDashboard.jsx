@@ -12,7 +12,7 @@ import {
   BarChart3, Wallet, ShieldCheck,
   ArrowUpRight, Image as ImageIcon,
   Plus, Upload, Trash2, Edit3, Share2, Video, FileText,
-  LayoutGrid, List, User, ExternalLink
+  LayoutGrid, List, User, ExternalLink, Star
 } from 'lucide-react';
 import { API_URL, getImageUrl } from '../utils/api';
 import { io } from 'socket.io-client';
@@ -150,6 +150,13 @@ const ProDashboard = () => {
   const [bidsSubTab, setBidsSubTab] = useState('won'); // 'bid', 'claim', or 'won'
   const [bidData, setBidData] = useState({ orderId: null, amount: '', message: '', type: 'bid', highestBid: 0 });
   
+  // Reviews Modal
+  const [isReviewsModalOpen, setIsReviewsModalOpen] = useState(false);
+  const [reviews, setReviews] = useState([]);
+  const [reviewPage, setReviewPage] = useState(1);
+  const [reviewPagination, setReviewPagination] = useState({});
+  const [loadingReviews, setLoadingReviews] = useState(false);
+  
   const [showProofUpload, setShowProofUpload] = useState(null);
   const [tempProofs, setTempProofs] = useState([]);
   const { formatPrice } = useCurrency();
@@ -197,6 +204,27 @@ const ProDashboard = () => {
   useEffect(() => {
     if (user?.name) setProfileName(user.name);
   }, [user]);
+
+  const fetchReviews = async (page = 1) => {
+    if (!user?._id) return;
+    setLoadingReviews(true);
+    try {
+      const token = localStorage.getItem('token');
+      const res = await axios.get(`${API_URL}/api/v1/users/${user._id}/reviews?page=${page}&limit=10`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      if (page === 1) {
+        setReviews(res.data.data);
+      } else {
+        setReviews(prev => [...prev, ...res.data.data]);
+      }
+      setReviewPagination(res.data.pagination);
+    } catch (err) {
+      toast.error('Failed to load reviews');
+    } finally {
+      setLoadingReviews(false);
+    }
+  };
 
   const handleUpdateProfile = async () => {
     try {
@@ -1071,8 +1099,31 @@ const ProDashboard = () => {
                       </div>
                       <div>
                         <h3 className="text-2xl font-black  text-white tracking-tight">{user?.name}</h3>
-                        <div className="flex items-center gap-3 mt-1">
-                          <span className="px-3 py-1 bg-primary/10 text-white border border-primary/20 rounded-full text-[8px] font-black  tracking-normal">{user?.role}</span>
+                        <div className="flex items-center gap-4 mt-2">
+                          <div className="flex items-center gap-1.5 px-3 py-1 bg-yellow-500/10 border border-yellow-500/20 rounded-full">
+                            <Star className="w-3.5 h-3.5 text-yellow-500 fill-yellow-500" />
+                            <span className="text-xs font-black text-yellow-500">{user?.rating || '0.0'}</span>
+                          </div>
+                          <div className="flex items-center gap-2 text-white/40">
+                            <MessageSquare className="w-4 h-4" />
+                            <span className="text-[10px] font-black uppercase tracking-widest">{user?.totalReviews || 0} Reviews</span>
+                            {user?.totalReviews > 0 && (
+                              <button 
+                                onClick={() => {
+                                  setReviewPage(1);
+                                  setReviews([]);
+                                  setIsReviewsModalOpen(true);
+                                  fetchReviews(1);
+                                }}
+                                className="ml-2 text-[10px] font-black text-primary hover:text-white uppercase tracking-widest border-b border-primary/30 hover:border-white transition-all"
+                              >
+                                View All
+                              </button>
+                            )}
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-3 mt-4">
+                          <span className="px-3 py-1 bg-primary/10 text-white border border-primary/20 rounded-full text-[8px] font-black  tracking-normal uppercase">Command Specialist</span>
                           <span className="text-white font-bold  text-[10px] tracking-normal">{user?.email}</span>
                         </div>
                       </div>
@@ -1415,6 +1466,83 @@ const ProDashboard = () => {
       )}
 
       <PayoutModal isOpen={isPayoutModalOpen} onClose={() => setIsPayoutModalOpen(false)} balance={user?.earnings || 0} onRefresh={() => { fetchData(); checkUserLoggedIn(); }} />
+
+      {/* ── All Reviews Modal ── */}
+      {isReviewsModalOpen && (
+        <div className="fixed inset-0 z-[300] flex items-center justify-center p-6">
+          <div className="absolute inset-0 bg-black/95 backdrop-blur-md" onClick={() => setIsReviewsModalOpen(false)} />
+          <div className="relative w-full max-w-[600px] bg-[#0A0A0A] border border-white/10 rounded-[48px] p-12 shadow-2xl flex flex-col max-h-[85vh]">
+            <div className="flex items-center justify-between mb-10 shrink-0">
+              <div>
+                <h3 className="text-3xl font-black text-white tracking-tight">Mission Feedback</h3>
+                <p className="text-[10px] font-bold text-white/40 tracking-widest uppercase mt-1">Verified customer reviews</p>
+              </div>
+              <button 
+                onClick={() => setIsReviewsModalOpen(false)}
+                className="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-white hover:bg-white/10 transition-all"
+              >
+                <X size={20} />
+              </button>
+            </div>
+
+            <div className="flex-1 overflow-y-auto pr-4 custom-scrollbar space-y-6">
+              {reviews.length === 0 && !loadingReviews ? (
+                <div className="py-20 text-center space-y-4">
+                  <div className="w-16 h-16 bg-white/5 rounded-full flex items-center justify-center mx-auto opacity-20">
+                    <Star size={32} />
+                  </div>
+                  <p className="text-sm font-black text-white/20 uppercase tracking-widest">No reviews yet</p>
+                </div>
+              ) : (
+                <>
+                  {reviews.map((rev, idx) => (
+                    <div key={idx} className="bg-white/[0.03] border border-white/5 rounded-[32px] p-8 space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                          <div className="w-10 h-10 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center overflow-hidden">
+                            {rev.user?.avatar ? (
+                              <img src={getImageUrl(rev.user.avatar)} className="w-full h-full object-cover" alt="" />
+                            ) : (
+                              <User size={16} className="text-primary" />
+                            )}
+                          </div>
+                          <div>
+                            <p className="text-xs font-black text-white">{rev.user?.name || 'Anonymous'}</p>
+                            <p className="text-[9px] font-bold text-white/40">{new Date(rev.createdAt).toLocaleDateString()}</p>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-1 px-2 py-1 bg-yellow-500/10 border border-yellow-500/20 rounded-lg">
+                          <Star size={10} className="text-yellow-500 fill-yellow-500" />
+                          <span className="text-[10px] font-black text-yellow-500">{rev.rating}.0</span>
+                        </div>
+                      </div>
+                      <p className="text-sm font-medium text-white/70 italic leading-relaxed">
+                        "{rev.comment || 'No comment provided.'}"
+                      </p>
+                    </div>
+                  ))}
+                  
+                  {reviewPagination.page < reviewPagination.pages && (
+                    <div className="pt-6 text-center">
+                      <button
+                        onClick={() => {
+                          const next = reviewPage + 1;
+                          setReviewPage(next);
+                          fetchReviews(next);
+                        }}
+                        disabled={loadingReviews}
+                        className="px-8 py-4 bg-white/5 hover:bg-white text-white hover:text-black rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all"
+                      >
+                        {loadingReviews ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Load More Experiences'}
+                      </button>
+                    </div>
+                  )}
+                </>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* ── Bid Completion Proof Modal ── */}
       {showBidProof && (

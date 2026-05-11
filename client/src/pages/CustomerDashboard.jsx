@@ -7,7 +7,7 @@ import {
   AlertCircle, MessageSquare, ChevronRight,
   Search, Filter, ExternalLink, Heart, Trash2, X,
   Zap, ShieldCheck, DollarSign, Globe, Monitor,
-  User, ArrowUpRight, LayoutGrid, List, Loader2
+  User, ArrowUpRight, LayoutGrid, List, Loader2, Star
 } from 'lucide-react';
 import { format } from 'date-fns';
 import { useAuth } from '../context/AuthContext';
@@ -24,7 +24,14 @@ const BuyerDashboard = () => {
   const [loading, setLoading] = useState(true);
   const [favorites, setFavorites] = useState([]);
   const [viewMode, setViewMode] = useState('list');
-  const [ordersSubTab, setOrdersSubTab] = useState('active'); // 'active' (assigned) or 'pending' (waiting)
+  const [ordersSubTab, setOrdersSubTab] = useState('active'); // 'active', 'pending', or 'completed'
+
+  // Booster Review
+  const [showReviewModal, setShowReviewModal] = useState(null); // bid object
+  const [reviewRating, setReviewRating] = useState(5);
+  const [reviewComment, setReviewComment] = useState('');
+  const [submittingReview, setSubmittingReview] = useState(false);
+  const [reviewedProIds, setReviewedProIds] = useState(new Set());
 
   const { user, checkUserLoggedIn } = useAuth();
   const { formatPrice } = useCurrency();
@@ -95,6 +102,30 @@ const BuyerDashboard = () => {
     }
   };
 
+  const handleReviewSubmit = async () => {
+    if (!reviewRating) return alert('Please select a rating');
+    setSubmittingReview(true);
+    try {
+      const token = localStorage.getItem('token');
+      await axios.post(`${API_URL}/api/v1/bids/${showReviewModal._id}/review`, {
+        rating: reviewRating,
+        comment: reviewComment
+      }, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      alert('Booster reviewed successfully! Thank you for your feedback.');
+      setShowReviewModal(null);
+      setReviewRating(5);
+      setReviewComment('');
+      fetchData();
+      checkUserLoggedIn();
+    } catch (err) {
+      alert(err.response?.data?.message || 'Failed to submit review');
+    } finally {
+      setSubmittingReview(false);
+    }
+  };
+
   useEffect(() => {
     if (user?.name) setProfileName(user.name);
   }, [user]);
@@ -131,6 +162,18 @@ const BuyerDashboard = () => {
       setOrders(ordersRes.data.data);
       setTransactions(walletRes.data.data.transactions || []);
       setFavorites(favoritesRes.data.data);
+      
+      // Compute reviewed pros
+      const reviewed = new Set();
+      ordersRes.data.data.forEach(o => {
+        const bid = o.assignedBid;
+        if (bid?.isReviewedByCustomer) {
+          const proId = bid.assignedUser?._id || bid.assignedUser;
+          if (proId) reviewed.add(proId.toString());
+        }
+      });
+      setReviewedProIds(reviewed);
+
       setLoading(false);
     } catch (err) {
       console.error(err);
@@ -175,12 +218,17 @@ const BuyerDashboard = () => {
 
   const renderOrderRow = (order) => {
     const service = order.serviceId || order.offer;
-    const pro = order.assignedBid?.assignedUser;
+    const bid = order.assignedBid;
+    const pro = bid?.assignedUser;
     
     // Check if this order should be in this tab
     const isAssigned = !!pro;
-    if (ordersSubTab === 'active' && !isAssigned) return null;
+    const isApproved = bid?.completionStatus === 'approved';
+
+    if (ordersSubTab === 'active' && (!isAssigned || isApproved)) return null;
     if (ordersSubTab === 'pending' && isAssigned) return null;
+    if (ordersSubTab === 'completed' && !isApproved) return null;
+
     return (
       <div 
         key={order._id}
@@ -199,6 +247,7 @@ const BuyerDashboard = () => {
                 {order.status}
               </span>
               <span className="text-[9px] font-bold text-white  tracking-normal">#{order._id.slice(-6).toUpperCase()}</span>
+              {isApproved && <span className="px-2 py-0.5 rounded bg-green-500/10 text-green-500 border border-green-500/20 text-[8px] font-black uppercase">Archived Mission</span>}
             </div>
             <h4 className="text-lg font-black text-white  tracking-tight truncate group-hover:text-white transition-colors">
               {service?.title || 'Boosting Service'}
@@ -215,7 +264,7 @@ const BuyerDashboard = () => {
                 ) : (
                   <User className="w-6 h-6" />
                 )}
-                <div className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-green-500 rounded-full border-2 border-[#0A0A0A]"></div>
+                <div className={`absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 ${isApproved ? 'bg-gray-500' : 'bg-green-500'} rounded-full border-2 border-[#0A0A0A]`}></div>
               </div>
               <div>
                 <p className="text-[10px] font-black text-white  tracking-normal">Mission Specialist</p>
@@ -242,39 +291,61 @@ const BuyerDashboard = () => {
           </div>
 
           <div className="flex items-center gap-3">
-            {(order.assignedBid?.completionStatus === 'pro_submitted' || order.assignedBid?.completionStatus === 'customer_submitted') && (
-              <button 
-                onClick={(e) => handleOpenCustomerProof(e, order.assignedBid)}
-                className="px-4 py-2 bg-green-500/10 hover:bg-green-500 border border-green-500/20 text-green-400 hover:text-black rounded-xl text-[9px] font-black uppercase tracking-widest transition-all"
-              >
-                {order.assignedBid?.completionStatus === 'customer_submitted' ? 'Update Review' : 'Review & Confirm'}
-              </button>
-            )}
-            {order.assignedBid?.completionStatus && order.assignedBid.completionStatus !== 'none' && order.assignedBid.completionStatus !== 'pro_submitted' && (
-              <button 
-                onClick={(e) => {
-                  if (order.assignedBid?.completionStatus === 'customer_submitted') {
-                    handleOpenCustomerProof(e, order.assignedBid);
-                  }
-                }}
-                className={`px-3 py-1.5 rounded-xl text-[8px] font-black uppercase tracking-widest border transition-all ${
-                  order.assignedBid.completionStatus === 'approved' ? 'bg-green-500/10 text-green-400 border-green-500/20' :
-                  order.assignedBid.completionStatus === 'rejected' ? 'bg-red-500/10 text-red-400 border-red-500/20' :
-                  order.assignedBid.customerProof?.status === 'rejected' ? 'bg-red-500/10 hover:bg-red-500 text-red-400 hover:text-black border-red-500/20' :
-                  'bg-yellow-500/10 hover:bg-yellow-500 text-yellow-400 hover:text-black border-yellow-500/20'
-              }`}>
-                {order.assignedBid.completionStatus === 'customer_submitted' ? 
-                  (order.assignedBid.customerProof?.status === 'rejected' ? '❌ You Rejected (Under Review)' : '⏳ You Approved (Under Review)') :
-                 order.assignedBid.completionStatus === 'approved' ? '✅ Approved by Admin' : '❌ Rejected by Admin'}
-              </button>
-            )}
-            {pro && (
-              <button 
-                onClick={(e) => { e.stopPropagation(); navigate(`/pro/chat/${order._id}`); }}
-                className="w-14 h-14 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center text-primary hover:bg-primary hover:text-black transition-all"
-              >
-                <MessageSquare className="w-6 h-6" />
-              </button>
+            {isApproved ? (
+              <div className="flex items-center gap-2">
+                {(!bid?.isReviewedByCustomer && (pro?._id || pro) && !reviewedProIds.has((pro?._id || pro).toString())) ? (
+                  <button 
+                    onClick={(e) => { e.stopPropagation(); setShowReviewModal(bid); }}
+                    className="px-6 py-3 bg-primary text-black rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-white transition-all shadow-lg shadow-primary/20"
+                  >
+                    Rate Specialist
+                  </button>
+                ) : (
+                  <div className="px-4 py-3 bg-white/5 border border-white/10 rounded-xl flex items-center gap-2">
+                    <ShieldCheck size={12} className="text-primary" />
+                    <span className="text-[9px] font-black text-white uppercase tracking-widest">
+                      {bid?.isReviewedByCustomer ? 'Reviewed' : 'Specialist Rated'}
+                    </span>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <>
+                {(bid?.completionStatus === 'pro_submitted' || bid?.completionStatus === 'customer_submitted') && (
+                  <button 
+                    onClick={(e) => handleOpenCustomerProof(e, bid)}
+                    className="px-4 py-2 bg-green-500/10 hover:bg-green-500 border border-green-500/20 text-green-400 hover:text-black rounded-xl text-[9px] font-black uppercase tracking-widest transition-all"
+                  >
+                    {bid?.completionStatus === 'customer_submitted' ? 'Update Review' : 'Review & Confirm'}
+                  </button>
+                )}
+                {bid?.completionStatus && bid.completionStatus !== 'none' && bid.completionStatus !== 'pro_submitted' && (
+                  <button 
+                    onClick={(e) => {
+                      if (bid?.completionStatus === 'customer_submitted') {
+                        handleOpenCustomerProof(e, bid);
+                      }
+                    }}
+                    className={`px-3 py-1.5 rounded-xl text-[8px] font-black uppercase tracking-widest border transition-all ${
+                      bid.completionStatus === 'approved' ? 'bg-green-500/10 text-green-400 border-green-500/20' :
+                      bid.completionStatus === 'rejected' ? 'bg-red-500/10 text-red-400 border-red-500/20' :
+                      bid.customerProof?.status === 'rejected' ? 'bg-red-500/10 hover:bg-red-500 text-red-400 hover:text-black border-red-500/20' :
+                      'bg-yellow-500/10 hover:bg-yellow-500 text-yellow-400 hover:text-black border-yellow-500/20'
+                  }`}>
+                    {bid.completionStatus === 'customer_submitted' ? 
+                      (bid.customerProof?.status === 'rejected' ? '❌ You Rejected (Under Review)' : '⏳ You Approved (Under Review)') :
+                     bid.completionStatus === 'approved' ? '✅ Approved by Admin' : '❌ Rejected by Admin'}
+                  </button>
+                )}
+                {pro && (
+                  <button 
+                    onClick={(e) => { e.stopPropagation(); navigate(`/pro/chat/${order._id}`); }}
+                    className="w-14 h-14 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center text-primary hover:bg-primary hover:text-black transition-all"
+                  >
+                    <MessageSquare className="w-6 h-6" />
+                  </button>
+                )}
+              </>
             )}
             <ChevronRight className="w-5 h-5 text-white group-hover:text-primary transition-all group-hover:translate-x-1" />
           </div>
@@ -285,12 +356,16 @@ const BuyerDashboard = () => {
 
   const renderOrderCard = (order) => {
     const service = order.serviceId || order.offer;
-    const pro = order.assignedBid?.assignedUser;
+    const bid = order.assignedBid;
+    const pro = bid?.assignedUser;
 
     // Check if this order should be in this tab
     const isAssigned = !!pro;
-    if (ordersSubTab === 'active' && !isAssigned) return null;
+    const isApproved = bid?.completionStatus === 'approved';
+
+    if (ordersSubTab === 'active' && (!isAssigned || isApproved)) return null;
     if (ordersSubTab === 'pending' && isAssigned) return null;
+    if (ordersSubTab === 'completed' && !isApproved) return null;
     
     return (
       <div 
@@ -322,21 +397,39 @@ const BuyerDashboard = () => {
                     <span className="text-xl font-black text-white tracking-tighter">{formatPrice(order.amount || order.price)}</span>
                 </div>
                 <div className="flex items-center gap-2">
-                    {(order.assignedBid?.completionStatus === 'pro_submitted' || order.assignedBid?.completionStatus === 'customer_submitted') && (
-                      <button 
-                        onClick={(e) => handleOpenCustomerProof(e, order.assignedBid)}
-                        className="px-4 py-2 bg-green-500/10 hover:bg-green-500 border border-green-500/20 text-green-400 hover:text-black rounded-xl text-[9px] font-black uppercase tracking-widest transition-all"
-                      >
-                        {order.assignedBid?.completionStatus === 'customer_submitted' ? 'Update' : 'Review'}
-                      </button>
-                    )}
-                    {pro && (
+                    {isApproved ? (
+                      (!bid?.isReviewedByCustomer && (pro?._id || pro) && !reviewedProIds.has((pro?._id || pro).toString())) ? (
                         <button 
-                            onClick={(e) => { e.stopPropagation(); navigate(`/pro/chat/${order._id}`); }}
-                            className="w-12 h-12 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center text-primary hover:bg-primary hover:text-black transition-all"
+                          onClick={(e) => { e.stopPropagation(); setShowReviewModal(bid); }}
+                          className="px-4 py-3 bg-primary text-black rounded-xl text-[9px] font-black uppercase transition-all"
                         >
-                            <MessageSquare className="w-5 h-5" />
+                          Rate
                         </button>
+                      ) : (
+                        <div className="flex items-center gap-1.5 bg-white/5 px-2 py-1.5 rounded-lg border border-white/10">
+                          <ShieldCheck size={14} className="text-primary" />
+                          <span className="text-[8px] font-black text-white/60 uppercase">Rated</span>
+                        </div>
+                      )
+                    ) : (
+                      <>
+                        {(bid?.completionStatus === 'pro_submitted' || bid?.completionStatus === 'customer_submitted') && (
+                          <button 
+                            onClick={(e) => handleOpenCustomerProof(e, bid)}
+                            className="px-4 py-2 bg-green-500/10 hover:bg-green-500 border border-green-500/20 text-green-400 hover:text-black rounded-xl text-[9px] font-black uppercase tracking-widest transition-all"
+                          >
+                            {bid?.completionStatus === 'customer_submitted' ? 'Update' : 'Review'}
+                          </button>
+                        )}
+                        {pro && (
+                            <button 
+                                onClick={(e) => { e.stopPropagation(); navigate(`/pro/chat/${order._id}`); }}
+                                className="w-12 h-12 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center text-primary hover:bg-primary hover:text-black transition-all"
+                            >
+                                <MessageSquare className="w-5 h-5" />
+                            </button>
+                        )}
+                      </>
                     )}
                     <div className="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center text-white group-hover:bg-primary group-hover:text-black transition-all">
                         <ChevronRight className="w-5 h-5" />
@@ -356,7 +449,7 @@ const BuyerDashboard = () => {
         <div className="flex flex-col lg:flex-row items-center justify-between gap-8">
             <div className="flex-1">
               <h2 className="text-3xl font-black  tracking-tighter">
-                {tab === 'orders' && 'Recent Orders'}
+                {tab === 'orders' && 'Command Hub'}
                 {tab === 'wallet' && 'Cashback Vault'}
                 {tab === 'favorites' && 'Watchlist'}
                 {tab === 'profile' && 'Security Settings'}
@@ -369,8 +462,8 @@ const BuyerDashboard = () => {
             <div className="space-y-10">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {[
-                  { label: 'Active Deployments', value: orders.filter(o => o.status === 'processing').length, icon: Clock, color: 'text-primary' },
-                  { label: 'Missions Completed', value: orders.filter(o => o.status === 'completed').length, icon: CheckCircle2, color: 'text-green-500' },
+                  { label: 'Active Deployments', value: orders.filter(o => o.assignedBid?.assignedUser && o.assignedBid?.completionStatus !== 'approved').length, icon: Clock, color: 'text-primary' },
+                  { label: 'Missions Completed', value: orders.filter(o => o.assignedBid?.completionStatus === 'approved').length, icon: CheckCircle2, color: 'text-green-500' },
                   { label: 'Platform Credit', value: formatPrice(user?.walletBalance || 0), icon: DollarSign, color: 'text-white' }
                 ].map((stat, i) => (
                   <div key={i} className="bg-[#0A0A0A] border border-white/5 rounded-[32px] p-8 flex items-center justify-between group">
@@ -392,13 +485,19 @@ const BuyerDashboard = () => {
                       onClick={() => setOrdersSubTab('active')} 
                       className={`px-8 py-3 rounded-xl text-[10px] font-black  tracking-normal transition-all ${ordersSubTab === 'active' ? 'bg-primary text-black shadow-lg shadow-primary/20' : 'text-white/40 hover:text-white'}`}
                     >
-                      Active Missions
+                      Active
                     </button>
                     <button 
                       onClick={() => setOrdersSubTab('pending')} 
                       className={`px-8 py-3 rounded-xl text-[10px] font-black  tracking-normal transition-all ${ordersSubTab === 'pending' ? 'bg-primary text-black shadow-lg shadow-primary/20' : 'text-white/40 hover:text-white'}`}
                     >
-                      Live Auctions
+                      Auctions
+                    </button>
+                    <button 
+                      onClick={() => setOrdersSubTab('completed')} 
+                      className={`px-8 py-3 rounded-xl text-[10px] font-black  tracking-normal transition-all ${ordersSubTab === 'completed' ? 'bg-primary text-black shadow-lg shadow-primary/20' : 'text-white/40 hover:text-white'}`}
+                    >
+                      Mission History
                     </button>
                   </div>
                   <div className="flex items-center gap-2 hidden md:flex">
@@ -409,15 +508,23 @@ const BuyerDashboard = () => {
 
                 {loading ? (
                   <div className="py-20 text-center text-white font-black animate-pulse">Synchronizing Data...</div>
-                ) : orders.length === 0 ? (
-                  <div className="py-32 flex flex-col items-center justify-center bg-[#0A0A0A] border border-white/5 border-dashed rounded-[48px] text-center space-y-6">
-                    <ShoppingCart className="w-12 h-12 text-white" />
-                    <h4 className="text-xl font-black  text-white">Your vault is empty</h4>
-                    <button onClick={() => navigate('/products')} className="px-8 py-3 bg-primary text-black rounded-full font-black text-[10px] ">Browse Services</button>
-                  </div>
                 ) : (
                   <div className="space-y-4">
-                    {orders.map(order => renderOrderRow(order))}
+                    {orders.some(order => {
+                      const pro = order.assignedBid?.assignedUser;
+                      const isApproved = order.assignedBid?.completionStatus === 'approved';
+                      if (ordersSubTab === 'active') return !!pro && !isApproved;
+                      if (ordersSubTab === 'pending') return !pro;
+                      if (ordersSubTab === 'completed') return isApproved;
+                      return false;
+                    }) ? (
+                      orders.map(order => renderOrderRow(order))
+                    ) : (
+                      <div className="py-32 flex flex-col items-center justify-center bg-[#0A0A0A] border border-white/5 border-dashed rounded-[48px] text-center space-y-6">
+                        <ShoppingCart className="w-12 h-12 text-white/20" />
+                        <h4 className="text-sm font-black text-white/40 uppercase tracking-widest">No deployments in this sector</h4>
+                      </div>
+                    )}
                   </div>
                 )}
               </div>
@@ -580,6 +687,68 @@ const BuyerDashboard = () => {
           )}
         </div>
       </div>
+
+      {/* ── Booster Review Modal ── */}
+      {showReviewModal && (
+        <div className="fixed inset-0 z-[300] flex items-center justify-center p-6">
+          <div className="absolute inset-0 bg-black/95 backdrop-blur-md" onClick={() => setShowReviewModal(null)} />
+          <div className="relative w-full max-w-[500px] bg-[#0A0A0A] border border-white/10 rounded-[48px] p-12 shadow-2xl space-y-10">
+            <div className="text-center space-y-3">
+              <div className="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center mx-auto border border-primary/20">
+                <Star className="text-primary w-10 h-10" />
+              </div>
+              <h3 className="text-3xl font-black text-white tracking-tight">Mission Specialist Feedback</h3>
+              <p className="text-[10px] font-bold text-white/40 tracking-widest uppercase">
+                Rate your pro for your recent mission
+              </p>
+            </div>
+
+            <div className="space-y-8">
+              <div className="flex justify-center gap-4">
+                {[1, 2, 3, 4, 5].map((star) => (
+                  <button
+                    key={star}
+                    type="button"
+                    onClick={() => setReviewRating(star)}
+                    className={`transition-all transform hover:scale-110 ${reviewRating >= star ? 'text-primary' : 'text-white/10'}`}
+                  >
+                    <Star size={40} fill={reviewRating >= star ? 'currentColor' : 'none'} strokeWidth={2} />
+                  </button>
+                ))}
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-[10px] font-black text-white ml-2 tracking-normal uppercase">Detailed Feedback</label>
+                <textarea
+                  value={reviewComment}
+                  onChange={(e) => setReviewComment(e.target.value)}
+                  placeholder="How was your experience with this specialist? (Communication, Skill, Speed)..."
+                  className="w-full bg-white/[0.03] border border-white/5 rounded-2xl py-5 px-6 text-sm font-medium text-white outline-none focus:border-primary/40 transition-all min-h-[120px] resize-none"
+                />
+              </div>
+
+              <div className="flex gap-4">
+                <button
+                  type="button"
+                  onClick={() => setShowReviewModal(null)}
+                  className="flex-1 py-5 bg-white/5 hover:bg-white/10 rounded-[30px] text-[10px] font-black tracking-normal text-white transition-all uppercase"
+                >
+                  Skip
+                </button>
+                <button
+                  type="button"
+                  onClick={handleReviewSubmit}
+                  disabled={submittingReview}
+                  className="flex-1 py-5 bg-primary hover:bg-white text-black rounded-[30px] text-[10px] font-black tracking-normal transition-all shadow-xl shadow-primary/20 flex items-center justify-center gap-2 uppercase"
+                >
+                  {submittingReview ? <Loader2 className="w-4 h-4 animate-spin" /> : <Zap className="w-4 h-4" />}
+                  Submit Feedback
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* ── Customer Proof Modal ── */}
       {showCustomerProof && (

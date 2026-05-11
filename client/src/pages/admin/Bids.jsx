@@ -98,10 +98,11 @@ const Bids = () => {
   }
 
   const activeBids = bids.filter(b => b.status === 'active' && !b.assignedUser);
-  const assignedBids = bids.filter(b => b.assignedUser);
+  const assignedBids = bids.filter(b => b.assignedUser && b.completionStatus !== 'approved');
+  const completedBids = bids.filter(b => b.assignedUser && b.completionStatus === 'approved');
   const inactiveBids = bids.filter(b => b.status === 'inactive' && !b.assignedUser);
 
-  const displayedBids = tab === 'active' ? activeBids : tab === 'assigned' ? assignedBids : inactiveBids;
+  const displayedBids = tab === 'active' ? activeBids : tab === 'assigned' ? assignedBids : tab === 'completed' ? completedBids : inactiveBids;
 
   return (
     <AdminLayout>
@@ -124,7 +125,15 @@ const Bids = () => {
               className={`flex items-center gap-3 px-6 py-3 rounded-2xl transition-all ${tab === 'assigned' ? 'bg-primary text-black shadow-lg shadow-primary/20' : 'hover:bg-white/5 text-white/40'}`}
             >
               <div className={`w-2 h-2 rounded-full ${tab === 'assigned' ? 'bg-black' : 'bg-blue-500'}`}></div>
-              <span className="text-[10px] font-black tracking-widest uppercase">{assignedBids.length} Assigned</span>
+              <span className="text-[10px] font-black tracking-widest uppercase">{assignedBids.length} Ongoing</span>
+            </button>
+
+            <button 
+              onClick={() => setTab('completed')}
+              className={`flex items-center gap-3 px-6 py-3 rounded-2xl transition-all ${tab === 'completed' ? 'bg-primary text-black shadow-lg shadow-primary/20' : 'hover:bg-white/5 text-white/40'}`}
+            >
+              <div className={`w-2 h-2 rounded-full ${tab === 'completed' ? 'bg-black' : 'bg-green-500'}`}></div>
+              <span className="text-[10px] font-black tracking-widest uppercase">{completedBids.length} Approved</span>
             </button>
 
             <button 
@@ -145,8 +154,8 @@ const Bids = () => {
                   <th className="p-8 text-[10px] font-black tracking-[0.2em] text-white/40 uppercase">Order Details</th>
                   <th className="p-8 text-[10px] font-black tracking-[0.2em] text-white/40 uppercase">Original Price</th>
                   <th className="p-8 text-[10px] font-black tracking-[0.2em] text-white/40 uppercase">Bid Price</th>
-                  {tab === 'assigned' ? (
-                    <th className="p-8 text-[10px] font-black tracking-[0.2em] text-white/40 uppercase">Winner</th>
+                  {(tab === 'assigned' || tab === 'completed') ? (
+                    <th className="p-8 text-[10px] font-black tracking-[0.2em] text-white/40 uppercase">Specialist</th>
                   ) : (
                     <th className="p-8 text-[10px] font-black tracking-[0.2em] text-white/40 uppercase">Visibility</th>
                   )}
@@ -200,7 +209,7 @@ const Bids = () => {
                         )}
                       </td>
                       <td className="p-8">
-                        {tab === 'assigned' ? (
+                        {(tab === 'assigned' || tab === 'completed') ? (
                           <div className="flex items-center gap-3">
                             <div className="w-10 h-10 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center text-primary overflow-hidden">
                               {bid.assignedUser?.avatar ? (

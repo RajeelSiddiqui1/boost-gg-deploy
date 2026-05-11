@@ -11,7 +11,8 @@ const {
     approveBid,
     submitCompletionProof,
     submitCustomerProof,
-    reviewCompletion
+    reviewCompletion,
+    submitBoosterReview
 } = require('../controllers/bidController');
 
 const router = express.Router();
@@ -26,6 +27,9 @@ router.get('/me', authorize('pro', 'admin'), getMyBids);
 router.post('/:id/booster-bid', authorize('pro', 'admin'), boosterBid);
 router.post('/:id/claim', authorize('pro', 'admin'), boosterClaim);
 router.get('/:id/bidders', getBidBidders);
+
+// Review routes
+router.post('/:id/review', authorize('customer'), submitBoosterReview);
 
 // Completion workflow
 router.post('/:id/complete', authorize('pro', 'admin'), proofUpload.single('proofImage'), submitCompletionProof);

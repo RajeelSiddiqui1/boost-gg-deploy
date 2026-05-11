@@ -172,6 +172,26 @@ const userSchema = new mongoose.Schema({
         type: Number,
         default: 0
     },
+    reviews: [{
+        user: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'User'
+        },
+        rating: {
+            type: Number,
+            required: true,
+            min: 1,
+            max: 5
+        },
+        comment: {
+            type: String,
+            trim: true
+        },
+        createdAt: {
+            type: Date,
+            default: Date.now
+        }
+    }],
     // Legacy field - kept for backward compatibility
     completedOrders: {
         type: Number,

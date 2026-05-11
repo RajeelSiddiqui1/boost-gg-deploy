@@ -1,5 +1,5 @@
 const express = require('express');
-const { getProfile, updateProfile, getWallet, getTransactions, applyForPro, toggleSavedGame } = require('../controllers/userController');
+const { getProfile, updateProfile, getWallet, getTransactions, applyForPro, toggleSavedGame, getUserReviews } = require('../controllers/userController');
 const { protect } = require('../middleware/auth');
 
 const router = express.Router();
@@ -12,5 +12,6 @@ router.get('/wallet', getWallet);
 router.get('/transactions', getTransactions);
 router.post('/apply-pro', applyForPro);
 router.post('/saved-games/:gameId', toggleSavedGame);
+router.get('/:id/reviews', getUserReviews);
 
 module.exports = router;
