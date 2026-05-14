@@ -1,6 +1,9 @@
 const Order = require('../models/Order');
 const User = require('../models/User');
 const PromoCode = require('../models/PromoCode');
+const sendEmail = require('../utils/sendEmail');
+const Notification = require('../models/Notification');
+const { getIO } = require('../socket');
 
 exports.createOrder = async (req, res) => {
     try {
@@ -51,6 +54,9 @@ exports.createOrder = async (req, res) => {
                 calcValue: item.calcValue,
                 transactionId: transactionId,
                 status: 'pending',
+                orderMode: (item.mode === 'service' || item.type === 'service') ? 'boosting' : 
+                          (item.mode === 'account' || item.type === 'account') ? 'accounts' : 
+                          (item.mode || item.type || 'boosting'),
                 promoCode: promoData?.code,
                 discount: discount / items.length // Distribute discount equally
             });
@@ -71,6 +77,59 @@ exports.createOrder = async (req, res) => {
                 { code: promoCode.toUpperCase() },
                 { $inc: { currentUses: 1 } }
             );
+        }
+
+        // --- Notify Admins about new orders ---
+        try {
+            const io = getIO();
+            const admins = await User.find({ role: 'admin' }, '_id');
+            const orderType = items[0]?.mode || items[0]?.type || 'boosting';
+            const notificationTitle = `New ${orderType.charAt(0).toUpperCase() + orderType.slice(1)} Order! 📦`;
+            const notificationMessage = `${req.user.name} placed a new ${orderType} order. Transaction ID: ${transactionId}`;
+            
+            for (const admin of admins) {
+                // DB Notification
+                const newNotif = await Notification.create({
+                    userId: admin._id,
+                    title: notificationTitle,
+                    message: notificationMessage,
+                    type: 'order_placed',
+                    link: '/admin/orders'
+                });
+
+                // Socket Notification
+                io.to(admin._id.toString()).emit('notification', {
+                    _id: newNotif._id,
+                    title: notificationTitle,
+                    message: notificationMessage,
+                    type: 'order_placed',
+                    link: '/admin/orders',
+                    createdAt: newNotif.createdAt,
+                    isRead: false
+                });
+
+                // Email Notification
+                sendEmail({
+                    email: admin.email,
+                    subject: notificationTitle,
+                    html: `
+                        <div style="font-family: Arial, sans-serif; padding: 20px; background-color: #000; color: #fff; border-radius: 10px;">
+                            <h2 style="color: #A2E63E;">${notificationTitle}</h2>
+                            <p>${notificationMessage}</p>
+                            <div style="background: #111; padding: 15px; border-radius: 8px; margin: 20px 0;">
+                                <p><strong>Customer:</strong> ${req.user.name}</p>
+                                <p><strong>Type:</strong> ${orderType}</p>
+                                <p><strong>Transaction:</strong> ${transactionId}</p>
+                            </div>
+                            <a href="${process.env.CLIENT_URL}/admin/orders" style="background: #A2E63E; color: #000; padding: 12px 25px; text-decoration: none; border-radius: 5px; font-weight: bold; display: inline-block;">Manage Orders</a>
+                        </div>
+                    `
+                }).catch(e => console.error('Admin Order Email Error:', e.message));
+            }
+            // Global admin room update (optional but good for UI counters)
+            io.emit('orderUpdate', { action: 'created', orderType });
+        } catch (notifErr) {
+            console.error('Admin Notification Error:', notifErr.message);
         }
 
         res.status(201).json({
@@ -341,11 +400,12 @@ exports.rejectOrder = async (req, res) => {
 // @access  Private (Admin)
 exports.getAllOrders = async (req, res) => {
     try {
-        const { status, proId, userId, page = 1, limit = 20, search } = req.query;
+        const { status, proId, userId, orderMode, page = 1, limit = 20, search } = req.query;
         const query = {};
         if (status) query.status = status;
         if (proId) query.pro = proId;
         if (userId) query.userId = userId;
+        if (orderMode) query.orderMode = orderMode; // New Filter for Service, Currency, Account
 
         const orders = await Order.find(query)
             .populate('serviceId', 'title image icon backgroundImage characterImage game')

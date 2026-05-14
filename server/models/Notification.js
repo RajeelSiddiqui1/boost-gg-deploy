@@ -30,7 +30,8 @@ const notificationSchema = new mongoose.Schema({
             'system',         // System-level messages
             'payout',         // Wallet / payout events
             'payout_update',  // Detailed payout events
-            'chat_message'    // Delayed chat notifications
+            'chat_message',    // Delayed chat notifications
+            'order_placed'     // New order received → admin notified
         ],
         default: 'system'
     },

@@ -12,6 +12,7 @@ const OrdersList = () => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState('all');
+  const [modeFilter, setModeFilter] = useState('all');
   const [searchTerm, setSearchTerm] = useState('');
   const [bidModal, setBidModal] = useState({ show: false, orderId: null, originalPrice: 0 });
   const [bidPriceInput, setBidPriceInput] = useState('');
@@ -53,10 +54,11 @@ const OrdersList = () => {
 
   const filteredOrders = orders.filter(o => {
     const matchesStatus = filter === 'all' || o.status === filter;
+    const matchesMode = modeFilter === 'all' || o.orderMode === modeFilter;
     const matchesSearch = o._id.toLowerCase().includes(searchTerm.toLowerCase()) ||
       (o.offer?.title && o.offer.title.toLowerCase().includes(searchTerm.toLowerCase())) ||
       (o.serviceId?.title && o.serviceId.title.toLowerCase().includes(searchTerm.toLowerCase()));
-    return matchesStatus && matchesSearch;
+    return matchesStatus && matchesMode && matchesSearch;
   });
 
   const getStatusStyle = (status) => {
@@ -89,6 +91,17 @@ const OrdersList = () => {
               <option value="processing">Processing</option>
               <option value="completed">Completed</option>
               <option value="disputed">Disputed</option>
+            </select>
+
+            <select
+              value={modeFilter}
+              onChange={(e) => setModeFilter(e.target.value)}
+              className="bg-white/5 border border-white/10 rounded-2xl py-3 px-6 text-xs text-white font-black  outline-none focus:border-primary transition-all appearance-none cursor-pointer"
+            >
+              <option value="all">All Modes</option>
+              <option value="boosting">Services</option>
+              <option value="currency">Currency</option>
+              <option value="accounts">Accounts</option>
             </select>
 
             <div className="relative">
@@ -127,7 +140,16 @@ const OrdersList = () => {
                     <tr key={order._id} className="hover:bg-white/[0.01] transition-colors group">
                       <td className="px-8 py-6">
                         <p className="font-mono text-[10px] font-black text-white ">#ORD-{order._id.slice(-6).toUpperCase()}</p>
-                        <p className="text-[8px] font-bold text-white/40  mt-1 uppercase">{new Date(order.createdAt).toLocaleString()}</p>
+                        <div className="flex items-center gap-2 mt-1">
+                          <span className={`text-[7px] px-1.5 py-0.5 rounded-md font-black tracking-widest uppercase ${
+                            order.orderMode === 'currency' ? 'bg-orange-500/20 text-orange-500' :
+                            order.orderMode === 'accounts' ? 'bg-purple-500/20 text-purple-500' :
+                            'bg-blue-500/20 text-blue-500'
+                          }`}>
+                            {order.orderMode || 'Service'}
+                          </span>
+                          <p className="text-[8px] font-bold text-white/40 uppercase">{new Date(order.createdAt).toLocaleString()}</p>
+                        </div>
                       </td>
                       <td className="px-8 py-6">
                         <div className="space-y-1">
