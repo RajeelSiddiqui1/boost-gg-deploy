@@ -2,17 +2,18 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
 import { 
-    ChevronRight, Zap, Shield, Clock, Heart, 
+    ChevronRight, Zap, Shield, Heart, 
     Share2, Star, CheckCircle2, MessageSquare, 
     ArrowRight, Info, ShieldCheck, Gamepad2,
     DollarSign, Laptop, Smartphone, Monitor, Coffee, 
     Sparkles, Trophy, Users, Headphones, Award, 
-    Package, ArrowUpDown, Globe, ChevronDown
+    Package, ArrowUpDown, Globe, ChevronDown, Clock
 } from 'lucide-react';
 import { API_URL, getImageUrl } from '../utils/api';
 import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
 import { useToast } from '../context/ToastContext';
+import { useCurrency } from '../context/CurrencyContext';
 import DetailBanner from '../components/DetailBanner';
 import PaymentMethods from '../components/sections/PaymentMethods';
 import PaymentModal from '../components/layout/PaymentModal';
@@ -23,6 +24,7 @@ const ProductDetail = () => {
     const toast = useToast();
     const { addToCart } = useCart();
     const { user } = useAuth();
+    const { formatPrice } = useCurrency();
 
     const [service, setService] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -1010,47 +1012,92 @@ const ProductDetail = () => {
                 {relatedServices.length > 0 && (
                     <div className="mt-20 pt-8 border-t border-white/10">
                         <div className="flex items-center justify-between mb-8">
-                            <h2 className="text-3xl md:text-4xl font-black  tracking-tighter">You May Also Like</h2>
-                            <Link to={`/game/${service.gameId?.slug}`} className="text-[10px] font-black text-white  tracking-normal flex items-center gap-1 hover:gap-2 transition-all">
+                            <h2 className="text-3xl md:text-4xl font-black tracking-tighter">You May Also Like</h2>
+                            <Link to={`/game/${service.gameId?.slug}`} className="text-[10px] font-black text-white tracking-normal flex items-center gap-1 hover:gap-2 transition-all">
                                 View All <ArrowRight className="w-3 h-3" />
                             </Link>
                         </div>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-5">
-                            {relatedServices.map((rel) => (
-                                <div
-                                    key={rel._id}
-                                    onClick={() => navigate(`/products/${rel.slug || rel._id}`)}
-                                    className="group relative h-64 rounded-2xl overflow-hidden border border-white/10 cursor-pointer hover:border-primary/50 transition-all duration-500 bg-gradient-to-br from-gray-900 to-black"
-                                >
-                                    {(rel.backgroundImage || rel.image) && (
-                                        <img
-                                            src={getImageUrl(rel.backgroundImage || rel.image)}
-                                            className="absolute inset-0 w-full h-full object-cover opacity-30 transition-transform duration-700 group-hover:scale-110"
-                                            alt=""
-                                        />
-                                    )}
-                                    <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent"></div>
-                                    
-                                    {rel.icon && (
-                                        <div className="absolute inset-0 flex items-center justify-center">
-                                            <img
-                                                src={getImageUrl(rel.icon)}
-                                                alt=""
-                                                className="w-24 h-24 object-contain opacity-80 group-hover:scale-110 transition-transform duration-500"
-                                            />
+                        <div className="grid grid-cols-1 p-3  sm:grid-cols-2 md:grid-cols-4 gap-6">
+                            {relatedServices.map((rel) => {
+                                const hasImage = rel.backgroundImage || rel.image;
+                                const hasIcon = rel.icon;
+                                const price = rel.price || (rel.pricing && rel.pricing.basePrice) || 0;
+                                const deliveryTime = rel.deliveryTimeText || rel.estimatedCompletionTime || '24h';
+                                const startTime = rel.estimatedStartTime || '15m';
+
+                                return (
+                                    <div
+                                        key={rel._id}
+                                        onClick={() => navigate(`/products/${rel.slug || rel._id}`)}
+                                        className="group relative bg-[#1a1a1a] rounded-[20px] overflow-hidden flex flex-col cursor-pointer transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl h-full border border-white/5 hover:border-white/10"
+                                    >
+                                        {/* Image Area */}
+                                        <div className="relative h-[180px] w-full overflow-hidden bg-gradient-to-b from-[#222] to-[#1a1a1a]">
+                                            {hasImage ? (
+                                                <img
+                                                    src={getImageUrl(rel.backgroundImage || rel.image)}
+                                                    className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                                                    alt={rel.title}
+                                                />
+                                            ) : (
+                                                <div className="absolute inset-0 bg-gradient-to-br from-[#2a2a2a] to-[#1a1a1a]" />
+                                            )}
+
+                                            <div className="absolute inset-0 bg-gradient-to-t from-[#1a1a1a] via-[#1a1a1a]/20 to-transparent"></div>
+
+                                            {hasIcon && (
+                                                <div className="absolute inset-0 flex items-center justify-center p-6">
+                                                    <img
+                                                        src={getImageUrl(rel.icon)}
+                                                        className="h-full object-contain transition-transform duration-500 group-hover:scale-110 drop-shadow-[0_10px_20px_rgba(0,0,0,0.8)] z-10"
+                                                        alt={rel.title}
+                                                    />
+                                                </div>
+                                            )}
+                                            
+                                            {/* Badges */}
+                                            <div className="absolute top-4 left-4 flex flex-col gap-1.5 z-20">
+                                                {rel.discount > 0 && (
+                                                    <div className="px-2 py-1 bg-primary text-black text-[11px] font-bold rounded-md shadow-lg">
+                                                        {rel.discount}% OFF
+                                                    </div>
+                                                )}
+                                            </div>
                                         </div>
-                                    )}
-                                    
-                                    <div className="absolute bottom-0 left-0 right-0 p-5">
-                                        <h4 className="text-sm font-black text-white  group-hover:text-white transition-colors line-clamp-1">
-                                            {rel.title}
-                                        </h4>
-                                        <p className="text-[10px] font-black text-white  mt-1">
-                                            From ${rel.price || rel.pricing?.basePrice || 0}
-                                        </p>
+
+                                        {/* Content */}
+                                        <div className="p-5 pt-0 flex flex-col flex-grow">
+                                            <h3 className="text-[18px] font-bold text-white mb-4 line-clamp-2 leading-snug group-hover:text-primary transition-colors">
+                                                {rel.title}
+                                            </h3>
+
+                                            {/* Bullet Points */}
+                                            <ul className="space-y-2 mb-6 flex-grow">
+                                                <li className="flex items-start gap-2.5 text-[12px] text-gray-400 font-medium">
+                                                    <span className="w-1.5 h-1.5 rounded-full bg-green-500 mt-1.5 flex-shrink-0"></span>
+                                                    Verified & Secure
+                                                </li>
+                                                <li className="flex items-start gap-2.5 text-[12px] text-gray-400 font-medium">
+                                                    <span className="w-1.5 h-1.5 rounded-full bg-green-500 mt-1.5 flex-shrink-0"></span>
+                                                    Fast Start: {startTime}
+                                                </li>
+                                            </ul>
+
+                                            {/* Price and Action */}
+                                            <div className="mt-auto flex items-center justify-between gap-4 pt-2">
+                                                <div className="text-[20px] font-bold text-white tracking-tight">
+                                                    {formatPrice(price)}
+                                                </div>
+                                                <button 
+                                                    className="bg-primary text-black px-5 h-10 rounded-xl flex items-center justify-center font-black text-[10px] tracking-wide shadow-[0_8px_20px_rgba(19,193,0,0.3)] hover:scale-105 active:scale-95 transition-all border-none"
+                                                >
+                                                    Buy Now
+                                                </button>
+                                            </div>
+                                        </div>
                                     </div>
-                                </div>
-                            ))}
+                                );
+                            })}
                         </div>
                     </div>
                 )}

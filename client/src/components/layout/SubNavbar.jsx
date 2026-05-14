@@ -12,7 +12,7 @@ const SubNavbar = () => {
  };
 
  const items = [
- { key: MODES.BOOSTING, label: 'BOOSTGG SELECTION', icon: Sparkles },
+ { key: MODES.BOOSTING, label: 'BOOSTGG SELECTION' },
  { key: MODES.CURRENCY, label: 'GOLD / CURRENCY', icon: Coins },
  { key: MODES.ACCOUNTS, label: 'ACCOUNTS', icon: UserCircle2 },
  ];
@@ -53,13 +53,14 @@ const SubNavbar = () => {
  onClick={() => toggle(item.key)}
  >
  {/* Icon Container */}
+ {item.icon &&
  <div
  className={`flex items-center justify-center w-6 h-6 rounded-md transition-colors ${isOn ? 'text-primary' : 'text-white'}`}
  style={{ backgroundColor: isOn ? '#1a2b10' : '#111111' }}
  >
  <item.icon className="w-3.5 h-3.5" />
  </div>
-
+}
  {/* Label */}
  <span className={`text-[10px] font-black tracking-widest transition-colors ${isOn ? 'text-white' : 'text-white/30 group-hover:text-white'}`}>
  {item.label}
