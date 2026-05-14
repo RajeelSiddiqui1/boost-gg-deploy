@@ -185,10 +185,7 @@ const CompactServiceCard = ({ service, onBuyNow }) => {
 
  {/* Bullet Points */}
  <ul className="space-y-2.5 mb-6 flex-grow">
- <li className="flex items-start gap-2.5 text-[13px] text-gray-300 font-medium">
- <span className="w-1.5 h-1.5 rounded-full bg-green-500 mt-1.5 flex-shrink-0"></span>
- Verified & Secure Service
- </li>
+ 
  <li className="flex items-start gap-2.5 text-[13px] text-gray-300 font-medium">
  <span className="w-1.5 h-1.5 rounded-full bg-green-500 mt-1.5 flex-shrink-0"></span>
  Fast Start: {startTime}
@@ -224,7 +221,7 @@ const CompactServiceCard = ({ service, onBuyNow }) => {
 
 /* ─── Main GameHub Page ─── */
  const GameHub = () => {
- const { slug } = useParams();
+ const { slug, dealSlug } = useParams();
  const [searchParams, setSearchParams] = useSearchParams();
  const navigate = useNavigate();
   const { user, checkUserLoggedIn } = useAuth();
@@ -233,6 +230,7 @@ const CompactServiceCard = ({ service, onBuyNow }) => {
  const [game, setGame] = useState(null);
  const [categories, setCategories] = useState([]);
  const [services, setServices] = useState([]);
+ const [deals, setDeals] = useState([]);
  const [accounts, setAccounts] = useState([]);
  const [dbReviews, setDbReviews] = useState([]);
  const [loading, setLoading] = useState(true);
@@ -327,14 +325,16 @@ const CompactServiceCard = ({ service, onBuyNow }) => {
  const requests = [
  axios.get(`${API_URL}/api/v1/categories/game/${gameData._id}`),
  axios.get(`${API_URL}/api/v1/services?gameId=${gameData._id}&limit=100`),
- axios.get(`${API_URL}/api/v1/accounts?gameId=${gameData._id}&status=active`)
+ axios.get(`${API_URL}/api/v1/accounts?gameId=${gameData._id}&status=active`),
+ axios.get(`${API_URL}/api/v1/deals`)
  ];
 
- const [catsRes, servicesRes, accountsRes] = await Promise.all(requests);
+ const [catsRes, servicesRes, accountsRes, dealsRes] = await Promise.all(requests);
  
  setCategories(catsRes.data.data);
  setServices(servicesRes.data.data);
  setAccounts(accountsRes.data.data);
+ setDeals(dealsRes.data.data);
 
  try {
  const reviewsRes = await axios.get(`${API_URL}/api/v1/reviews/game/${gameData._id}`);
@@ -377,9 +377,40 @@ const CompactServiceCard = ({ service, onBuyNow }) => {
  String(service.categoryId) === selectedCategory ||
  (service.category && service.category.toLowerCase().replace(/\s+/g, '-') === selectedCategory);
  const matchesSearch = service.title.toLowerCase().includes(searchQuery.toLowerCase());
- return matchesCategory && matchesSearch;
+ const matchesDeal = !dealSlug || service.dealSlug === dealSlug;
+ return matchesCategory && matchesSearch && matchesDeal;
  });
- }, [services, selectedCategory, searchQuery]);
+ }, [services, selectedCategory, searchQuery, dealSlug]);
+
+ const servicesByDeal = useMemo(() => {
+ const tempGrouped = {};
+ const ungrouped = [];
+ filteredServices.forEach(svc => {
+ if (svc.dealId) {
+ if (!tempGrouped[svc.dealId]) {
+ tempGrouped[svc.dealId] = {
+ title: deals.find(d => d._id === svc.dealId)?.title || "Special Deal",
+ slug: svc.dealSlug || deals.find(d => d._id === svc.dealId)?.slug || svc.dealId,
+ services: []
+ };
+ }
+ tempGrouped[svc.dealId].services.push(svc);
+ } else {
+ ungrouped.push(svc);
+ }
+ });
+
+ const finalGrouped = [];
+ Object.values(tempGrouped).forEach(group => {
+ if (group.services.length > 1) {
+ finalGrouped.push(group);
+ } else {
+ ungrouped.push(...group.services);
+ }
+ });
+
+ return { grouped: finalGrouped, ungrouped };
+ }, [filteredServices, deals]);
 
  const filteredAccounts = useMemo(() => {
  return accounts.filter(acc => {
@@ -754,7 +785,17 @@ const CompactServiceCard = ({ service, onBuyNow }) => {
  )
  ) : (
  filteredServices.length > 0 ? (
- <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
+ dealSlug ? (
+ <div className="space-y-6">
+ <div className="flex items-center gap-4 mb-2">
+ <Link to={`/game/${slug}`} className="text-white/50 hover:text-white transition-colors">
+ <ChevronRight className="w-5 h-5 rotate-180" />
+ </Link>
+ <h3 className="text-3xl font-black text-white tracking-tighter">
+ {deals.find(d => d.slug === dealSlug)?.title || 'Promotional Deal'}
+ </h3>
+ </div>
+ <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
  {filteredServices.map((service, idx) => (
  <div
  key={service._id}
@@ -765,6 +806,70 @@ const CompactServiceCard = ({ service, onBuyNow }) => {
  </div>
  ))}
  </div>
+ </div>
+ ) : (
+ <div className="space-y-12">
+ {servicesByDeal.grouped.map((group, gIdx) => (
+ <div key={group.slug || gIdx} className="space-y-5">
+ <h3 className="text-2xl font-black text-white tracking-tighter">{group.title}</h3>
+ <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
+ {group.services.slice(0, 3).map((service, idx) => (
+ <div
+ key={service._id}
+ className="animate-fade-in-up"
+ style={{ animationDelay: `${(idx % 9) * 35}ms` }}
+ >
+ <CompactServiceCard service={service} onBuyNow={handleBuyNow} />
+ </div>
+ ))}
+ {group.services.length >= 4 && (
+ <div className="animate-fade-in-up h-full" style={{ animationDelay: `105ms` }}>
+ <Link
+ to={`/game/${slug}/${group.slug}`}
+ className="group relative bg-[#0f0f0f] hover:bg-[#151515] rounded-[20px] overflow-hidden flex flex-col justify-end p-6 cursor-pointer transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl h-full border border-primary/20 hover:border-primary/50 min-h-[300px]"
+ >
+ {/* Decorative Background Glow */}
+ <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 blur-3xl group-hover:bg-primary/20 transition-all" />
+ <div className="absolute bottom-0 left-0 w-24 h-24 bg-primary/5 blur-2xl group-hover:bg-primary/10 transition-all" />
+ 
+ <div className="relative z-10 flex flex-col h-full">
+ <div className="mt-auto">
+ <p className="text-primary font-black text-[10px] tracking-widest uppercase mb-1">View more</p>
+ <div className="flex items-center justify-between">
+ <h4 className="text-[20px] font-black text-white line-clamp-1">{group.title}</h4>
+ <div className="w-10 h-10 rounded-xl bg-primary text-black flex items-center justify-center group-hover:scale-110 transition-transform">
+ <ChevronRight className="w-5 h-5" />
+ </div>
+ </div>
+ </div>
+ </div>
+ </Link>
+ </div>
+ )}
+ </div>
+ </div>
+ ))}
+
+ {servicesByDeal.ungrouped.length > 0 && (
+ <div className="space-y-5">
+ {servicesByDeal.grouped.length > 0 && (
+ <h3 className="text-2xl font-black text-white tracking-tighter">Other Services</h3>
+ )}
+ <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
+ {servicesByDeal.ungrouped.map((service, idx) => (
+ <div
+ key={service._id}
+ className="animate-fade-in-up"
+ style={{ animationDelay: `${(idx % 9) * 35}ms` }}
+ >
+ <CompactServiceCard service={service} onBuyNow={handleBuyNow} />
+ </div>
+ ))}
+ </div>
+ </div>
+ )}
+ </div>
+ )
  ) : (
  <div className="py-16 flex flex-col items-center justify-center bg-white/[0.02] border border-white/5 rounded-3xl">
  <div className="w-14 h-14 bg-white/5 rounded-full border border-white/10 flex items-center justify-center mb-3">

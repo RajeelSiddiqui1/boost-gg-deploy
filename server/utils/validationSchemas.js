@@ -302,6 +302,15 @@ const serviceSchemas = {
                 'string.length': 'Invalid category ID'
             }),
 
+        dealId: Joi.string()
+            .hex()
+            .length(24)
+            .allow('', null)
+            .messages({
+                'string.hex': 'Invalid deal ID',
+                'string.length': 'Invalid deal ID'
+            }),
+
         serviceType: Joi.string()
             .valid(...SERVICE_TYPES)
             .default('boosting'),
@@ -512,6 +521,15 @@ const serviceSchemas = {
             .messages({
                 'string.hex': 'Invalid category ID',
                 'string.length': 'Invalid category ID'
+            }),
+
+        dealId: Joi.string()
+            .hex()
+            .length(24)
+            .allow('', null)
+            .messages({
+                'string.hex': 'Invalid deal ID',
+                'string.length': 'Invalid deal ID'
             }),
 
         serviceType: Joi.string()

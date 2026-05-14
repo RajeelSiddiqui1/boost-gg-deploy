@@ -139,6 +139,16 @@ const serviceSchema = new mongoose.Schema({
         required: [true, 'Please link this service to a category'],
         index: true
     },
+    // Reference to a Deal (New feature)
+    dealId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Deal',
+        index: true
+    },
+    dealSlug: {
+        type: String,
+        index: true
+    },
     // Reference to the PRO/Service Provider who created this service
     providerId: {
         type: mongoose.Schema.Types.ObjectId,
@@ -480,9 +490,12 @@ const serviceSchema = new mongoose.Schema({
 // Create slug and sync category info before saving
 serviceSchema.pre('save', async function (next) {
     // Handle title-to-slug conversion
-    if (this.isModified('title')) {
-        // Generate base slug from title
-        let baseSlug = slugify(this.title, { lower: true, strict: true });
+    if (this.isModified('title') && !this.isModified('slug')) {
+        // Generate base slug from title (allowing dots)
+        let baseSlug = this.title.toLowerCase()
+            .replace(/[^a-z0-9.]+/g, '-')
+            .replace(/^-+|-+$/g, '')
+            .replace(/-+/g, '-');
 
         // Check for existing slugs with same base
         const existingService = await this.constructor.findOne({
@@ -508,6 +521,25 @@ serviceSchema.pre('save', async function (next) {
             }
         } catch (error) {
             console.error('Error syncing categorySlug in Service model:', error.message);
+        }
+    }
+
+    // Sync dealSlug from dealId
+    if (this.isModified('dealId') || (this.dealId && !this.dealSlug)) {
+        try {
+            const Deal = mongoose.model('Deal');
+            if (this.dealId) {
+                const deal = await Deal.findById(this.dealId);
+                if (deal) {
+                    this.dealSlug = deal.slug;
+                } else {
+                    this.dealSlug = null;
+                }
+            } else {
+                this.dealSlug = null;
+            }
+        } catch (error) {
+            console.error('Error syncing dealSlug in Service model:', error.message);
         }
     }
 

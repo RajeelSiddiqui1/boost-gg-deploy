@@ -116,6 +116,7 @@ const AdminLayout = ({ children }) => {
  { label: 'Sections', icon: FileText, path: '/admin/sections', desc: 'Build dynamic forms for service pages.' },
  { label: 'Currency', icon: DollarSign, path: '/admin/currency', desc: 'Manage exchange rates and payment currencies.' },
  { label: 'Accounts', icon: Shield, path: '/admin/accounts', desc: 'Manage game accounts listed for sale.' },
+ { label: 'Deals', icon: Tag, path: '/admin/deals', desc: 'Create and manage promotional deals for services.' },
  { label: 'Offers', icon: ShoppingCart, path: '/admin/offers', desc: 'Configure "Hot Now" deals and special offers.' },
  { label: 'Orders', icon: ShoppingCart, path: '/admin/orders', desc: 'Track and manage customer order fulfillment.' },
  { label: 'Bids', icon: Tag, path: '/admin/bids', desc: 'Manage and update order bid prices.' },

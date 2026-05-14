@@ -42,6 +42,7 @@ const AdminFinance = lazy(() => import('./pages/admin/Finance'));
 const AdminReviews = lazy(() => import('./pages/admin/Reviews'));
 const AdminSettings = lazy(() => import('./pages/admin/Settings'));
 const AdminSections = lazy(() => import('./pages/admin/Sections'));
+const AdminDeals = lazy(() => import('./pages/admin/Deals'));
 const Login = lazy(() => import('./pages/Login'));
 const Signup = lazy(() => import('./pages/Signup'));
 const ForgotPassword = lazy(() => import('./pages/ForgotPassword'));
@@ -160,7 +161,7 @@ const AppContent = () => {
             <Route path="/cashback" element={<ProtectedRoute isPublic><Cashback /></ProtectedRoute>} />
             <Route path="/blog" element={<ProtectedRoute isPublic><Blog /></ProtectedRoute>} />
             <Route path="/blog/:slug" element={<ProtectedRoute isPublic><BlogPost /></ProtectedRoute>} />
-            <Route path="/game/:slug" element={<ProtectedRoute isPublic><GameHub /></ProtectedRoute>} />
+            <Route path="/game/:slug/:dealSlug?" element={<ProtectedRoute isPublic><GameHub /></ProtectedRoute>} />
             <Route path="/currency/:gameSlug" element={<ProtectedRoute isPublic><Home /></ProtectedRoute>} />
             <Route path="/accounts/:id" element={<ProtectedRoute isPublic><AccountDetail /></ProtectedRoute>} />
             <Route path="/wow-boost" element={<ProtectedRoute isPublic><WowBoost /></ProtectedRoute>} />
@@ -211,6 +212,7 @@ const AppContent = () => {
             <Route path="/admin/settings" element={<ProtectedRoute adminOnly><AdminSettings /></ProtectedRoute>} />
             <Route path="/admin/promo" element={<ProtectedRoute adminOnly><PromoCodes /></ProtectedRoute>} />
             <Route path="/admin/sections" element={<ProtectedRoute adminOnly><AdminSections /></ProtectedRoute>} />
+            <Route path="/admin/deals" element={<ProtectedRoute adminOnly><AdminDeals /></ProtectedRoute>} />
             <Route path="/admin/pro-applications" element={<ProtectedRoute adminOnly><AdminProApplications /></ProtectedRoute>} />
 
             <Route path="*" element={<ProtectedRoute isPublic><NotFound /></ProtectedRoute>} />

@@ -35,6 +35,7 @@ const favoriteRoutes = require('./routes/favorites');
 const bidRoutes = require('./routes/bid');
 const notificationRoutes = require('./routes/notifications');
 const chatRoutes = require('./routes/chat');
+const dealRoutes = require('./routes/deal');
 
 
 const app = express();
@@ -111,6 +112,7 @@ app.use('/api/v1/favorites', favoriteRoutes);
 app.use('/api/v1/bids', bidRoutes);
 app.use('/api/v1/notifications', notificationRoutes);
 app.use('/api/v1/chats', chatRoutes);
+app.use('/api/v1/deals', dealRoutes);
 
 
 

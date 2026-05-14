@@ -41,6 +41,7 @@ export default function ServiceCreatorPage() {
  slug: "",
  gameId: "",
  category: "",
+ dealId: "",
  description: "",
  heroImage: "",
  featureTags: [],
@@ -73,6 +74,7 @@ export default function ServiceCreatorPage() {
  // Games and Categories
  const [games, setGames] = useState([]);
  const [categories, setCategories] = useState([]);
+ const [deals, setDeals] = useState([]);
 
  // Fetch games and categories
  useEffect(() => {
@@ -80,8 +82,10 @@ export default function ServiceCreatorPage() {
  try {
  const gamesRes = await axios.get(`${API_URL}/api/v1/games`);
  setGames(gamesRes.data.data || []);
+ const dealsRes = await axios.get(`${API_URL}/api/v1/deals`);
+ setDeals(dealsRes.data.data || []);
  } catch (err) {
- console.error("Failed to fetch games:", err);
+ console.error("Failed to fetch games or deals:", err);
  }
  };
  fetchOptions();
@@ -119,11 +123,13 @@ export default function ServiceCreatorPage() {
  // Map backend data to creator state
  const fetchedGameId = data.gameId?._id || data.gameId || "";
  const fetchedCategoryId = data.categoryId?._id || data.categoryId || data.category?._id || "";
+ const fetchedDealId = data.dealId?._id || data.dealId || "";
  setState({
  ...data,
  serviceId: data._id,
  gameId: fetchedGameId,
  category: fetchedCategoryId,
+ dealId: fetchedDealId,
  sidebarSections: data.sidebarSections || [],
  featureTags: data.features || data.featureTags || [],
  requirements: data.requirements || [],
@@ -155,10 +161,16 @@ export default function ServiceCreatorPage() {
 
  // Auto-generate slug
  useEffect(() => {
- if (state.title && !id) {
- setState(p => ({ ...p, slug: state.title.toLowerCase().replace(/ /g, "-").replace(/[^\w-]+/g, "") }));
+ if (state.title) {
+ setState(p => ({ 
+ ...p, 
+ slug: state.title.toLowerCase()
+ .replace(/[^a-z0-9.]+/g, '-')
+ .replace(/^-+|-+$/g, '')
+ .replace(/-+/g, '-')
+ }));
  }
- }, [state.title, id]);
+ }, [state.title]);
 
  // Section Management
  const addSection = () => {
@@ -302,6 +314,7 @@ export default function ServiceCreatorPage() {
  description: state.description,
  gameId: state.gameId,
  categoryId: state.category,
+ dealId: state.dealId,
  shortDescription: state.shortDescription || "",
  estimatedStartTime: state.estimatedStartTime || "15 min",
  estimatedCompletionTime: state.estimatedCompletionTime || "Flexible",
@@ -512,6 +525,18 @@ export default function ServiceCreatorPage() {
  >
  <option value="">{state.gameId ? "Select a category" : "Select a game first"}</option>
  {categories.map(cat => (<option key={cat._id} value={cat._id}>{cat.name}</option>))}
+ </select>
+ </div>
+
+ <div className="col-span-2 md:col-span-1">
+ <label className="block text-sm font-bold text-gray-400 mb-2">Promotional Deal (Optional)</label>
+ <select
+ value={state.dealId}
+ onChange={(e) => setState(p => ({ ...p, dealId: e.target.value }))}
+ className="w-full bg-[#0d0d0d] border border-[#2a2a2a] rounded-xl px-4 py-3 text-white focus:border-purple-500 outline-none transition-all"
+ >
+ <option value="">None</option>
+ {deals.map(deal => (<option key={deal._id} value={deal._id}>{deal.title}</option>))}
  </select>
  </div>
 
