@@ -16,6 +16,7 @@ import { useAuth } from '../../context/AuthContext';
 
 import StepProcess from '../sections/StepProcess';
 import DetailBanner from '../DetailBanner';
+import PaymentModal from '../layout/PaymentModal';
 
 
 
@@ -33,6 +34,7 @@ const CurrencyMode = () => {
  const [priceData, setPriceData] = useState(null);
  const [email, setEmail] = useState('');
  const [selectedSpeed, setSelectedSpeed] = useState('Normal');
+ const [showPaymentModal, setShowPaymentModal] = useState(false);
 
  const { formatPrice } = useCurrency();
  const toast = useToast();
@@ -199,6 +201,61 @@ const CurrencyMode = () => {
  if (toast.success) toast.success(`Added ${quantity} ${selectedListing.currencyType} to cart`);
  };
 
+ const handleBuyNow = () => {
+   if (!selectedListing || !priceData) {
+     toast.error("Please select a listing first");
+     return;
+   }
+   if (!email || !email.includes('@')) {
+     toast.error("Please enter a valid email to continue");
+     return;
+   }
+   setShowPaymentModal(true);
+ };
+
+ const confirmBuyNow = async (paymentMethod) => {
+   const basePrice = priceData.price;
+   const surcharge = selectedSpeed === 'Express' ? basePrice * 0.2 : selectedSpeed === 'Super Express' ? basePrice * 0.4 : 0;
+   const finalPrice = basePrice + surcharge;
+
+   const instantItem = {
+     id: selectedListing._id,
+     title: `${selectedGame.name} ${selectedListing.currencyType} (${selectedSpeed} Speed)`,
+     price: finalPrice,
+     quantity: 1,
+     currencyQuantity: quantity,
+     image: getImageUrl(selectedGame.bgImage || selectedGame.image || selectedGame.icon),
+     mode: 'currency',
+     customerEmail: email,
+     selectedOptions: {
+       server: selectedListing.server,
+       region: selectedListing.region,
+       deliveryMethod: selectedListing.defaultDeliveryMethod,
+       speed: selectedSpeed
+     },
+     type: 'currency'
+   };
+
+   try {
+     toast.info("Processing dummy payment...");
+     await axios.post(`${API_URL}/api/v1/orders`, {
+       items: [instantItem],
+       contactInfo: {
+         discord: 'DummyDiscord#1234',
+         email: email || user?.email || 'dummy@payment.com',
+         inGameName: 'DummyUser'
+       },
+       orderMode: 'currency',
+       paymentMethod: paymentMethod + " (DUMMY)",
+       deliveryMethod: 'face-to-face'
+     });
+     setShowPaymentModal(false);
+     toast.success("Dummy order placed successfully!");
+   } catch (err) {
+     toast.error("Dummy order failed: " + (err.response?.data?.message || err.message));
+   }
+ };
+
  const presetQuantities = useMemo(() => {
  if (!selectedListing) return [];
  const min = selectedListing.minQuantity || 1000;
@@ -230,52 +287,59 @@ const CurrencyMode = () => {
         
 
 
- <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
- {games.map(game => (
- <button
- key={game._id}
- onClick={() => {
- setSelectedGame(game);
- navigate(`/currency/${game.slug || game._id}`);
- }}
- className="group relative h-[320px] rounded-[40px] overflow-hidden border border-white/5 hover:border-primary transition-all duration-700 hover:-translate-y-2"
- >
- <div className="absolute inset-0">
- <img 
- src={getImageUrl(game.bgImage || game.image)} 
- alt={game.name} 
- className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" 
- />
- <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent opacity-90 group-hover:opacity-100 transition-opacity"></div>
- </div>
+  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+  {games.map(game => (
+  <button
+  key={game._id}
+  onClick={() => {
+  setSelectedGame(game);
+  navigate(`/currency/${game.slug || game._id}`);
+  }}
+  className="group relative h-[320px] rounded-[30px] overflow-hidden border border-white/5 hover:border-primary/50 transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl bg-[#1a1a1a]"
+  >
+  {/* Image Section */}
+  <div className="absolute inset-0">
+  <img 
+  src={getImageUrl(game.bgImage || game.image)} 
+  alt={game.name} 
+  className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" 
+  />
+  <div className="absolute inset-0 bg-gradient-to-t from-[#1a1a1a] via-[#1a1a1a]/40 to-transparent"></div>
+  </div>
 
- <div className="absolute inset-0 p-10 flex flex-col justify-between">
- <div className="flex justify-between items-start">
- <div className="space-y-2 text-left">
- <h3 className="text-2xl font-black text-white leading-none  tracking-tighter group-hover:text-white transition-colors">{game.name}</h3>
- <div className="flex items-center gap-2">
- <div className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></div>
- <span className="text-[10px] font-black  text-white tracking-[0.2em]">Live Deals</span>
- </div>
- </div>
- <div className="w-16 h-16 p-3 bg-white/5 rounded-2xl border border-white/10 group-hover:border-primary transition-all">
- <img src={game.icon ? getImageUrl(game.icon) : "https://cdn-icons-png.flaticon.com/512/2489/2489756.png"} className="w-full h-full object-contain drop-shadow-2xl" alt="" />
- </div>
- </div>
- 
- <div className="flex items-center justify-between">
- <div className="flex flex-col">
- <span className="text-[10px] font-black text-white  tracking-widest">Available</span>
- <span className="text-lg font-black text-white">{game.currencyCount || 0} Offers</span>
- </div>
- <div className="w-12 h-12 rounded-full bg-white/10 border border-white/10 flex items-center justify-center group-hover:bg-primary group-hover:border-primary transition-all duration-500">
- <ArrowRight className="w-5 h-5 text-white group-hover:text-black transition-colors" />
- </div>
- </div>
- </div>
- </button>
- ))}
- </div>
+  {/* Icon Overlay */}
+  <div className="absolute inset-0 flex items-center justify-center p-12">
+    <img 
+      src={game.icon ? getImageUrl(game.icon) : "https://cdn-icons-png.flaticon.com/512/2489/2489756.png"} 
+      className="h-full object-contain drop-shadow-[0_15px_30px_rgba(0,0,0,0.8)] transition-transform duration-500 group-hover:scale-110 z-10" 
+      alt="" 
+    />
+  </div>
+
+  {/* Info Section */}
+  <div className="absolute inset-0 p-8 flex flex-col justify-between z-20">
+    <div className="flex justify-between items-start">
+      <div className="space-y-1 text-left">
+        <h3 className="text-2xl font-bold text-white leading-none tracking-tight">{game.name}</h3>
+        <div className="flex items-center gap-2">
+          <span className="text-[10px] font-bold text-primary tracking-widest uppercase">Live Marketplace</span>
+        </div>
+      </div>
+    </div>
+  
+    <div className="flex items-center justify-between">
+      <div className="flex flex-col text-left">
+        <span className="text-[10px] font-bold text-white/60 tracking-widest uppercase">Available</span>
+        <span className="text-lg font-bold text-white">{game.currencyCount || 0} Offers</span>
+      </div>
+      <div className="w-10 h-10 rounded-full bg-white/10 border border-white/10 flex items-center justify-center group-hover:bg-primary group-hover:border-primary transition-all duration-500">
+        <ArrowRight className="w-5 h-5 text-white group-hover:text-black transition-colors" />
+      </div>
+    </div>
+  </div>
+  </button>
+  ))}
+  </div>
  </div>
  );
  }
@@ -570,15 +634,21 @@ const CurrencyMode = () => {
  />
  </div>
  
- <button 
- onClick={handleAddToCart}
- className="w-full py-4 bg-primary rounded-xl font-black  tracking-[0.2em] text-sm hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-3 shadow-2xl"
+  <button 
+ onClick={handleBuyNow}
+ className="w-full py-5 bg-primary rounded-2xl font-black tracking-[0.2em] text-sm hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-3 shadow-[0_15px_40px_rgba(19,193,0,0.4)] text-black"
  >
  Buy now
  <ShieldCheck className="w-5 h-5" />
  </button>
  </div>
  </div>
+ <PaymentModal 
+ isOpen={showPaymentModal} 
+ onClose={() => setShowPaymentModal(false)} 
+ total={(priceData?.price || 0) * (selectedSpeed === 'Express' ? 1.2 : selectedSpeed === 'Super Express' ? 1.4 : 1)} 
+ onConfirm={confirmBuyNow} 
+ />
 
  {/* Payment Icons */}
  <div className="flex flex-wrap items-center justify-center gap-4 px-4 opacity-50 grayscale hover:grayscale-0 hover:opacity-100 transition-all duration-500">
@@ -629,27 +699,30 @@ const CurrencyMode = () => {
             setSelectedGame(game);
             navigate(`/currency/${game.slug || game._id}`);
           }} 
-          className="group relative h-[280px] rounded-[32px] overflow-hidden border border-white/5 hover:border-primary transition-all duration-500 hover:-translate-y-2"
+          className="group relative h-[280px] rounded-[30px] overflow-hidden border border-white/5 hover:border-primary/50 transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl bg-[#1a1a1a]"
         >
           <div className="absolute inset-0">
             <img 
               src={getImageUrl(game.bgImage || game.image)} 
-              className="w-full h-full object-cover opacity-50 group-hover:opacity-100 transition-all duration-700 group-hover:scale-110" 
+              className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" 
               alt="" 
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent"></div>
+            <div className="absolute inset-0 bg-gradient-to-t from-[#1a1a1a] via-[#1a1a1a]/40 to-transparent"></div>
           </div>
-          <div className="absolute inset-0 p-8 flex flex-col justify-between text-left">
-            <div className="flex justify-end">
-              <div className="w-10 h-10 rounded-full bg-white/10 backdrop-blur-md flex items-center justify-center group-hover:bg-primary group-hover:text-black transition-all">
-                <ArrowRight className="w-4 h-4 text-white group-hover:text-black transition-colors" />
-              </div>
-            </div>
+
+          <div className="absolute inset-0 flex items-center justify-center p-10">
+            <img 
+              src={game.icon ? getImageUrl(game.icon) : "https://cdn-icons-png.flaticon.com/512/2489/2489756.png"} 
+              className="h-full object-contain drop-shadow-[0_10px_20px_rgba(0,0,0,0.8)] transition-transform duration-500 group-hover:scale-110 z-10" 
+              alt="" 
+            />
+          </div>
+
+          <div className="absolute inset-0 p-6 flex flex-col justify-end text-left z-20">
             <div>
-              <h4 className="text-2xl font-black text-white  leading-none mb-2 group-hover:text-white transition-colors">{game.name}</h4>
+              <h4 className="text-xl font-bold text-white leading-tight mb-1">{game.name}</h4>
               <div className="flex items-center gap-2">
-                <div className="w-1.5 h-1.5 rounded-full bg-primary/50 group-hover:bg-primary group-hover:animate-pulse transition-colors"></div>
-                <span className="text-[10px] font-black text-white  tracking-[0.2em]">{game.currencyCount} Offers</span>
+                <span className="text-[9px] font-bold text-primary tracking-widest uppercase">{game.currencyCount} Offers</span>
               </div>
             </div>
           </div>

@@ -45,39 +45,48 @@ const CompactAccountCard = ({ account, onBuyNow }) => {
  };
 
  return (
- <Link to={`/accounts/${account._id}`} className="group relative bg-[#1a1a1a] rounded-[20px] overflow-hidden flex flex-col transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl h-full border border-white/5 hover:border-white/10">
- {/* Image Section */}
- <div className="relative h-[200px] w-full overflow-hidden bg-gradient-to-b from-[#222] to-[#1a1a1a]">
- {account.screenshots?.[0] || account.thumbnail ? (
- <img
- src={getImageUrl(account.screenshots?.[0] || account.thumbnail)}
- className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
- alt={account.title}
- />
- ) : (
- <div className="absolute inset-0 flex items-center justify-center bg-[#1a1a1a]">
- <Users className="w-16 h-16 text-white/10" />
- </div>
- )}
+    <Link to={`/accounts/${account._id}`} className="group relative bg-[#1a1a1a] rounded-[20px] overflow-hidden flex flex-col transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl h-full border border-white/5 hover:border-white/10">
+      {/* Image Section */}
+      <div className="relative h-[200px] w-full overflow-hidden bg-gradient-to-b from-[#222] to-[#1a1a1a]">
+        {account.screenshots?.[0] || account.thumbnail ? (
+          <img
+            src={getImageUrl(account.screenshots?.[0] || account.thumbnail)}
+            className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+            alt={account.title}
+          />
+        ) : (
+          <div className="absolute inset-0 flex items-center justify-center bg-[#1a1a1a]">
+            <Users className="w-16 h-16 text-white/10" />
+          </div>
+        )}
 
- <div className="absolute inset-0 bg-gradient-to-t from-[#1a1a1a] via-[#1a1a1a]/20 to-transparent"></div>
- 
- {/* Badges */}
- <div className="absolute top-4 left-4 flex flex-col gap-1.5 z-20">
- {account.instantDelivery && (
- <div className="px-2 py-1 bg-primary text-black text-[11px] font-bold rounded-md shadow-lg flex items-center gap-1.5">
- <Zap className="w-3 h-3 fill-current" />
- Instant
- </div>
- )}
- </div>
+        <div className="absolute inset-0 bg-gradient-to-t from-[#1a1a1a] via-[#1a1a1a]/20 to-transparent"></div>
+        
+        {/* Game Icon Overlay (centered) */}
+        {account.gameId?.icon && (
+          <img 
+            src={getImageUrl(account.gameId.icon)} 
+            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-28 object-contain transition-transform duration-500 group-hover:scale-110 drop-shadow-[0_10px_20px_rgba(0,0,0,0.8)] z-10 opacity-60 group-hover:opacity-100" 
+            alt="" 
+          />
+        )}
 
- {account.level > 0 && (
- <div className="absolute top-4 right-4 px-2 py-1 bg-black/60 backdrop-blur-md rounded-md text-[11px] font-bold text-white z-20">
- LVL {account.level}
- </div>
- )}
- </div>
+        {/* Badges */}
+        <div className="absolute top-4 left-4 flex flex-col gap-1.5 z-20">
+          {account.instantDelivery && (
+            <div className="px-2 py-1 bg-primary text-black text-[11px] font-bold rounded-md shadow-lg flex items-center gap-1.5">
+              <Zap className="w-3 h-3 fill-current" />
+              Instant
+            </div>
+          )}
+        </div>
+
+        {account.level > 0 && (
+          <div className="absolute top-4 right-4 px-2 py-1 bg-black/60 backdrop-blur-md rounded-md text-[11px] font-bold text-white z-20">
+            LVL {account.level}
+          </div>
+        )}
+      </div>
 
  {/* Info Section */}
  <div className="p-5 pt-0 flex flex-col flex-grow">
@@ -214,10 +223,12 @@ const CompactServiceCard = ({ service, onBuyNow }) => {
 };
 
 /* ─── Main GameHub Page ─── */
-const GameHub = () => {
+ const GameHub = () => {
  const { slug } = useParams();
  const [searchParams, setSearchParams] = useSearchParams();
  const navigate = useNavigate();
+  const { user, checkUserLoggedIn } = useAuth();
+ const toast = useToast();
 
  const [game, setGame] = useState(null);
  const [categories, setCategories] = useState([]);
@@ -240,7 +251,7 @@ const GameHub = () => {
         setShowPaymentModal(true);
     };
 
-    const confirmBuyNow = (paymentMethod) => {
+    const confirmBuyNow = async (paymentMethod) => {
         if (!selectedItemForPayment) return;
         
         const isAccount = !!selectedItemForPayment.rank;
@@ -261,13 +272,24 @@ const GameHub = () => {
             type: isAccount ? 'account' : 'service'
         };
         
-        setShowPaymentModal(false);
-        navigate('/checkout', { 
-            state: { 
-                selectedPaymentMethod: paymentMethod,
-                instantItem: instantItem 
-            } 
-        });
+        try {
+            toast.info("Processing dummy payment...");
+            await axios.post(`${API_URL}/api/v1/orders`, {
+                items: [instantItem],
+                contactInfo: {
+                    discord: 'DummyDiscord#1234',
+                    email: user?.email || 'dummy@payment.com',
+                    inGameName: 'DummyUser'
+                },
+                orderMode: isAccount ? 'accounts' : 'boosting',
+                paymentMethod: paymentMethod + " (DUMMY)",
+                deliveryMethod: 'face-to-face'
+            });
+            setShowPaymentModal(false);
+            toast.success("Dummy order placed successfully!");
+        } catch (err) {
+            toast.error("Dummy order failed: " + (err.response?.data?.message || err.message));
+        }
     };
 
  // Account Filters
@@ -281,9 +303,9 @@ const GameHub = () => {
 
  const isAccountMode = searchParams.get('mode') === 'accounts';
 
- const { user, checkUserLoggedIn } = useAuth();
- const { addToCart } = useCart();
- const toast = useToast();
+
+
+
 
  useEffect(() => {
  const cat = searchParams.get('category');

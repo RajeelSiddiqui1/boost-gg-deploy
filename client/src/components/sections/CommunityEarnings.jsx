@@ -68,7 +68,7 @@ const CommunityEarnings = () => {
  {digits.map((digit, i) => (
  <div
  key={i}
- className="w-12 h-20 md:w-20 md:h-28 bg-white rounded-xl md:rounded-2xl flex items-center justify-center text-5xl md:text-8xl font-black text-white shadow-xl"
+ className="w-12 h-20 md:w-20 md:h-28 bg-white rounded-xl md:rounded-2xl flex items-center justify-center text-5xl md:text-8xl font-black text-black shadow-xl"
  >
  {digit}
  </div>

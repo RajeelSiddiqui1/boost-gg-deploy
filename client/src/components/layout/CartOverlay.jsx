@@ -5,23 +5,47 @@ import { useCurrency } from '../../context/CurrencyContext';
 import { getImageUrl } from '../../utils/api';
 import { useNavigate } from 'react-router-dom';
 import PaymentModal from './PaymentModal';
+import axios from 'axios';
+import { API_URL } from '../../utils/api';
+import { useAuth } from '../../context/AuthContext';
+import { useToast } from '../../context/ToastContext';
 
 const CartOverlay = () => {
     const {
         cartItems, removeFromCart, cartTotal, isCartOpen, setIsCartOpen,
         cartMode, showModeMismatchModal, confirmClearAndAdd,
-        cancelModeMismatch, pendingItem
+        cancelModeMismatch, pendingItem, clearCart
     } = useCart();
     const { formatPrice } = useCurrency();
+    const { user } = useAuth();
+    const toast = useToast();
     const navigate = useNavigate();
     const [showPaymentModal, setShowPaymentModal] = useState(false);
 
     if (!isCartOpen) return null;
 
-    const handleConfirmPayment = () => {
-        setIsCartOpen(false);
-        setShowPaymentModal(false);
-        navigate('/checkout');
+    const handleConfirmPayment = async (paymentMethod) => {
+        try {
+            toast.info("Processing dummy payment...");
+            await axios.post(`${API_URL}/api/v1/orders`, {
+                items: cartItems,
+                contactInfo: {
+                    discord: 'DummyDiscord#1234',
+                    email: user?.email || 'dummy@payment.com',
+                    inGameName: 'DummyUser'
+                },
+                orderMode: cartMode || 'boosting',
+                paymentMethod: paymentMethod + " (DUMMY)",
+                deliveryMethod: 'face-to-face'
+            });
+            
+            setIsCartOpen(false);
+            setShowPaymentModal(false);
+            clearCart();
+            toast.success("Dummy order placed successfully!");
+        } catch (err) {
+            toast.error("Dummy order failed: " + (err.response?.data?.message || err.message));
+        }
     };
 
     return (

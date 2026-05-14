@@ -283,7 +283,7 @@ const ProductDetail = () => {
         setShowPaymentModal(true);
     };
 
-    const confirmBuyNow = (paymentMethod) => {
+    const confirmBuyNow = async (paymentMethod) => {
         const instantItem = {
             id: service._id,
             title: service.title,
@@ -299,13 +299,24 @@ const ProductDetail = () => {
             type: 'service'
         };
         
-        setShowPaymentModal(false);
-        navigate('/payment-gateway', { 
-            state: { 
-                selectedPaymentMethod: paymentMethod,
-                instantItem: instantItem 
-            } 
-        });
+        try {
+            toast.info("Processing dummy payment...");
+            await axios.post(`${API_URL}/api/v1/orders`, {
+                items: [instantItem],
+                contactInfo: {
+                    discord: 'DummyDiscord#1234',
+                    email: user?.email || 'dummy@payment.com',
+                    inGameName: 'DummyUser'
+                },
+                orderMode: 'boosting',
+                paymentMethod: paymentMethod + " (DUMMY)",
+                deliveryMethod: 'face-to-face'
+            });
+            setShowPaymentModal(false);
+            toast.success("Dummy order placed successfully!");
+        } catch (err) {
+            toast.error("Dummy order failed: " + (err.response?.data?.message || err.message));
+        }
     };
 
     // Render dynamic form field based on type
