@@ -31,7 +31,6 @@ const CompactAccountCard = ({ account, onBuyNow }) => {
  price: account.price,
  quantity: 1,
    image: account.screenshots?.[0] || account.thumbnail,
-
  icon: account.gameId?.icon,
  mode: 'accounts',
  selectedOptions: {
@@ -46,88 +45,73 @@ const CompactAccountCard = ({ account, onBuyNow }) => {
  };
 
  return (
- <Link to={`/accounts/${account._id}`} className="group relative bg-[#0d0d0d] border border-white/[0.05] rounded-[2rem] overflow-hidden flex flex-col h-full transition-all duration-500 hover:border-primary/40 hover:shadow-[0_20px_40px_rgba(0,0,0,0.7)]">
+ <Link to={`/accounts/${account._id}`} className="group relative bg-[#1a1a1a] rounded-[20px] overflow-hidden flex flex-col transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl h-full border border-white/5 hover:border-white/10">
  {/* Image Section */}
- <div className="relative h-48 overflow-hidden bg-[#111]">
+ <div className="relative h-[200px] w-full overflow-hidden bg-gradient-to-b from-[#222] to-[#1a1a1a]">
  {account.screenshots?.[0] || account.thumbnail ? (
  <img
  src={getImageUrl(account.screenshots?.[0] || account.thumbnail)}
- className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 opacity-70 group-hover:opacity-100"
+ className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
  alt={account.title}
  />
  ) : (
- <div className="w-full h-full bg-gradient-to-br from-primary/10 to-transparent flex items-center justify-center">
- <Users className="w-10 h-10 text-white" />
+ <div className="absolute inset-0 flex items-center justify-center bg-[#1a1a1a]">
+ <Users className="w-16 h-16 text-white/10" />
  </div>
  )}
- <div className="absolute inset-0 bg-gradient-to-t from-[#0d0d0d] via-transparent to-transparent opacity-60"></div>
+
+ <div className="absolute inset-0 bg-gradient-to-t from-[#1a1a1a] via-[#1a1a1a]/20 to-transparent"></div>
  
  {/* Badges */}
- <div className="absolute top-4 left-4 flex flex-col gap-2">
+ <div className="absolute top-4 left-4 flex flex-col gap-1.5 z-20">
  {account.instantDelivery && (
- <div className="px-3 py-1 bg-primary text-black text-[9px] font-black  tracking-normal rounded-full shadow-xl flex items-center gap-1.5">
- <Zap className="w-2.5 h-2.5 fill-current" />
+ <div className="px-2 py-1 bg-primary text-black text-[11px] font-bold rounded-md shadow-lg flex items-center gap-1.5">
+ <Zap className="w-3 h-3 fill-current" />
  Instant
  </div>
  )}
  </div>
 
- {/* Level Badge */}
  {account.level > 0 && (
- <div className="absolute top-4 right-4 px-2 py-1 bg-black/40 backdrop-blur-md border border-white/10 rounded-lg text-[10px] font-black text-white">
+ <div className="absolute top-4 right-4 px-2 py-1 bg-black/60 backdrop-blur-md rounded-md text-[11px] font-bold text-white z-20">
  LVL {account.level}
  </div>
  )}
  </div>
 
  {/* Info Section */}
- <div className="p-6 flex flex-col flex-grow">
- <div className="flex items-center gap-2 mb-2">
- <span className="text-[10px] font-black text-white  tracking-normal">{account.region}</span>
- <span className="w-1 h-1 bg-white/20 rounded-full"></span>
- <span className="text-[10px] font-black text-white  tracking-normal">{account.server}</span>
- </div>
- 
- <h3 className="text-lg font-black text-white  tracking-tight mb-4 group-hover:text-white transition-colors line-clamp-2 leading-tight">
+ <div className="p-5 pt-0 flex flex-col flex-grow">
+ <h3 className="text-[20px] font-bold text-white mb-4 line-clamp-2 leading-snug">
  {account.title}
  </h3>
 
- <div className="grid grid-cols-2 gap-2 mb-6">
- <div className="bg-white/[0.03] border border-white/[0.05] rounded-xl p-2.5 flex items-center gap-2.5">
- <Award className="w-4 h-4 text-white/60" />
- <div className="min-w-0">
- <p className="text-[8px] font-black text-white  tracking-normal leading-none mb-1">Rank</p>
- <p className="text-[10px] font-black text-white  truncate">{account.rank || 'N/A'}</p>
- </div>
- </div>
- <div className="bg-white/[0.03] border border-white/[0.05] rounded-xl p-2.5 flex items-center gap-2.5">
- <Layers className="w-4 h-4 text-white/60" />
- <div className="min-w-0">
- <p className="text-[8px] font-black text-white  tracking-normal leading-none mb-1">Skins</p>
- <p className="text-[10px] font-black text-white  truncate">{account.specifications?.skinsCount || 0}</p>
- </div>
- </div>
- </div>
-
- {/* Tags */}
- <div className="flex flex-wrap gap-1.5 mb-6">
- {account.highlights?.slice(0, 3).map((tag, i) => (
- <span key={i} className="px-2 py-1 bg-white/[0.04] border border-white/[0.06] rounded-md text-[8px] font-bold text-white  tracking-normal truncate max-w-full">{tag}</span>
- ))}
- </div>
+ {/* Bullet Points */}
+ <ul className="space-y-2.5 mb-6 flex-grow">
+ <li className="flex items-start gap-2.5 text-[13px] text-gray-300 font-medium">
+ <span className="w-1.5 h-1.5 rounded-full bg-green-500 mt-1.5 flex-shrink-0"></span>
+ Region: {account.region} / {account.server}
+ </li>
+ <li className="flex items-start gap-2.5 text-[13px] text-gray-300 font-medium">
+ <span className="w-1.5 h-1.5 rounded-full bg-green-500 mt-1.5 flex-shrink-0"></span>
+ Rank: {account.rank || 'Unranked'}
+ </li>
+ <li className="flex items-start gap-2.5 text-[13px] text-gray-300 font-medium">
+ <span className="w-1.5 h-1.5 rounded-full bg-green-500 mt-1.5 flex-shrink-0"></span>
+ Skins: {account.specifications?.skinsCount || 0}
+ </li>
+ </ul>
 
  {/* Price and Action */}
- <div className="mt-auto pt-6 border-t border-white/[0.05] flex items-center justify-between gap-4">
- <div className="flex flex-col">
- <span className="text-[9px] font-black text-white  tracking-normal mb-0.5">One-time payment</span>
- <span className="text-2xl font-black text-white tracking-tighter ">{formatPrice(account.price)}</span>
+ <div className="mt-auto flex items-center justify-between gap-4 pt-2">
+ <div className="text-[22px] font-bold text-white tracking-tight">
+ {formatPrice(account.price)}
  </div>
-            <button 
-                onClick={(e) => { e.preventDefault(); e.stopPropagation(); onBuyNow(account); }}
-                className="bg-primary text-black px-7 h-12 rounded-2xl flex items-center justify-center font-black text-[11px]  tracking-[0.1em] shadow-[0_10px_25px_rgba(19,193,0,0.3)] hover:scale-105 active:scale-95 transition-all border-none"
-            >
-                Buy Now
-            </button>
+ <button 
+ onClick={(e) => { e.preventDefault(); e.stopPropagation(); onBuyNow(account); }}
+ className="bg-primary text-black px-7 h-12 rounded-2xl flex items-center justify-center font-black text-[11px] tracking-[0.1em] shadow-[0_10px_25px_rgba(19,193,0,0.3)] hover:scale-105 active:scale-95 transition-all border-none"
+ >
+ Buy Now
+ </button>
  </div>
  </div>
  </Link>
@@ -150,35 +134,34 @@ const CompactServiceCard = ({ service, onBuyNow }) => {
  return (
  <div
  onClick={() => navigate(`/products/${service.slug || service._id}`)}
- className="group relative bg-[#0f0f0f] border border-white/[0.07] rounded-[2rem] overflow-hidden flex flex-col cursor-pointer transition-all duration-300 hover:border-primary/40 hover:-translate-y-1 hover:shadow-[0_20px_40px_rgba(0,0,0,0.4)] h-full"
+ className="group relative bg-[#1a1a1a] rounded-[20px] overflow-hidden flex flex-col cursor-pointer transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl h-full border border-white/5 hover:border-white/10"
  >
- {/* Image */}
- <div className="relative h-40 overflow-hidden bg-[#111]">
+ {/* Image Area */}
+ <div className="relative h-[200px] w-full overflow-hidden bg-gradient-to-b from-[#222] to-[#1a1a1a]">
  {hasImage ? (
  <img
  src={getImageUrl(service.backgroundImage || service.image)}
- className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 opacity-70 group-hover:opacity-100"
+ className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
  alt={service.title}
  />
  ) : (
- <div className="absolute inset-0 bg-gradient-to-br from-[#1a1a2e] via-[#16213e] to-[#0f3460]" />
+ <div className="absolute inset-0 bg-gradient-to-br from-[#2a2a2a] to-[#1a1a1a]" />
  )}
+
+ <div className="absolute inset-0 bg-gradient-to-t from-[#1a1a1a] via-[#1a1a1a]/20 to-transparent"></div>
 
  {hasIcon && (
  <img
  src={getImageUrl(service.icon)}
- className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-16 object-contain z-10 drop-shadow-xl transition-transform duration-500 group-hover:scale-110"
+ className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-28 object-contain transition-transform duration-500 group-hover:scale-110 drop-shadow-[0_10px_20px_rgba(0,0,0,0.8)] z-10"
  alt={service.title}
  />
  )}
-
- <div className="absolute inset-0 bg-gradient-to-t from-[#0f0f0f] via-transparent to-transparent" />
-
+ 
  {/* Badges */}
- <div className="absolute top-3 left-3 flex flex-col gap-1.5">
+ <div className="absolute top-4 left-4 flex flex-col gap-1.5 z-20">
  {service.discount > 0 && (
- <div className="px-2 py-0.5 bg-primary text-black text-[8px] font-black rounded-full flex items-center gap-1 shadow-lg">
- <Zap className="w-2 h-2 fill-current" />
+ <div className="px-2 py-1 bg-primary text-black text-[11px] font-bold rounded-md shadow-lg">
  {service.discount}% OFF
  </div>
  )}
@@ -186,47 +169,44 @@ const CompactServiceCard = ({ service, onBuyNow }) => {
  </div>
 
  {/* Content */}
- <div className="p-5 flex flex-col flex-grow">
- <div className="flex items-center justify-between mb-2">
- <span className="text-[9px] font-black  tracking-normal text-white">{service.category || "Boosting"}</span>
- <div className="flex items-center gap-1 text-[8px] font-bold text-white">
- <Clock className="w-2.5 h-2.5" />
- {startTime}
- </div>
- </div>
-
- <h3 className="text-sm font-black text-white mb-4 line-clamp-2 leading-tight group-hover:text-white transition-colors">
+ <div className="p-5 pt-0 flex flex-col flex-grow">
+ <h3 className="text-[20px] font-bold text-white mb-4 line-clamp-2 leading-snug">
  {service.title}
  </h3>
 
- <div className="flex items-center gap-2 mb-6">
- <div className="flex items-center gap-1.5 py-1 px-2.5 rounded-lg bg-white/[0.03] border border-white/[0.05]">
- <Shield className="w-3 h-3 text-white" />
- <span className="text-[9px] font-bold text-white ">Verified</span>
- </div>
- <div className="flex items-center gap-1.5 py-1 px-2.5 rounded-lg bg-white/[0.03] border border-white/[0.05]">
- <Clock className="w-3 h-3 text-white" />
- <span className="text-[9px] font-bold text-white ">{deliveryTime}</span>
- </div>
- </div>
+ {/* Bullet Points */}
+ <ul className="space-y-2.5 mb-6 flex-grow">
+ <li className="flex items-start gap-2.5 text-[13px] text-gray-300 font-medium">
+ <span className="w-1.5 h-1.5 rounded-full bg-green-500 mt-1.5 flex-shrink-0"></span>
+ Verified & Secure Service
+ </li>
+ <li className="flex items-start gap-2.5 text-[13px] text-gray-300 font-medium">
+ <span className="w-1.5 h-1.5 rounded-full bg-green-500 mt-1.5 flex-shrink-0"></span>
+ Fast Start: {startTime}
+ </li>
+ <li className="flex items-start gap-2.5 text-[13px] text-gray-300 font-medium">
+ <span className="w-1.5 h-1.5 rounded-full bg-green-500 mt-1.5 flex-shrink-0"></span>
+ Delivery: {deliveryTime}
+ </li>
+ </ul>
 
- <div className="mt-auto pt-4 border-t border-white/[0.05] flex items-center justify-between">
+ {/* Price and Action */}
+ <div className="mt-auto flex items-center justify-between gap-4 pt-2">
  <div>
  {showPrice ? (
- <div className="flex flex-col">
- <span className="text-[8px] font-black text-white  tracking-normal leading-none mb-1 text-left">Starting at</span>
- <span className="text-xl font-black text-white tracking-tighter leading-none">{formatPrice(price)}</span>
+ <div className="text-[22px] font-bold text-white tracking-tight">
+ {formatPrice(price)}
  </div>
  ) : (
- <span className="text-[10px] font-black text-white  tracking-wide">View Options</span>
+ <span className="text-[15px] font-bold text-white">View Options</span>
  )}
  </div>
-                <button 
-                    onClick={(e) => { e.preventDefault(); e.stopPropagation(); onBuyNow(service); }}
-                    className="bg-primary text-black h-11 px-6 rounded-2xl flex items-center justify-center font-black text-[11px]  tracking-[0.1em] shadow-[0_10px_25px_rgba(19,193,0,0.3)] hover:scale-105 active:scale-95 transition-all border-none"
-                >
-                    Buy Now
-                </button>
+ <button 
+ onClick={(e) => { e.preventDefault(); e.stopPropagation(); onBuyNow(service); }}
+ className="bg-primary text-black px-7 h-12 rounded-2xl flex items-center justify-center font-black text-[11px] tracking-[0.1em] shadow-[0_10px_25px_rgba(19,193,0,0.3)] hover:scale-105 active:scale-95 transition-all border-none"
+ >
+ Buy Now
+ </button>
  </div>
  </div>
  </div>
